@@ -1,0 +1,13 @@
+
+<players root="gfx/characters/costumes/"
+         portraitroot="gfx/ui/boss/"
+         nameimageroot="gfx/ui/boss/"
+         bigportraitroot="gfx/ui/stage/">
+	<player name="Duke"
+        skin="character_duke.png"
+        hp="3"
+        nameimage="duke_name.png"
+        portrait="duke_portrait.png"
+        skinColor="5"
+    />
+</players>
