@@ -5,7 +5,7 @@
          bigportraitroot="gfx/ui/stage/">
 	<player name="Duke"
         skin="character_duke.png"
-        hp="3"
+        hp="2"
         nameimage="duke_name.png"
         portrait="duke_portrait.png"
         skinColor="5"
