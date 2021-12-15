@@ -1,18 +1,17 @@
 dukeMod = RegisterMod("Duke", 1)
 
 local duke = Isaac.GetPlayerTypeByName("Duke")
-local heartFly = Isaac.GetEntityVariantByName("Heart Fly")
+local heartFly = Isaac.GetEntityVariantByName("Red Heart Fly")
 
 -- helpers
-local function SpawnHeartFly(player, layer)
-	local fly = Isaac.Spawn(EntityType.ENTITY_FAMILIAR, heartFly, 0, player.Position, Vector.Zero, player)
+local function SpawnHeartFly(player, subtype, layer)
+	local fly = Isaac.Spawn(EntityType.ENTITY_FAMILIAR, heartFly, subtype, player.Position, Vector.Zero, player)
 	fly:GetData().layer = layer
 	fly:ToFamiliar():AddToOrbit(903 + layer)
 	return fly
 end
 
-local function AddHeartFly(player)
-	print(player)
+local function AddHeartFly(player, subtype)
 	local playerData = player:GetData()
 	if not playerData.heartFlies then
 		playerData.heartFlies = {
@@ -24,17 +23,36 @@ local function AddHeartFly(player)
 
 	local fly
 	if #playerData.heartFlies[1] < 3 then
-		fly = SpawnHeartFly(player, 1)
+		fly = SpawnHeartFly(player, subtype, 1)
 		table.insert(playerData.heartFlies[1], fly.InitSeed)
 	elseif #playerData.heartFlies[2] < 9 then
-		fly = SpawnHeartFly(player, 2)
+		fly = SpawnHeartFly(player, subtype, 2)
 		table.insert(playerData.heartFlies[2], fly.InitSeed)
 	elseif #playerData.heartFlies[3] < 12 then
-		fly = SpawnHeartFly(player, 3)
+		fly = SpawnHeartFly(player, subtype, 3)
 		table.insert(playerData.heartFlies[3], fly.InitSeed)
 	end
 
 	return fly
+end
+
+local function GetHeartFlySpritesheet(subtype)
+	local spriteTable = {
+		"gfx/familiars/red_heart_fly.png",
+		nil,
+		"gfx/familiars/soul_heart_fly.png",
+		"gfx/familiars/eternal_heart_fly.png",
+		nil,
+		"gfx/familiars/black_heart_fly.png",
+		"gfx/familiars/gold_heart_fly.png",
+		nil,
+		nil,
+		nil,
+		"gfx/familiars/bone_heart_fly.png",
+		"gfx/familiars/rotten_heart_fly.png",
+		"gfx/familiars/broken_heart_fly.png"
+	}
+	return spriteTable[subtype]
 end
 
 -- duke player
@@ -49,7 +67,7 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_GAME_STARTED, function()
 		local p = Isaac.GetPlayer(i)
 		if p:GetPlayerType() == duke then
 			for i=1,3 do
-				AddHeartFly(p)
+				AddHeartFly(p, 1)
 			end
 		end
 	end
@@ -59,7 +77,7 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_PICKUP_INIT, function(_, pickup)
 	for i=0,Game():GetNumPlayers() - 1 do
 		local p = Isaac.GetPlayer(i)
 		if p:GetPlayerType() == duke then
-			AddHeartFly(p)
+			AddHeartFly(p, pickup.SubType)
 			pickup:Remove()
 			break
 		end
@@ -69,16 +87,16 @@ end, PickupVariant.PICKUP_HEART)
 dukeMod:AddCallback(ModCallbacks.MC_POST_PEFFECT_UPDATE, function(_, p)
 	while p:GetBlackHearts() > 0 do
 		p:AddBlackHearts(-1)
-		AddHeartFly(p)
+		AddHeartFly(p, 6)
 	end
 	while p:GetBoneHearts() > 0 do
 		p:AddBoneHearts(-1)
-		AddHeartFly(p)
+		AddHeartFly(p, 11)
 	end
 	if p:GetBrokenHearts() > 0 then
 		while p:GetBrokenHearts() > 0 do
 			p:AddBrokenHearts(-1)
-			AddHeartFly(p)
+			AddHeartFly(p, 13)
 		end
 		if p:GetMaxHearts() < 2 then
 			p:AddMaxHearts(2)
@@ -87,28 +105,28 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_PEFFECT_UPDATE, function(_, p)
 	end
 	while p:GetEternalHearts() > 0 do
 		p:AddEternalHearts(-1)
-		AddHeartFly(p)
+		AddHeartFly(p, 4)
 	end
 	while p:GetGoldenHearts() > 0 do
 		p:AddGoldenHearts(-1)
-		AddHeartFly(p)
+		AddHeartFly(p, 7)
 	end
 	while p:GetHearts() > 2 do
 		p:AddHearts(-1)
-		AddHeartFly(p)
+		AddHeartFly(p, 1)
 	end
 	while p:GetMaxHearts() > 2 do
 		p:AddMaxHearts(-1, true)
-		AddHeartFly(p)
+		AddHeartFly(p, 1)
 	end
 	while p:GetRottenHearts() > 0 do
 		p:AddRottenHearts(-1)
 		p:AddHearts(1)
-		AddHeartFly(p)
+		AddHeartFly(p, 12)
 	end
 	while p:GetSoulHearts() > 0 do
 		p:AddSoulHearts(-1)
-		AddHeartFly(p)
+		AddHeartFly(p, 3)
 	end
 end, duke)
 
@@ -118,7 +136,10 @@ dukeMod:AddCallback(ModCallbacks.MC_FAMILIAR_UPDATE, function(_, f)
 	local playerData = p:GetData()
 	local data = f:GetData()
 	local sprite = f:GetSprite()
-	if not sprite:IsPlaying("Idle") then
+	if f.FrameCount == 6 then
+		print("yo")
+		sprite:ReplaceSpritesheet(0, GetHeartFlySpritesheet(f.SubType))
+		sprite:LoadGraphics()
 		sprite:Play("Idle", true)
 	end
 	if data.layer == 1 then
@@ -142,19 +163,22 @@ dukeMod:AddCallback(ModCallbacks.MC_PRE_FAMILIAR_COLLISION, function(_, f, e)
 	if e.Type == EntityType.ENTITY_PROJECTILE and not e:ToProjectile():HasProjectileFlags(ProjectileFlags.CANT_HIT_PLAYER) then
         e:Die()
         local fly = Isaac.Spawn(EntityType.ENTITY_FAMILIAR, FamiliarVariant.BLUE_FLY, 0, f.Position, Vector.Zero, f.SpawnerEntity)
-		fly:GetSprite():Load("gfx/familiars/heart_fly.anm2", true)
-		fly:GetSprite():Play("Attack", true)
+		local sprite = fly:GetSprite()
+		sprite:Load("gfx/familiars/heart_fly.anm2", true)
+		sprite:ReplaceSpritesheet(0, GetHeartFlySpritesheet(f.SubType))
+		sprite:LoadGraphics()
+		sprite:Play("Attack", true)
 		fly:ClearEntityFlags(EntityFlag.FLAG_APPEAR)
 		fly:GetData().attacker = e.SpawnerEntity
-		for _,v in pairs(playerData.heartFlies) do
+		for k,v in pairs(playerData.heartFlies) do
 			for i,j in pairs(v) do
 				if j == f.InitSeed then
-					table.remove(playerData.heartFlies, k)
-					break
+					table.remove(playerData.heartFlies[k], i)
+					f:Remove()
+					return
 				end
 			end
 		end
-		f:Remove()
     end
 end, heartFly)
 

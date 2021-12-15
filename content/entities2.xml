@@ -1,5 +1,26 @@
 <entities anm2root="gfx/" version="5">
-	<entity anm2path="familiars/heart_fly.anm2" baseHP="0" boss="0" champion="0" collisionDamage="7" collisionInterval="4" collisionMass="3" collisionRadius="9" friction="1" id="3" name="Heart Fly" numGridCollisionPoints="12" shadowSize="8" stageHP="0" variant="3280" subtype="0">
+	<entity anm2path="familiars/heart_fly.anm2" baseHP="0" boss="0" champion="0" collisionDamage="7" collisionInterval="4" collisionMass="3" collisionRadius="9" friction="1" id="3" name="Red Heart Fly" numGridCollisionPoints="12" shadowSize="8" stageHP="0" variant="3280" subtype="1">
+        <gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0" />
+    </entity>
+	<entity anm2path="familiars/heart_fly.anm2" baseHP="0" boss="0" champion="0" collisionDamage="7" collisionInterval="4" collisionMass="3" collisionRadius="9" friction="1" id="3" name="Soul Heart Fly" numGridCollisionPoints="12" shadowSize="8" stageHP="0" variant="3280" subtype="3">
+        <gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0" />
+    </entity>
+	<entity anm2path="familiars/heart_fly.anm2" baseHP="0" boss="0" champion="0" collisionDamage="7" collisionInterval="4" collisionMass="3" collisionRadius="9" friction="1" id="3" name="Eternal Heart Fly" numGridCollisionPoints="12" shadowSize="8" stageHP="0" variant="3280" subtype="4">
+        <gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0" />
+    </entity>
+	<entity anm2path="familiars/heart_fly.anm2" baseHP="0" boss="0" champion="0" collisionDamage="7" collisionInterval="4" collisionMass="3" collisionRadius="9" friction="1" id="3" name="Black Heart Fly" numGridCollisionPoints="12" shadowSize="8" stageHP="0" variant="3280" subtype="6">
+        <gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0" />
+    </entity>
+	<entity anm2path="familiars/heart_fly.anm2" baseHP="0" boss="0" champion="0" collisionDamage="7" collisionInterval="4" collisionMass="3" collisionRadius="9" friction="1" id="3" name="Gold Heart Fly" numGridCollisionPoints="12" shadowSize="8" stageHP="0" variant="3280" subtype="7">
+        <gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0" />
+    </entity>
+	<entity anm2path="familiars/heart_fly.anm2" baseHP="0" boss="0" champion="0" collisionDamage="7" collisionInterval="4" collisionMass="3" collisionRadius="9" friction="1" id="3" name="Bone Heart Fly" numGridCollisionPoints="12" shadowSize="8" stageHP="0" variant="3280" subtype="11">
+        <gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0" />
+    </entity>
+	<entity anm2path="familiars/heart_fly.anm2" baseHP="0" boss="0" champion="0" collisionDamage="7" collisionInterval="4" collisionMass="3" collisionRadius="9" friction="1" id="3" name="Rotten Heart Fly" numGridCollisionPoints="12" shadowSize="8" stageHP="0" variant="3280" subtype="12">
+        <gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0" />
+    </entity>
+	<entity anm2path="familiars/heart_fly.anm2" baseHP="0" boss="0" champion="0" collisionDamage="7" collisionInterval="4" collisionMass="3" collisionRadius="9" friction="1" id="3" name="Broken Heart Fly" numGridCollisionPoints="12" shadowSize="8" stageHP="0" variant="3280" subtype="13">
         <gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0" />
     </entity>
 </entities>
