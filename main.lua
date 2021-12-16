@@ -36,6 +36,22 @@ local function AddHeartFly(player, subtype)
 	return fly
 end
 
+local function RemoveHeartFly(heartFly)
+	local p = heartFly.SpawnerEntity
+	local playerData = p:GetData()
+	if playerData.heartFlies then
+		for k,v in pairs(playerData.heartFlies) do
+			for i,j in pairs(v) do
+				if j == heartFly.InitSeed then
+					table.remove(playerData.heartFlies[k], i)
+					heartFly:Remove()
+					return
+				end
+			end
+		end
+	end
+end
+
 local function GetHeartFlySpritesheet(subtype)
 	local spriteTable = {
 		"gfx/familiars/red_heart_fly.png",
@@ -53,6 +69,16 @@ local function GetHeartFlySpritesheet(subtype)
 		"gfx/familiars/broken_heart_fly.png"
 	}
 	return spriteTable[subtype]
+end
+
+local function SpawnAttackHeartFly(heartFly)
+	local fly = Isaac.Spawn(EntityType.ENTITY_FAMILIAR, FamiliarVariant.BLUE_FLY, heartFly.SubType + 903, heartFly.Position, Vector.Zero, heartFly.SpawnerEntity)
+	local sprite = fly:GetSprite()
+	sprite:ReplaceSpritesheet(0, GetHeartFlySpritesheet(heartFly.SubType))
+	sprite:LoadGraphics()
+	sprite:Play("Attack", true)
+	fly:ClearEntityFlags(EntityFlag.FLAG_APPEAR)
+	return fly
 end
 
 -- duke player
@@ -137,7 +163,6 @@ dukeMod:AddCallback(ModCallbacks.MC_FAMILIAR_UPDATE, function(_, f)
 	local data = f:GetData()
 	local sprite = f:GetSprite()
 	if f.FrameCount == 6 then
-		print("yo")
 		sprite:ReplaceSpritesheet(0, GetHeartFlySpritesheet(f.SubType))
 		sprite:LoadGraphics()
 		sprite:Play("Idle", true)
@@ -158,27 +183,11 @@ dukeMod:AddCallback(ModCallbacks.MC_FAMILIAR_UPDATE, function(_, f)
 end, heartFly)
 
 dukeMod:AddCallback(ModCallbacks.MC_PRE_FAMILIAR_COLLISION, function(_, f, e)
-	local p = f.SpawnerEntity
-	local playerData = p:GetData()
 	if e.Type == EntityType.ENTITY_PROJECTILE and not e:ToProjectile():HasProjectileFlags(ProjectileFlags.CANT_HIT_PLAYER) then
         e:Die()
-        local fly = Isaac.Spawn(EntityType.ENTITY_FAMILIAR, FamiliarVariant.BLUE_FLY, 0, f.Position, Vector.Zero, f.SpawnerEntity)
-		local sprite = fly:GetSprite()
-		sprite:Load("gfx/familiars/heart_fly.anm2", true)
-		sprite:ReplaceSpritesheet(0, GetHeartFlySpritesheet(f.SubType))
-		sprite:LoadGraphics()
-		sprite:Play("Attack", true)
-		fly:ClearEntityFlags(EntityFlag.FLAG_APPEAR)
+		local fly = SpawnAttackHeartFly(f)
 		fly:GetData().attacker = e.SpawnerEntity
-		for k,v in pairs(playerData.heartFlies) do
-			for i,j in pairs(v) do
-				if j == f.InitSeed then
-					table.remove(playerData.heartFlies[k], i)
-					f:Remove()
-					return
-				end
-			end
-		end
+		RemoveHeartFly(f)
     end
 end, heartFly)
 
