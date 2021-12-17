@@ -4,6 +4,27 @@ local duke = Isaac.GetPlayerTypeByName("Duke")
 local heartFly = Isaac.GetEntityVariantByName("Red Heart Fly")
 
 -- helpers
+local HeartFlies = {
+	FLY_RED = 1,
+	nil,
+	FLY_SOUL = 3,
+	FLY_ETERNAL = 4,
+	nil,
+	FLY_BLACK = 6,
+	FLY_GOLD = 7,
+	nil,
+	nil,
+	nil,
+	FLY_BONE = 11,
+	FLY_ROTTEN = 12,
+	FLY_BROKEN = 13
+}
+
+local AttackFlies = {}
+for k,v in pairs(HeartFlies) do
+	AttackFlies[k] = v + 903
+end
+
 local function SpawnHeartFly(player, subtype, layer)
 	local fly = Isaac.Spawn(EntityType.ENTITY_FAMILIAR, heartFly, subtype, player.Position, Vector.Zero, player)
 	fly:GetData().layer = layer
@@ -81,6 +102,42 @@ local function SpawnAttackHeartFly(heartFly)
 	return fly
 end
 
+local function ForEachEntityInRoom(callback, entityType, entityVariant, entitySubType, extraFilters)
+    local filters = {
+        Type = entityType,
+        Variant = entityVariant,
+        SubType = entitySubType
+    }
+
+    local initialEntities = Isaac.GetRoomEntities()
+    for _, entity in ipairs(initialEntities) do
+        local shouldReturn = true
+        for entityKey, filter in pairs(filters) do
+            if not shouldReturn then
+                break
+            end
+
+            if filter ~= nil then
+                if type(filter) == "function" then
+                    shouldReturn = filter(entity[entityKey])
+                else
+                    shouldReturn = entity[entityKey] == filter
+                end
+            end
+        end
+
+        if shouldReturn and extraFilters ~= nil then
+            shouldReturn = extraFilters(entity)
+			print(shouldReturn)
+        end
+
+        if shouldReturn then
+			print("mother")
+            callback(entity)
+        end
+	end
+end
+
 -- duke player
 dukeMod:AddCallback(ModCallbacks.MC_EVALUATE_CACHE, function(_, p, flag)
 	if p:GetPlayerType() == duke then
@@ -93,7 +150,7 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_GAME_STARTED, function()
 		local p = Isaac.GetPlayer(i)
 		if p:GetPlayerType() == duke then
 			for i=1,3 do
-				AddHeartFly(p, 1)
+				AddHeartFly(p, HeartFlies.FLY_RED)
 			end
 		end
 	end
@@ -113,16 +170,16 @@ end, PickupVariant.PICKUP_HEART)
 dukeMod:AddCallback(ModCallbacks.MC_POST_PEFFECT_UPDATE, function(_, p)
 	while p:GetBlackHearts() > 0 do
 		p:AddBlackHearts(-1)
-		AddHeartFly(p, 6)
+		AddHeartFly(p, HeartFlies.FLY_BLACK)
 	end
 	while p:GetBoneHearts() > 0 do
 		p:AddBoneHearts(-1)
-		AddHeartFly(p, 11)
+		AddHeartFly(p, HeartFlies.FLY_BONE)
 	end
 	if p:GetBrokenHearts() > 0 then
 		while p:GetBrokenHearts() > 0 do
 			p:AddBrokenHearts(-1)
-			AddHeartFly(p, 13)
+			AddHeartFly(p, HeartFlies.FLY_BROKEN)
 		end
 		if p:GetMaxHearts() < 2 then
 			p:AddMaxHearts(2)
@@ -131,34 +188,34 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_PEFFECT_UPDATE, function(_, p)
 	end
 	while p:GetEternalHearts() > 0 do
 		p:AddEternalHearts(-1)
-		AddHeartFly(p, 4)
+		AddHeartFly(p, HeartFlies.FLY_ETERNAL)
 	end
 	while p:GetGoldenHearts() > 0 do
 		p:AddGoldenHearts(-1)
-		AddHeartFly(p, 7)
+		AddHeartFly(p, HeartFlies.FLY_GOLD)
 	end
 	while p:GetHearts() > 2 do
 		p:AddHearts(-1)
-		AddHeartFly(p, 1)
+		AddHeartFly(p, HeartFlies.FLY_RED)
 	end
 	while p:GetMaxHearts() > 2 do
 		p:AddMaxHearts(-1, true)
-		AddHeartFly(p, 1)
+		AddHeartFly(p, HeartFlies.FLY_RED)
 	end
 	while p:GetRottenHearts() > 0 do
 		p:AddRottenHearts(-1)
 		p:AddHearts(1)
-		AddHeartFly(p, 12)
+		AddHeartFly(p, HeartFlies.FLY_ROTTEN)
 	end
 	while p:GetSoulHearts() > 0 do
 		p:AddSoulHearts(-1)
-		AddHeartFly(p, 3)
+		AddHeartFly(p, HeartFlies.FLY_SOUL)
 	end
 end, duke)
 
 -- heart flies
 dukeMod:AddCallback(ModCallbacks.MC_FAMILIAR_UPDATE, function(_, f)
-	local p = f.SpawnerEntity
+	local p = f.SpawnerEntity or Isaac.GetPlayer(0)
 	local playerData = p:GetData()
 	local data = f:GetData()
 	local sprite = f:GetSprite()
@@ -198,6 +255,57 @@ dukeMod:AddCallback(ModCallbacks.MC_FAMILIAR_UPDATE, function(_, f)
 		else
 			f.Target = nil
 			f:GetData().attacker = nil
+		end
+	end
+end, FamiliarVariant.BLUE_FLY)
+
+-- black heart flies
+dukeMod:AddCallback(ModCallbacks.MC_FAMILIAR_UPDATE, function(_, f)
+	if f.SubType == HeartFlies.FLY_BLACK then
+		f.CollisionDamage = f.CollisionDamage * 1.3
+	end
+end, heartFly)
+
+dukeMod:AddCallback(ModCallbacks.MC_PRE_FAMILIAR_COLLISION, function(_, f, e)
+	if f.SubType == HeartFlies.FLY_BLACK then
+		if e.Type == EntityType.ENTITY_PROJECTILE and not e:ToProjectile():HasProjectileFlags(ProjectileFlags.CANT_HIT_PLAYER) then
+			local p = f.SpawnerEntity or Isaac.GetPlayer(0)
+			p:ToPlayer():UseActiveItem(CollectibleType.COLLECTIBLE_NECRONOMICON, UseFlag.USE_NOANIM)
+	    end
+	end
+end, heartFly)
+
+dukeMod:AddCallback(ModCallbacks.MC_FAMILIAR_UPDATE, function(_, f)
+	if f.SubType == AttackFlies.FLY_BLACK then
+		if f.FrameCount == 6 then
+			f.CollisionDamage = f.CollisionDamage * 1.3
+		end
+	end
+end, FamiliarVariant.BLUE_FLY)
+
+-- eternal heart flies
+dukeMod:AddCallback(ModCallbacks.MC_FAMILIAR_UPDATE, function(_, f)
+	if f.SubType == HeartFlies.FLY_ETERNAL then
+		if f.FrameCount == 6 then
+			ForEachEntityInRoom(function(entity)
+				for i=1,4 do
+					AddHeartFly(f.SpawnerEntity, HeartFlies.FLY_RED)
+					RemoveHeartFly(entity)
+					RemoveHeartFly(f)
+				end
+			end, EntityType.ENTITY_FAMILIAR, heartFly, HeartFlies.FLY_ETERNAL,
+			function(entity)
+				return entity.SpawnerEntity.InitSeed == f.SpawnerEntity.InitSeed and entity.InitSeed ~= f.InitSeed
+			end)
+		end
+		f.CollisionDamage = f.CollisionDamage * 1.5
+	end
+end, heartFly)
+
+dukeMod:AddCallback(ModCallbacks.MC_FAMILIAR_UPDATE, function(_, f)
+	if f.SubType == AttackFlies.FLY_BLACK then
+		if f.FrameCount == 6 then
+			f.CollisionDamage = f.CollisionDamage * 1.5
 		end
 	end
 end, FamiliarVariant.BLUE_FLY)

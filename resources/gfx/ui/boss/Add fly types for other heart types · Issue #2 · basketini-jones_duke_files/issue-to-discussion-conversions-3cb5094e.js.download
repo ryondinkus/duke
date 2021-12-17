@@ -1,0 +1,2 @@
+System.register(["./chunk-vendor.js"],function(){"use strict";var c;return{setters:[function(t){c=t.a}],execute:function(){c("click",".js-convert-to-discussion-modal-open-button",function(t){const e=t.currentTarget.closest("details");if(e){const n=e.querySelector('.js-convert-to-discussion-category[aria-checked="true"] input');if(n){n.checked=!0;const o=e.querySelector(".js-convert-to-discussion-button");o&&o.removeAttribute("disabled")}}})}}});
+//# sourceMappingURL=issue-to-discussion-conversions-d77aaa9d.js.map
