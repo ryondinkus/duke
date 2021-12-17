@@ -3,6 +3,9 @@ dukeMod = RegisterMod("Duke", 1)
 local duke = Isaac.GetPlayerTypeByName("Duke")
 local heartFly = Isaac.GetEntityVariantByName("Red Heart Fly")
 
+local sfx = SFXManager()
+local rng = RNG()
+
 -- helpers
 local HeartFlies = {
 	FLY_RED = 1,
@@ -26,7 +29,7 @@ for k,v in pairs(HeartFlies) do
 end
 
 local function SpawnHeartFly(player, subtype, layer)
-	local fly = Isaac.Spawn(EntityType.ENTITY_FAMILIAR, heartFly, subtype, player.Position, Vector.Zero, player)
+	local fly = Isaac.Spawn(EntityType.ENTITY_FAMILIAR, heartFly, subtype or 1, player.Position, Vector.Zero, player)
 	fly:GetData().layer = layer
 	fly:ToFamiliar():AddToOrbit(903 + layer)
 	return fly
@@ -89,7 +92,7 @@ local function GetHeartFlySpritesheet(subtype)
 		"gfx/familiars/rotten_heart_fly.png",
 		"gfx/familiars/broken_heart_fly.png"
 	}
-	return spriteTable[subtype]
+	return spriteTable[subtype] or "gfx/familiars/red_heart_fly.png"
 end
 
 local function CanBecomeAttackFly(fly)
@@ -280,30 +283,6 @@ dukeMod:AddCallback(ModCallbacks.MC_FAMILIAR_UPDATE, function(_, f)
 	end
 end, FamiliarVariant.BLUE_FLY)
 
--- black heart flies
-dukeMod:AddCallback(ModCallbacks.MC_FAMILIAR_UPDATE, function(_, f)
-	if f.SubType == HeartFlies.FLY_BLACK then
-		f.CollisionDamage = f.CollisionDamage * 1.3
-	end
-end, heartFly)
-
-dukeMod:AddCallback(ModCallbacks.MC_PRE_FAMILIAR_COLLISION, function(_, f, e)
-	if f.SubType == HeartFlies.FLY_BLACK then
-		if e.Type == EntityType.ENTITY_PROJECTILE and not e:ToProjectile():HasProjectileFlags(ProjectileFlags.CANT_HIT_PLAYER) then
-			local p = f.SpawnerEntity or Isaac.GetPlayer(0)
-			p:ToPlayer():UseActiveItem(CollectibleType.COLLECTIBLE_NECRONOMICON, UseFlag.USE_NOANIM)
-	    end
-	end
-end, heartFly)
-
-dukeMod:AddCallback(ModCallbacks.MC_FAMILIAR_UPDATE, function(_, f)
-	if f.SubType == AttackFlies.FLY_BLACK then
-		if f.FrameCount == 6 then
-			f.CollisionDamage = f.CollisionDamage * 1.3
-		end
-	end
-end, FamiliarVariant.BLUE_FLY)
-
 -- eternal heart flies
 dukeMod:AddCallback(ModCallbacks.MC_FAMILIAR_UPDATE, function(_, f)
 	if f.SubType == HeartFlies.FLY_ETERNAL then
@@ -330,3 +309,57 @@ dukeMod:AddCallback(ModCallbacks.MC_FAMILIAR_UPDATE, function(_, f)
 		end
 	end
 end, FamiliarVariant.BLUE_FLY)
+
+-- black heart flies
+dukeMod:AddCallback(ModCallbacks.MC_FAMILIAR_UPDATE, function(_, f)
+	if f.SubType == HeartFlies.FLY_BLACK then
+		f.CollisionDamage = f.CollisionDamage * 1.3
+	end
+end, heartFly)
+
+dukeMod:AddCallback(ModCallbacks.MC_PRE_FAMILIAR_COLLISION, function(_, f, e)
+	if f.SubType == HeartFlies.FLY_BLACK then
+		if e.Type == EntityType.ENTITY_PROJECTILE and not e:ToProjectile():HasProjectileFlags(ProjectileFlags.CANT_HIT_PLAYER) then
+			local p = f.SpawnerEntity or Isaac.GetPlayer(0)
+			p:ToPlayer():UseActiveItem(CollectibleType.COLLECTIBLE_NECRONOMICON, UseFlag.USE_NOANIM)
+	    end
+	end
+end, heartFly)
+
+dukeMod:AddCallback(ModCallbacks.MC_FAMILIAR_UPDATE, function(_, f)
+	if f.SubType == AttackFlies.FLY_BLACK then
+		if f.FrameCount == 6 then
+			f.CollisionDamage = f.CollisionDamage * 1.3
+		end
+	end
+end, FamiliarVariant.BLUE_FLY)
+
+-- gold heart flies
+dukeMod:AddCallback(ModCallbacks.MC_PRE_FAMILIAR_COLLISION, function(_, f, e)
+	if f.SubType == HeartFlies.FLY_GOLD then
+		if e:ToNPC() and not e:HasEntityFlags(EntityFlag.FLAG_CHARM) and rng:RandomInt(3) == 0 then
+			e:AddMidasFreeze(EntityRef(f), 30)
+		end
+	end
+end, heartFly)
+
+dukeMod:AddCallback(ModCallbacks.MC_PRE_FAMILIAR_COLLISION, function(_, f, e)
+	if f.SubType == AttackFlies.FLY_GOLD then
+		if e:ToNPC() and not e:HasEntityFlags(EntityFlag.FLAG_CHARM) then
+			e:AddMidasFreeze(EntityRef(f), 150)
+			for i=0,rng:RandomInt(8) do
+				Isaac.Spawn(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_COIN, 0, f.Position, Vector.FromAngle(rng:RandomInt(360)), f)
+				Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.CRACKED_ORB_POOF, 0, f.Position, Vector.Zero, f)
+				local effect = Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.BOMB_CRATER, 0, f.Position, Vector.Zero, f)
+				effect.Color = Color(1,1,1,0,1,0.7,0)
+				effect:GetSprite().Scale = Vector(0.5,0.5)
+				sfx:Play(SoundEffect.SOUND_ULTRA_GREED_COIN_DESTROY, 1, 0)
+			end
+		end
+	end
+end, FamiliarVariant.BLUE_FLY)
+
+dukeMod:AddCallback(ModCallbacks.MC_POST_GAME_STARTED, function()
+	local seeds = Game():GetSeeds()
+	rng:SetSeed(seeds:GetStartSeed(), 35)
+end)
