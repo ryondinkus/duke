@@ -92,6 +92,25 @@ local function GetHeartFlySpritesheet(subtype)
 	return spriteTable[subtype]
 end
 
+local function CanBecomeAttackFly(fly)
+	local blacklist = {
+		true,
+		nil,
+		true,
+		false,
+		nil,
+		true,
+		true,
+		nil,
+		nil,
+		nil,
+		true,
+		true,
+		false
+	}
+	return blacklist[fly.SubType]
+end
+
 local function SpawnAttackHeartFly(heartFly)
 	local fly = Isaac.Spawn(EntityType.ENTITY_FAMILIAR, FamiliarVariant.BLUE_FLY, heartFly.SubType + 903, heartFly.Position, Vector.Zero, heartFly.SpawnerEntity)
 	local sprite = fly:GetSprite()
@@ -242,9 +261,11 @@ end, heartFly)
 dukeMod:AddCallback(ModCallbacks.MC_PRE_FAMILIAR_COLLISION, function(_, f, e)
 	if e.Type == EntityType.ENTITY_PROJECTILE and not e:ToProjectile():HasProjectileFlags(ProjectileFlags.CANT_HIT_PLAYER) then
         e:Die()
-		local fly = SpawnAttackHeartFly(f)
-		fly:GetData().attacker = e.SpawnerEntity
-		RemoveHeartFly(f)
+		if CanBecomeAttackFly(f) then
+			local fly = SpawnAttackHeartFly(f)
+			fly:GetData().attacker = e.SpawnerEntity
+			RemoveHeartFly(f)
+		end
     end
 end, heartFly)
 
