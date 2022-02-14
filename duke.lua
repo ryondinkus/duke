@@ -1,10 +1,7 @@
 -- Adds flies on startup
 dukeMod:AddCallback(ModCallbacks.MC_POST_GAME_STARTED, function()
 	DukeHelpers.ForEachDuke(function(p)
-		for i=1, 3 do
-			print('running this')
-			DukeHelpers.AddHeartFly(p, DukeHelpers.Flies.FLY_RED)
-		end
+		DukeHelpers.AddHeartFly(p, DukeHelpers.Flies.FLY_RED, 3)
 	end)
 end)
 
@@ -16,15 +13,20 @@ dukeMod:AddCallback(ModCallbacks.MC_EVALUATE_CACHE, function(_, p, f)
 end, CacheFlag.CACHE_FLYING)
 
 -- Adds flies when a heart is spawned
-dukeMod:AddCallback(ModCallbacks.MC_POST_PICKUP_INIT, function(_, pickup)
-	local isDone = false
-	DukeHelpers.ForEachDuke(function(p)
-		if not isDone then
+dukeMod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, function(_, pickup, collider)
+	local p = collider:ToPlayer()
+
+	if p and DukeHelpers.IsDuke(p) then
+		if pickup.SubType == HeartSubType.HEART_BLENDED then
+			DukeHelpers.AddHeartFly(p, DukeHelpers.Flies.FLY_RED, 1)
+			DukeHelpers.AddHeartFly(p, DukeHelpers.Flies.FLY_SOUL, 1)
+		else
 			DukeHelpers.AddHeartFly(p, DukeHelpers.GetFlyByPickupSubType(pickup.SubType))
-			pickup:Remove()
-			isDone = true
 		end
-	end)
+		
+		pickup:Remove()
+		return true
+	end
 end, PickupVariant.PICKUP_HEART)
 
 -- Adds flies when the player's health changes
@@ -42,9 +44,8 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_PEFFECT_UPDATE, function(_, p)
 			p:AddBrokenHearts(-1)
 			DukeHelpers.AddHeartFly(p, DukeHelpers.Flies.FLY_BROKEN)
 		end
-		if p:GetMaxHearts() < 2 then
-			p:AddMaxHearts(2)
-			p:AddHearts(2)
+		if p:GetSoulHearts() < 4 then
+			p:AddSoulHearts(4)
 		end
 	end
 	while p:GetEternalHearts() > 0 do
@@ -55,11 +56,11 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_PEFFECT_UPDATE, function(_, p)
 		p:AddGoldenHearts(-1)
 		DukeHelpers.AddHeartFly(p, DukeHelpers.Flies.FLY_GOLDEN)
 	end
-	while p:GetHearts() > 2 do
+	while p:GetHearts() > 0 do
 		p:AddHearts(-1)
 		DukeHelpers.AddHeartFly(p, DukeHelpers.Flies.FLY_RED)
 	end
-	while p:GetMaxHearts() > 2 do
+	while p:GetMaxHearts() > 0 do
 		p:AddMaxHearts(-1, true)
 		DukeHelpers.AddHeartFly(p, DukeHelpers.Flies.FLY_RED)
 	end
@@ -68,7 +69,7 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_PEFFECT_UPDATE, function(_, p)
 		p:AddHearts(1)
 		DukeHelpers.AddHeartFly(p, DukeHelpers.Flies.FLY_ROTTEN)
 	end
-	while p:GetSoulHearts() > 0 do
+	while p:GetSoulHearts() > 4 do
 		p:AddSoulHearts(-1)
 		DukeHelpers.AddHeartFly(p, DukeHelpers.Flies.FLY_SOUL)
 	end

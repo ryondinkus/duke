@@ -7,7 +7,12 @@ local flies = {
 	include("flies/golden"),
 	include("flies/bone"),
 	include("flies/rotten"),
-	include("flies/broken")
+	include("flies/broken"),
+	-- Make sure any fly types that are used by other heart types are registered first
+	include("flies/halfRed"),
+	include("flies/doubleRed"),
+	include("flies/halfSoul"),
+	include("flies/scared")
 }
 
 -- Handles fly orbiting
@@ -60,14 +65,23 @@ end, FamiliarVariant.BLUE_FLY)
 
 -- Registers the flies
 for _, fly in pairs(flies) do
-    local newFly = {
+	local newFly = {
         key = fly.key,
         spritesheet = fly.spritesheet,
         canAttack = fly.canAttack,
         pickupSubType = fly.subType,
         heartFlySubType = fly.subType,
-        attackFlySubType = DukeHelpers.GetAttackFlySubTypeBySubType(fly.subType)
+        attackFlySubType = DukeHelpers.GetAttackFlySubTypeBySubType(fly.subType),
+    	fliesCount = fly.fliesCount
     }
+
+	if fly.useFly then
+		local existingFly = DukeHelpers.Flies[fly.useFly]
+		newFly.spritesheet = existingFly.spritesheet
+		newFly.canAttack = existingFly.canAttack
+		newFly.heartFlySubType = existingFly.heartFlySubType
+		newFly.attackFlySubType = existingFly.attackFlySubType
+	end
 
     if fly.callbacks then
         for _, callback in pairs(fly.callbacks) do

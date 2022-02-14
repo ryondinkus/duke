@@ -3,6 +3,7 @@ local spritesheet = "gfx/familiars/black_heart_fly.png"
 local canAttack = true
 local subType = HeartSubType.HEART_BLACK
 local attackFlySubType = DukeHelpers.GetAttackFlySubTypeBySubType(subType)
+local fliesCount = 2
 
 local function ATTACK_FLY_MC_FAMILIAR_UPDATE_ATTACK(_, f)
 	if f.SubType == attackFlySubType then
@@ -32,6 +33,7 @@ return {
     spritesheet = spritesheet,
     canAttack = canAttack,
     subType = subType,
+    fliesCount = fliesCount,
     callbacks = {
         {
             ModCallbacks.MC_FAMILIAR_UPDATE,

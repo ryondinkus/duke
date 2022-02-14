@@ -3,6 +3,7 @@ local spritesheet = "gfx/familiars/gold_heart_fly.png"
 local canAttack = true
 local subType = HeartSubType.HEART_GOLDEN
 local attackFlySubType = DukeHelpers.GetAttackFlySubTypeBySubType(subType)
+local fliesCount = 1
 
 local function ATTACK_FLY_MC_PRE_FAMILIAR_COLLISION(_, f, e)
 	if f.SubType == attackFlySubType then
@@ -33,6 +34,7 @@ return {
     spritesheet = spritesheet,
     canAttack = canAttack,
     subType = subType,
+    fliesCount = fliesCount,
     callbacks = {
         {
             ModCallbacks.MC_PRE_FAMILIAR_COLLISION,
