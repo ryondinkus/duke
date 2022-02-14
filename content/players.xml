@@ -8,6 +8,7 @@
         hp="2"
         nameimage="duke_name.png"
         portrait="duke_portrait.png"
+		extraportrait="duke_extraportrait.anm2"
         skinColor="5"
     />
 </players>
