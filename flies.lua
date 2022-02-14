@@ -43,10 +43,17 @@ end, DukeHelpers.FLY_VARIANT)
 dukeMod:AddCallback(ModCallbacks.MC_PRE_FAMILIAR_COLLISION, function(_, f, e)
 	if e.Type == EntityType.ENTITY_PROJECTILE and not e:ToProjectile():HasProjectileFlags(ProjectileFlags.CANT_HIT_PLAYER) then
         e:Die()
+		local data = f:GetData()
 		if DukeHelpers.CanBecomeAttackFly(f) then
-			local fly = DukeHelpers.SpawnAttackFly(f)
-			fly:GetData().attacker = e.SpawnerEntity
-			DukeHelpers.RemoveHeartFly(f)
+			if not data.hitPoints or data.hitPoints <= 1 then
+				local fly = DukeHelpers.SpawnAttackFly(f)
+				local data = fly:GetData()
+				data.attacker = e.SpawnerEntity
+				data.hitPoints = nil
+				DukeHelpers.RemoveHeartFly(f)
+			elseif data.hitPoints and data.hitPoints > 1 then
+				data.hitPoints = data.hitPoints - 1
+			end
 		end
     end
 end, DukeHelpers.FLY_VARIANT)
