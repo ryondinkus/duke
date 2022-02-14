@@ -26,11 +26,7 @@ end
 function DukeHelpers.AddHeartFly(player, fly, specificAmount)
 	local playerData = player:GetData()
 	if not playerData.heartFlies then
-		playerData.heartFlies = {
-			[INNER] = {},
-			[MIDDLE] = {},
-			[OUTER] = {}
-		}
+		playerData.heartFlies = {}
 	end
 
 	local heartFlies = {}
@@ -38,20 +34,30 @@ function DukeHelpers.AddHeartFly(player, fly, specificAmount)
 	for i = 1, specificAmount or fly.fliesCount or 1 do
 		local layer
 
-		if #playerData.heartFlies[INNER] < 3 then
+		if DukeHelpers.CountByProperties(playerData.heartFlies, { layer = INNER }) < 3 then
 			layer = INNER
-		elseif #playerData.heartFlies[MIDDLE] < 9 then
+		elseif DukeHelpers.CountByProperties(playerData.heartFlies, { layer = MIDDLE }) < 9 then
 			layer = MIDDLE
-		elseif #playerData.heartFlies[OUTER] < 12 then
+		elseif DukeHelpers.CountByProperties(playerData.heartFlies, { layer = OUTER }) < 12 then
 			layer = OUTER
 		else
-			
+			local replacableFly = DukeHelpers.Find(playerData.heartFlies, function(f)
+				return f.subType ~= DukeHelpers.Flies.FLY_BROKEN.heartFlySubType
+			end)
+			if replacableFly then
+				layer = replacableFly.layer
+				DukeHelpers.RemoveHeartFly(DukeHelpers.GetEntityByInitSeed(replacableFly.initSeed))
+			end
 		end
 
 		if layer then
 			local heartFly = DukeHelpers.SpawnHeartFly(player, fly.heartFlySubType, layer)
 			table.insert(heartFlies, heartFly)
-			table.insert(playerData.heartFlies[layer], heartFly.InitSeed)
+			table.insert(playerData.heartFlies, {
+				initSeed = heartFly.InitSeed,
+				layer = layer,
+				subType = fly.heartFlySubType
+			})
 		end
 	end
 
@@ -62,13 +68,11 @@ function DukeHelpers.RemoveHeartFly(heartFly)
 	local p = heartFly.SpawnerEntity
 	local playerData = p:GetData()
 	if playerData.heartFlies then
-		for k,v in pairs(playerData.heartFlies) do
-			for i,j in pairs(v) do
-				if j == heartFly.InitSeed then
-					table.remove(playerData.heartFlies[k], i)
-					heartFly:Remove()
-					return
-				end
+		for i, fly in pairs(playerData.heartFlies) do
+			if fly.initSeed == heartFly.InitSeed then
+				table.remove(playerData.heartFlies, i)
+				heartFly:Remove()
+				return
 			end
 		end
 	end
@@ -121,12 +125,12 @@ end
 
 function DukeHelpers.RemoveHeartFly(heartFly)
 	local p = heartFly.SpawnerEntity
-	local playerData = p:GetData()
-	if playerData.heartFlies then
-		for k,v in pairs(playerData.heartFlies) do
-			for i,j in pairs(v) do
-				if j == heartFly.InitSeed then
-					table.remove(playerData.heartFlies[k], i)
+	if p then
+		local playerData = p:GetData()
+		if playerData.heartFlies then
+			for i, fly in pairs(playerData.heartFlies) do
+				if fly.initSeed == heartFly.InitSeed then
+					table.remove(playerData.heartFlies, i)
 					heartFly:Remove()
 					return
 				end
