@@ -23,7 +23,7 @@ function DukeHelpers.SpawnHeartFly(player, subType, layer)
 	return fly
 end
 
-function DukeHelpers.AddHeartFly(player, fly)
+function DukeHelpers.AddHeartFly(player, fly, specificAmount)
 	local playerData = player:GetData()
 	if not playerData.heartFlies then
 		playerData.heartFlies = {
@@ -33,24 +33,29 @@ function DukeHelpers.AddHeartFly(player, fly)
 		}
 	end
 
-    local layer
+	local heartFlies = {}
 
-    if #playerData.heartFlies[INNER] < 3 then
-        layer = INNER
-    elseif #playerData.heartFlies[MIDDLE] < 9 then
-        layer = MIDDLE
-    elseif #playerData.heartFlies[OUTER] < 12 then
-        layer = OUTER
-    end
+	for i = 1, specificAmount or fly.fliesCount or 1 do
+		local layer
 
-    local heartFly
+		if #playerData.heartFlies[INNER] < 3 then
+			layer = INNER
+		elseif #playerData.heartFlies[MIDDLE] < 9 then
+			layer = MIDDLE
+		elseif #playerData.heartFlies[OUTER] < 12 then
+			layer = OUTER
+		else
+			
+		end
 
-    if layer then
-        heartFly = DukeHelpers.SpawnHeartFly(player, fly.heartFlySubType, layer)
-        table.insert(playerData.heartFlies[layer], heartFly.InitSeed)
-    end
+		if layer then
+			local heartFly = DukeHelpers.SpawnHeartFly(player, fly.heartFlySubType, layer)
+			table.insert(heartFlies, heartFly)
+			table.insert(playerData.heartFlies[layer], heartFly.InitSeed)
+		end
+	end
 
-	return heartFly
+	return heartFlies
 end
 
 function DukeHelpers.RemoveHeartFly(heartFly)
@@ -131,5 +136,7 @@ function DukeHelpers.RemoveHeartFly(heartFly)
 end
 
 function DukeHelpers.GetAttackFlySubTypeBySubType(subType)
-    return DukeHelpers.ATTACK_FLY_STARTING_SUBTYPE + subType
+	if subType then
+    	return DukeHelpers.ATTACK_FLY_STARTING_SUBTYPE + subType
+	end
 end
