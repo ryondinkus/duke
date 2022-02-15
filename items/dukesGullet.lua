@@ -14,7 +14,7 @@ local WikiDescription = "Poops and shits everywhere."--helper.GenerateEncycloped
 local function MC_USE_ITEM(_, type, rng, p)
     if DukeHelpers.IsDuke(p) then
         local fliesData = p:GetData().heartFlies
-        if fliesData and #fliesData > 0 then
+        if fliesData and DukeHelpers.Find(fliesData, function(f) return DukeHelpers.GetFlyByHeartSubType(f.subType).canAttack end) then
             for i = #fliesData, 1, -1 do
                 local fly = fliesData[i]
                 local f = DukeHelpers.GetEntityByInitSeed(fly.initSeed)
