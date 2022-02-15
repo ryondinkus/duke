@@ -1,10 +1,6 @@
 local key = "FLY_BONE"
-local spritesheet = "gfx/familiars/bone_heart_fly.png"
-local canAttack = true
 local subType = HeartSubType.HEART_BONE
 local attackFlySubType = DukeHelpers.GetAttackFlySubTypeBySubType(subType)
-local fliesCount = 1
-local weight = 1
 
 local function ATTACK_FLY_MC_FAMILIAR_UPDATE_ATTACK(_, f)
 	if f.SubType == attackFlySubType then
@@ -50,11 +46,12 @@ end
 
 return {
     key = key,
-    spritesheet = spritesheet,
-    canAttack = canAttack,
+    spritesheet = "gfx/familiars/bone_heart_fly.png",
+    canAttack = true,
     subType = subType,
-    fliesCount = fliesCount,
-	weight = weight,
+    fliesCount = 1,
+	weight = 1,
+    sfx = SoundEffect.SOUND_BONE_HEART,
     callbacks = {
         {
             ModCallbacks.MC_FAMILIAR_UPDATE,

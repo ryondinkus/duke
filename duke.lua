@@ -21,13 +21,18 @@ dukeMod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, function(_, pickup, co
 	local p = collider:ToPlayer()
 
 	if p and DukeHelpers.IsDuke(p) and (pickup.Price <= 0 or p:GetNumCoins() >= pickup.Price) then
+    local sfx = SoundEffect.SOUND_BOSS2_BUBBLES
 		if pickup.SubType == HeartSubType.HEART_BLENDED then
 			DukeHelpers.AddHeartFly(p, DukeHelpers.Flies.FLY_RED, 1)
 			DukeHelpers.AddHeartFly(p, DukeHelpers.Flies.FLY_SOUL, 1)
 		else
-			DukeHelpers.AddHeartFly(p, DukeHelpers.GetFlyByPickupSubType(pickup.SubType))
+			local flyToSpawn = DukeHelpers.GetFlyByPickupSubType(pickup.SubType)
+			if flyToSpawn.sfx then
+				sfx = flyToSpawn.sfx
+			end
+			DukeHelpers.AddHeartFly(p, flyToSpawn)
 		end
-
+		DukeHelpers.sfx:Play(sfx)
 		pickup:Remove()
 
 		if pickup.Price > 0 then

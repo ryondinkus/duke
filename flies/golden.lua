@@ -1,10 +1,6 @@
 local key = "FLY_GOLDEN"
-local spritesheet = "gfx/familiars/gold_heart_fly.png"
-local canAttack = true
 local subType = HeartSubType.HEART_GOLDEN
 local attackFlySubType = DukeHelpers.GetAttackFlySubTypeBySubType(subType)
-local fliesCount = 1
-local weight = 1
 
 local function ATTACK_FLY_MC_PRE_FAMILIAR_COLLISION(_, f, e)
 	if f.SubType == attackFlySubType then
@@ -32,11 +28,12 @@ end
 
 return {
     key = key,
-    spritesheet = spritesheet,
-    canAttack = canAttack,
+    spritesheet = "gfx/familiars/gold_heart_fly.png",
+    canAttack = true,
     subType = subType,
-    fliesCount = fliesCount,
-	weight = weight,
+    fliesCount = 1,
+	weight = 1,
+    sfx = SoundEffect.SOUND_GOLD_HEART,
     callbacks = {
         {
             ModCallbacks.MC_PRE_FAMILIAR_COLLISION,

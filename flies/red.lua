@@ -1,16 +1,12 @@
 local key = "FLY_RED"
-local spritesheet = "gfx/familiars/red_heart_fly.png"
-local canAttack = true
 local subType = HeartSubType.HEART_FULL
 local attackFlySubType = DukeHelpers.GetAttackFlySubTypeBySubType(subType)
-local fliesCount = 2
-local weight = 2
 
 return {
     key = key,
-    spritesheet = spritesheet,
-    canAttack = canAttack,
+    spritesheet = "gfx/familiars/red_heart_fly.png",
+    canAttack = true,
     subType = subType,
-    fliesCount = fliesCount,
-	weight = weight,
+    fliesCount = 2,
+	weight = 2
 }

@@ -1,9 +1,6 @@
 local key = "FLY_BROKEN"
-local spritesheet = "gfx/familiars/broken_heart_fly.png"
-local canAttack = false
 local subType = 13 -- Not a valid heart pickup
 local attackFlySubType = DukeHelpers.GetAttackFlySubTypeBySubType(subType)
-local fliesCount = 2
 
 local function HEART_FLY_MC_FAMILIAR_UPDATE_ATTACK(_, f)
 	if f.SubType == subType then
@@ -14,10 +11,10 @@ end
 
 return {
     key = key,
-    spritesheet = spritesheet,
-    canAttack = canAttack,
+    spritesheet = "gfx/familiars/broken_heart_fly.png",
+    canAttack = false,
     subType = subType,
-    fliesCount = fliesCount,
+    fliesCount = 2,
     callbacks = {
 		{
             ModCallbacks.MC_FAMILIAR_UPDATE,
