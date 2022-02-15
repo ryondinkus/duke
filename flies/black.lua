@@ -8,7 +8,15 @@ local fliesCount = 2
 local function ATTACK_FLY_MC_FAMILIAR_UPDATE_ATTACK(_, f)
 	if f.SubType == attackFlySubType then
 		if f.FrameCount == 6 then
-			f.CollisionDamage = f.CollisionDamage * 1.5
+			f.CollisionDamage = f.CollisionDamage * 1.3
+		end
+	end
+end
+
+local function ATTACK_FLY_MC_PRE_FAMILIAR_COLLISION(_, f, e)
+	if f.SubType == attackFlySubType then
+		if e:ToNPC() and not e:HasEntityFlags(EntityFlag.FLAG_CHARM) then
+			e:AddFear(EntityRef(f), 150)
 		end
 	end
 end
