@@ -23,6 +23,9 @@ local function MC_USE_ITEM(_, type, rng, p)
                     DukeHelpers.RemoveHeartFly(f)
                 end
             end
+            DukeHelpers.sfx:Play(SoundEffect.SOUND_WHEEZY_COUGH, 1, 0)
+            local effect = Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.POOF01, 0, p.Position, Vector.Zero, nil)
+            effect.Color = Color(0,0,0,1)
         else
             DukeHelpers.ForEachEntityInRoom(function(entity)
                 if DukeHelpers.IsFlyOfPlayer(entity, p) then
@@ -30,12 +33,9 @@ local function MC_USE_ITEM(_, type, rng, p)
                     entity:Remove()
                 end
             end, EntityType.ENTITY_FAMILIAR, FamiliarVariant.BLUE_FLY)
+            DukeHelpers.sfx:Play(SoundEffect.SOUND_WORM_SPIT, 1, 0)
         end
-
         p:PlayExtraAnimation("DukeBarf")
-        DukeHelpers.sfx:Play(SoundEffect.SOUND_WHEEZY_COUGH, 1, 0)
-        local effect = Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.POOF01, 0, p.Position, Vector.Zero, nil)
-        effect.Color = Color(0,0,0,1)
         return false
     end
 end
