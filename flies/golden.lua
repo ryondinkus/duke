@@ -4,6 +4,7 @@ local canAttack = true
 local subType = HeartSubType.HEART_GOLDEN
 local attackFlySubType = DukeHelpers.GetAttackFlySubTypeBySubType(subType)
 local fliesCount = 1
+local weight = 1
 
 local function ATTACK_FLY_MC_PRE_FAMILIAR_COLLISION(_, f, e)
 	if f.SubType == attackFlySubType then
@@ -35,6 +36,7 @@ return {
     canAttack = canAttack,
     subType = subType,
     fliesCount = fliesCount,
+	weight = weight,
     callbacks = {
         {
             ModCallbacks.MC_PRE_FAMILIAR_COLLISION,

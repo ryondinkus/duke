@@ -19,3 +19,30 @@ include("helpers/flies")
 -- Initialize player and flies
 include("flies")
 include("duke")
+
+local items = {
+	include("items/dukesGullet")
+}
+
+for _, item in pairs(items) do
+    if item.callbacks then
+        for _, callback in pairs(item.callbacks) do
+            dukeMod:AddCallback(table.unpack(callback))
+        end
+    end
+
+	-- helper.AddExternalItemDescriptionItem(item)
+
+	-- if Encyclopedia and item.WikiDescription then
+	-- 	Encyclopedia.AddItem({
+	-- 		Class = "Loot Deck",
+	-- 		ID = item.Id,
+	-- 		WikiDesc = item.WikiDescription,
+	-- 		ModName = "Loot Deck"
+	-- 	})
+	-- end
+
+	-- if AnimatedItemsAPI then
+	-- 	AnimatedItemsAPI:SetAnimationForCollectible(item.Id, "items/collectibles/animated/".. item.Tag .. "Animated.anm2")
+	-- end
+end
