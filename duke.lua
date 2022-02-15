@@ -16,7 +16,7 @@ end, CacheFlag.CACHE_FLYING)
 dukeMod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, function(_, pickup, collider)
 	local p = collider:ToPlayer()
 
-	if p and DukeHelpers.IsDuke(p) then
+	if p and DukeHelpers.IsDuke(p) and (pickup.Price <= 0 or p:GetNumCoins() >= pickup.Price) then
 		if pickup.SubType == HeartSubType.HEART_BLENDED then
 			DukeHelpers.AddHeartFly(p, DukeHelpers.Flies.FLY_RED, 1)
 			DukeHelpers.AddHeartFly(p, DukeHelpers.Flies.FLY_SOUL, 1)
@@ -25,6 +25,11 @@ dukeMod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, function(_, pickup, co
 		end
 		
 		pickup:Remove()
+
+		if pickup.Price > 0 then
+			p:AddCoins(-pickup.Price)
+		end
+
 		return true
 	end
 end, PickupVariant.PICKUP_HEART)
