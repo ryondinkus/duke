@@ -4,11 +4,13 @@ local canAttack = true
 local subType = HeartSubType.HEART_FULL
 local attackFlySubType = DukeHelpers.GetAttackFlySubTypeBySubType(subType)
 local fliesCount = 2
+local weight = 2
 
 return {
     key = key,
     spritesheet = spritesheet,
     canAttack = canAttack,
     subType = subType,
-    fliesCount = fliesCount
+    fliesCount = fliesCount,
+	weight = weight,
 }

@@ -113,10 +113,14 @@ function DukeHelpers.CanBecomeAttackFly(fly)
 end
 
 function DukeHelpers.SpawnAttackFly(heartFly)
-    local fly = DukeHelpers.GetFlyByHeartSubType(heartFly.SubType)
-	local attackFly = Isaac.Spawn(EntityType.ENTITY_FAMILIAR, FamiliarVariant.BLUE_FLY, fly.attackFlySubType, heartFly.Position, Vector.Zero, heartFly.SpawnerEntity)
+	return DukeHelpers.SpawnAttackFlyBySubType(heartFly.SubType, heartFly.Position, heartFly.SpawnerEntity)
+end
+
+function DukeHelpers.SpawnAttackFlyBySubType(subType, position, spawnerEntity)
+    local fly = DukeHelpers.GetFlyByHeartSubType(subType)
+	local attackFly = Isaac.Spawn(EntityType.ENTITY_FAMILIAR, FamiliarVariant.BLUE_FLY, fly.attackFlySubType, position, Vector.Zero, spawnerEntity)
 	local sprite = attackFly:GetSprite()
-	sprite:ReplaceSpritesheet(0, DukeHelpers.GetFlySpritesheet(heartFly.SubType))
+	sprite:ReplaceSpritesheet(0, DukeHelpers.GetFlySpritesheet(subType))
 	sprite:LoadGraphics()
 	sprite:Play("Attack", true)
 	attackFly:ClearEntityFlags(EntityFlag.FLAG_APPEAR)
@@ -143,4 +147,50 @@ function DukeHelpers.GetAttackFlySubTypeBySubType(subType)
 	if subType then
     	return DukeHelpers.ATTACK_FLY_STARTING_SUBTYPE + subType
 	end
+end
+
+function DukeHelpers.GetWeightedFly(rng)
+	if not rng then
+		rng = DukeHelpers.rng
+	end
+
+    local flies = {}
+    for _, fly in pairs(DukeHelpers.Flies) do
+        if fly.weight then
+			table.insert(flies, fly)
+		end
+    end
+
+    if DukeHelpers.LengthOfTable(flies) > 0 then
+        local csum = 0
+        local outcome = flies[1]
+        for _, fly in pairs(flies) do
+            local weight = fly.weight
+            local r = rng:RandomInt(csum + weight)
+
+            if r >= csum then
+                outcome = fly
+            end
+            csum = csum + weight
+        end
+        return outcome
+    end
+end
+
+function DukeHelpers.IsFlyOfPlayer(fly, player)
+	if fly.SpawnerEntity and fly.SpawnerEntity.InitSeed == player.InitSeed then
+		if fly.Variant == FamiliarVariant.BLUE_FLY then
+			local attackFlySubTypes = DukeHelpers.Map(DukeHelpers.Flies, function(f) return f.attackFlySubType end)
+			return not not DukeHelpers.Find(attackFlySubTypes, function(subType)
+				return subType == fly.SubType
+			end)
+		elseif fly.Variant == DukeHelpers.FLY_VARIANT then
+			local heartFlySubTypes = DukeHelpers.Map(DukeHelpers.Flies, function(f) return f.heartFlySubType end)
+			return not not DukeHelpers.Find(heartFlySubTypes, function(subType)
+				return subType == fly.SubType
+			end)
+		end
+	end
+
+	return false
 end

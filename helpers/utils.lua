@@ -110,3 +110,11 @@ function DukeHelpers.Find(t, func)
         end
     end
 end
+
+function DukeHelpers.LengthOfTable(t)
+    local num = 0
+    for _ in pairs(t) do
+        num = num + 1
+    end
+    return num
+end

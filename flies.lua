@@ -43,7 +43,6 @@ end, DukeHelpers.FLY_VARIANT)
 dukeMod:AddCallback(ModCallbacks.MC_PRE_FAMILIAR_COLLISION, function(_, f, e)
 	if e.Type == EntityType.ENTITY_PROJECTILE and not e:ToProjectile():HasProjectileFlags(ProjectileFlags.CANT_HIT_PLAYER) then
 		if f.SubType ~= DukeHelpers.FLY_BROKEN then
-			print("woof")
 			e:Die()
 		end
 		local data = f:GetData()
@@ -82,7 +81,8 @@ for _, fly in pairs(flies) do
         pickupSubType = fly.subType,
         heartFlySubType = fly.subType,
         attackFlySubType = DukeHelpers.GetAttackFlySubTypeBySubType(fly.subType),
-    	fliesCount = fly.fliesCount
+    	fliesCount = fly.fliesCount,
+		weight = fly.weight
     }
 
 	if fly.useFly then
