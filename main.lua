@@ -20,11 +20,11 @@ include("helpers/flies")
 include("flies")
 include("duke")
 
-local items = {
-	include("items/dukesGullet")
+DukeHelpers.Items = {
+	dukesGullet = include("items/dukesGullet")
 }
 
-for _, item in pairs(items) do
+for _, item in pairs(DukeHelpers.Items) do
     if item.callbacks then
         for _, callback in pairs(item.callbacks) do
             dukeMod:AddCallback(table.unpack(callback))

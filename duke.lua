@@ -2,6 +2,9 @@
 dukeMod:AddCallback(ModCallbacks.MC_POST_GAME_STARTED, function()
 	DukeHelpers.ForEachDuke(function(p)
 		DukeHelpers.AddHeartFly(p, DukeHelpers.Flies.FLY_RED, 3)
+		local sprite = p:GetSprite()
+		sprite:Load("gfx/characters/duke.anm2", true)
+		p:SetPocketActiveItem(DukeHelpers.Items.dukesGullet.Id)
 	end)
 end)
 
@@ -23,7 +26,7 @@ dukeMod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, function(_, pickup, co
 		else
 			DukeHelpers.AddHeartFly(p, DukeHelpers.GetFlyByPickupSubType(pickup.SubType))
 		end
-		
+
 		pickup:Remove()
 		return true
 	end
