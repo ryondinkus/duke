@@ -82,7 +82,8 @@ for _, fly in pairs(flies) do
         heartFlySubType = fly.subType,
         attackFlySubType = DukeHelpers.GetAttackFlySubTypeBySubType(fly.subType),
     	fliesCount = fly.fliesCount,
-		weight = fly.weight
+		weight = fly.weight,
+		sfx = fly.sfx
     }
 
 	if fly.useFly then

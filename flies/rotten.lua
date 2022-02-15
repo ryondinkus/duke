@@ -1,10 +1,6 @@
 local key = "FLY_ROTTEN"
-local spritesheet = "gfx/familiars/rotten_heart_fly.png"
-local canAttack = true
 local subType = HeartSubType.HEART_ROTTEN
 local attackFlySubType = DukeHelpers.GetAttackFlySubTypeBySubType(subType)
-local fliesCount = 1
-local weight = 1
 
 local function ATTACK_FLY_MC_PRE_FAMILIAR_COLLISION(_, f, e)
 	if f.SubType == attackFlySubType then
@@ -28,8 +24,8 @@ local function HEART_FLY_PRE_SPAWN_CLEAN_AWARD()
         and entity.Variant == DukeHelpers.FLY_VARIANT
         and entity.SubType == subType then
             for _ = 1,2 do
-                local entity = Isaac.Spawn(EntityType.ENTITY_FAMILIAR, FamiliarVariant.BLUE_FLY, 0, entity.Position, Vector.Zero, nil)
-                entity:ClearEntityFlags(EntityFlag.FLAG_APPEAR)
+                local spawnedEntity = Isaac.Spawn(EntityType.ENTITY_FAMILIAR, FamiliarVariant.BLUE_FLY, 0, entity.Position, Vector.Zero, nil)
+                spawnedEntity:ClearEntityFlags(EntityFlag.FLAG_APPEAR)
             end
         end
     end
@@ -37,11 +33,12 @@ end
 
 return {
     key = key,
-    spritesheet = spritesheet,
-    canAttack = canAttack,
+    spritesheet = "gfx/familiars/rotten_heart_fly.png",
+    canAttack = true,
     subType = subType,
-    fliesCount = fliesCount,
-	weight = weight,
+    fliesCount = 1,
+	weight = 1,
+    sfx = SoundEffect.SOUND_ROTTEN_HEART,
     callbacks = {
         {
             ModCallbacks.MC_PRE_FAMILIAR_COLLISION,
