@@ -176,3 +176,21 @@ function DukeHelpers.GetWeightedFly(rng)
         return outcome
     end
 end
+
+function DukeHelpers.IsFlyOfPlayer(fly, player)
+	if fly.SpawnerEntity and fly.SpawnerEntity.InitSeed == player.InitSeed then
+		if fly.Variant == FamiliarVariant.BLUE_FLY then
+			local attackFlySubTypes = DukeHelpers.Map(DukeHelpers.Flies, function(f) return f.attackFlySubType end)
+			return not not DukeHelpers.Find(attackFlySubTypes, function(subType)
+				return subType == fly.SubType
+			end)
+		elseif fly.Variant == DukeHelpers.FLY_VARIANT then
+			local heartFlySubTypes = DukeHelpers.Map(DukeHelpers.Flies, function(f) return f.heartFlySubType end)
+			return not not DukeHelpers.Find(heartFlySubTypes, function(subType)
+				return subType == fly.SubType
+			end)
+		end
+	end
+
+	return false
+end

@@ -1,10 +1,16 @@
 <items gfxroot="gfx/items/" version="1" deathanm2="gfx/death items.anm2">
-  <active name="Duke's Gullet"
-      description="Shit and fart and cummmmmmmmmmm!"
+  <active name="DUKE'S GULLET"
+      description="Full of flies"
       gfx="dukes_gullet.png"
-      maxcharges="6"
+      maxcharges="1"
       tags="offensive"
-      id="0"
-      quality="4"
-  />\
+      quality="3"
+  />
+  <active name="Duke's Gullet"
+      description="Full of flies"
+      gfx="dukes_gullet.png"
+      maxcharges="0"
+      tags="offensive hidden"
+      quality="0"
+  />
 </items>

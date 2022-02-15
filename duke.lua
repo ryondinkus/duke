@@ -2,6 +2,10 @@
 dukeMod:AddCallback(ModCallbacks.MC_POST_GAME_STARTED, function()
 	DukeHelpers.ForEachDuke(function(p)
 		DukeHelpers.AddHeartFly(p, DukeHelpers.Flies.FLY_RED, 3)
+		local sprite = p:GetSprite()
+		sprite:Load("gfx/characters/duke.anm2", true)
+		p:SetPocketActiveItem(DukeHelpers.Items.dukesGullet.Id)
+		Game():GetItemPool():RemoveCollectible(DukeHelpers.Items.othersGullet.Id)
 	end)
 end)
 
@@ -16,8 +20,8 @@ end, CacheFlag.CACHE_FLYING)
 dukeMod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, function(_, pickup, collider)
 	local p = collider:ToPlayer()
 
-	if p and DukeHelpers.IsDuke(p) then
-		local sfx = SoundEffect.SOUND_BOSS2_BUBBLES
+	if p and DukeHelpers.IsDuke(p) and (pickup.Price <= 0 or p:GetNumCoins() >= pickup.Price) then
+    local sfx = SoundEffect.SOUND_BOSS2_BUBBLES
 		if pickup.SubType == HeartSubType.HEART_BLENDED then
 			DukeHelpers.AddHeartFly(p, DukeHelpers.Flies.FLY_RED, 1)
 			DukeHelpers.AddHeartFly(p, DukeHelpers.Flies.FLY_SOUL, 1)
@@ -28,10 +32,13 @@ dukeMod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, function(_, pickup, co
 			end
 			DukeHelpers.AddHeartFly(p, flyToSpawn)
 		end
-
 		DukeHelpers.sfx:Play(sfx)
-		
 		pickup:Remove()
+
+		if pickup.Price > 0 then
+			p:AddCoins(-pickup.Price)
+		end
+
 		return true
 	end
 end, PickupVariant.PICKUP_HEART)

@@ -14,8 +14,7 @@ local WikiDescription = "Poops and shits everywhere."--helper.GenerateEncycloped
 local function MC_USE_ITEM(_, type, rng, p)
     if DukeHelpers.IsDuke(p) then
         local fliesData = p:GetData().heartFlies
-
-        if fliesData then
+        if fliesData and #fliesData > 0 then
             for i = #fliesData, 1, -1 do
                 local fly = fliesData[i]
                 local f = DukeHelpers.GetEntityByInitSeed(fly.initSeed)
@@ -24,14 +23,21 @@ local function MC_USE_ITEM(_, type, rng, p)
                     DukeHelpers.RemoveHeartFly(f)
                 end
             end
+            DukeHelpers.sfx:Play(SoundEffect.SOUND_WHEEZY_COUGH, 1, 0)
+            local effect = Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.POOF01, 0, p.Position, Vector.Zero, nil)
+            effect.Color = Color(0,0,0,1)
+        else
+            DukeHelpers.ForEachEntityInRoom(function(entity)
+                if DukeHelpers.IsFlyOfPlayer(entity, p) then
+                    DukeHelpers.AddHeartFly(p, DukeHelpers.GetFlyByAttackSubType(entity.SubType), 1)
+                    entity:Remove()
+                end
+            end, EntityType.ENTITY_FAMILIAR, FamiliarVariant.BLUE_FLY)
+            DukeHelpers.sfx:Play(SoundEffect.SOUND_WORM_SPIT, 1, 0)
         end
-    else
-        for _= 1, 2 do
-            local flyToSpawn = DukeHelpers.GetWeightedFly(rng)
-            DukeHelpers.SpawnAttackFlyBySubType(flyToSpawn.heartFlySubType, p.Position, p)
-        end
+        p:PlayExtraAnimation("DukeBarf")
+        return false
     end
-    return true
 end
 
 return {

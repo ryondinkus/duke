@@ -49,9 +49,9 @@ dukeMod:AddCallback(ModCallbacks.MC_PRE_FAMILIAR_COLLISION, function(_, f, e)
 		if DukeHelpers.CanBecomeAttackFly(f) then
 			if not data.hitPoints or data.hitPoints <= 1 then
 				local fly = DukeHelpers.SpawnAttackFly(f)
-				local data = fly:GetData()
-				data.attacker = e.SpawnerEntity
-				data.hitPoints = nil
+				local flyData = fly:GetData()
+				flyData.attacker = e.SpawnerEntity
+				flyData.hitPoints = nil
 				DukeHelpers.RemoveHeartFly(f)
 			elseif data.hitPoints and data.hitPoints > 1 then
 				data.hitPoints = data.hitPoints - 1
