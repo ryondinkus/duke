@@ -15,7 +15,7 @@ local function MC_USE_ITEM(_, type, rng, p)
     if DukeHelpers.IsDuke(p) then
         local fliesData = p:GetData().heartFlies
 
-        if fliesData then
+        if fliesData and #fliesData > 0 then
             for i = #fliesData, 1, -1 do
                 local fly = fliesData[i]
                 local f = DukeHelpers.GetEntityByInitSeed(fly.initSeed)
@@ -24,6 +24,13 @@ local function MC_USE_ITEM(_, type, rng, p)
                     DukeHelpers.RemoveHeartFly(f)
                 end
             end
+        else
+            DukeHelpers.ForEachEntityInRoom(function(entity)
+                if DukeHelpers.IsFlyOfPlayer(entity, p) then
+                    DukeHelpers.AddHeartFly(p, DukeHelpers.GetFlyByAttackSubType(entity.SubType), 1)
+                    entity:Remove()
+                end
+            end, EntityType.ENTITY_FAMILIAR, FamiliarVariant.BLUE_FLY)
         end
 
         p:PlayExtraAnimation("DukeBarf")
