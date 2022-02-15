@@ -5,6 +5,7 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_GAME_STARTED, function()
 		local sprite = p:GetSprite()
 		sprite:Load("gfx/characters/duke.anm2", true)
 		p:SetPocketActiveItem(DukeHelpers.Items.dukesGullet.Id)
+		Game():GetItemPool():RemoveCollectible(DukeHelpers.Items.othersGullet.Id)
 	end)
 end)
 

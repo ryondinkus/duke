@@ -14,7 +14,6 @@ local WikiDescription = "Poops and shits everywhere."--helper.GenerateEncycloped
 local function MC_USE_ITEM(_, type, rng, p)
     if DukeHelpers.IsDuke(p) then
         local fliesData = p:GetData().heartFlies
-
         if fliesData and #fliesData > 0 then
             for i = #fliesData, 1, -1 do
                 local fly = fliesData[i]
@@ -38,12 +37,6 @@ local function MC_USE_ITEM(_, type, rng, p)
         local effect = Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.POOF01, 0, p.Position, Vector.Zero, nil)
         effect.Color = Color(0,0,0,1)
         return false
-    else
-        for _= 1, 2 do
-            local flyToSpawn = DukeHelpers.GetWeightedFly(rng)
-            DukeHelpers.SpawnAttackFlyBySubType(flyToSpawn.heartFlySubType, p.Position, p)
-        end
-        return true
     end
 end
 

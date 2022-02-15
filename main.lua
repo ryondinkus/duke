@@ -21,7 +21,8 @@ include("flies")
 include("duke")
 
 DukeHelpers.Items = {
-	dukesGullet = include("items/dukesGullet")
+	dukesGullet = include("items/dukesGullet"),
+	othersGullet = include("items/othersGullet")
 }
 
 for _, item in pairs(DukeHelpers.Items) do
