@@ -3,7 +3,8 @@ dukeMod = RegisterMod("Duke", 1)
 DukeHelpers = {
 	DUKE_ID = Isaac.GetPlayerTypeByName("Duke"),
 	rng = RNG(),
-	sfx = SFXManager()
+	sfx = SFXManager(),
+	PRICE_OFFSET = -50
 }
 
 -- Sets the RNG seed for the run
@@ -23,6 +24,35 @@ include("duke")
 DukeHelpers.Items = {
 	dukesGullet = include("items/dukesGullet"),
 	othersGullet = include("items/othersGullet")
+}
+
+-- Initialize prices
+DukeHelpers.Prices = {
+	PRICE_ONE_HEART = {
+		price = DukeHelpers.PRICE_OFFSET + PickupPrice.PRICE_ONE_HEART,
+		flies = {
+			[DukeHelpers.Flies.FLY_RED.heartFlySubType] = 4
+		}
+	},
+	PRICE_TWO_HEARTS = {
+		price = DukeHelpers.PRICE_OFFSET + PickupPrice.PRICE_TWO_HEARTS,
+		flies = {
+			[DukeHelpers.Flies.FLY_RED.heartFlySubType] = 8
+		}
+	},
+	PRICE_THREE_SOULHEARTS = {
+		price = DukeHelpers.PRICE_OFFSET + PickupPrice.PRICE_THREE_SOULHEARTS,
+		flies = {
+			[DukeHelpers.Flies.FLY_SOUL.heartFlySubType] = 6
+		}
+	},
+	PRICE_ONE_HEART_AND_TWO_SOULHEARTS = {
+		price = DukeHelpers.PRICE_OFFSET + PickupPrice.PRICE_ONE_HEART_AND_TWO_SOULHEARTS,
+		flies = {
+			[DukeHelpers.Flies.FLY_RED.heartFlySubType] = 4,
+			[DukeHelpers.Flies.FLY_SOUL.heartFlySubType] = 4
+		}
+	},
 }
 
 for _, item in pairs(DukeHelpers.Items) do

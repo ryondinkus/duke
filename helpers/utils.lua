@@ -84,6 +84,12 @@ function DukeHelpers.IsDuke(player)
     return player:GetPlayerType() == DukeHelpers.DUKE_ID
 end
 
+function DukeHelpers.HasDuke()
+    local found = false
+    DukeHelpers.ForEachDuke(function() found = true end)
+    return found
+end
+
 function DukeHelpers.Map(t, func)
     local mapped = {}
     for k, v in pairs(t) do

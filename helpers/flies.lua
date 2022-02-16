@@ -128,15 +128,17 @@ function DukeHelpers.SpawnAttackFlyBySubType(subType, position, spawnerEntity)
 end
 
 function DukeHelpers.RemoveHeartFly(heartFly)
-	local p = heartFly.SpawnerEntity
-	if p then
-		local playerData = p:GetData()
-		if playerData.heartFlies then
-			for i, fly in pairs(playerData.heartFlies) do
-				if fly.initSeed == heartFly.InitSeed then
-					table.remove(playerData.heartFlies, i)
-					heartFly:Remove()
-					return
+	if heartFly then
+		local p = heartFly.SpawnerEntity
+		if p then
+			local playerData = p:GetData()
+			if playerData.heartFlies then
+				for i, fly in pairs(playerData.heartFlies) do
+					if fly.initSeed == heartFly.InitSeed then
+						table.remove(playerData.heartFlies, i)
+						heartFly:Remove()
+						return
+					end
 				end
 			end
 		end

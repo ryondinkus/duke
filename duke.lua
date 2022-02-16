@@ -21,7 +21,7 @@ dukeMod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, function(_, pickup, co
 	local p = collider:ToPlayer()
 
 	if p and DukeHelpers.IsDuke(p) and (pickup.Price <= 0 or p:GetNumCoins() >= pickup.Price) then
-    local sfx = SoundEffect.SOUND_BOSS2_BUBBLES
+    	local sfx = SoundEffect.SOUND_BOSS2_BUBBLES
 		if pickup.SubType == HeartSubType.HEART_BLENDED then
 			DukeHelpers.AddHeartFly(p, DukeHelpers.Flies.FLY_RED, 1)
 			DukeHelpers.AddHeartFly(p, DukeHelpers.Flies.FLY_SOUL, 1)
@@ -42,6 +42,60 @@ dukeMod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, function(_, pickup, co
 		return true
 	end
 end, PickupVariant.PICKUP_HEART)
+
+dukeMod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, function(_, pickup, collider)
+	local p = collider:ToPlayer()
+	if p then
+		local heartPrice = DukeHelpers.Find(DukeHelpers.Prices, function(v) return v.price == pickup.Price end)
+		if heartPrice then
+			if DukeHelpers.IsDuke(p) then
+				local fliesData = p:GetData().heartFlies
+				local hasEnough = true
+				for subType, count in pairs(heartPrice.flies) do
+					if DukeHelpers.CountByProperties(fliesData, { subType = subType }) < count then
+						hasEnough = false
+						break
+					end
+				end
+
+				if hasEnough then
+					for subType, count in pairs(heartPrice.flies) do
+						local layer = DukeHelpers.OUTER
+						for _ = 1, count do
+							local foundFly
+
+							while not foundFly do
+								foundFly = DukeHelpers.Find(fliesData, function(fly)
+									return fly.subType == subType and fly.layer == layer
+								end)
+
+								if not foundFly then
+									layer = layer - 1
+								end
+							end
+
+							DukeHelpers.RemoveHeartFly(DukeHelpers.GetEntityByInitSeed(foundFly.initSeed))
+						end
+					end
+
+					return nil
+				end
+
+				return true
+			else
+
+			end
+		end
+	end
+end)
+
+dukeMod:AddCallback(ModCallbacks.MC_POST_PICKUP_RENDER, function(_, pickup)
+	local heartPrice = DukeHelpers.Find(DukeHelpers.Prices, function(v) return v.price == pickup.Price end)
+	if heartPrice then
+		local pos = Isaac.WorldToScreen(pickup.Position)
+		Isaac.RenderText(tostring(heartPrice.price), pos.X, pos.Y, 1, 1, 1, 1)
+	end
+end)
 
 -- Adds flies when the player's health changes
 dukeMod:AddCallback(ModCallbacks.MC_POST_PEFFECT_UPDATE, function(_, p)
@@ -88,3 +142,10 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_PEFFECT_UPDATE, function(_, p)
 		DukeHelpers.AddHeartFly(p, DukeHelpers.Flies.FLY_SOUL)
 	end
 end, DukeHelpers.DUKE_ID)
+
+dukeMod:AddCallback(ModCallbacks.MC_POST_PICKUP_UPDATE, function(_, pickup)
+	if DukeHelpers.HasDuke() and pickup.FrameCount == 2 and pickup.Price < 0 and pickup.Price >= PickupPrice.PRICE_ONE_HEART_AND_TWO_SOULHEARTS then
+		pickup.AutoUpdatePrice = false
+		pickup.Price = pickup.Price + DukeHelpers.PRICE_OFFSET
+	end
+end)
