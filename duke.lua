@@ -45,46 +45,48 @@ end, PickupVariant.PICKUP_HEART)
 
 dukeMod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, function(_, pickup, collider)
 	local p = collider:ToPlayer()
-	if p then
-		local heartPrice = DukeHelpers.Find(DukeHelpers.Prices, function(v) return v.price == pickup.Price end)
-		if heartPrice then
-			if DukeHelpers.IsDuke(p) then
-				local fliesData = p:GetData().heartFlies
-				local hasEnough = true
-				for subType, count in pairs(heartPrice.flies) do
-					if DukeHelpers.CountByProperties(fliesData, { subType = subType }) < count then
-						hasEnough = false
-						break
-					end
+	if p and DukeHelpers.IsDuke(p) and DukeHelpers.IsFlyPrice(pickup.Price) then
+		local heartPrice = DukeHelpers.GetDukeDevilDealPrice(pickup)
+		local fliesData = p:GetData().heartFlies
+
+		local playerFlyCounts = DukeHelpers.GetFlyCounts()[tostring(p.InitSeed)]
+		if playerFlyCounts.RED < heartPrice.RED or playerFlyCounts.SOUL < heartPrice.SOUL then
+			return true
+		end
+
+		local layer = DukeHelpers.OUTER
+		for _ = 1, heartPrice.RED do
+			local foundFly
+
+			while not foundFly do
+				foundFly = DukeHelpers.Find(fliesData, function(fly)
+					return (fly.subType == DukeHelpers.Flies.FLY_RED.heartFlySubType or fly.subType == DukeHelpers.Flies.FLY_BONE.heartFlySubType) and fly.layer == layer
+				end)
+
+				if not foundFly then
+					layer = layer - 1
 				end
-
-				if hasEnough then
-					for subType, count in pairs(heartPrice.flies) do
-						local layer = DukeHelpers.OUTER
-						for _ = 1, count do
-							local foundFly
-
-							while not foundFly do
-								foundFly = DukeHelpers.Find(fliesData, function(fly)
-									return fly.subType == subType and fly.layer == layer
-								end)
-
-								if not foundFly then
-									layer = layer - 1
-								end
-							end
-
-							DukeHelpers.RemoveHeartFly(DukeHelpers.GetEntityByInitSeed(foundFly.initSeed))
-						end
-					end
-
-					return nil
-				end
-
-				return true
-			else
-
 			end
+
+			DukeHelpers.RemoveHeartFly(DukeHelpers.GetEntityByInitSeed(foundFly.initSeed))
+		end
+
+		layer = DukeHelpers.OUTER
+
+		for _ = 1, heartPrice.SOUL do
+			local foundFly
+
+			while not foundFly do
+				foundFly = DukeHelpers.Find(fliesData, function(fly)
+					return fly.subType == DukeHelpers.Flies.FLY_SOUL.heartFlySubType and fly.layer == layer
+				end)
+
+				if not foundFly then
+					layer = layer - 1
+				end
+			end
+
+			DukeHelpers.RemoveHeartFly(DukeHelpers.GetEntityByInitSeed(foundFly.initSeed))
 		end
 	end
 end)
@@ -161,7 +163,7 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_PICKUP_UPDATE, function(_, pickup)
 		if closestPlayer and DukeHelpers.IsDuke(closestPlayer) then
 			pickup:GetData().showFliesPrice = true
 			pickup.AutoUpdatePrice = false
-			pickup.Price = pickup.Price + DukeHelpers.PRICE_OFFSET
+			pickup.Price = (pickup.Price % DukeHelpers.PRICE_OFFSET) + DukeHelpers.PRICE_OFFSET
 		else
 			pickup:GetData().showFliesPrice = nil
 			if not pickup.AutoUpdatePrice then

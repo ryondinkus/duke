@@ -35,29 +35,16 @@ DukeHelpers.Items = {
 -- Initialize prices
 DukeHelpers.Prices = {
 	PRICE_ONE_HEART = {
-		price = DukeHelpers.PRICE_OFFSET + PickupPrice.PRICE_ONE_HEART,
-		flies = {
-			[DukeHelpers.Flies.FLY_RED.heartFlySubType] = 4
-		}
+		price = DukeHelpers.PRICE_OFFSET + PickupPrice.PRICE_ONE_HEART
 	},
 	PRICE_TWO_HEARTS = {
-		price = DukeHelpers.PRICE_OFFSET + PickupPrice.PRICE_TWO_HEARTS,
-		flies = {
-			[DukeHelpers.Flies.FLY_RED.heartFlySubType] = 8
-		}
+		price = DukeHelpers.PRICE_OFFSET + PickupPrice.PRICE_TWO_HEARTS
 	},
 	PRICE_THREE_SOULHEARTS = {
-		price = DukeHelpers.PRICE_OFFSET + PickupPrice.PRICE_THREE_SOULHEARTS,
-		flies = {
-			[DukeHelpers.Flies.FLY_SOUL.heartFlySubType] = 6
-		}
+		price = DukeHelpers.PRICE_OFFSET + PickupPrice.PRICE_THREE_SOULHEARTS
 	},
 	PRICE_ONE_HEART_AND_TWO_SOULHEARTS = {
-		price = DukeHelpers.PRICE_OFFSET + PickupPrice.PRICE_ONE_HEART_AND_TWO_SOULHEARTS,
-		flies = {
-			[DukeHelpers.Flies.FLY_RED.heartFlySubType] = 4,
-			[DukeHelpers.Flies.FLY_SOUL.heartFlySubType] = 4
-		}
+		price = DukeHelpers.PRICE_OFFSET + PickupPrice.PRICE_ONE_HEART_AND_TWO_SOULHEARTS
 	},
 }
 
