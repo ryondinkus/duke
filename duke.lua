@@ -1,12 +1,8 @@
--- Adds flies on startup
-dukeMod:AddCallback(ModCallbacks.MC_POST_GAME_STARTED, function()
-	DukeHelpers.ForEachDuke(function(p)
-		DukeHelpers.AddHeartFly(p, DukeHelpers.Flies.FLY_RED, 3)
-		local sprite = p:GetSprite()
-		sprite:Load("gfx/characters/duke.anm2", true)
-		p:SetPocketActiveItem(DukeHelpers.Items.dukesGullet.Id)
-		Game():GetItemPool():RemoveCollectible(DukeHelpers.Items.othersGullet.Id)
-	end)
+-- Add flies on player startup
+dukeMod:AddCallback(ModCallbacks.MC_POST_PLAYER_UPDATE, function(_, player)
+	if dukeMod.global.isInitialized and DukeHelpers.IsDuke(player) and not DukeHelpers.GetDukeData(player) then
+		DukeHelpers.AddStartupFlies(player)
+	end
 end)
 
 -- Allows the player to fly
@@ -47,7 +43,7 @@ dukeMod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, function(_, pickup, co
 	local p = collider:ToPlayer()
 	if p and DukeHelpers.IsDuke(p) and DukeHelpers.IsFlyPrice(pickup.Price) then
 		local heartPrice = DukeHelpers.GetDukeDevilDealPrice(pickup)
-		local fliesData = p:GetData().heartFlies
+		local fliesData = DukeHelpers.GetDukeData(p).heartFlies
 
 		local playerFlyCounts = DukeHelpers.GetFlyCounts()[tostring(p.InitSeed)]
 		if playerFlyCounts.RED < heartPrice.RED or playerFlyCounts.SOUL < heartPrice.SOUL then
@@ -172,3 +168,13 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_PICKUP_UPDATE, function(_, pickup)
 		end
 	end
 end)
+
+function DukeHelpers.InitializeDuke(p)
+	if DukeHelpers.IsDuke(p) and not DukeHelpers.GetDukeData(p) then
+		p:GetData().duke = {
+			heartFlies = {}
+		}
+
+		return p:GetData().duke
+	end
+end

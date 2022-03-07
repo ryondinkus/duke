@@ -19,12 +19,12 @@ DukeHelpers.Flies = {}
 function DukeHelpers.SpawnHeartFly(player, subType, layer)
 	local fly = Isaac.Spawn(EntityType.ENTITY_FAMILIAR, DukeHelpers.FLY_VARIANT, subType or 1, player.Position, Vector.Zero, player)
 	fly:GetData().layer = layer
-	fly:ToFamiliar():AddToOrbit(DukeHelpers.ATTACK_FLY_STARTING_SUBTYPE + layer)
+	DukeHelpers.PositionHeartFly(fly, layer)
 	return fly
 end
 
 function DukeHelpers.AddHeartFly(player, fly, specificAmount)
-	local playerData = player:GetData()
+	local playerData = DukeHelpers.GetDukeData(player)
 	if not playerData.heartFlies then
 		playerData.heartFlies = {}
 	end
@@ -64,9 +64,13 @@ function DukeHelpers.AddHeartFly(player, fly, specificAmount)
 	return heartFlies
 end
 
+function DukeHelpers.PositionHeartFly(fly, layer)
+	fly:ToFamiliar():AddToOrbit(DukeHelpers.ATTACK_FLY_STARTING_SUBTYPE + layer)
+end
+
 function DukeHelpers.RemoveHeartFly(heartFly)
 	local p = heartFly.SpawnerEntity
-	local playerData = p:GetData()
+	local playerData = DukeHelpers.GetDukeData(p)
 	if playerData.heartFlies then
 		for i, fly in pairs(playerData.heartFlies) do
 			if fly.initSeed == heartFly.InitSeed then
@@ -131,7 +135,7 @@ function DukeHelpers.RemoveHeartFly(heartFly)
 	if heartFly then
 		local p = heartFly.SpawnerEntity
 		if p then
-			local playerData = p:GetData()
+			local playerData = DukeHelpers.GetDukeData(p)
 			if playerData.heartFlies then
 				for i, fly in pairs(playerData.heartFlies) do
 					if fly.initSeed == heartFly.InitSeed then
@@ -195,4 +199,13 @@ function DukeHelpers.IsFlyOfPlayer(fly, player)
 	end
 
 	return false
+end
+
+function DukeHelpers.AddStartupFlies(p)
+	DukeHelpers.InitializeDuke(p)
+	DukeHelpers.AddHeartFly(p, DukeHelpers.Flies.FLY_RED, 3)
+	local sprite = p:GetSprite()
+	sprite:Load("gfx/characters/duke.anm2", true)
+	p:SetPocketActiveItem(DukeHelpers.Items.dukesGullet.Id)
+	Game():GetItemPool():RemoveCollectible(DukeHelpers.Items.othersGullet.Id)
 end

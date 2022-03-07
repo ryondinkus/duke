@@ -74,7 +74,7 @@ end
 function DukeHelpers.ForEachDuke(callback, collectibleId)
     DukeHelpers.ForEachPlayer(function(player, playerData)
         if DukeHelpers.IsDuke(player) then
-            callback(player, playerData)
+            callback(player, DukeHelpers.GetDukeData(player))
         end
     end, collectibleId)
 end
@@ -159,8 +159,8 @@ function DukeHelpers.GetDukeDevilDealPrice(collectible)
 end
 
 function DukeHelpers.CalculateDevilDealPrice(collectible, counts)
-    if not DukeHelpers.floorDevilDealChance then
-        DukeHelpers.floorDevilDealChance = DukeHelpers.rng:RandomInt(99)
+    if not dukeMod.global.floorDevilDealChance then
+        dukeMod.global.floorDevilDealChance = DukeHelpers.rng:RandomInt(99)
     end
     
     local devilPrice = Isaac.GetItemConfig():GetCollectible(collectible.SubType).DevilPrice
@@ -172,7 +172,7 @@ function DukeHelpers.CalculateDevilDealPrice(collectible, counts)
 
         if canAffordReds and canAffordSouls then
             -- 4 red flies or 6 soul flies for Duke
-            if DukeHelpers.floorDevilDealChance < 75 then
+            if dukeMod.global.floorDevilDealChance < 75 then
                 return {
                     RED = 4,
                     SOUL = 0
@@ -201,7 +201,7 @@ function DukeHelpers.CalculateDevilDealPrice(collectible, counts)
 
         if canAffordReds and canAffordSouls then
             -- 8 red flies or 6 soul flies for Duke
-            if DukeHelpers.floorDevilDealChance < 75 then
+            if dukeMod.global.floorDevilDealChance < 75 then
                 return {
                     RED = 4,
                     SOUL = 0
@@ -232,4 +232,13 @@ function DukeHelpers.CalculateDevilDealPrice(collectible, counts)
             }
         end
     end
+end
+
+function DukeHelpers.IsArray(t)
+    local i = 0
+    for _ in pairs(t) do
+        i = i + 1
+        if t[i] == nil then return false end
+    end
+    return true
 end
