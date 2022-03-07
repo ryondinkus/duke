@@ -72,9 +72,17 @@ function DukeHelpers.ForEachEntityInRoom(callback, entityType, entityVariant, en
 end
 
 function DukeHelpers.ForEachDuke(callback, collectibleId)
+    DukeHelpers.ForEachPlayer(function(player, playerData)
+        if DukeHelpers.IsDuke(player) then
+            callback(player, playerData)
+        end
+    end, collectibleId)
+end
+
+function DukeHelpers.ForEachPlayer(callback, collectibleId)
     for x = 0, Game():GetNumPlayers() - 1 do
         local p = Isaac.GetPlayer(x)
-        if (not collectibleId or (collectibleId and p:HasCollectible(collectibleId))) and DukeHelpers.IsDuke(p) then
+        if (not collectibleId or (collectibleId and p:HasCollectible(collectibleId))) then
             callback(p, p:GetData())
         end
     end
@@ -140,6 +148,10 @@ function DukeHelpers.GetFlyCounts()
     return flyCounts
 end
 
+function DukeHelpers.IsFlyPrice(x)
+    return (x <= PickupPrice.PRICE_ONE_HEART + DukeHelpers.PRICE_OFFSET) and (x >= PickupPrice.PRICE_ONE_HEART_AND_TWO_SOULHEARTS + DukeHelpers.PRICE_OFFSET)
+end
+
 function DukeHelpers.GetDukeDevilDealPrice(collectible)
     local flyCounts = DukeHelpers.GetFlyCounts()
 
@@ -149,6 +161,10 @@ end
 function DukeHelpers.CalculateDevilDealPrice(collectible, counts, redMult)
     if not redMult then
         redMult = 1
+    end
+
+    if not DukeHelpers.floorDevilDealChance then
+        DukeHelpers.floorDevilDealChance = DukeHelpers.rng:RandomInt(99)
     end
     
     local devilPrice = Isaac.GetItemConfig():GetCollectible(collectible.SubType).DevilPrice
@@ -161,7 +177,7 @@ function DukeHelpers.CalculateDevilDealPrice(collectible, counts, redMult)
         if canAffordReds and canAffordSouls then
             -- chance of 1 red heart or 3 soul hearts
             -- 4 red flies or 6 soul flies for Duke
-            if DukeHelpers.rng:RandomInt(99) < 75 then
+            if DukeHelpers.floorDevilDealChance < 75 then
                 return {
                     RED = 2 * redMult,
                     SOUL = 0
@@ -193,7 +209,7 @@ function DukeHelpers.CalculateDevilDealPrice(collectible, counts, redMult)
         if canAffordReds and canAffordSouls then
             -- chance of 2 red hearts or 3 soul hearts
             -- 8 red flies or 6 soul flies for Duke
-            if DukeHelpers.rng:RandomInt(99) < 75 then
+            if DukeHelpers.floorDevilDealChance < 75 then
                 return {
                     RED = 4 * redMult,
                     SOUL = 0

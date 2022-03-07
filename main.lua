@@ -4,13 +4,19 @@ DukeHelpers = {
 	DUKE_ID = Isaac.GetPlayerTypeByName("Duke"),
 	rng = RNG(),
 	sfx = SFXManager(),
-	PRICE_OFFSET = -50
+	PRICE_OFFSET = -50,
+	floorDevilDealChance = nil
 }
 
 -- Sets the RNG seed for the run
 dukeMod:AddCallback(ModCallbacks.MC_POST_GAME_STARTED, function()
 	local seeds = Game():GetSeeds()
 	DukeHelpers.rng:SetSeed(seeds:GetStartSeed(), 35)
+end)
+
+-- Resets the floor devil deal randomness on new floor
+dukeMod:AddCallback(ModCallbacks.MC_POST_NEW_LEVEL, function()
+	DukeHelpers.floorDevilDealChance = nil
 end)
 
 -- Helpers

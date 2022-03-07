@@ -91,12 +91,12 @@ end)
 
 dukeMod:AddCallback(ModCallbacks.MC_POST_PICKUP_RENDER, function(_, pickup)
 	local pos = Isaac.WorldToScreen(pickup.Position)
-	Isaac.RenderText(tostring(Isaac.GetItemConfig():GetCollectible(pickup.SubType).DevilPrice), pos.X, pos.Y, 1, 1, 1, 1)
 
-	local devilPrice = DukeHelpers.GetDukeDevilDealPrice(pickup)
-
-	Isaac.RenderText(tostring(devilPrice.RED), pos.X - 20, pos.Y + 15, 1, 0, 0, 1)
-	Isaac.RenderText(tostring(devilPrice.SOUL), pos.X, pos.Y + 15, 0, 0, 1, 1)
+	if pickup:GetData().showFliesPrice then
+		local devilPrice = DukeHelpers.GetDukeDevilDealPrice(pickup)
+		Isaac.RenderText(tostring(devilPrice.RED), pos.X - 12, pos.Y + 10, 1, 0, 0, 1)
+		Isaac.RenderText(tostring(devilPrice.SOUL), pos.X + 6, pos.Y + 10, 0, 0, 1, 1)
+	end
 end)
 
 -- Adds flies when the player's health changes
@@ -146,8 +146,27 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_PEFFECT_UPDATE, function(_, p)
 end, DukeHelpers.DUKE_ID)
 
 dukeMod:AddCallback(ModCallbacks.MC_POST_PICKUP_UPDATE, function(_, pickup)
-	if DukeHelpers.HasDuke() and pickup.FrameCount == 2 and pickup.Price < 0 and pickup.Price >= PickupPrice.PRICE_ONE_HEART_AND_TWO_SOULHEARTS then
-		pickup.AutoUpdatePrice = false
-		pickup.Price = pickup.Price + DukeHelpers.PRICE_OFFSET
+	if DukeHelpers.HasDuke() and pickup.Price < 0 then
+		local closestPlayerDistance = nil
+		local closestPlayer = nil
+
+		DukeHelpers.ForEachPlayer(function(player)
+			local distance = pickup.Position:Distance(player.Position)
+			if not closestPlayer or distance < closestPlayerDistance then
+				closestPlayer = player
+				closestPlayerDistance = distance
+			end
+		end)
+
+		if closestPlayer and DukeHelpers.IsDuke(closestPlayer) then
+			pickup:GetData().showFliesPrice = true
+			pickup.AutoUpdatePrice = false
+			pickup.Price = pickup.Price + DukeHelpers.PRICE_OFFSET
+		else
+			pickup:GetData().showFliesPrice = nil
+			if not pickup.AutoUpdatePrice then
+				pickup.AutoUpdatePrice = true
+			end
+		end
 	end
 end)
