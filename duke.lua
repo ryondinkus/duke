@@ -90,11 +90,13 @@ dukeMod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, function(_, pickup, co
 end)
 
 dukeMod:AddCallback(ModCallbacks.MC_POST_PICKUP_RENDER, function(_, pickup)
-	local heartPrice = DukeHelpers.Find(DukeHelpers.Prices, function(v) return v.price == pickup.Price end)
-	if heartPrice then
-		local pos = Isaac.WorldToScreen(pickup.Position)
-		Isaac.RenderText(tostring(heartPrice.price), pos.X, pos.Y, 1, 1, 1, 1)
-	end
+	local pos = Isaac.WorldToScreen(pickup.Position)
+	Isaac.RenderText(tostring(Isaac.GetItemConfig():GetCollectible(pickup.SubType).DevilPrice), pos.X, pos.Y, 1, 1, 1, 1)
+
+	local devilPrice = DukeHelpers.GetDukeDevilDealPrice(pickup)
+
+	Isaac.RenderText(tostring(devilPrice.RED), pos.X - 20, pos.Y + 15, 1, 0, 0, 1)
+	Isaac.RenderText(tostring(devilPrice.SOUL), pos.X, pos.Y + 15, 0, 0, 1, 1)
 end)
 
 -- Adds flies when the player's health changes

@@ -124,3 +124,107 @@ function DukeHelpers.LengthOfTable(t)
     end
     return num
 end
+
+function DukeHelpers.GetFlyCounts()
+    local flyCounts = {}
+
+    DukeHelpers.ForEachDuke(function(_, dukeData)
+        if dukeData.heartFlies then
+            local flyCount = {}
+            flyCount.RED = DukeHelpers.CountByProperties(dukeData.heartFlies, { subType = DukeHelpers.Flies.FLY_RED.heartFlySubType }) + (DukeHelpers.CountByProperties(dukeData.heartFlies, { subType = DukeHelpers.Flies.FLY_BONE.heartFlySubType }) * 2)
+            flyCount.SOUL = DukeHelpers.CountByProperties(dukeData.heartFlies, { subType = DukeHelpers.Flies.FLY_SOUL.heartFlySubType })
+            table.insert(flyCounts, flyCount)
+        end
+    end)
+
+    return flyCounts
+end
+
+function DukeHelpers.GetDukeDevilDealPrice(collectible)
+    local flyCounts = DukeHelpers.GetFlyCounts()
+
+    return DukeHelpers.CalculateDevilDealPrice(collectible, flyCounts, 2)
+end
+
+function DukeHelpers.CalculateDevilDealPrice(collectible, counts, redMult)
+    if not redMult then
+        redMult = 1
+    end
+    
+    local devilPrice = Isaac.GetItemConfig():GetCollectible(collectible.SubType).DevilPrice
+
+    local canAffordSouls = DukeHelpers.Find(counts, function(player) return player.SOUL >= 6 end)
+
+    if devilPrice == 1 then
+        local canAffordReds = DukeHelpers.Find(counts, function(player) return player.RED >= 2 * redMult end)
+
+        if canAffordReds and canAffordSouls then
+            -- chance of 1 red heart or 3 soul hearts
+            -- 4 red flies or 6 soul flies for Duke
+            if DukeHelpers.rng:RandomInt(99) < 75 then
+                return {
+                    RED = 2 * redMult,
+                    SOUL = 0
+                }
+            else
+                return {
+                    RED = 0,
+                    SOUL = 6
+                }
+            end
+        elseif not canAffordReds and canAffordSouls then
+            -- 3 soul hearts
+            -- 6 soul flies for Duke
+            return {
+                RED = 0,
+                SOUL = 6
+            }
+        else
+            -- 1 red heart
+            -- 4 red flies for Duke
+            return {
+                RED = 2 * redMult,
+                SOUL = 0
+            }
+        end
+    else
+        local canAffordReds = DukeHelpers.Find(counts, function(player) return player.RED >= 4 * redMult end)
+
+        if canAffordReds and canAffordSouls then
+            -- chance of 2 red hearts or 3 soul hearts
+            -- 8 red flies or 6 soul flies for Duke
+            if DukeHelpers.rng:RandomInt(99) < 75 then
+                return {
+                    RED = 4 * redMult,
+                    SOUL = 0
+                }
+            else
+                return {
+                    RED = 0,
+                    SOUL = 6
+                }
+            end
+        elseif DukeHelpers.Find(counts, function(player) return player.RED >= 2 * redMult end) and DukeHelpers.Find(counts, function(player) return player.SOUL >= 4 end) then
+            -- 1 red heart and 2 soul hearts
+            -- 4 red flies and 4 soul flies for Duke
+            return {
+                RED = 2 * redMult,
+                SOUL = 4
+            }
+        elseif not canAffordReds and canAffordSouls then
+            -- 3 soul hearts
+            -- 6 soul flies for Duke
+            return {
+                RED = 0,
+                SOUL = 6
+            }
+        else
+            -- 2 red hearts
+            -- 8 red flies for Duke
+            return {
+                RED = 4 * redMult,
+                SOUL = 0
+            }
+        end
+    end
+end
