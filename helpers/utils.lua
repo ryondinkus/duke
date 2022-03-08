@@ -118,3 +118,37 @@ function DukeHelpers.LengthOfTable(t)
     end
     return num
 end
+
+function DukeHelpers.GetTrueSoulHearts(player)
+    return player:GetSoulHearts() - DukeHelpers.GetBlackHearts(player)
+end
+
+function DukeHelpers.GetBlackHearts(player)
+    local binary = DukeHelpers.IntegerToBinary(player:GetBlackHearts())
+
+    local count = select(2, binary:gsub("1", "")) * 2
+
+    if player:GetSoulHearts() % 2 ~= 0 and binary:sub(-1) == "1" then
+        count = count - 1
+    end
+
+    return count
+end
+
+function DukeHelpers.IntegerToBinary(n)
+	local binNum = ""
+	if n ~= 0 then
+		while n >= 1 do
+			if n % 2 == 0 then
+				binNum = binNum.."0"
+				n = n / 2
+			else
+				binNum = binNum.."1"
+				n = (n-1)/2
+			end
+		end
+	else
+		binNum = "0"
+	end
+	return binNum
+end

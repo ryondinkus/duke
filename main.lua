@@ -3,7 +3,8 @@ dukeMod = RegisterMod("Duke", 1)
 DukeHelpers = {
 	DUKE_ID = Isaac.GetPlayerTypeByName("Duke"),
 	rng = RNG(),
-	sfx = SFXManager()
+	sfx = SFXManager(),
+	MAX_HEALTH = 4
 }
 
 -- Sets the RNG seed for the run

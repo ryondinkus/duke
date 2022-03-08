@@ -30,7 +30,20 @@ dukeMod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, function(_, pickup, co
 			if flyToSpawn.sfx then
 				sfx = flyToSpawn.sfx
 			end
-			DukeHelpers.AddHeartFly(p, flyToSpawn)
+
+			local amount
+			if (pickup.SubType == HeartSubType.HEART_SOUL or pickup.SubType == HeartSubType.HEART_HALF_SOUL or pickup.SubType == HeartSubType.HEART_BLACK) and DukeHelpers.GetTrueSoulHearts(p) < DukeHelpers.MAX_HEALTH then
+				local heartSlots = 2
+
+				if pickup.SubType == HeartSubType.HEART_HALF_SOUL then
+					heartSlots = 1
+				end
+
+				local heartsToGive = math.min(DukeHelpers.MAX_HEALTH - DukeHelpers.GetTrueSoulHearts(p), heartSlots)
+				p:AddSoulHearts(heartsToGive)
+				amount = flyToSpawn.fliesCount - heartsToGive
+			end
+			DukeHelpers.AddHeartFly(p, flyToSpawn, amount)
 		end
 		DukeHelpers.sfx:Play(sfx)
 		pickup:Remove()
@@ -45,46 +58,55 @@ end, PickupVariant.PICKUP_HEART)
 
 -- Adds flies when the player's health changes
 dukeMod:AddCallback(ModCallbacks.MC_POST_PEFFECT_UPDATE, function(_, p)
-	while p:GetBlackHearts() > 0 do
-		p:AddBlackHearts(-1)
-		DukeHelpers.AddHeartFly(p, DukeHelpers.Flies.FLY_BLACK)
+	if DukeHelpers.GetBlackHearts(p) > 0 then
+		local totalSoulHearts = DukeHelpers.GetTrueSoulHearts(p)
+		DukeHelpers.AddHeartFly(p, DukeHelpers.Flies.FLY_BLACK, DukeHelpers.GetBlackHearts(p))
+		p:AddSoulHearts(-p:GetSoulHearts())
+		p:AddSoulHearts(totalSoulHearts)
 	end
-	while p:GetBoneHearts() > 0 do
-		p:AddBoneHearts(-1)
-		DukeHelpers.AddHeartFly(p, DukeHelpers.Flies.FLY_BONE)
+
+	if p:GetBoneHearts() > 0 then
+		DukeHelpers.AddHeartFly(p, DukeHelpers.Flies.FLY_BONE, p:GetBoneHearts())
+		p:AddBoneHearts(-p:GetBoneHearts())
 	end
+	
 	if p:GetBrokenHearts() > 0 then
-		while p:GetBrokenHearts() > 0 do
-			p:AddBrokenHearts(-1)
-			DukeHelpers.AddHeartFly(p, DukeHelpers.Flies.FLY_BROKEN)
-		end
-		if p:GetSoulHearts() < 4 then
-			p:AddSoulHearts(4)
+		DukeHelpers.AddHeartFly(p, DukeHelpers.Flies.FLY_BROKEN, p:GetBrokenHearts())
+		p:AddBrokenHearts(-p:GetBrokenHearts())
+		if DukeHelpers.GetTrueSoulHearts(p) < DukeHelpers.MAX_HEALTH then
+			p:AddSoulHearts(DukeHelpers.MAX_HEALTH)
 		end
 	end
-	while p:GetEternalHearts() > 0 do
-		p:AddEternalHearts(-1)
-		DukeHelpers.AddHeartFly(p, DukeHelpers.Flies.FLY_ETERNAL)
+
+	if p:GetEternalHearts() > 0 then
+		DukeHelpers.AddHeartFly(p, DukeHelpers.Flies.FLY_ETERNAL, p:GetEternalHearts())
+		p:AddEternalHearts(-p:GetEternalHearts())
 	end
-	while p:GetGoldenHearts() > 0 do
-		p:AddGoldenHearts(-1)
-		DukeHelpers.AddHeartFly(p, DukeHelpers.Flies.FLY_GOLDEN)
+
+	if p:GetGoldenHearts() > 0 then
+		DukeHelpers.AddHeartFly(p, DukeHelpers.Flies.FLY_GOLDEN, p:GetGoldenHearts())
+		p:AddGoldenHearts(-p:GetGoldenHearts())
 	end
-	while p:GetHearts() > 0 do
-		p:AddHearts(-1)
-		DukeHelpers.AddHeartFly(p, DukeHelpers.Flies.FLY_RED)
+
+	if p:GetHearts() > 0 then
+		DukeHelpers.AddHeartFly(p, DukeHelpers.Flies.FLY_RED, p:GetHearts())
+		p:AddHearts(-p:GetHearts())
 	end
-	while p:GetMaxHearts() > 0 do
-		p:AddMaxHearts(-1, true)
-		DukeHelpers.AddHeartFly(p, DukeHelpers.Flies.FLY_RED)
+
+	if p:GetMaxHearts() > 0 then
+		DukeHelpers.AddHeartFly(p, DukeHelpers.Flies.FLY_RED, p:GetMaxHearts())
+		p:AddMaxHearts(-p:GetMaxHearts(), true)
 	end
-	while p:GetRottenHearts() > 0 do
-		p:AddRottenHearts(-1)
-		p:AddHearts(1)
-		DukeHelpers.AddHeartFly(p, DukeHelpers.Flies.FLY_ROTTEN)
+
+	if p:GetRottenHearts() > 0 then
+		DukeHelpers.AddHeartFly(p, DukeHelpers.Flies.FLY_ROTTEN, p:GetRottenHearts())
+		p:AddRottenHearts(-p:GetRottenHearts())
+		p:AddHearts(p:GetRottenHearts())
 	end
-	while p:GetSoulHearts() > 4 do
-		p:AddSoulHearts(-1)
-		DukeHelpers.AddHeartFly(p, DukeHelpers.Flies.FLY_SOUL)
+
+	if DukeHelpers.GetTrueSoulHearts(p) > DukeHelpers.MAX_HEALTH then
+		local fliesToSpawn = DukeHelpers.GetTrueSoulHearts(p) - DukeHelpers.MAX_HEALTH
+		DukeHelpers.AddHeartFly(p, DukeHelpers.Flies.FLY_SOUL, fliesToSpawn)
+		p:AddSoulHearts(-fliesToSpawn)
 	end
 end, DukeHelpers.DUKE_ID)
