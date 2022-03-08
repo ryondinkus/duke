@@ -1,12 +1,9 @@
--- Adds flies on startup
-dukeMod:AddCallback(ModCallbacks.MC_POST_GAME_STARTED, function()
-	DukeHelpers.ForEachDuke(function(p)
-		DukeHelpers.AddHeartFly(p, DukeHelpers.Flies.FLY_RED, 3)
-		local sprite = p:GetSprite()
-		sprite:Load("gfx/characters/duke.anm2", true)
-		p:SetPocketActiveItem(DukeHelpers.Items.dukesGullet.Id)
-		Game():GetItemPool():RemoveCollectible(DukeHelpers.Items.othersGullet.Id)
-	end)
+-- Add flies on player startup
+dukeMod:AddCallback(ModCallbacks.MC_POST_PLAYER_UPDATE, function(_, player)
+	if dukeMod.global.isInitialized and DukeHelpers.IsDuke(player) and not DukeHelpers.GetDukeData(player) then
+		DukeHelpers.InitializeDuke(player)
+		DukeHelpers.AddStartupFlies(player)
+	end
 end)
 
 -- Allows the player to fly
@@ -21,7 +18,7 @@ dukeMod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, function(_, pickup, co
 	local p = collider:ToPlayer()
 
 	if p and DukeHelpers.IsDuke(p) and (pickup.Price <= 0 or p:GetNumCoins() >= pickup.Price) then
-    local sfx = SoundEffect.SOUND_BOSS2_BUBBLES
+    	local sfx = SoundEffect.SOUND_BOSS2_BUBBLES
 		if pickup.SubType == HeartSubType.HEART_BLENDED then
 			DukeHelpers.AddHeartFly(p, DukeHelpers.Flies.FLY_RED, 1)
 			DukeHelpers.AddHeartFly(p, DukeHelpers.Flies.FLY_SOUL, 1)
@@ -55,6 +52,77 @@ dukeMod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, function(_, pickup, co
 		return true
 	end
 end, PickupVariant.PICKUP_HEART)
+
+dukeMod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, function(_, pickup, collider)
+	local p = collider:ToPlayer()
+	if p and DukeHelpers.IsDuke(p) and DukeHelpers.IsFlyPrice(pickup.Price) then
+		local heartPrice = DukeHelpers.GetDukeDevilDealPrice(pickup)
+		local fliesData = DukeHelpers.GetDukeData(p).heartFlies
+
+		local playerFlyCounts = DukeHelpers.GetFlyCounts()[tostring(p.InitSeed)]
+		if playerFlyCounts.RED < heartPrice.RED or playerFlyCounts.SOUL < heartPrice.SOUL then
+			return true
+		end
+
+		local layer = DukeHelpers.OUTER
+		local shouldSkip = false
+
+		for _ = 1, heartPrice.RED do
+			if shouldSkip then
+				shouldSkip = false
+				goto skip
+			end
+
+			local foundFly
+
+			while not foundFly do
+				foundFly = DukeHelpers.Find(fliesData, function(fly)
+					return (fly.subType == DukeHelpers.Flies.FLY_RED.heartFlySubType or fly.subType == DukeHelpers.Flies.FLY_BONE.heartFlySubType or fly.subType == DukeHelpers.Flies.FLY_ROTTEN.heartFlySubType) and fly.layer == layer
+				end)
+
+				if not foundFly then
+					layer = layer - 1
+				else
+					if foundFly.subType == DukeHelpers.Flies.FLY_BONE.heartFlySubType or foundFly.subType == DukeHelpers.Flies.FLY_ROTTEN.heartFlySubType then
+						shouldSkip = true
+					end
+				end
+			end
+
+			DukeHelpers.RemoveHeartFly(DukeHelpers.GetEntityByInitSeed(foundFly.initSeed))
+
+			::skip::
+		end
+
+		layer = DukeHelpers.OUTER
+
+		for _ = 1, heartPrice.SOUL do
+			local foundFly
+
+			while not foundFly do
+				foundFly = DukeHelpers.Find(fliesData, function(fly)
+					return (fly.subType == DukeHelpers.Flies.FLY_SOUL.heartFlySubType or fly.subType == DukeHelpers.Flies.FLY_BLACK.heartFlySubType) and fly.layer == layer
+				end)
+
+				if not foundFly then
+					layer = layer - 1
+				end
+			end
+
+			DukeHelpers.RemoveHeartFly(DukeHelpers.GetEntityByInitSeed(foundFly.initSeed))
+		end
+	end
+end)
+
+dukeMod:AddCallback(ModCallbacks.MC_POST_PICKUP_RENDER, function(_, pickup)
+	local pos = Isaac.WorldToScreen(pickup.Position)
+
+	if pickup:GetData().showFliesPrice then
+		local devilPrice = DukeHelpers.GetDukeDevilDealPrice(pickup)
+		Isaac.RenderText(tostring(devilPrice.RED), pos.X - 12, pos.Y + 10, 1, 0, 0, 1)
+		Isaac.RenderText(tostring(devilPrice.SOUL), pos.X + 6, pos.Y + 10, 0, 0, 1, 1)
+	end
+end)
 
 -- Adds flies when the player's health changes
 dukeMod:AddCallback(ModCallbacks.MC_POST_PEFFECT_UPDATE, function(_, p)
@@ -110,3 +178,48 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_PEFFECT_UPDATE, function(_, p)
 		p:AddSoulHearts(-fliesToSpawn)
 	end
 end, DukeHelpers.DUKE_ID)
+
+dukeMod:AddCallback(ModCallbacks.MC_POST_PICKUP_UPDATE, function(_, pickup)
+	if DukeHelpers.HasDuke() and pickup.Price < 0 then
+		local closestPlayerDistance = nil
+		local closestPlayer = nil
+
+		DukeHelpers.ForEachPlayer(function(player)
+			local distance = pickup.Position:Distance(player.Position)
+			if not closestPlayer or distance < closestPlayerDistance then
+				closestPlayer = player
+				closestPlayerDistance = distance
+			end
+		end)
+
+		if closestPlayer and DukeHelpers.IsDuke(closestPlayer) then
+			pickup:GetData().showFliesPrice = true
+			pickup.AutoUpdatePrice = false
+			pickup.Price = (pickup.Price % DukeHelpers.PRICE_OFFSET) + DukeHelpers.PRICE_OFFSET
+		else
+			pickup:GetData().showFliesPrice = nil
+			if not pickup.AutoUpdatePrice then
+				pickup.AutoUpdatePrice = true
+			end
+		end
+	end
+end)
+
+function DukeHelpers.InitializeDukeData(p)
+	if DukeHelpers.IsDuke(p) and not DukeHelpers.GetDukeData(p) then
+		p:GetData().duke = {
+			heartFlies = {}
+		}
+
+		return p:GetData().duke
+	end
+end
+
+function DukeHelpers.InitializeDuke(p, continued)
+	local sprite = p:GetSprite()
+	sprite:Load("gfx/characters/duke.anm2", true)
+	if not continued then
+		p:SetPocketActiveItem(DukeHelpers.Items.dukesGullet.Id)
+		Game():GetItemPool():RemoveCollectible(DukeHelpers.Items.othersGullet.Id)
+	end
+end

@@ -72,9 +72,17 @@ function DukeHelpers.ForEachEntityInRoom(callback, entityType, entityVariant, en
 end
 
 function DukeHelpers.ForEachDuke(callback, collectibleId)
+    DukeHelpers.ForEachPlayer(function(player, playerData)
+        if DukeHelpers.IsDuke(player) then
+            callback(player, DukeHelpers.GetDukeData(player))
+        end
+    end, collectibleId)
+end
+
+function DukeHelpers.ForEachPlayer(callback, collectibleId)
     for x = 0, Game():GetNumPlayers() - 1 do
         local p = Isaac.GetPlayer(x)
-        if (not collectibleId or (collectibleId and p:HasCollectible(collectibleId))) and DukeHelpers.IsDuke(p) then
+        if (not collectibleId or (collectibleId and p:HasCollectible(collectibleId))) then
             callback(p, p:GetData())
         end
     end
@@ -82,6 +90,12 @@ end
 
 function DukeHelpers.IsDuke(player)
     return player:GetPlayerType() == DukeHelpers.DUKE_ID
+end
+
+function DukeHelpers.HasDuke()
+    local found = false
+    DukeHelpers.ForEachDuke(function() found = true end)
+    return found
 end
 
 function DukeHelpers.Map(t, func)
@@ -117,6 +131,116 @@ function DukeHelpers.LengthOfTable(t)
         num = num + 1
     end
     return num
+end
+
+function DukeHelpers.GetFlyCounts()
+    local flyCounts = {}
+
+    DukeHelpers.ForEachDuke(function(duke, dukeData)
+        if dukeData.heartFlies then
+            local flyCount = {}
+            flyCount.RED = DukeHelpers.CountByProperties(dukeData.heartFlies, { subType = DukeHelpers.Flies.FLY_RED.heartFlySubType }) + (DukeHelpers.CountByProperties(dukeData.heartFlies, { subType = DukeHelpers.Flies.FLY_BONE.heartFlySubType }) * 2) + (DukeHelpers.CountByProperties(dukeData.heartFlies, { subType = DukeHelpers.Flies.FLY_ROTTEN.heartFlySubType }) * 2)
+            flyCount.SOUL = DukeHelpers.CountByProperties(dukeData.heartFlies, { subType = DukeHelpers.Flies.FLY_SOUL.heartFlySubType }) + DukeHelpers.CountByProperties(dukeData.heartFlies, { subType = DukeHelpers.Flies.FLY_BLACK.heartFlySubType })
+            flyCounts[tostring(duke.InitSeed)] = flyCount
+        end
+    end)
+
+    return flyCounts
+end
+
+function DukeHelpers.IsFlyPrice(x)
+    return x <= PickupPrice.PRICE_ONE_HEART + DukeHelpers.PRICE_OFFSET and x >= PickupPrice.PRICE_ONE_HEART_AND_TWO_SOULHEARTS + DukeHelpers.PRICE_OFFSET
+end
+
+function DukeHelpers.GetDukeDevilDealPrice(collectible)
+    local flyCounts = DukeHelpers.GetFlyCounts()
+
+    return DukeHelpers.CalculateDevilDealPrice(collectible, flyCounts)
+end
+
+function DukeHelpers.CalculateDevilDealPrice(collectible, counts)
+    if not dukeMod.global.floorDevilDealChance then
+        dukeMod.global.floorDevilDealChance = DukeHelpers.rng:RandomInt(99)
+    end
+    
+    local devilPrice = Isaac.GetItemConfig():GetCollectible(collectible.SubType).DevilPrice
+
+    local canAffordSouls = DukeHelpers.Find(counts, function(player) return player.SOUL >= 6 end)
+
+    if devilPrice == 1 then
+        local canAffordReds = DukeHelpers.Find(counts, function(player) return player.RED >= 4 end)
+
+        if canAffordReds and canAffordSouls then
+            -- 4 red flies or 6 soul flies for Duke
+            if dukeMod.global.floorDevilDealChance < 75 then
+                return {
+                    RED = 4,
+                    SOUL = 0
+                }
+            else
+                return {
+                    RED = 0,
+                    SOUL = 6
+                }
+            end
+        elseif not canAffordReds and canAffordSouls then
+            -- 6 soul flies for Duke
+            return {
+                RED = 0,
+                SOUL = 6
+            }
+        else
+            -- 4 red flies for Duke
+            return {
+                RED = 4,
+                SOUL = 0
+            }
+        end
+    else
+        local canAffordReds = DukeHelpers.Find(counts, function(player) return player.RED >= 8 end)
+
+        if canAffordReds and canAffordSouls then
+            -- 8 red flies or 6 soul flies for Duke
+            if dukeMod.global.floorDevilDealChance < 75 then
+                return {
+                    RED = 4,
+                    SOUL = 0
+                }
+            else
+                return {
+                    RED = 0,
+                    SOUL = 6
+                }
+            end
+        elseif DukeHelpers.Find(counts, function(player) return player.RED >= 4 end) and DukeHelpers.Find(counts, function(player) return player.SOUL >= 4 end) then
+            -- 4 red flies and 4 soul flies for Duke
+            return {
+                RED = 4,
+                SOUL = 4
+            }
+        elseif not canAffordReds and canAffordSouls then
+            -- 6 soul flies for Duke
+            return {
+                RED = 0,
+                SOUL = 6
+            }
+        else
+            -- 8 red flies for Duke
+            return {
+                RED = 8,
+                SOUL = 0
+            }
+        end
+    end
+end
+
+function DukeHelpers.IsArray(t)
+    local i = 0
+    for _ in pairs(t) do
+        i = i + 1
+        if t[i] == nil then return false end
+    end
+    return true
 end
 
 function DukeHelpers.GetTrueSoulHearts(player)

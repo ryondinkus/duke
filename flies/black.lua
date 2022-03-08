@@ -56,6 +56,11 @@ return {
             ModCallbacks.MC_PRE_FAMILIAR_COLLISION,
             MC_PRE_FAMILIAR_COLLISION,
             DukeHelpers.FLY_VARIANT
-        }
+        },
+		{
+			ModCallbacks.MC_PRE_FAMILIAR_COLLISION,
+			ATTACK_FLY_MC_PRE_FAMILIAR_COLLISION,
+			FamiliarVariant.BLUE_FLY
+		}
     }
 }
