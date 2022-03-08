@@ -23,7 +23,8 @@ DukeHelpers = {
 	DUKE_ID = Isaac.GetPlayerTypeByName("Duke"),
 	rng = RNG(),
 	sfx = SFXManager(),
-	PRICE_OFFSET = -50
+	PRICE_OFFSET = -50,
+	MAX_HEALTH = 4
 }
 
 -- Sets the RNG seed for the run
