@@ -1,6 +1,7 @@
 -- Add flies on player startup
 dukeMod:AddCallback(ModCallbacks.MC_POST_PLAYER_UPDATE, function(_, player)
 	if dukeMod.global.isInitialized and DukeHelpers.IsDuke(player) and not DukeHelpers.GetDukeData(player) then
+		DukeHelpers.InitializeDuke(player)
 		DukeHelpers.AddStartupFlies(player)
 	end
 end)
@@ -182,12 +183,21 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_PICKUP_UPDATE, function(_, pickup)
 	end
 end)
 
-function DukeHelpers.InitializeDuke(p)
+function DukeHelpers.InitializeDukeData(p)
 	if DukeHelpers.IsDuke(p) and not DukeHelpers.GetDukeData(p) then
 		p:GetData().duke = {
 			heartFlies = {}
 		}
 
 		return p:GetData().duke
+	end
+end
+
+function DukeHelpers.InitializeDuke(p, continued)
+	local sprite = p:GetSprite()
+	sprite:Load("gfx/characters/duke.anm2", true)
+	if not continued then
+		p:SetPocketActiveItem(DukeHelpers.Items.dukesGullet.Id)
+		Game():GetItemPool():RemoveCollectible(DukeHelpers.Items.othersGullet.Id)
 	end
 end

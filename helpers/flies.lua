@@ -95,13 +95,11 @@ function DukeHelpers.GetFlyByPickupSubType(subType)
 end
 
 function DukeHelpers.GetFlySpritesheet(subType)
-    local foundFly = DukeHelpers.GetFlyByHeartSubType(subType)
+    local foundFly = DukeHelpers.GetFlyByHeartSubType(subType) or DukeHelpers.GetFlyByAttackSubType(subType)
 
     if foundFly then
         return foundFly.spritesheet
-    else
-        foundFly = DukeHelpers.GetFlyByAttackSubType(subType)
-    end
+	end
 
     return DukeHelpers.Flies.FLY_RED.spritesheet
 end
@@ -120,13 +118,21 @@ function DukeHelpers.SpawnAttackFly(heartFly)
 	return DukeHelpers.SpawnAttackFlyBySubType(heartFly.SubType, heartFly.Position, heartFly.SpawnerEntity)
 end
 
+function DukeHelpers.IsAttackFly(fly)
+	return not not DukeHelpers.Find(DukeHelpers.Flies, function(f) return f.attackFlySubType == fly.SubType end)
+end
+
+function DukeHelpers.InitializeAttackFly(fly)
+	local sprite = fly:GetSprite()
+	sprite:ReplaceSpritesheet(0, DukeHelpers.GetFlySpritesheet(fly.SubType))
+	sprite:LoadGraphics()
+	sprite:Play("Attack", true)
+end
+
 function DukeHelpers.SpawnAttackFlyBySubType(subType, position, spawnerEntity)
     local fly = DukeHelpers.GetFlyByHeartSubType(subType)
 	local attackFly = Isaac.Spawn(EntityType.ENTITY_FAMILIAR, FamiliarVariant.BLUE_FLY, fly.attackFlySubType, position, Vector.Zero, spawnerEntity)
-	local sprite = attackFly:GetSprite()
-	sprite:ReplaceSpritesheet(0, DukeHelpers.GetFlySpritesheet(subType))
-	sprite:LoadGraphics()
-	sprite:Play("Attack", true)
+	DukeHelpers.InitializeAttackFly(attackFly)
 	attackFly:ClearEntityFlags(EntityFlag.FLAG_APPEAR)
 	return attackFly
 end
@@ -202,10 +208,6 @@ function DukeHelpers.IsFlyOfPlayer(fly, player)
 end
 
 function DukeHelpers.AddStartupFlies(p)
-	DukeHelpers.InitializeDuke(p)
+	DukeHelpers.InitializeDukeData(p)
 	DukeHelpers.AddHeartFly(p, DukeHelpers.Flies.FLY_RED, 3)
-	local sprite = p:GetSprite()
-	sprite:Load("gfx/characters/duke.anm2", true)
-	p:SetPocketActiveItem(DukeHelpers.Items.dukesGullet.Id)
-	Game():GetItemPool():RemoveCollectible(DukeHelpers.Items.othersGullet.Id)
 end

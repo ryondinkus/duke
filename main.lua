@@ -51,22 +51,6 @@ DukeHelpers.Items = {
 	othersGullet = include("items/othersGullet")
 }
 
--- Initialize prices
-DukeHelpers.Prices = {
-	PRICE_ONE_HEART = {
-		price = DukeHelpers.PRICE_OFFSET + PickupPrice.PRICE_ONE_HEART
-	},
-	PRICE_TWO_HEARTS = {
-		price = DukeHelpers.PRICE_OFFSET + PickupPrice.PRICE_TWO_HEARTS
-	},
-	PRICE_THREE_SOULHEARTS = {
-		price = DukeHelpers.PRICE_OFFSET + PickupPrice.PRICE_THREE_SOULHEARTS
-	},
-	PRICE_ONE_HEART_AND_TWO_SOULHEARTS = {
-		price = DukeHelpers.PRICE_OFFSET + PickupPrice.PRICE_ONE_HEART_AND_TWO_SOULHEARTS
-	},
-}
-
 for _, item in pairs(DukeHelpers.Items) do
     if item.callbacks then
         for _, callback in pairs(item.callbacks) do
@@ -110,6 +94,10 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_GAME_STARTED, function(_, isContinued)
 				if familiar.Variant == DukeHelpers.FLY_VARIANT then
 					DukeHelpers.PositionHeartFly(familiar, familiar:GetData().layer)
 				end
+
+                if DukeHelpers.IsAttackFly(familiar) then
+                    DukeHelpers.InitializeAttackFly(familiar)
+                end
             end, EntityType.ENTITY_FAMILIAR)
         end
     end
@@ -142,7 +130,8 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_NEW_ROOM, function()
                     local savedPlayerData = data.players[tostring(p.InitSeed)]
                     if savedPlayerData then
 						if DukeHelpers.IsDuke(p) then
-							pData = DukeHelpers.InitializeDuke(p)
+                            DukeHelpers.InitializeDuke(p, true)
+							pData = DukeHelpers.InitializeDukeData(p)
 						end
                         for key, value in pairs(DukeHelpers.RehydrateEntityData(savedPlayerData)) do
                             pData[key] = value
