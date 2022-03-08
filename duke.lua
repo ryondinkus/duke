@@ -51,20 +51,33 @@ dukeMod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, function(_, pickup, co
 		end
 
 		local layer = DukeHelpers.OUTER
+		local shouldSkip = false
+
 		for _ = 1, heartPrice.RED do
+			if shouldSkip then
+				shouldSkip = false
+				goto skip
+			end
+
 			local foundFly
 
 			while not foundFly do
 				foundFly = DukeHelpers.Find(fliesData, function(fly)
-					return (fly.subType == DukeHelpers.Flies.FLY_RED.heartFlySubType or fly.subType == DukeHelpers.Flies.FLY_BONE.heartFlySubType) and fly.layer == layer
+					return (fly.subType == DukeHelpers.Flies.FLY_RED.heartFlySubType or fly.subType == DukeHelpers.Flies.FLY_BONE.heartFlySubType or fly.subType == DukeHelpers.Flies.FLY_ROTTEN.heartFlySubType) and fly.layer == layer
 				end)
 
 				if not foundFly then
 					layer = layer - 1
+				else
+					if foundFly.subType == DukeHelpers.Flies.FLY_BONE.heartFlySubType or foundFly.subType == DukeHelpers.Flies.FLY_ROTTEN.heartFlySubType then
+						shouldSkip = true
+					end
 				end
 			end
 
 			DukeHelpers.RemoveHeartFly(DukeHelpers.GetEntityByInitSeed(foundFly.initSeed))
+
+			::skip::
 		end
 
 		layer = DukeHelpers.OUTER
@@ -74,7 +87,7 @@ dukeMod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, function(_, pickup, co
 
 			while not foundFly do
 				foundFly = DukeHelpers.Find(fliesData, function(fly)
-					return fly.subType == DukeHelpers.Flies.FLY_SOUL.heartFlySubType and fly.layer == layer
+					return (fly.subType == DukeHelpers.Flies.FLY_SOUL.heartFlySubType or fly.subType == DukeHelpers.Flies.FLY_BLACK.heartFlySubType) and fly.layer == layer
 				end)
 
 				if not foundFly then
