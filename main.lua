@@ -171,11 +171,21 @@ end)
 
 local unlocks = include("unlocks/registry")
 
+local function handleUnlock(unlock)
+    if DukeHelpers.HasDuke()
+        and Game():GetLevel():GetStage() == unlock.stage
+        and Game():GetRoom():GetType() == unlock.roomType
+        and (not unlock.difficulty or Game().Difficulty == unlock.difficulty)
+        and not DukeHelpers.Find(dukeMod.unlocks, function(u) return u == unlock.tag end) then
+        CCO.PlayAchievement("gfx/ui/achievements/achievement_"..unlock.tag..".png")
+        dukeMod.unlocks[unlock.tag] = true
+    end
+end
+
 for _, unlock in pairs(unlocks) do
-    dukeMod:AddCallback(ModCallbacks.MC_POST_ENTITY_KILL, function()
-        if Game():GetLevel():GetStage() == unlock.stage and Game():GetRoom():GetType() == unlock.roomType and not DukeHelpers.Find(dukeMod.unlocks, function(u) return u == unlock.tag end) then
-            CCO.PlayAchievement("gfx/ui/achievements/achievement_"..unlock.tag..".png")
-            dukeMod.unlocks[unlock.tag] = true
-        end
-    end, unlock.entityType)
+    if unlock.onClear then
+        dukeMod:AddCallback(ModCallbacks.MC_PRE_SPAWN_CLEAN_AWARD, function() handleUnlock(unlock) end, unlock.entityType)
+    else
+        dukeMod:AddCallback(ModCallbacks.MC_POST_ENTITY_KILL, function() handleUnlock(unlock) end, unlock.entityType)
+    end
 end
