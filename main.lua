@@ -42,6 +42,7 @@ end)
 include("helpers/utils")
 include("helpers/flies")
 include("helpers/data")
+include("helpers/achievements")
 
 -- Initialize player and flies
 include("flies")
@@ -167,3 +168,14 @@ dukeMod:AddCallback(ModCallbacks.MC_PRE_GAME_EXIT, function(_, shouldSave)
     end
     dukeMod.global = table.deepCopy(defaultGlobal)
 end)
+
+local unlocks = include("unlocks/registry")
+
+for _, unlock in pairs(unlocks) do
+    dukeMod:AddCallback(ModCallbacks.MC_POST_ENTITY_KILL, function()
+        if Game():GetLevel():GetStage() == unlock.stage and Game():GetRoom():GetType() == unlock.roomType and not DukeHelpers.Find(dukeMod.unlocks, function(u) return u == unlock.tag end) then
+            CCO.PlayAchievement("gfx/ui/achievements/achievement_"..unlock.tag..".png")
+            dukeMod.unlocks[unlock.tag] = true
+        end
+    end, unlock.entityType)
+end
