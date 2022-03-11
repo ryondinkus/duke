@@ -1,9 +1,5 @@
 local json = include("json")
 
-function DukeHelpers.GetDukeData(p)
-    return p:GetData().duke
-end
-
 function DukeHelpers.SaveData(data)
     dukeMod:SaveData(json.encode(data))
 end

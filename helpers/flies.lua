@@ -208,6 +208,5 @@ function DukeHelpers.IsFlyOfPlayer(fly, player)
 end
 
 function DukeHelpers.AddStartupFlies(p)
-	DukeHelpers.InitializeDukeData(p)
 	DukeHelpers.AddHeartFly(p, DukeHelpers.Flies.FLY_RED, 3)
 end

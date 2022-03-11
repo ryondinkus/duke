@@ -39,6 +39,7 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_NEW_LEVEL, function()
 end)
 
 -- Helpers
+include("helpers/partitions")
 include("helpers/utils")
 include("helpers/flies")
 include("helpers/data")
@@ -56,6 +57,31 @@ DukeHelpers.Items = {
 for _, item in pairs(DukeHelpers.Items) do
     if item.callbacks then
         for _, callback in pairs(item.callbacks) do
+            dukeMod:AddCallback(table.unpack(callback))
+        end
+    end
+
+	-- helper.AddExternalItemDescriptionItem(item)
+
+	-- if Encyclopedia and item.WikiDescription then
+	-- 	Encyclopedia.AddItem({
+	-- 		Class = "Loot Deck",
+	-- 		ID = item.Id,
+	-- 		WikiDesc = item.WikiDescription,
+	-- 		ModName = "Loot Deck"
+	-- 	})
+	-- end
+
+	-- if AnimatedItemsAPI then
+	-- 	AnimatedItemsAPI:SetAnimationForCollectible(item.Id, "items/collectibles/animated/".. item.Tag .. "Animated.anm2")
+	-- end
+end
+
+include("trinkets/registry")
+
+for _, trinket in pairs(DukeHelpers.Trinkets) do
+    if trinket.callbacks then
+        for _, callback in pairs(trinket.callbacks) do
             dukeMod:AddCallback(table.unpack(callback))
         end
     end
@@ -133,7 +159,7 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_NEW_ROOM, function()
                     if savedPlayerData then
 						if DukeHelpers.IsDuke(p) then
                             DukeHelpers.InitializeDuke(p, true)
-							pData = DukeHelpers.InitializeDukeData(p)
+							pData = DukeHelpers.GetDukeData(p)
 						end
                         for key, value in pairs(DukeHelpers.RehydrateEntityData(savedPlayerData)) do
                             pData[key] = value

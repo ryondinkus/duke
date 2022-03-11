@@ -205,14 +205,15 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_PICKUP_UPDATE, function(_, pickup)
 	end
 end)
 
-function DukeHelpers.InitializeDukeData(p)
-	if DukeHelpers.IsDuke(p) and not DukeHelpers.GetDukeData(p) then
-		p:GetData().duke = {
+function DukeHelpers.GetDukeData(p)
+	local data = p:GetData()
+	if not data.duke then
+		data.duke = {
 			heartFlies = {}
 		}
-
-		return p:GetData().duke
 	end
+
+	return data.duke
 end
 
 function DukeHelpers.InitializeDuke(p, continued)
