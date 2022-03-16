@@ -13,4 +13,8 @@
       tags="offensive hidden"
       quality="0"
   />
+  <trinket name="Duke's Tooth"
+      description="Attracts flies"
+      gfx="dukes_tooth.png"
+  />
 </items>

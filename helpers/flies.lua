@@ -161,14 +161,14 @@ function DukeHelpers.GetAttackFlySubTypeBySubType(subType)
 	end
 end
 
-function DukeHelpers.GetWeightedFly(rng)
+function DukeHelpers.GetWeightedFly(rng, attack)
 	if not rng then
 		rng = DukeHelpers.rng
 	end
 
     local flies = {}
     for _, fly in pairs(DukeHelpers.Flies) do
-        if fly.weight then
+        if fly.weight and (not attack or fly.attackFlySubType) then
 			table.insert(flies, fly)
 		end
     end
@@ -208,6 +208,6 @@ function DukeHelpers.IsFlyOfPlayer(fly, player)
 end
 
 function DukeHelpers.AddStartupFlies(p)
-	DukeHelpers.InitializeDukeData(p)
+	print('adding startup flies')
 	DukeHelpers.AddHeartFly(p, DukeHelpers.Flies.FLY_RED, 3)
 end
