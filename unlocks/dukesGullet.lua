@@ -1,6 +1,9 @@
 return {
     tag = "dukesGullet",
-    entityType = EntityType.ENTITY_MONSTRO,
+    entityType = EntityType.ENTITY_ISAAC,
+    entityVariant = 1,
     stage = LevelStage.STAGE1_1,
-    roomType = RoomType.ROOM_BOSS
+    stageTypes = { StageType.STAGETYPE_WOTL },
+    roomType = RoomType.ROOM_BOSS,
+    onClear = true
 }

@@ -4,5 +4,6 @@ return {
     stage = LevelStage.STAGE7_GREED,
     roomType = RoomType.ROOM_BOSS,
     difficulty = Difficulty.DIFFICULTY_GREEDIER,
-    onClear = true
+    onClear = true,
+    alsoUnlock = "tapewormCard"
 }
