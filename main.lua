@@ -197,14 +197,55 @@ end)
 
 local unlocks = include("unlocks/registry")
 
-local function handleUnlock(unlock)
+local function saveUnlock(tag)
+    CCO.PlayAchievement("gfx/ui/achievements/achievement_"..tag..".png")
+    dukeMod.unlocks[tag] = true
+    DukeHelpers.SaveGame()
+end
+
+local function handleUnlock(unlock, entity)
     if DukeHelpers.HasDuke()
         and Game():GetLevel():GetStage() == unlock.stage
         and Game():GetRoom():GetType() == unlock.roomType
+        and (not unlock.stageTypes or DukeHelpers.Find(unlock.stageTypes, function(t) return t == Game():GetLevel():GetStageType() end))
+        and (not unlock.roomShape or Game():GetRoom():GetRoomShape() == unlock.roomShape)
         and (not unlock.difficulty or Game().Difficulty == unlock.difficulty)
-        and not DukeHelpers.Find(dukeMod.unlocks, function(u) return u == unlock.tag end) then
-        CCO.PlayAchievement("gfx/ui/achievements/achievement_"..unlock.tag..".png")
-        dukeMod.unlocks[unlock.tag] = true
+        and (not entity or not unlock.entityVariant or entity.Variant == unlock.entityVariant)
+        and (not entity or not unlock.entitySubType or entity.SubType == unlock.entitySubType)
+        and not DukeHelpers.Find(dukeMod.unlocks, function(_, t) return t == unlock.tag end) then
+        if unlock.alsoUnlock and not DukeHelpers.Find(dukeMod.unlocks, function(_, t) return t == unlock.alsoUnlock end) then
+            local alsoUnlock = DukeHelpers.Find(unlocks, function(u) return u.tag == unlock.alsoUnlock end)
+
+            if alsoUnlock then
+                saveUnlock(alsoUnlock.tag)
+            end
+        end
+
+        saveUnlock(unlock.tag)
+
+        local completeUnlocks = {}
+
+        for _, u in pairs(unlocks) do
+            if u.onceUnlocked then
+                table.insert(completeUnlocks, u)
+            end
+        end
+
+        for _, cu in pairs(completeUnlocks) do
+            if not DukeHelpers.Find(dukeMod.unlocks, function(_, t) return t == cu.tag end) then
+                local shouldUnlock = true
+                for _, u in pairs(cu.onceUnlocked) do
+                    if not DukeHelpers.Find(dukeMod.unlocks, function(_, k) return k == u end) then
+                        shouldUnlock = false
+                        break
+                    end
+                end
+
+                if shouldUnlock then
+                    saveUnlock(cu.tag)
+                end
+            end
+        end
     end
 end
 
@@ -212,6 +253,55 @@ for _, unlock in pairs(unlocks) do
     if unlock.onClear then
         dukeMod:AddCallback(ModCallbacks.MC_PRE_SPAWN_CLEAN_AWARD, function() handleUnlock(unlock) end, unlock.entityType)
     else
-        dukeMod:AddCallback(ModCallbacks.MC_POST_ENTITY_KILL, function() handleUnlock(unlock) end, unlock.entityType)
+        dukeMod:AddCallback(ModCallbacks.MC_POST_ENTITY_KILL, function(_, entity) handleUnlock(unlock, entity) end, unlock.entityType)
     end
 end
+
+Test.RegisterTest("duke", {
+    {
+        action = "RESTART"
+    },
+    {
+        action = "ENABLE_DEBUG_FLAG",
+        flag = 4
+    },
+    {
+        action = "ENABLE_DEBUG_FLAG",
+        flag = 8
+    },
+    {
+        action = "GIVE_ITEM",
+        id = CollectibleType.COLLECTIBLE_SOY_MILK
+    },
+    {
+        action = "EXECUTE_LUA",
+        code = function()
+            for _ = 1, 500 do
+                Isaac.GetPlayer(0):AddCollectible(CollectibleType.COLLECTIBLE_BRIMSTONE)
+            end
+        end
+    },
+    {
+        action = "GIVE_PILL",
+        color = function()
+            return Isaac.AddPillEffectToPool(PillEffect.PILLEFFECT_TEARS_DOWN)
+        end
+    },
+    {
+        action = "REPEAT",
+        times = 50,
+        steps = {
+            {
+                action = "USE_ITEM",
+                id = CollectibleType.COLLECTIBLE_PLACEBO,
+                force = true,
+                async = true
+            }
+        }
+    },
+    {
+        action = "GIVE_ITEM",
+        id = CollectibleType.COLLECTIBLE_DATAMINER,
+        charged = true
+    }
+})
