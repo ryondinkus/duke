@@ -1,7 +1,6 @@
 -- Add flies on player startup
 dukeMod:AddCallback(ModCallbacks.MC_POST_PLAYER_UPDATE, function(_, player)
 	if dukeMod.global.isInitialized and DukeHelpers.IsDuke(player) and not player:GetData().duke then
-		print('initializing duke')
 		DukeHelpers.InitializeDuke(player)
 		DukeHelpers.AddStartupFlies(player)
 	end
@@ -19,37 +18,7 @@ dukeMod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, function(_, pickup, co
 	local p = collider:ToPlayer()
 
 	if p and DukeHelpers.IsDuke(p) and (pickup.Price <= 0 or p:GetNumCoins() >= pickup.Price) then
-    	local sfx = SoundEffect.SOUND_BOSS2_BUBBLES
-		if pickup.SubType == HeartSubType.HEART_BLENDED then
-			DukeHelpers.AddHeartFly(p, DukeHelpers.Flies.FLY_RED, 1)
-			DukeHelpers.AddHeartFly(p, DukeHelpers.Flies.FLY_SOUL, 1)
-		else
-			local flyToSpawn = DukeHelpers.GetFlyByPickupSubType(pickup.SubType)
-			if flyToSpawn.sfx then
-				sfx = flyToSpawn.sfx
-			end
-
-			local amount
-			if (pickup.SubType == HeartSubType.HEART_SOUL or pickup.SubType == HeartSubType.HEART_HALF_SOUL or pickup.SubType == HeartSubType.HEART_BLACK) and DukeHelpers.GetTrueSoulHearts(p) < DukeHelpers.MAX_HEALTH then
-				local heartSlots = 2
-
-				if pickup.SubType == HeartSubType.HEART_HALF_SOUL then
-					heartSlots = 1
-				end
-
-				local heartsToGive = math.min(DukeHelpers.MAX_HEALTH - DukeHelpers.GetTrueSoulHearts(p), heartSlots)
-				p:AddSoulHearts(heartsToGive)
-				amount = flyToSpawn.fliesCount - heartsToGive
-			end
-			DukeHelpers.AddHeartFly(p, flyToSpawn, amount)
-		end
-		DukeHelpers.sfx:Play(sfx)
-		pickup:Remove()
-
-		if pickup.Price > 0 then
-			p:AddCoins(-pickup.Price)
-		end
-
+    	DukeHelpers.SpawnPickupHeartFly(p, pickup)
 		return true
 	end
 end, PickupVariant.PICKUP_HEART)

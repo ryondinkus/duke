@@ -17,4 +17,8 @@
       description="Attracts flies"
       gfx="dukes_tooth.png"
   />
+  <trinket name="Hollow Heart"
+      description="It's hollow. HOLLOW!!"
+      gfx="hollow_heart.png"
+  />
 </items>
