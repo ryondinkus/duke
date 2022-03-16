@@ -15,7 +15,7 @@ local function MC_POST_NEW_ROOM()
     if DukeHelpers.AreEnemiesInRoom() then
         DukeHelpers.ForEachPlayer(function(player)
             if player:HasTrinket(Id) then
-                DukeHelpers.AddHeartFly(player, DukeHelpers.GetWeightedFly(DukeHelpers.rng), 1)
+                DukeHelpers.SpawnAttackFlyBySubType(DukeHelpers.GetWeightedFly(DukeHelpers.rng, true).heartFlySubType, player.Position, player)
             end
         end)
     end
