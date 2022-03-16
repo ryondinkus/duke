@@ -11,5 +11,6 @@ return {
     include("unlocks/shartyMcFly"),
     include("unlocks/superInfestation"),
     include("unlocks/tapewormCard"),
-    include("unlocks/thePrinces")
+    include("unlocks/thePrinces"),
+    include("unlocks/swarmBaby")
 }
