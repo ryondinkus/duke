@@ -13,6 +13,10 @@
       tags="offensive hidden"
       quality="0"
   />
+  <passive name="The Princes"
+      description="Man Princess"
+      gfx="the_princes.png"
+  />
   <trinket name="Duke's Tooth"
       description="Attracts flies"
       gfx="dukes_tooth.png"

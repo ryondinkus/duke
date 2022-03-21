@@ -49,10 +49,7 @@ include("helpers/achievements")
 include("flies")
 include("duke")
 
-DukeHelpers.Items = {
-	dukesGullet = include("items/dukesGullet"),
-	othersGullet = include("items/othersGullet")
-}
+include("items/registry")
 
 for _, item in pairs(DukeHelpers.Items) do
     if item.callbacks then
