@@ -1,0 +1,9 @@
+<pocketitems>
+	<card name="Tapeworm Card"
+        description="Yummy in YOUR tummy"
+        hud="Tapeworm Card"
+        type="tarot"
+        pickup="1"
+        mimiccharge="1"
+    />
+</pocketitems>
