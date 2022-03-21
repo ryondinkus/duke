@@ -1,9 +1,9 @@
 local Names = {
-    en_us = "Hollow Heart",
+    en_us = "Infested Heart",
     spa = "Corazon Vacio"
 }
 local Name = Names.en_us
-local Tag = "hollowHeart"
+local Tag = "infestedHeart"
 local Id = Isaac.GetTrinketIdByName(Name)
 local Descriptions = {
     en_us = "ECHO Echo echo",
