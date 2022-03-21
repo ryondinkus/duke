@@ -1,24 +1,39 @@
 local Names = {
     en_us = "Infested Heart",
-    spa = "Corazon Vacio"
+    spa = "Corazon Infestado"
 }
 local Name = Names.en_us
 local Tag = "infestedHeart"
 local Id = Isaac.GetTrinketIdByName(Name)
 local Descriptions = {
-    en_us = "ECHO Echo echo",
-    spa = "ECO Eco eco"
+    en_us = "It's buzzing...",
+    spa = "Esta zumbando..."
 }
-local WikiDescription = "ECHO Echo echo"--helper.GenerateEncyclopediaPage("Poops and shits everywhere.")
+local WikiDescription = "It's buzzing..."--helper.GenerateEncyclopediaPage("Poops and shits everywhere.")
 
 local function RandomlySpawnHeartFlyFromPickup(player, pickup)
     if player and player:HasTrinket(Id) then
-        local chance = DukeHelpers.PercentageChance(50, 100)
-        if chance then
+        if DukeHelpers.PercentageChance(50, 100) then
+            local heartSubType = DukeHelpers.GetFlyByPickupSubType(pickup.SubType)
+            local amount
+            if pickup.SubType == HeartSubType.HEART_BLENDED then
+                if DukeHelpers.PercentageChance(50, 100) then
+                    heartSubType = HeartSubType.HEART_FULL
+                else
+                    heartSubType = HeartSubType.HEART_SOUL
+                end
+                amount = 1
+            end
             if DukeHelpers.IsDuke(player) then
-                DukeHelpers.AddHeartFly(player, DukeHelpers.GetFlyByPickupSubType(pickup.SubType), 1)
+                if type(heartSubType) == "number" then
+                    DukeHelpers.AddHeartFly(player, DukeHelpers.GetFlyByHeartSubType(heartSubType), 1)
+                end
+                return true
             else
-                DukeHelpers.SpawnPickupHeartFly(player, pickup)
+                if type(heartSubType) ~= "number" then
+                    heartSubType = heartSubType.heartFlySubType
+                end
+                DukeHelpers.SpawnPickupHeartFly(player, pickup, heartSubType, amount)
             end
             return true
         end

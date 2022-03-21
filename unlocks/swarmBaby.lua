@@ -6,7 +6,7 @@ return {
         "dukesGullet",
         "dukesTooth",
         "fiendishSwarm",
-        "hollowHeart",
+        "infestedHeart",
         "huskBaby",
         "lilDuke",
         "queenFly",

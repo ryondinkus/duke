@@ -211,35 +211,43 @@ function DukeHelpers.AddStartupFlies(p)
 	DukeHelpers.AddHeartFly(p, DukeHelpers.Flies.FLY_RED, 3)
 end
 
-function DukeHelpers.SpawnPickupHeartFly(player, pickup)
+function DukeHelpers.SpawnPickupHeartFly(player, pickup, overriddenSubType, amount)
+	if not overriddenSubType then
+		overriddenSubType = pickup.SubType
+	end
 	local sfx = SoundEffect.SOUND_BOSS2_BUBBLES
-	if pickup.SubType == HeartSubType.HEART_BLENDED then
+	if overriddenSubType == HeartSubType.HEART_BLENDED then
 		DukeHelpers.AddHeartFly(player, DukeHelpers.Flies.FLY_RED, 1)
 		DukeHelpers.AddHeartFly(player, DukeHelpers.Flies.FLY_SOUL, 1)
+
+		if DukeHelpers.IsDuke(player) then
+			DukeHelpers.Trinkets.infestedHeart.helpers.RandomlySpawnHeartFlyFromPickup(player, pickup)
+		end
 	else
-		local flyToSpawn = DukeHelpers.GetFlyByPickupSubType(pickup.SubType)
+		local flyToSpawn = DukeHelpers.GetFlyByPickupSubType(overriddenSubType)
 		if flyToSpawn.sfx then
 			sfx = flyToSpawn.sfx
 		end
 
-		local amount = flyToSpawn.fliesCount
+		local amountToSpawn = (amount or flyToSpawn.fliesCount)
 
 		if DukeHelpers.IsDuke(player) then
-			if (pickup.SubType == HeartSubType.HEART_SOUL or pickup.SubType == HeartSubType.HEART_HALF_SOUL or pickup.SubType == HeartSubType.HEART_BLACK) and DukeHelpers.GetTrueSoulHearts(player) < DukeHelpers.MAX_HEALTH then
+			if DukeHelpers.Trinkets.infestedHeart.helpers.RandomlySpawnHeartFlyFromPickup(player, pickup) then
+				amountToSpawn = amountToSpawn + 1
+			end
+			if (overriddenSubType == HeartSubType.HEART_SOUL or overriddenSubType == HeartSubType.HEART_HALF_SOUL or overriddenSubType == HeartSubType.HEART_BLACK) and DukeHelpers.GetTrueSoulHearts(player) < DukeHelpers.MAX_HEALTH then
 				local heartSlots = 2
 
-				if pickup.SubType == HeartSubType.HEART_HALF_SOUL then
+				if overriddenSubType == HeartSubType.HEART_HALF_SOUL then
 					heartSlots = 1
 				end
 
 				local heartsToGive = math.min(DukeHelpers.MAX_HEALTH - DukeHelpers.GetTrueSoulHearts(player), heartSlots)
 				player:AddSoulHearts(heartsToGive)
-				amount = flyToSpawn.fliesCount - heartsToGive
+				amountToSpawn = amountToSpawn - heartsToGive
 			end
-
-			DukeHelpers.Trinkets.hollowHeart.helpers.RandomlySpawnHeartFlyFromPickup(player, pickup)
 		end
-		DukeHelpers.AddHeartFly(player, flyToSpawn, amount)
+		DukeHelpers.AddHeartFly(player, flyToSpawn, amountToSpawn)
 	end
 	DukeHelpers.sfx:Play(sfx)
 	pickup:Remove()
