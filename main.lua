@@ -102,6 +102,16 @@ for _, trinket in pairs(DukeHelpers.Trinkets) do
 	-- end
 end
 
+include("cards/registry")
+
+for _, card in pairs(DukeHelpers.Cards) do
+    if card.callbacks then
+        for _, callback in pairs(card.callbacks) do
+            dukeMod:AddCallback(table.unpack(callback))
+        end
+    end
+end
+
 -- Save and continue callbacks
 
 -- Loads familiar data on startup
