@@ -14,7 +14,7 @@
       quality="0"
   />
   <passive name="The Princes"
-      description="Man Princess"
+      description="Your loyal court"
       gfx="the_princes.png"
   />
   <trinket name="Duke's Tooth"
