@@ -8,7 +8,8 @@
         armor="4"
         nameimage="duke_name.png"
         portrait="duke_portrait.png"
-		extraportrait="duke_extraportrait.anm2"
+		    extraportrait="duke_extraportrait.anm2"
         skinColor="5"
+        costumeSuffix="duke"
     />
 </players>
