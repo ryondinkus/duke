@@ -84,7 +84,8 @@ for _, fly in pairs(flies) do
         attackFlySubType = DukeHelpers.GetAttackFlySubTypeBySubType(fly.subType),
     	fliesCount = fly.fliesCount,
 		weight = fly.weight,
-		sfx = fly.sfx
+		sfx = fly.sfx,
+		poofColor = fly.poofColor
     }
 
 	if fly.useFly then
@@ -93,6 +94,7 @@ for _, fly in pairs(flies) do
 		newFly.canAttack = existingFly.canAttack
 		newFly.heartFlySubType = existingFly.heartFlySubType
 		newFly.attackFlySubType = existingFly.attackFlySubType
+		newFly.poofColor = existingFly.poofColor
 	end
 
     if fly.callbacks then
