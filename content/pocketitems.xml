@@ -1,9 +1,9 @@
 <pocketitems>
 	<card name="Tapeworm Card"
-        description="Yummy in YOUR tummy"
+        description="Infest all"
         hud="Tapeworm Card"
-        type="tarot"
-        pickup="1"
-        mimiccharge="1"
+        type="special"
+        pickup="327"
+        mimiccharge="12"
     />
 </pocketitems>

@@ -18,6 +18,8 @@ DukeHelpers.Flies = {}
 
 function DukeHelpers.SpawnHeartFly(player, subType, layer)
 	local fly = Isaac.Spawn(EntityType.ENTITY_FAMILIAR, DukeHelpers.FLY_VARIANT, subType or 1, player.Position, Vector.Zero, player)
+	fly:ClearEntityFlags(EntityFlag.FLAG_APPEAR)
+	DukeHelpers.SpawnHeartFlyPoof(subType, player.Position, player)
 	fly:GetData().layer = layer
 	DukeHelpers.PositionHeartFly(fly, layer)
 	return fly
@@ -210,4 +212,19 @@ end
 function DukeHelpers.AddStartupFlies(p)
 	print('adding startup flies')
 	DukeHelpers.AddHeartFly(p, DukeHelpers.Flies.FLY_RED, 3)
+end
+
+function DukeHelpers.SpawnHeartFlyPoof(flySubType, pos, spawner)
+	local flyColors = {
+		[1] = Color(0.62, 0.62, 0.62, 1, 0.61, 0, 0.12),
+		[3] = Color(0.62, 0.62, 0.62, 1, 0, 0.25, 0.43),
+		[4] = Color(0.62, 0.62, 0.62, 1, 0.78, 0.78, 0.78),
+		[6] = Color(0, 0, 0, 1, 0, 0, 0),
+		[7] = Color(0.62, 0.62, 0.62, 1, 0.78, 0.55, 0),
+	 	[11] = Color(0.62, 0.62, 0.62, 1, 0.59, 0.59, 0.59),
+		[12] = Color(0.62, 0.62, 0.62, 1, 0.78, 0.20, 0),
+		[13] = Color(0.62, 0, 0, 1, 0, 0, 0),
+	}
+	local poof = Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.POOF01, 0, pos, Vector.Zero, spawner)
+	poof.Color = flyColors[flySubType]
 end

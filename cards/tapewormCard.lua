@@ -15,9 +15,12 @@ local function MC_USE_CARD(_, card, player, flags)
     local enemies = DukeHelpers.ListEnemiesInRoom(true, function(entity) return not EntityRef(entity).IsCharmed and not entity:IsBoss() end)
 
     for _, enemy in pairs(enemies) do
-        DukeHelpers.AddHeartFly(player, DukeHelpers.GetWeightedFly(), 1)
+        local randomFly = DukeHelpers.GetWeightedFly()
+        DukeHelpers.AddHeartFly(player, randomFly, 1)
+        DukeHelpers.SpawnHeartFlyPoof(randomFly.heartFlySubType, enemy.Position, player)
         enemy:Remove()
     end
+    DukeHelpers.sfx:Play(SoundEffect.SOUND_WORM_SPIT, 1, 0)
 end
 
 return {
