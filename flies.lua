@@ -27,6 +27,7 @@ dukeMod:AddCallback(ModCallbacks.MC_FAMILIAR_UPDATE, function(_, f)
 	if data.layer == DukeHelpers.INNER then
 		f.OrbitDistance = Vector(20, 20)
 		f.OrbitSpeed = 0.045
+		f.CollisionDamage = 7
 	elseif data.layer == DukeHelpers.MIDDLE then
 		f.OrbitDistance = Vector(40, 36)
 		f.OrbitSpeed = 0.02
