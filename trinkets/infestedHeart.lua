@@ -15,16 +15,22 @@ local function RandomlySpawnHeartFlyFromPickup(player, pickup)
     if player and player:HasTrinket(Id) then
         if DukeHelpers.PercentageChance(50, 100) then
             local heartSubType = DukeHelpers.GetFlyByPickupSubType(pickup.SubType)
-            local amount
             if pickup.SubType == HeartSubType.HEART_BLENDED then
                 if DukeHelpers.PercentageChance(50, 100) then
                     heartSubType = HeartSubType.HEART_FULL
                 else
                     heartSubType = HeartSubType.HEART_SOUL
                 end
-                amount = 1
             end
             if DukeHelpers.IsDuke(player) then
+                if pickup.SubType == HeartSubType.HEART_BLENDED then
+                    if DukeHelpers.PercentageChance(50, 100) then
+                        heartSubType = HeartSubType.HEART_FULL
+                    else
+                        heartSubType = HeartSubType.HEART_SOUL
+                    end
+                end
+
                 if type(heartSubType) == "number" then
                     DukeHelpers.AddHeartFly(player, DukeHelpers.GetFlyByHeartSubType(heartSubType), 1)
                 end
@@ -33,7 +39,7 @@ local function RandomlySpawnHeartFlyFromPickup(player, pickup)
                 if type(heartSubType) ~= "number" then
                     heartSubType = heartSubType.heartFlySubType
                 end
-                DukeHelpers.SpawnPickupHeartFly(player, pickup, heartSubType, amount)
+                DukeHelpers.SpawnPickupHeartFly(player, pickup)
             end
             return true
         end
