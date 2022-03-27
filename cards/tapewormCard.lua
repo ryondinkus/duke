@@ -12,7 +12,7 @@ local Descriptions = {
 local WikiDescription = "Yummy in YOUR tummy."--helper.GenerateEncyclopediaPage("Poops and shits everywhere.")
 
 local function MC_USE_CARD(_, card, player, flags)
-    local enemies = DukeHelpers.ListEnemiesInRoom(true, function(entity) return not EntityRef(entity).IsCharmed end)
+    local enemies = DukeHelpers.ListEnemiesInRoom(true, function(entity) return not EntityRef(entity).IsCharmed and not entity:IsBoss() end)
 
     for _, enemy in pairs(enemies) do
         DukeHelpers.AddHeartFly(player, DukeHelpers.GetWeightedFly(), 1)
