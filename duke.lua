@@ -138,7 +138,7 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_PEFFECT_UPDATE, function(_, p)
 		DukeHelpers.AddHeartFly(p, DukeHelpers.Flies.FLY_BONE, p:GetBoneHearts())
 		p:AddBoneHearts(-p:GetBoneHearts())
 	end
-	
+
 	if p:GetBrokenHearts() > 0 then
 		DukeHelpers.AddHeartFly(p, DukeHelpers.Flies.FLY_BROKEN, p:GetBrokenHearts())
 		p:AddBrokenHearts(-p:GetBrokenHearts())
@@ -226,3 +226,14 @@ function DukeHelpers.InitializeDuke(p, continued)
 		Game():GetItemPool():RemoveCollectible(DukeHelpers.Items.othersGullet.Id)
 	end
 end
+
+dukeMod:AddCallback(ModCallbacks.MC_POST_UPDATE, function()
+	DukeHelpers.ForEachDuke(function(p)
+		local sprite = p:GetSprite()
+		if sprite:IsPlaying("Death") and sprite:GetFrame() == 19 then
+			p:UseActiveItem(DukeHelpers.Items.dukesGullet.Id, UseFlag.USE_NOANIM)
+			Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.LARGE_BLOOD_EXPLOSION, 0, p.Position, Vector.Zero, p)
+			DukeHelpers.sfx:Play(SoundEffect.SOUND_ROCKET_BLAST_DEATH)
+		end
+	end)
+end)
