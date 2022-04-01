@@ -231,7 +231,15 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_UPDATE, function()
 	DukeHelpers.ForEachDuke(function(p)
 		local sprite = p:GetSprite()
 		if sprite:IsPlaying("Death") and sprite:GetFrame() == 19 then
-			p:UseActiveItem(DukeHelpers.Items.dukesGullet.Id, UseFlag.USE_NOANIM)
+			local fliesData = DukeHelpers.GetDukeData(p).heartFlies
+	        if fliesData then
+	            for i = #fliesData, 1, -1 do
+	                local fly = fliesData[i]
+	                local f = DukeHelpers.GetEntityByInitSeed(fly.initSeed)
+                    DukeHelpers.SpawnAttackFly(f)
+	                DukeHelpers.RemoveHeartFly(f)
+	            end
+	        end
 			Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.LARGE_BLOOD_EXPLOSION, 0, p.Position, Vector.Zero, p)
 			DukeHelpers.sfx:Play(SoundEffect.SOUND_ROCKET_BLAST_DEATH)
 		end
