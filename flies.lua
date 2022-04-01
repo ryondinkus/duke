@@ -119,20 +119,19 @@ dukeMod:AddCallback(ModCallbacks.MC_USE_ITEM, function(_, type, rng, player)
 			local f = DukeHelpers.GetEntityByInitSeed(fly.initSeed)
 			local heartFly = DukeHelpers.GetFlyByHeartSubType(fly.subType)
 			flyScore = flyScore + heartFly.sacAltarQuality
+			DukeHelpers.SpawnHeartFlyPoof(fly.subType, f.Position, player)
 			DukeHelpers.RemoveHeartFly(f)
 		end
 
 		if flyScore > 24 then flyScore = 24 end
 		local itemQuality = math.floor(flyScore/5)
 
-		print(itemQuality)
-
 		local itemPool = Game():GetItemPool()
 		local roomPool = itemPool:GetPoolForRoom(RoomType.ROOM_DEVIL, Game():GetLevel():GetCurrentRoomDesc().SpawnSeed)
 
 		local chosenItem
 
-		while not chosenItem or Isaac.GetItemConfig():GetCollectible(chosenItem).Quality ~= itemQuality do
+		while not chosenItem or (Isaac.GetItemConfig():GetCollectible(chosenItem).Quality ~= itemQuality and Isaac.GetItemConfig():GetCollectible(chosenItem).ID ~= CollectibleType.COLLECTIBLE_MAGIC_SKIN) do
 			chosenItem = itemPool:GetCollectible(roomPool, true)
 		end
 
