@@ -27,6 +27,7 @@ return {
     subType = subType,
     fliesCount = 1,
 	poofColor = Color(0.62, 0.62, 0.62, 1, 0.78, 0.78, 0.78),
+	sacAltarQuality = 6,
     sfx = SoundEffect.SOUND_SUPERHOLY,
     callbacks = {
         {

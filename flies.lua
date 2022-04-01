@@ -85,7 +85,8 @@ for _, fly in pairs(flies) do
     	fliesCount = fly.fliesCount,
 		weight = fly.weight,
 		sfx = fly.sfx,
-		poofColor = fly.poofColor
+		poofColor = fly.poofColor,
+		sacAltarQuality = fly.sacAltarQuality
     }
 
 	if fly.useFly then
@@ -95,7 +96,9 @@ for _, fly in pairs(flies) do
 		newFly.heartFlySubType = existingFly.heartFlySubType
 		newFly.attackFlySubType = existingFly.attackFlySubType
 		newFly.poofColor = existingFly.poofColor
+		newFly.sacAltarQuality = existingFly.sacAltarQuality
 	end
+
 
     if fly.callbacks then
         for _, callback in pairs(fly.callbacks) do
@@ -105,3 +108,43 @@ for _, fly in pairs(flies) do
 
     DukeHelpers.Flies[fly.key] = newFly
 end
+
+dukeMod:AddCallback(ModCallbacks.MC_USE_ITEM, function(_, type, rng, player)
+	local flyScore = 0
+	local fliesData = DukeHelpers.GetDukeData(player).heartFlies
+
+	if fliesData and #fliesData > 0 then
+		for i = #fliesData, 1, -1 do
+			local fly = fliesData[i]
+			local f = DukeHelpers.GetEntityByInitSeed(fly.initSeed)
+			local heartFly = DukeHelpers.GetFlyByHeartSubType(fly.subType)
+			flyScore = flyScore + heartFly.sacAltarQuality
+			DukeHelpers.RemoveHeartFly(f)
+		end
+
+		if flyScore > 24 then flyScore = 24 end
+		local itemQuality = math.floor(flyScore/5)
+
+		print(itemQuality)
+
+		local itemPool = Game():GetItemPool()
+		local roomPool = itemPool:GetPoolForRoom(RoomType.ROOM_DEVIL, Game():GetLevel():GetCurrentRoomDesc().SpawnSeed)
+
+		local chosenItem
+
+		while not chosenItem or Isaac.GetItemConfig():GetCollectible(chosenItem).Quality ~= itemQuality do
+			chosenItem = itemPool:GetCollectible(roomPool, true)
+		end
+
+		if chosenItem then
+			Isaac.Spawn(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_COLLECTIBLE, chosenItem, Game():GetRoom():FindFreePickupSpawnPosition(player.Position), Vector.Zero, player)
+		end
+
+		DukeHelpers.sfx:Play(SoundEffect.SOUND_SATAN_GROW, 1, 0)
+		Game():Darken(1, 60)
+		if player:HasCollectible(CollectibleType.COLLECTIBLE_SACRIFICIAL_ALTAR) then
+			player:RemoveCollectible(CollectibleType.COLLECTIBLE_SACRIFICIAL_ALTAR, false, ActiveSlot.ACTIVE_PRIMARY)
+		end
+	end
+
+end, CollectibleType.COLLECTIBLE_SACRIFICIAL_ALTAR)
