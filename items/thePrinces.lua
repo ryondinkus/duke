@@ -9,7 +9,7 @@ local Descriptions = {
     en_us = "Like a princess, but a man.",
     spa = "I don't know spanish and I'm on a plane lmao"
 }
-local WikiDescription = "Like a princess, but a man."--helper.GenerateEncyclopediaPage("Poops and shits everywhere.")
+local WikiDescription = DukeHelpers.GenerateEncyclopediaPage("Like a princess, but a man.")
 
 local function MC_POST_NEW_LEVEL()
     DukeHelpers.ForEachPlayer(function(duke)

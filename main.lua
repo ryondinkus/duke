@@ -39,6 +39,7 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_NEW_LEVEL, function()
 end)
 
 -- Helpers
+include("helpers/docs")
 include("helpers/partitions")
 include("helpers/utils")
 include("helpers/flies")
