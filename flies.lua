@@ -24,6 +24,7 @@ dukeMod:AddCallback(ModCallbacks.MC_FAMILIAR_UPDATE, function(_, f)
 		sprite:LoadGraphics()
 		sprite:Play("Idle", true)
 	end
+
 	if data.layer == DukeHelpers.INNER then
 		f.OrbitDistance = Vector(20, 20)
 		f.OrbitSpeed = 0.045
@@ -37,7 +38,14 @@ dukeMod:AddCallback(ModCallbacks.MC_FAMILIAR_UPDATE, function(_, f)
 		f.OrbitSpeed = 0.01
 		f.CollisionDamage = 2
 	end
-	f.Velocity = f:GetOrbitPosition(f.Player.Position + f.Player.Velocity) - f.Position
+
+	local centerPos = f.Player.Position
+	if DukeHelpers.IsDuke(f.Player) and f.Player:GetEffects():HasCollectibleEffect(CollectibleType.COLLECTIBLE_MEGA_MUSH) then
+		f.OrbitDistance = f.OrbitDistance * 3
+		f.OrbitSpeed = f.OrbitSpeed * 1.3
+		centerPos = centerPos - Vector(0, 75)
+	end
+	f.Velocity = f:GetOrbitPosition(centerPos + f.Player.Velocity) - f.Position
 end, DukeHelpers.FLY_VARIANT)
 
 -- Turns heart flies into attack flies when hit
