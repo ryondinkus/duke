@@ -39,11 +39,11 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_NEW_LEVEL, function()
 end)
 
 -- Helpers
+include("helpers/giantbook")
 include("helpers/partitions")
 include("helpers/utils")
 include("helpers/flies")
 include("helpers/data")
-include("helpers/achievements")
 
 -- Initialize player and flies
 include("flies")
@@ -205,7 +205,7 @@ end)
 local unlocks = include("unlocks/registry")
 
 local function saveUnlock(tag)
-    CCO.PlayAchievement("gfx/ui/achievements/achievement_"..tag..".png")
+    GiantBookAPI.ShowAchievement("achievement_"..tag..".png")
     dukeMod.unlocks[tag] = true
     DukeHelpers.SaveGame()
 end
