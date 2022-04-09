@@ -9,7 +9,7 @@ local Descriptions = {
     en_us = "Yummy in YOUR tummy",
     spa = "Delicioso en TU barriga"
 }
-local WikiDescription = "Yummy in YOUR tummy."--helper.GenerateEncyclopediaPage("Poops and shits everywhere.")
+local WikiDescription = DukeHelpers.GenerateEncyclopediaPage("Yummy in YOUR tummy.")
 
 local function MC_USE_CARD(_, card, player, flags)
     local enemies = DukeHelpers.ListEnemiesInRoom(true, function(entity) return not EntityRef(entity).IsCharmed and not entity:IsBoss() end)
