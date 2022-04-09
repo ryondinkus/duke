@@ -140,7 +140,7 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_PEFFECT_UPDATE, function(_, p)
 	end
 
 	if p:GetBrokenHearts() > 0 then
-		DukeHelpers.AddHeartFly(p, DukeHelpers.Flies.FLY_BROKEN, p:GetBrokenHearts())
+		DukeHelpers.AddHeartFly(p, DukeHelpers.Flies.FLY_BROKEN, p:GetBrokenHearts() * 2)
 		p:AddBrokenHearts(-p:GetBrokenHearts())
 		if DukeHelpers.GetTrueSoulHearts(p) < DukeHelpers.MAX_HEALTH then
 			p:AddSoulHearts(DukeHelpers.MAX_HEALTH)
