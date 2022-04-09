@@ -265,5 +265,5 @@ for _, unlock in pairs(unlocks) do
 end
 
 if Poglite then
-    Poglite:AddPogCostume("Duke", Isaac.GetPlayerTypeByName("Duke"), Isaac.GetCostumeIdByPath("gfx/characters/pog.anm2"))
+    Poglite:AddPogCostume("DukePog", DukeHelpers.DUKE_ID, Isaac.GetCostumeIdByPath("gfx/characters/costume_duke_pog.anm2"))
 end
