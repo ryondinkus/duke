@@ -25,6 +25,11 @@ dukeMod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, function(_, pickup, co
 			DukeHelpers.AddHeartFly(p, DukeHelpers.Flies.FLY_SOUL, 1)
 		else
 			local flyToSpawn = DukeHelpers.GetFlyByPickupSubType(pickup.SubType)
+
+			if not flyToSpawn then
+				flyToSpawn = DukeHelpers.Flies.FLY_RED
+			end
+
 			if flyToSpawn.sfx then
 				sfx = flyToSpawn.sfx
 			end
