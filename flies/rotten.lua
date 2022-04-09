@@ -39,6 +39,7 @@ return {
     fliesCount = 1,
 	weight = 1,
     poofColor = Color(0.62, 0.62, 0.62, 1, 0.78, 0.20, 0),
+	sacAltarQuality = 4,
     sfx = SoundEffect.SOUND_ROTTEN_HEART,
     callbacks = {
         {

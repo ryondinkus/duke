@@ -11,7 +11,7 @@ local Descriptions = {
 }
 local WikiDescription = DukeHelpers.GenerateEncyclopediaPage("Poops and shits everywhere.")
 
-local function MC_USE_ITEM(_, type, rng, p)
+local function MC_USE_ITEM(_, type, rng, p, flags)
     if DukeHelpers.IsDuke(p) then
         local fliesData = DukeHelpers.GetDukeData(p).heartFlies
         if fliesData and DukeHelpers.Find(fliesData, function(f) return DukeHelpers.GetFlyByHeartSubType(f.subType).canAttack end) then
@@ -35,7 +35,9 @@ local function MC_USE_ITEM(_, type, rng, p)
             end, EntityType.ENTITY_FAMILIAR, FamiliarVariant.BLUE_FLY)
             DukeHelpers.sfx:Play(SoundEffect.SOUND_WORM_SPIT, 1, 0)
         end
-        p:PlayExtraAnimation("DukeBarf")
+        if (flags & UseFlag.USE_NOANIM == 0) then
+            p:PlayExtraAnimation("DukeBarf")
+        end
         return false
     end
 end

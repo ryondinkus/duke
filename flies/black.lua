@@ -41,6 +41,7 @@ return {
     fliesCount = 2,
 	weight = 1,
 	poofColor = Color(0, 0, 0, 1, 0, 0, 0),
+	sacAltarQuality = 2,
     sfx = SoundEffect.SOUND_UNHOLY,
     callbacks = {
         {

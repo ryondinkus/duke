@@ -25,6 +25,11 @@ dukeMod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, function(_, pickup, co
 			DukeHelpers.AddHeartFly(p, DukeHelpers.Flies.FLY_SOUL, 1)
 		else
 			local flyToSpawn = DukeHelpers.GetFlyByPickupSubType(pickup.SubType)
+
+			if not flyToSpawn then
+				flyToSpawn = DukeHelpers.Flies.FLY_RED
+			end
+
 			if flyToSpawn.sfx then
 				sfx = flyToSpawn.sfx
 			end
@@ -138,9 +143,9 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_PEFFECT_UPDATE, function(_, p)
 		DukeHelpers.AddHeartFly(p, DukeHelpers.Flies.FLY_BONE, p:GetBoneHearts())
 		p:AddBoneHearts(-p:GetBoneHearts())
 	end
-	
+
 	if p:GetBrokenHearts() > 0 then
-		DukeHelpers.AddHeartFly(p, DukeHelpers.Flies.FLY_BROKEN, p:GetBrokenHearts())
+		DukeHelpers.AddHeartFly(p, DukeHelpers.Flies.FLY_BROKEN, p:GetBrokenHearts() * 2)
 		p:AddBrokenHearts(-p:GetBrokenHearts())
 		if DukeHelpers.GetTrueSoulHearts(p) < DukeHelpers.MAX_HEALTH then
 			p:AddSoulHearts(DukeHelpers.MAX_HEALTH)
@@ -226,3 +231,22 @@ function DukeHelpers.InitializeDuke(p, continued)
 		Game():GetItemPool():RemoveCollectible(DukeHelpers.Items.othersGullet.Id)
 	end
 end
+
+dukeMod:AddCallback(ModCallbacks.MC_POST_UPDATE, function()
+	DukeHelpers.ForEachDuke(function(p)
+		local sprite = p:GetSprite()
+		if sprite:IsPlaying("Death") and sprite:GetFrame() == 19 then
+			local fliesData = DukeHelpers.GetDukeData(p).heartFlies
+	        if fliesData then
+	            for i = #fliesData, 1, -1 do
+	                local fly = fliesData[i]
+	                local f = DukeHelpers.GetEntityByInitSeed(fly.initSeed)
+                    DukeHelpers.SpawnAttackFly(f)
+	                DukeHelpers.RemoveHeartFly(f)
+	            end
+	        end
+			Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.LARGE_BLOOD_EXPLOSION, 0, p.Position, Vector.Zero, p)
+			DukeHelpers.sfx:Play(SoundEffect.SOUND_ROCKET_BLAST_DEATH)
+		end
+	end)
+end)
