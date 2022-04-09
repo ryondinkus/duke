@@ -1,7 +1,6 @@
 -- Add flies on player startup
 dukeMod:AddCallback(ModCallbacks.MC_POST_PLAYER_UPDATE, function(_, player)
 	if dukeMod.global.isInitialized and DukeHelpers.IsDuke(player) and not player:GetData().duke then
-		print('initializing duke')
 		DukeHelpers.InitializeDuke(player)
 		DukeHelpers.AddStartupFlies(player)
 	end
@@ -125,8 +124,11 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_PICKUP_RENDER, function(_, pickup)
 
 	if pickup:GetData().showFliesPrice then
 		local devilPrice = DukeHelpers.GetDukeDevilDealPrice(pickup)
-		Isaac.RenderText(tostring(devilPrice.RED), pos.X - 12, pos.Y + 10, 1, 0, 0, 1)
-		Isaac.RenderText(tostring(devilPrice.SOUL), pos.X + 6, pos.Y + 10, 0, 0, 1, 1)
+
+		local flyPriceSprite = Sprite()
+		flyPriceSprite:Load("gfx/ui/fly_devil_deal_price.anm2")
+		flyPriceSprite:Play(string.format("%s_%s", devilPrice.RED, devilPrice.SOUL))
+		flyPriceSprite:Render(Vector(pos.X, pos.Y + 10), Vector.Zero, Vector.Zero)
 	end
 end)
 

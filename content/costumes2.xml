@@ -1,0 +1,3 @@
+<costumes anm2root="gfx/characters/">
+	<costume anm2path="costume_duke_pog.anm2" priority="900" type="none" />
+</costumes>
