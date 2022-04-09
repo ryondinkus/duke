@@ -66,7 +66,8 @@ for _, item in pairs(DukeHelpers.Items) do
 			Class = "Duke",
 			ID = item.Id,
 			WikiDesc = item.WikiDescription,
-			ModName = "Duke"
+			ModName = "Duke",
+            Hide = item.Hide
 		})
 	end
 
@@ -91,7 +92,8 @@ for _, trinket in pairs(DukeHelpers.Trinkets) do
 			Class = "Duke",
 			ID = trinket.Id,
 			WikiDesc = trinket.WikiDescription,
-			ModName = "Duke"
+			ModName = "Duke",
+            Hide = trinket.Hide
 		})
 	end
 end
@@ -113,7 +115,8 @@ for _, card in pairs(DukeHelpers.Cards) do
 			ID = card.Id,
 			WikiDesc = card.WikiDescription,
 			ModName = "Duke",
-            Sprite = Encyclopedia.RegisterSprite("duke/content/gfx/ui_cardfronts.anm2", card.Name)
+            Spr = Encyclopedia.RegisterSprite(dukeMod.path.."content/gfx/ui_cardfronts.anm2", card.Name),
+            Hide = card.Hide
 		})
 	end
 end
