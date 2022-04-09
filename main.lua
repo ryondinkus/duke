@@ -264,53 +264,6 @@ for _, unlock in pairs(unlocks) do
     end
 end
 
-if Test then
-    Test.RegisterTest("duke", {
-        {
-            action = "RESTART"
-        },
-        {
-            action = "ENABLE_DEBUG_FLAG",
-            flag = 4
-        },
-        {
-            action = "ENABLE_DEBUG_FLAG",
-            flag = 8
-        },
-        {
-            action = "GIVE_ITEM",
-            id = CollectibleType.COLLECTIBLE_SOY_MILK
-        },
-        {
-            action = "EXECUTE_LUA",
-            code = function()
-                for _ = 1, 500 do
-                    Isaac.GetPlayer(0):AddCollectible(CollectibleType.COLLECTIBLE_BRIMSTONE)
-                end
-            end
-        },
-        {
-            action = "GIVE_PILL",
-            color = function()
-                return Isaac.AddPillEffectToPool(PillEffect.PILLEFFECT_TEARS_DOWN)
-            end
-        },
-        {
-            action = "REPEAT",
-            times = 50,
-            steps = {
-                {
-                    action = "USE_ITEM",
-                    id = CollectibleType.COLLECTIBLE_PLACEBO,
-                    force = true,
-                    async = true
-                }
-            }
-        },
-        {
-            action = "GIVE_ITEM",
-            id = CollectibleType.COLLECTIBLE_DATAMINER,
-            charged = true
-        }
-    })
+if Poglite then
+    Poglite:AddPogCostume("DukePog", DukeHelpers.DUKE_ID, Isaac.GetCostumeIdByPath("gfx/characters/costume_duke_pog.anm2"))
 end
