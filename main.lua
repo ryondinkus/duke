@@ -59,16 +59,16 @@ for _, item in pairs(DukeHelpers.Items) do
         end
     end
 
-	-- helper.AddExternalItemDescriptionItem(item)
+	DukeHelpers.AddExternalItemDescriptionItem(item)
 
-	-- if Encyclopedia and item.WikiDescription then
-	-- 	Encyclopedia.AddItem({
-	-- 		Class = "Loot Deck",
-	-- 		ID = item.Id,
-	-- 		WikiDesc = item.WikiDescription,
-	-- 		ModName = "Loot Deck"
-	-- 	})
-	-- end
+	if Encyclopedia and item.WikiDescription then
+		Encyclopedia.AddItem({
+			Class = "Duke",
+			ID = item.Id,
+			WikiDesc = item.WikiDescription,
+			ModName = "Duke"
+		})
+	end
 
 	-- if AnimatedItemsAPI then
 	-- 	AnimatedItemsAPI:SetAnimationForCollectible(item.Id, "items/collectibles/animated/".. item.Tag .. "Animated.anm2")
@@ -84,20 +84,16 @@ for _, trinket in pairs(DukeHelpers.Trinkets) do
         end
     end
 
-	-- helper.AddExternalItemDescriptionItem(item)
+	DukeHelpers.AddExternalItemDescriptionTrinket(trinket)
 
-	-- if Encyclopedia and item.WikiDescription then
-	-- 	Encyclopedia.AddItem({
-	-- 		Class = "Loot Deck",
-	-- 		ID = item.Id,
-	-- 		WikiDesc = item.WikiDescription,
-	-- 		ModName = "Loot Deck"
-	-- 	})
-	-- end
-
-	-- if AnimatedItemsAPI then
-	-- 	AnimatedItemsAPI:SetAnimationForCollectible(item.Id, "items/collectibles/animated/".. item.Tag .. "Animated.anm2")
-	-- end
+	if Encyclopedia and trinket.WikiDescription then
+		Encyclopedia.AddTrinket({
+			Class = "Duke",
+			ID = trinket.Id,
+			WikiDesc = trinket.WikiDescription,
+			ModName = "Duke"
+		})
+	end
 end
 
 include("cards/registry")
@@ -108,6 +104,18 @@ for _, card in pairs(DukeHelpers.Cards) do
             dukeMod:AddCallback(table.unpack(callback))
         end
     end
+
+    DukeHelpers.AddExternalItemDescriptionCard(card)
+
+	if Encyclopedia and card.WikiDescription then
+		Encyclopedia.AddCard({
+			Class = "Duke",
+			ID = card.Id,
+			WikiDesc = card.WikiDescription,
+			ModName = "Duke",
+            Sprite = Encyclopedia.RegisterSprite("duke/content/gfx/ui_cardfronts.anm2", card.Name)
+		})
+	end
 end
 
 -- Save and continue callbacks

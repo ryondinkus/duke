@@ -12,23 +12,11 @@ end
 
 function DukeHelpers.AddExternalItemDescriptionCard(card)
 	if EID and card.Descriptions then
+        DukeHelpers.RegisterExternalItemDescriptionLanguages(card.Id, card.Names, card.Descriptions, EID.addCard)
 
-		local cardFrontPathTag = card.Tag
-		local descriptions = card.Descriptions
-
-        DukeHelpers.RegisterExternalItemDescriptionLanguages(card.Id, card.Names, descriptions, EID.addCard)
-
-        -- TODO
-		local cardFrontPath = string.format("gfx/ui/lootcard_fronts/%s.png", cardFrontPathTag)
 		local cardFrontSprite = Sprite()
-        cardFrontSprite:Load("gfx/ui/eid_lootcard_fronts.anm2", true)
-		cardFrontSprite:ReplaceSpritesheet(0, cardFrontPath)
-		cardFrontSprite:LoadGraphics()
-		local cardFrontAnim = "Idle"
-		if card.IsHolographic then
-			cardFrontAnim = "IdleHolo"
-		end
-		EID:addIcon("Card"..card.Id, cardFrontAnim, -1, 8, 8, 0, 1, cardFrontSprite)
+        cardFrontSprite:Load("gfx/ui/eid_card_fronts.anm2", true)
+		EID:addIcon("Card"..card.Id, card.Tag, -1, 8, 8, 0, 1, cardFrontSprite)
 	end
 end
 
