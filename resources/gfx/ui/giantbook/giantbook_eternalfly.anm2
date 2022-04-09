@@ -1,14 +1,16 @@
 <AnimatedActor>
-	<Info CreatedBy="Unknown" CreatedOn="4/2/2022 10:12:50 PM" Version="2" Fps="30"/>
+	<Info CreatedBy="Unknown" CreatedOn="4/9/2022 2:07:05 PM" Version="3" Fps="30"/>
 	<Content>
 		<Spritesheets>
 			<Spritesheet Path="giantbook_heartflies.png" Id="0"/>
 			<Spritesheet Path="effect_010_poof02.png" Id="1"/>
+			<Spritesheet Path="effect_010_poof02.png" Id="2"/>
+			<Spritesheet Path="effect_010_poof02.png" Id="3"/>
 		</Spritesheets>
 		<Layers>
 			<Layer Name="heart" Id="0" SpritesheetId="0"/>
 			<Layer Name="heart2" Id="1" SpritesheetId="0"/>
-			<Layer Name="poof" Id="2" SpritesheetId="1"/>
+			<Layer Name="poof" Id="2" SpritesheetId="3"/>
 		</Layers>
 		<Nulls/>
 		<Events/>
