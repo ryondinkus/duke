@@ -1,0 +1,210 @@
+<ItemPools>
+<Pool Name="treasure">
+	<Item Name="DUKE'S GULLET"
+        Weight="1"
+        RemoveOn="0.1"
+        DecreaseBy="1"
+  />
+	<Item Name="The Princes"
+        Weight="1"
+        RemoveOn="0.1"
+        DecreaseBy="1"
+  />
+  <Item Name="Queen Fly"
+        Weight="1"
+        RemoveOn="0.1"
+        DecreaseBy="1"
+  />
+  <Item Name="Super Infestation"
+        Weight="1"
+        RemoveOn="0.1"
+        DecreaseBy="1"
+  />
+  <Item Name="Lil Duke"
+        Weight="1"
+        RemoveOn="0.1"
+        DecreaseBy="1"
+  />
+  <Item Name="Sharty McFly"
+        Weight="1"
+        RemoveOn="0.1"
+        DecreaseBy="1"
+  />
+</Pool>
+<Pool Name="curse">
+  <Item Name="Fiendish Swarm"
+        Weight="1"
+        RemoveOn="0.1"
+        DecreaseBy="1"
+  />
+</Pool>
+<Pool Name="secret">
+  <Item Name="Duke Flute"
+        Weight="1"
+        RemoveOn="0.1"
+        DecreaseBy="1"
+  />
+</Pool>
+<Pool Name="devil">
+  <Item Name="Fiendish Swarm"
+        Weight="1"
+        RemoveOn="0.1"
+        DecreaseBy="1"
+  />
+  <Item Name="Lil Duke"
+        Weight="1"
+        RemoveOn="0.1"
+        DecreaseBy="1"
+  />
+</Pool>
+<Pool Name="demonBeggar">
+  <Item Name="Fiendish Swarm"
+        Weight="1"
+        RemoveOn="0.1"
+        DecreaseBy="1"
+  />
+</Pool>
+<Pool Name="keyMaster">
+  <Item Name="Fiendish Swarm"
+        Weight="1"
+        RemoveOn="0.1"
+        DecreaseBy="1"
+  />
+  <Item Name="The Princes"
+        Weight="1"
+        RemoveOn="0.1"
+        DecreaseBy="1"
+  />
+  <Item Name="Queen Fly"
+        Weight="1"
+        RemoveOn="0.1"
+        DecreaseBy="1"
+  />
+  <Item Name="Sharty McFly"
+        Weight="1"
+        RemoveOn="0.1"
+        DecreaseBy="1"
+  />
+</Pool>
+<Pool Name="ultraSecret">
+  <Item Name="The Princes"
+        Weight="1"
+        RemoveOn="0.1"
+        DecreaseBy="1"
+  />
+  <Item Name="Super Infestation"
+        Weight="1"
+        RemoveOn="0.1"
+        DecreaseBy="1"
+  />
+</Pool>
+<Pool Name="craneGame">
+  <Item Name="DUKE'S GULLET"
+        Weight="1"
+        RemoveOn="0.1"
+        DecreaseBy="1"
+  />
+  <Item Name="The Princes"
+        Weight="1"
+        RemoveOn="0.1"
+        DecreaseBy="1"
+  />
+  <Item Name="Queen Fly"
+        Weight="1"
+        RemoveOn="0.1"
+        DecreaseBy="1"
+  />
+  <Item Name="Super Infestation"
+        Weight="1"
+        RemoveOn="0.1"
+        DecreaseBy="1"
+  />
+</Pool>
+<Pool Name="babyShop">
+  <Item Name="Lil Duke"
+        Weight="1"
+        RemoveOn="0.1"
+        DecreaseBy="1"
+  />
+  <Item Name="Sharty McFly"
+        Weight="1"
+        RemoveOn="0.1"
+        DecreaseBy="1"
+  />
+</Pool>
+<Pool Name="greedTreasure">
+	<Item Name="DUKE'S GULLET"
+        Weight="1"
+        RemoveOn="0.1"
+        DecreaseBy="1"
+  />
+	<Item Name="The Princes"
+        Weight="1"
+        RemoveOn="0.1"
+        DecreaseBy="1"
+  />
+  <Item Name="Queen Fly"
+        Weight="1"
+        RemoveOn="0.1"
+        DecreaseBy="1"
+  />
+  <Item Name="Super Infestation"
+        Weight="1"
+        RemoveOn="0.1"
+        DecreaseBy="1"
+  />
+  <Item Name="Lil Duke"
+        Weight="1"
+        RemoveOn="0.1"
+        DecreaseBy="1"
+  />
+  <Item Name="Sharty McFly"
+        Weight="1"
+        RemoveOn="0.1"
+        DecreaseBy="1"
+  />
+</Pool>
+<Pool Name="greedShop">
+	<Item Name="DUKE'S GULLET"
+        Weight="1"
+        RemoveOn="0.1"
+        DecreaseBy="1"
+  />
+	<Item Name="The Princes"
+        Weight="1"
+        RemoveOn="0.1"
+        DecreaseBy="1"
+  />
+  <Item Name="Sharty McFly"
+        Weight="1"
+        RemoveOn="0.1"
+        DecreaseBy="1"
+  />
+</Pool>
+<Pool Name="greedCurse">
+  <Item Name="Fiendish Swarm"
+        Weight="1"
+        RemoveOn="0.1"
+        DecreaseBy="1"
+  />
+</Pool>
+<Pool Name="greedSecret">
+  <Item Name="Duke Flute"
+        Weight="1"
+        RemoveOn="0.1"
+        DecreaseBy="1"
+  />
+</Pool>
+<Pool Name="greedDevil">
+  <Item Name="Fiendish Swarm"
+        Weight="1"
+        RemoveOn="0.1"
+        DecreaseBy="1"
+  />
+  <Item Name="Lil Duke"
+        Weight="1"
+        RemoveOn="0.1"
+        DecreaseBy="1"
+  />
+</Pool>
+</ItemPools>
