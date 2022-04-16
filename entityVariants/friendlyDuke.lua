@@ -2,6 +2,8 @@ local Name = "Friendly Duke"
 local Tag = "friendlyDuke"
 local Id = Isaac.GetEntityVariantByName(Name)
 
+-- TODO: Create actual descend and ascend animations
+-- TODO: Make black smoke poofs appear when spawning enemy
 local STATE = {
 	DESCEND = 0,
 	FLOAT = 1,
@@ -68,6 +70,7 @@ local function MC_FAMILIAR_UPDATE(_, f)
 	end
 	if data.State == STATE.ATTACK_BIG then
 		if sprite:IsEventTriggered("Barf") then
+			-- TODO: Make this big attack spawn 1 big fly instead of 3 littles
 			for _= 1,3 do
 				local fly = Isaac.Spawn(EntityType.ENTITY_ATTACKFLY, 0, 0, f.Position, Vector.Zero, f)
 				fly:AddCharmed(EntityRef(f.Player), -1)
@@ -81,6 +84,9 @@ local function MC_FAMILIAR_UPDATE(_, f)
 		data.existenceTimer = data.existenceTimer - 1
 	end
 	if data.State and data.State ~= STATE.DESCEND and data.State ~= STATE.ASCEND then
+		-- TODO: Make rotation more accurate, sometimes it bounces in the opposite direction intended
+		-- this is because the rotation always adds 90, when it occasionally needs to subtract 90
+		-- the switch between addition and subtraction happens when a top or bottom wall is hit after a change in horizontal speed
 		if f:CollidesWithGrid() then
 			data.moveAngle = (data.moveAngle + 90)%360
 		end
