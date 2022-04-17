@@ -51,7 +51,6 @@ local function MC_PRE_FAMILIAR_COLLISION(_, f, e)
 		local sprite = f:GetSprite()
 
 		if data.State ~= STATE.ATTACK then
-			print("hi")
 			sprite:Play("Attack", true)
 			data.State = STATE.ATTACK
 		end

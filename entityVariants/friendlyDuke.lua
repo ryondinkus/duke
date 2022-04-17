@@ -3,7 +3,6 @@ local Tag = "friendlyDuke"
 local Id = Isaac.GetEntityVariantByName(Name)
 
 -- TODO: Create actual descend and ascend animations
--- TODO: Make black smoke poofs appear when spawning enemy
 local STATE = {
 	DESCEND = 0,
 	FLOAT = 1,
@@ -34,6 +33,17 @@ local function MC_FAMILIAR_UPDATE(_, f)
 			data.State = STATE.FLOAT
 			data.existenceTimer = CONSTANTS.EXISTENCE_TIMER
 			data.attackCooldown = 30 * DukeHelpers.rng:RandomInt(CONSTANTS.ATTACK_COOLDOWN_MAX) + CONSTANTS.ATTACK_COOLDOWN_MIN
+			if DukeHelpers.rng:RandomInt(5) == 0 then
+				if DukeHelpers.rng:RandomInt(2) == 0 then
+					data.Champion = "Green"
+					sprite:ReplaceSpritesheet(0, "gfx/familiars/friendly_duke_green.png")
+					sprite:LoadGraphics()
+				else
+					data.Champion = "Orange"
+					sprite:ReplaceSpritesheet(0, "gfx/familiars/friendly_duke_orange.png")
+					sprite:LoadGraphics()
+				end
+			end
 		end
 	end
 	if data.State == STATE.FLOAT then
@@ -57,9 +67,13 @@ local function MC_FAMILIAR_UPDATE(_, f)
 	if data.State == STATE.ATTACK_SMALL then
 		if sprite:IsEventTriggered("Barf") then
 			for _= 1,3 do
-				local fly = Isaac.Spawn(EntityType.ENTITY_ATTACKFLY, 0, 0, f.Position, Vector.Zero, f)
+				local fly = Isaac.Spawn(EntityType.ENTITY_ATTACKFLY, 0, 0, f.Position, Vector.FromAngle(DukeHelpers.rng:RandomInt(360)) * 5, f)
 				fly:AddCharmed(EntityRef(f.Player), -1)
+				fly:ClearEntityFlags(EntityFlag.FLAG_APPEAR)
+				local poof = Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.POOF01, 0, f.Position, Vector.Zero, f)
+				poof.Color = Color(0,0,0,1,0,0,0)
 			end
+			DukeHelpers.sfx:Play(SoundEffect.SOUND_MONSTER_GRUNT_1, 1, 0)
 		end
 		if sprite:IsFinished("Attack01") then
 			sprite:Play("Float", true)
@@ -70,11 +84,29 @@ local function MC_FAMILIAR_UPDATE(_, f)
 	end
 	if data.State == STATE.ATTACK_BIG then
 		if sprite:IsEventTriggered("Barf") then
-			-- TODO: Make this big attack spawn 1 big fly instead of 3 littles
-			for _= 1,3 do
-				local fly = Isaac.Spawn(EntityType.ENTITY_ATTACKFLY, 0, 0, f.Position, Vector.Zero, f)
+			if data.Champion == "Green" then
+				local fly = Isaac.Spawn(EntityType.ENTITY_MOTER, 0, 0, f.Position, Vector.FromAngle(DukeHelpers.rng:RandomInt(360)) * 5, f)
 				fly:AddCharmed(EntityRef(f.Player), -1)
+				fly:ClearEntityFlags(EntityFlag.FLAG_APPEAR)
+				local poof = Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.POOF01, 0, f.Position, Vector.Zero, f)
+				poof.Color = Color(0,0,0,1,0,0,0)
+			elseif data.Champion == "Orange" then
+				local fly = Isaac.Spawn(EntityType.ENTITY_SUCKER, 0, 0, f.Position, Vector.FromAngle(DukeHelpers.rng:RandomInt(360)) * 5, f)
+				fly:AddCharmed(EntityRef(f.Player), -1)
+				fly:ClearEntityFlags(EntityFlag.FLAG_APPEAR)
+				local poof = Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.POOF01, 0, f.Position, Vector.Zero, f)
+				poof.Color = Color(0,0,0,1,0,0,0)
+			else
+				-- TODO: Make actual big flies that aren't champions
+				-- TODO: Figure out the black poof effect that real duke uses
+				local fly = Isaac.Spawn(EntityType.ENTITY_ATTACKFLY, 0, 0, f.Position, Vector.FromAngle(DukeHelpers.rng:RandomInt(360)) * 5, f)
+				fly:AddCharmed(EntityRef(f.Player), -1)
+				fly:ClearEntityFlags(EntityFlag.FLAG_APPEAR)
+				local poof = Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.POOF01, 0, f.Position, Vector.Zero, f)
+				poof.Color = Color(0,0,0,1,0,0,0)
+				fly:ToNPC():MakeChampion(DukeHelpers.rng:GetSeed(), ChampionColor.GIANT, true)
 			end
+			DukeHelpers.sfx:Play(SoundEffect.SOUND_MONSTER_GRUNT_2, 1, 0)
 		end
 		if sprite:IsFinished("Attack02") then
 			sprite:Play("Float", true)
@@ -96,6 +128,9 @@ local function MC_FAMILIAR_UPDATE(_, f)
 		if sprite:IsFinished("Ascend") then
 			f:Remove()
 		end
+	end
+	if data.Champion and data.Champion == "Orange" then
+		f.SpriteScale = f.SpriteScale * 1.15
 	end
 end
 

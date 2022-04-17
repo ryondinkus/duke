@@ -1,9 +1,9 @@
 <AnimatedActor>
-	<Info CreatedBy="robot" CreatedOn="4/15/2022 10:20:10 PM" Version="117" Fps="30"/>
+	<Info CreatedBy="robot" CreatedOn="4/17/2022 12:14:26 AM" Version="118" Fps="30"/>
 	<Content>
 		<Spritesheets>
 			<Spritesheet Path="friendly_duke.png" Id="0"/>
-			<Spritesheet Path="Effects/Effect_052_Dust Cloud.png" Id="1"/>
+			<Spritesheet Path="effect_052_dust cloud.png" Id="1"/>
 		</Spritesheets>
 		<Layers>
 			<Layer Name="body" Id="0" SpritesheetId="0"/>
