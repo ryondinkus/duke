@@ -1,9 +1,0 @@
-<pocketitems>
-	<card name="Tapeworm Card"
-        description="Infest all"
-        hud="Tapeworm Card"
-        type="special"
-        pickup="327"
-        mimiccharge="12"
-    />
-</pocketitems>
