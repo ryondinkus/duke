@@ -24,17 +24,17 @@ local function MC_FAMILIAR_UPDATE(_, f)
 	if data.State == STATE.ATTACK then
 		if sprite:IsEventTriggered("Barf") then
 			DukeHelpers.sfx:Play(SoundEffect.SOUND_WHEEZY_COUGH, 1, 0, false, 1.5)
-		    local effect = Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.POOF01, 0, f.Position, Vector.Zero, nil)
-		    effect.Color = Color(0,0,0,1)
+			local effect = Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.POOF01, 0, f.Position, Vector.Zero, nil)
+			effect.Color = Color(0, 0, 0, 1)
 			effect.SpriteScale = Vector(0.5, 0.5)
-		    for _= 1, DukeHelpers.rng:RandomInt(2) + 1 do
-		        local flyToSpawn = DukeHelpers.GetWeightedFly(rng)
-		        local attackFly = DukeHelpers.SpawnAttackFlyBySubType(flyToSpawn.heartFlySubType, f.Position, f.Player)
+			for _ = 1, DukeHelpers.rng:RandomInt(2) + 1 do
+				local flyToSpawn = DukeHelpers.GetWeightedFly(DukeHelpers.rng)
+				local attackFly = DukeHelpers.SpawnAttackFlyBySubType(flyToSpawn.heartFlySubType, f.Position, f.Player)
 				if f.Player and f.Player:HasCollectible(CollectibleType.COLLECTIBLE_BFFS) and not f.Player:HasCollectible(CollectibleType.COLLECTIBLE_HIVE_MIND) then
 					attackFly:GetData().bffs = true
 					attackFly.CollisionDamage = attackFly.CollisionDamage * 2
 				end
-		    end
+			end
 		end
 		if sprite:IsFinished("Attack") then
 			sprite:Play("Float", true)
@@ -54,28 +54,28 @@ local function MC_PRE_FAMILIAR_COLLISION(_, f, e)
 			sprite:Play("Attack", true)
 			data.State = STATE.ATTACK
 		end
-    end
+	end
 end
 
 return {
-    Name = Name,
-    Tag = Tag,
+	Name = Name,
+	Tag = Tag,
 	Id = Id,
-    callbacks = {
-        {
-            ModCallbacks.MC_FAMILIAR_INIT,
-            MC_FAMILIAR_INIT,
-            Id
-        },
+	callbacks = {
 		{
-            ModCallbacks.MC_FAMILIAR_UPDATE,
-            MC_FAMILIAR_UPDATE,
-            Id
-        },
+			ModCallbacks.MC_FAMILIAR_INIT,
+			MC_FAMILIAR_INIT,
+			Id
+		},
+		{
+			ModCallbacks.MC_FAMILIAR_UPDATE,
+			MC_FAMILIAR_UPDATE,
+			Id
+		},
 		{
 			ModCallbacks.MC_PRE_FAMILIAR_COLLISION,
-            MC_PRE_FAMILIAR_COLLISION,
-            Id
+			MC_PRE_FAMILIAR_COLLISION,
+			Id
 		}
-    }
+	}
 }

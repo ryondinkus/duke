@@ -66,7 +66,7 @@ dukeMod:AddCallback(ModCallbacks.MC_PRE_FAMILIAR_COLLISION, function(_, f, e)
 				data.hitPoints = data.hitPoints - 1
 			end
 		end
-    end
+	end
 end, DukeHelpers.FLY_VARIANT)
 
 -- Handles attacking an enemy when attack fly
@@ -87,18 +87,18 @@ end, FamiliarVariant.BLUE_FLY)
 -- Registers the flies
 for _, fly in pairs(flies) do
 	local newFly = {
-        key = fly.key,
-        spritesheet = fly.spritesheet,
-        canAttack = fly.canAttack,
-        pickupSubType = fly.subType,
-        heartFlySubType = fly.subType,
-        attackFlySubType = DukeHelpers.GetAttackFlySubTypeBySubType(fly.subType),
-    	fliesCount = fly.fliesCount,
+		key = fly.key,
+		spritesheet = fly.spritesheet,
+		canAttack = fly.canAttack,
+		pickupSubType = fly.subType,
+		heartFlySubType = fly.subType,
+		attackFlySubType = DukeHelpers.GetAttackFlySubTypeBySubType(fly.subType),
+		fliesCount = fly.fliesCount,
 		weight = fly.weight,
 		sfx = fly.sfx,
 		poofColor = fly.poofColor,
 		sacAltarQuality = fly.sacAltarQuality
-    }
+	}
 
 	if fly.useFly then
 		local existingFly = DukeHelpers.Flies[fly.useFly]
@@ -111,13 +111,13 @@ for _, fly in pairs(flies) do
 	end
 
 
-    if fly.callbacks then
-        for _, callback in pairs(fly.callbacks) do
-            dukeMod:AddCallback(table.unpack(callback))
-        end
-    end
+	if fly.callbacks then
+		for _, callback in pairs(fly.callbacks) do
+			dukeMod:AddCallback(table.unpack(callback))
+		end
+	end
 
-    DukeHelpers.Flies[fly.key] = newFly
+	DukeHelpers.Flies[fly.key] = newFly
 end
 
 dukeMod:AddCallback(ModCallbacks.MC_USE_ITEM, function(_, type, rng, player)
@@ -135,7 +135,7 @@ dukeMod:AddCallback(ModCallbacks.MC_USE_ITEM, function(_, type, rng, player)
 		end
 
 		if flyScore > 24 then flyScore = 24 end
-		local itemQuality = math.floor(flyScore/5)
+		local itemQuality = math.floor(flyScore / 5)
 
 		local itemPool = Game():GetItemPool()
 		local roomPool = itemPool:GetPoolForRoom(RoomType.ROOM_DEVIL, Game():GetLevel():GetCurrentRoomDesc().SpawnSeed)

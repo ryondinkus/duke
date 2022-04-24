@@ -25,7 +25,7 @@ local function MC_USE_ITEM(_, type, rng, p, flags)
             end
             DukeHelpers.sfx:Play(SoundEffect.SOUND_WHEEZY_COUGH, 1, 0)
             local effect = Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.POOF01, 0, p.Position, Vector.Zero, nil)
-            effect.Color = Color(0,0,0,1)
+            effect.Color = Color(0, 0, 0, 1)
         else
             DukeHelpers.ForEachEntityInRoom(function(entity)
                 if DukeHelpers.IsFlyOfPlayer(entity, p) then
@@ -46,7 +46,7 @@ return {
     Name = Name,
     Names = Names,
     Tag = Tag,
-	Id = Id,
+    Id = Id,
     Descriptions = Descriptions,
     WikiDescription = WikiDescription,
     Hide = true,

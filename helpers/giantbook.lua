@@ -1,4 +1,4 @@
-if not GiantBookAPI then 
+if not GiantBookAPI then
 	GiantBookAPI = RegisterMod("GiantBook API", 1)
 end
 
@@ -6,7 +6,7 @@ local mod = GiantBookAPI
 local sfx = SFXManager()
 --GIANTBOOK ANIMATION
 local bigBook = Sprite()
-local maxFrames = { ["Appear"] = 33,  ["Shake"] = 36,  ["ShakeFire"] = 32,  ["Flip"] = 33 }
+local maxFrames = { ["Appear"] = 33, ["Shake"] = 36, ["ShakeFire"] = 32, ["Flip"] = 33 }
 local bookColors = { [0] = Color(1, 1, 1, 1, 0, 0, 0), [1] = Color(1, 1, 1, 1, 0, 0, 0), [2] = Color(1, 1, 1, 1, 0, 0, 0), [3] = Color(1, 1, 1, 1, 0, 0, 0), [4] = Color(1, 1, 1, 1, 0, 0, 0), [5] = Color(1, 1, 1, 1, 0, 0, 0) }
 local bookLength = 0
 local bookHideBerkano = false
@@ -71,15 +71,16 @@ function mod.bookRender()
 			bigBook:Update()
 			bookLength = bookLength - 1
 		end
-		for i=5, 0, -1 do
+		for i = 5, 0, -1 do
 			bigBook.Color = bookColors[i]
-			bigBook:RenderLayer(i, GetScreenCenterPosition(), Vector(0,0), Vector(0,0))
+			bigBook:RenderLayer(i, GetScreenCenterPosition(), Vector(0, 0), Vector(0, 0))
 		end
 	end
 	if bookLength == 0 and bookHideBerkano then
 		bookHideBerkano = false
 	end
 end
+
 mod:AddCallback(ModCallbacks.MC_POST_RENDER, mod.bookRender)
 
 function GetScreenCenterPosition()
@@ -88,10 +89,11 @@ end
 
 --giving berkano back it's visual effect
 function mod:useBerkano()
-	if not bookHideBerkano  then
+	if not bookHideBerkano then
 		GiantBookAPI.playGiantBook("Appear", "Rune_07_Berkand.png", Color(0.2, 0.1, 0.3, 1, 0, 0, 0), Color(0.117, 0.0117, 0.2, 1, 0, 0, 0), Color(0, 0, 0, 0.8, 0, 0, 0), nil, true)
 	end
 end
+
 mod:AddCallback(ModCallbacks.MC_USE_CARD, mod.useBerkano, Card.RUNE_BERKANO)
 
 --ACHIEVEMENT DISPLAY
@@ -103,8 +105,8 @@ local paperSwitch = false
 function mod.paperRender()
 	if (paperFrames <= 0) then
 		if paperSwitch then
-			for i = 1, #achievementQueue-1 do
-				achievementQueue[i] = achievementQueue[i+1]
+			for i = 1, #achievementQueue - 1 do
+				achievementQueue[i] = achievementQueue[i + 1]
 			end
 			achievementQueue[#achievementQueue] = nil
 			paperSwitch = false
@@ -124,11 +126,11 @@ function mod.paperRender()
 			bigPaper:Update()
 			paperFrames = paperFrames - 1
 		end
-		for i=0, 3, 1 do
-			bigPaper:RenderLayer(i, GetScreenCenterPosition(), Vector(0,0), Vector(0,0))
+		for i = 0, 3, 1 do
+			bigPaper:RenderLayer(i, GetScreenCenterPosition(), Vector(0, 0), Vector(0, 0))
 		end
 	end
-	
+
 	--sound
 	if bigPaper:IsEventTriggered("paperIn") then
 		sfx:Play(SoundEffect.SOUND_PAPER_IN, 1, 0, false, 1)
@@ -137,8 +139,9 @@ function mod.paperRender()
 		sfx:Play(SoundEffect.SOUND_PAPER_OUT, 1, 0, false, 1)
 	end
 end
+
 mod:AddCallback(ModCallbacks.MC_POST_RENDER, mod.paperRender)
 
-function GiantBookAPI.ShowAchievement(_drawingSprite) 
-	table.insert(achievementQueue, #achievementQueue+1, _drawingSprite)
+function GiantBookAPI.ShowAchievement(_drawingSprite)
+	table.insert(achievementQueue, #achievementQueue + 1, _drawingSprite)
 end

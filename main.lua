@@ -1,41 +1,41 @@
 dukeMod = RegisterMod("Duke", 1)
 
 function table.deepCopy(original)
-	local copy = {}
-	for k, v in pairs(original) do
-		if type(v) == "table" then
-			v = table.deepCopy(v)
-		end
-		copy[k] = v
-	end
-	return copy
+    local copy = {}
+    for k, v in pairs(original) do
+        if type(v) == "table" then
+            v = table.deepCopy(v)
+        end
+        copy[k] = v
+    end
+    return copy
 end
 
 local defaultGlobal = {
-	isInitialized = false,
-	isGameStarted = false,
-	floorDevilDealChance = nil
+    isInitialized = false,
+    isGameStarted = false,
+    floorDevilDealChance = nil
 }
 
 dukeMod.global = table.deepCopy(defaultGlobal)
 
 DukeHelpers = {
-	DUKE_ID = Isaac.GetPlayerTypeByName("Duke"),
-	rng = RNG(),
-	sfx = SFXManager(),
-	PRICE_OFFSET = -50,
-	MAX_HEALTH = 4
+    DUKE_ID = Isaac.GetPlayerTypeByName("Duke"),
+    rng = RNG(),
+    sfx = SFXManager(),
+    PRICE_OFFSET = -50,
+    MAX_HEALTH = 4
 }
 
 -- Sets the RNG seed for the run
 dukeMod:AddCallback(ModCallbacks.MC_POST_GAME_STARTED, function()
-	local seeds = Game():GetSeeds()
-	DukeHelpers.rng:SetSeed(seeds:GetStartSeed(), 35)
+    local seeds = Game():GetSeeds()
+    DukeHelpers.rng:SetSeed(seeds:GetStartSeed(), 35)
 end)
 
 -- Resets the floor devil deal randomness on new floor
 dukeMod:AddCallback(ModCallbacks.MC_POST_NEW_LEVEL, function()
-	dukeMod.global.floorDevilDealChance = nil
+    dukeMod.global.floorDevilDealChance = nil
 end)
 
 -- Helpers
@@ -59,21 +59,21 @@ for _, item in pairs(DukeHelpers.Items) do
         end
     end
 
-	DukeHelpers.AddExternalItemDescriptionItem(item)
+    DukeHelpers.AddExternalItemDescriptionItem(item)
 
-	if Encyclopedia and item.WikiDescription then
-		Encyclopedia.AddItem({
-			Class = "Duke",
-			ID = item.Id,
-			WikiDesc = item.WikiDescription,
-			ModName = "Duke",
+    if Encyclopedia and item.WikiDescription then
+        Encyclopedia.AddItem({
+            Class = "Duke",
+            ID = item.Id,
+            WikiDesc = item.WikiDescription,
+            ModName = "Duke",
             Hide = item.Hide
-		})
-	end
+        })
+    end
 
-	-- if AnimatedItemsAPI then
-	-- 	AnimatedItemsAPI:SetAnimationForCollectible(item.Id, "items/collectibles/animated/".. item.Tag .. "Animated.anm2")
-	-- end
+    -- if AnimatedItemsAPI then
+    -- 	AnimatedItemsAPI:SetAnimationForCollectible(item.Id, "items/collectibles/animated/".. item.Tag .. "Animated.anm2")
+    -- end
 end
 
 include("trinkets/registry")
@@ -85,17 +85,17 @@ for _, trinket in pairs(DukeHelpers.Trinkets) do
         end
     end
 
-	DukeHelpers.AddExternalItemDescriptionTrinket(trinket)
+    DukeHelpers.AddExternalItemDescriptionTrinket(trinket)
 
-	if Encyclopedia and trinket.WikiDescription then
-		Encyclopedia.AddTrinket({
-			Class = "Duke",
-			ID = trinket.Id,
-			WikiDesc = trinket.WikiDescription,
-			ModName = "Duke",
+    if Encyclopedia and trinket.WikiDescription then
+        Encyclopedia.AddTrinket({
+            Class = "Duke",
+            ID = trinket.Id,
+            WikiDesc = trinket.WikiDescription,
+            ModName = "Duke",
             Hide = trinket.Hide
-		})
-	end
+        })
+    end
 end
 
 include("cards/registry")
@@ -109,16 +109,16 @@ for _, card in pairs(DukeHelpers.Cards) do
 
     DukeHelpers.AddExternalItemDescriptionCard(card)
 
-	if Encyclopedia and card.WikiDescription then
-		Encyclopedia.AddCard({
-			Class = "Duke",
-			ID = card.Id,
-			WikiDesc = card.WikiDescription,
-			ModName = "Duke",
-            Spr = Encyclopedia.RegisterSprite(dukeMod.path.."content/gfx/ui_cardfronts.anm2", card.Name),
+    if Encyclopedia and card.WikiDescription then
+        Encyclopedia.AddCard({
+            Class = "Duke",
+            ID = card.Id,
+            WikiDesc = card.WikiDescription,
+            ModName = "Duke",
+            Spr = Encyclopedia.RegisterSprite(dukeMod.path .. "content/gfx/ui_cardfronts.anm2", card.Name),
             Hide = card.Hide
-		})
-	end
+        })
+    end
 end
 
 include("entityVariants/registry")
@@ -150,9 +150,9 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_GAME_STARTED, function(_, isContinued)
                     end
                 end
 
-				if familiar.Variant == DukeHelpers.FLY_VARIANT then
-					DukeHelpers.PositionHeartFly(familiar, familiar:GetData().layer)
-				end
+                if familiar.Variant == DukeHelpers.FLY_VARIANT then
+                    DukeHelpers.PositionHeartFly(familiar, familiar:GetData().layer)
+                end
 
                 if DukeHelpers.IsAttackFly(familiar) then
                     DukeHelpers.InitializeAttackFly(familiar)
@@ -188,10 +188,10 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_NEW_ROOM, function()
                 DukeHelpers.ForEachPlayer(function(p, pData)
                     local savedPlayerData = data.players[tostring(p.InitSeed)]
                     if savedPlayerData then
-						if DukeHelpers.IsDuke(p) then
+                        if DukeHelpers.IsDuke(p) then
                             DukeHelpers.InitializeDuke(p, true)
-							pData = DukeHelpers.GetDukeData(p)
-						end
+                            pData = DukeHelpers.GetDukeData(p)
+                        end
                         for key, value in pairs(DukeHelpers.RehydrateEntityData(savedPlayerData)) do
                             pData[key] = value
                         end
@@ -211,7 +211,7 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_NEW_ROOM, function()
             dukeMod.f = table.deepCopy(defaultGlobal)
             dukeMod.unlocks = {}
             dukeMod.mcmOptions = {}
-		end
+        end
         --InitializeMCM(defaultMcmOptions)
         dukeMod.global.isInitialized = true
     end
@@ -229,7 +229,7 @@ end)
 local unlocks = include("unlocks/registry")
 
 local function saveUnlock(tag)
-    GiantBookAPI.ShowAchievement("achievement_"..tag..".png")
+    GiantBookAPI.ShowAchievement("achievement_" .. tag .. ".png")
     dukeMod.unlocks[tag] = true
     DukeHelpers.SaveGame()
 end

@@ -18,7 +18,7 @@ dukeMod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, function(_, pickup, co
 	local p = collider:ToPlayer()
 
 	if p and DukeHelpers.IsDuke(p) and (pickup.Price <= 0 or p:GetNumCoins() >= pickup.Price) then
-    	local sfx = SoundEffect.SOUND_BOSS2_BUBBLES
+		local sfx = SoundEffect.SOUND_BOSS2_BUBBLES
 		if pickup.SubType == HeartSubType.HEART_BLENDED then
 			DukeHelpers.AddHeartFly(p, DukeHelpers.Flies.FLY_RED, 1)
 			DukeHelpers.AddHeartFly(p, DukeHelpers.Flies.FLY_SOUL, 1)
@@ -239,14 +239,14 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_UPDATE, function()
 		local sprite = p:GetSprite()
 		if sprite:IsPlaying("Death") and sprite:GetFrame() == 19 then
 			local fliesData = DukeHelpers.GetDukeData(p).heartFlies
-	        if fliesData then
-	            for i = #fliesData, 1, -1 do
-	                local fly = fliesData[i]
-	                local f = DukeHelpers.GetEntityByInitSeed(fly.initSeed)
-                    DukeHelpers.SpawnAttackFly(f)
-	                DukeHelpers.RemoveHeartFly(f)
-	            end
-	        end
+			if fliesData then
+				for i = #fliesData, 1, -1 do
+					local fly = fliesData[i]
+					local f = DukeHelpers.GetEntityByInitSeed(fly.initSeed)
+					DukeHelpers.SpawnAttackFly(f)
+					DukeHelpers.RemoveHeartFly(f)
+				end
+			end
 			Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.LARGE_BLOOD_EXPLOSION, 0, p.Position, Vector.Zero, p)
 			DukeHelpers.sfx:Play(SoundEffect.SOUND_ROCKET_BLAST_DEATH)
 		end

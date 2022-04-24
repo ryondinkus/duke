@@ -13,9 +13,9 @@ local WikiDescription = DukeHelpers.GenerateEncyclopediaPage("Poops and shits ev
 
 local function MC_EVALUATE_CACHE(_, player, flag)
     if flag == CacheFlag.CACHE_FAMILIARS then
-		local familiarAmount = player:GetCollectibleNum(Id) + player:GetEffects():GetCollectibleEffectNum(Id)
-		local itemConfig = Isaac.GetItemConfig():GetCollectible(Id)
-		player:CheckFamiliar(DukeHelpers.EntityVariants.lilDuke.Id, familiarAmount, RNG(), itemConfig)
+        local familiarAmount = player:GetCollectibleNum(Id) + player:GetEffects():GetCollectibleEffectNum(Id)
+        local itemConfig = Isaac.GetItemConfig():GetCollectible(Id)
+        player:CheckFamiliar(DukeHelpers.EntityVariants.lilDuke.Id, familiarAmount, RNG(), itemConfig)
     end
 end
 
@@ -23,7 +23,7 @@ return {
     Name = Name,
     Names = Names,
     Tag = Tag,
-	Id = Id,
+    Id = Id,
     Descriptions = Descriptions,
     WikiDescription = WikiDescription,
     callbacks = {

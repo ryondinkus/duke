@@ -1,4 +1,4 @@
-DukeHelpers.EntityVariants =  {
+DukeHelpers.EntityVariants = {
     lilDuke = include("entityVariants/lilDuke"),
-	friendlyDuke = include("entityVariants/friendlyDuke")
+    friendlyDuke = include("entityVariants/friendlyDuke")
 }
