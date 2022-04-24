@@ -131,6 +131,8 @@ for _, entityVariant in pairs(DukeHelpers.EntityVariants) do
     end
 end
 
+include("sounds/registry")
+
 -- Save and continue callbacks
 
 -- Loads familiar data on startup

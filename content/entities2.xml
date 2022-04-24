@@ -54,4 +54,10 @@
 	<entity anm2path="familiars/lil_duke.anm2" tags="cansacrifice" baseHP="0" boss="0" champion="0" collisionDamage="0" collisionMass="3" collisionRadius="13" friction="1" id="3" name="Lil Duke" numGridCollisionPoints="12" shadowSize="14" stageHP="0" variant="829">
 	  <gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0" />
 	</entity>
+	<entity anm2path="familiars/friendly_duke.anm2" baseHP="0" boss="0" champion="0" collisionDamage="1" collisionMass="30" collisionRadius="35" friction="1" id="3" name="Friendly Duke" numGridCollisionPoints="12" shadowSize="34" stageHP="0" variant="872">
+  	  <gibs amount="16" blood="1" bone="1" eye="0" gut="1" large="1" />
+  	  <preload-snd id="108" /> <!-- SOUND_MONSTER_GRUNT_2 -->
+  	  <preload-snd id="106" /> <!-- SOUND_MONSTER_GRUNT_1 -->
+  	  <preload-snd id="112" /> <!-- SOUND_MONSTER_GRUNT_4 -->
+    </entity>
 </entities>
