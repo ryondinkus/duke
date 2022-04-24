@@ -13,7 +13,7 @@ local WikiDescription = "It's buzzing..." --helper.GenerateEncyclopediaPage("Poo
 
 local function RandomlySpawnHeartFlyFromPickup(player, pickup)
     if player and player:HasTrinket(Id) then
-        local canPickup = true
+        local canPickup = pickup.Variant == PickupVariant.PICKUP_HEART
 
         if pickup.SubType == HeartSubType.HEART_FULL or pickup.SubType == HeartSubType.HEART_HALF or pickup.SubType == HeartSubType.HEART_DOUBLEPACK or pickup.SubType == HeartSubType.HEART_SCARED then
             canPickup = player:CanPickRedHearts()
@@ -31,34 +31,25 @@ local function RandomlySpawnHeartFlyFromPickup(player, pickup)
             canPickup = player:CanPickRedHearts() or player:CanPickSoulHearts()
         end
 
-        if canPickup and DukeHelpers.PercentageChance(50, 100) then
+        if (DukeHelpers.IsDuke(player) or canPickup) and DukeHelpers.PercentageChance(50) then
+            if DukeHelpers.IsDuke(player) then
+                return true
+            end
+
             local heartSubType = DukeHelpers.GetFlyByPickupSubType(pickup.SubType)
             if pickup.SubType == HeartSubType.HEART_BLENDED then
-                if DukeHelpers.PercentageChance(50, 100) then
+                if DukeHelpers.PercentageChance(50) then
                     heartSubType = HeartSubType.HEART_FULL
                 else
                     heartSubType = HeartSubType.HEART_SOUL
                 end
             end
-            if DukeHelpers.IsDuke(player) then
-                if pickup.SubType == HeartSubType.HEART_BLENDED then
-                    if DukeHelpers.PercentageChance(50, 100) then
-                        heartSubType = HeartSubType.HEART_FULL
-                    else
-                        heartSubType = HeartSubType.HEART_SOUL
-                    end
-                end
 
-                if type(heartSubType) == "number" then
-                    DukeHelpers.AddHeartFly(player, DukeHelpers.GetFlyByHeartSubType(heartSubType), 1)
-                end
-                return true
-            else
-                if type(heartSubType) ~= "number" then
-                    heartSubType = heartSubType.heartFlySubType
-                end
-                DukeHelpers.SpawnPickupHeartFly(player, pickup)
+            if type(heartSubType) ~= "number" then
+                heartSubType = heartSubType.heartFlySubType
             end
+            DukeHelpers.SpawnPickupHeartFly(player, pickup)
+
             return true
         end
     end

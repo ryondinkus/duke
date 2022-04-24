@@ -219,12 +219,19 @@ function DukeHelpers.SpawnPickupHeartFly(player, pickup, overriddenSubType, amou
 	end
 	local sfx = SoundEffect.SOUND_BOSS2_BUBBLES
 	if overriddenSubType == HeartSubType.HEART_BLENDED then
-		DukeHelpers.AddHeartFly(player, DukeHelpers.Flies.FLY_RED, 1)
-		DukeHelpers.AddHeartFly(player, DukeHelpers.Flies.FLY_SOUL, 1)
+		local redAmount = 1
+		local soulAmount = 1
 
-		if DukeHelpers.IsDuke(player) then
-			DukeHelpers.Trinkets.infestedHeart.helpers.RandomlySpawnHeartFlyFromPickup(player, pickup)
+		if DukeHelpers.IsDuke(player) and DukeHelpers.Trinkets.infestedHeart.helpers.RandomlySpawnHeartFlyFromPickup(player, pickup) then
+			if DukeHelpers.PercentageChance(50) then
+				redAmount = redAmount + 1
+			else
+				soulAmount = soulAmount + 1
+			end
 		end
+
+		DukeHelpers.AddHeartFly(player, DukeHelpers.Flies.FLY_RED, redAmount)
+		DukeHelpers.AddHeartFly(player, DukeHelpers.Flies.FLY_SOUL, soulAmount)
 	else
 		local flyToSpawn = DukeHelpers.GetFlyByPickupSubType(overriddenSubType)
 		if flyToSpawn.sfx then
