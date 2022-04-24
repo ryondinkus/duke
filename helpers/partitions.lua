@@ -383,21 +383,21 @@ for i, p in pairs(EntityPartition) do
 end
 
 local function intoBinary(n)
-	local binNum = ""
-	if n ~= 0 then
-		while n >= 1 do
-			if n % 2 == 0 then
-				binNum = binNum.."0"
-				n = n / 2
-			else
-				binNum = binNum.."1"
-				n = (n-1)/2
-			end
-		end
-	else
-		binNum = "0"
-	end
-	return binNum
+    local binNum = ""
+    if n ~= 0 then
+        while n >= 1 do
+            if n % 2 == 0 then
+                binNum = binNum .. "0"
+                n = n / 2
+            else
+                binNum = binNum .. "1"
+                n = (n - 1) / 2
+            end
+        end
+    else
+        binNum = "0"
+    end
+    return binNum
 end
 
 for i = 1, 127 do

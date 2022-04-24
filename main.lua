@@ -1,58 +1,56 @@
 dukeMod = RegisterMod("Duke", 1)
 
 function table.deepCopy(original)
-	local copy = {}
-	for k, v in pairs(original) do
-		if type(v) == "table" then
-			v = table.deepCopy(v)
-		end
-		copy[k] = v
-	end
-	return copy
+    local copy = {}
+    for k, v in pairs(original) do
+        if type(v) == "table" then
+            v = table.deepCopy(v)
+        end
+        copy[k] = v
+    end
+    return copy
 end
 
 local defaultGlobal = {
-	isInitialized = false,
-	isGameStarted = false,
-	floorDevilDealChance = nil
+    isInitialized = false,
+    isGameStarted = false,
+    floorDevilDealChance = nil
 }
 
 dukeMod.global = table.deepCopy(defaultGlobal)
 
 DukeHelpers = {
-	DUKE_ID = Isaac.GetPlayerTypeByName("Duke"),
-	rng = RNG(),
-	sfx = SFXManager(),
-	PRICE_OFFSET = -50,
-	MAX_HEALTH = 4
+    DUKE_ID = Isaac.GetPlayerTypeByName("Duke"),
+    rng = RNG(),
+    sfx = SFXManager(),
+    PRICE_OFFSET = -50,
+    MAX_HEALTH = 4
 }
 
 -- Sets the RNG seed for the run
 dukeMod:AddCallback(ModCallbacks.MC_POST_GAME_STARTED, function()
-	local seeds = Game():GetSeeds()
-	DukeHelpers.rng:SetSeed(seeds:GetStartSeed(), 35)
+    local seeds = Game():GetSeeds()
+    DukeHelpers.rng:SetSeed(seeds:GetStartSeed(), 35)
 end)
 
 -- Resets the floor devil deal randomness on new floor
 dukeMod:AddCallback(ModCallbacks.MC_POST_NEW_LEVEL, function()
-	dukeMod.global.floorDevilDealChance = nil
+    dukeMod.global.floorDevilDealChance = nil
 end)
 
 -- Helpers
+include("helpers/docs")
+include("helpers/giantbook")
 include("helpers/partitions")
 include("helpers/utils")
 include("helpers/flies")
 include("helpers/data")
-include("helpers/achievements")
 
 -- Initialize player and flies
 include("flies")
 include("duke")
 
-DukeHelpers.Items = {
-	dukesGullet = include("items/dukesGullet"),
-	othersGullet = include("items/othersGullet")
-}
+include("items/registry")
 
 for _, item in pairs(DukeHelpers.Items) do
     if item.callbacks then
@@ -61,20 +59,21 @@ for _, item in pairs(DukeHelpers.Items) do
         end
     end
 
-	-- helper.AddExternalItemDescriptionItem(item)
+    DukeHelpers.AddExternalItemDescriptionItem(item)
 
-	-- if Encyclopedia and item.WikiDescription then
-	-- 	Encyclopedia.AddItem({
-	-- 		Class = "Loot Deck",
-	-- 		ID = item.Id,
-	-- 		WikiDesc = item.WikiDescription,
-	-- 		ModName = "Loot Deck"
-	-- 	})
-	-- end
+    if Encyclopedia and item.WikiDescription then
+        Encyclopedia.AddItem({
+            Class = "Duke",
+            ID = item.Id,
+            WikiDesc = item.WikiDescription,
+            ModName = "Duke",
+            Hide = item.Hide
+        })
+    end
 
-	-- if AnimatedItemsAPI then
-	-- 	AnimatedItemsAPI:SetAnimationForCollectible(item.Id, "items/collectibles/animated/".. item.Tag .. "Animated.anm2")
-	-- end
+    -- if AnimatedItemsAPI then
+    -- 	AnimatedItemsAPI:SetAnimationForCollectible(item.Id, "items/collectibles/animated/".. item.Tag .. "Animated.anm2")
+    -- end
 end
 
 include("trinkets/registry")
@@ -86,21 +85,53 @@ for _, trinket in pairs(DukeHelpers.Trinkets) do
         end
     end
 
-	-- helper.AddExternalItemDescriptionItem(item)
+    DukeHelpers.AddExternalItemDescriptionTrinket(trinket)
 
-	-- if Encyclopedia and item.WikiDescription then
-	-- 	Encyclopedia.AddItem({
-	-- 		Class = "Loot Deck",
-	-- 		ID = item.Id,
-	-- 		WikiDesc = item.WikiDescription,
-	-- 		ModName = "Loot Deck"
-	-- 	})
-	-- end
-
-	-- if AnimatedItemsAPI then
-	-- 	AnimatedItemsAPI:SetAnimationForCollectible(item.Id, "items/collectibles/animated/".. item.Tag .. "Animated.anm2")
-	-- end
+    if Encyclopedia and trinket.WikiDescription then
+        Encyclopedia.AddTrinket({
+            Class = "Duke",
+            ID = trinket.Id,
+            WikiDesc = trinket.WikiDescription,
+            ModName = "Duke",
+            Hide = trinket.Hide
+        })
+    end
 end
+
+include("cards/registry")
+
+for _, card in pairs(DukeHelpers.Cards) do
+    if card.callbacks then
+        for _, callback in pairs(card.callbacks) do
+            dukeMod:AddCallback(table.unpack(callback))
+        end
+    end
+
+    DukeHelpers.AddExternalItemDescriptionCard(card)
+
+    if Encyclopedia and card.WikiDescription then
+        Encyclopedia.AddCard({
+            Class = "Duke",
+            ID = card.Id,
+            WikiDesc = card.WikiDescription,
+            ModName = "Duke",
+            Spr = Encyclopedia.RegisterSprite(dukeMod.path .. "content/gfx/ui_cardfronts.anm2", card.Name),
+            Hide = card.Hide
+        })
+    end
+end
+
+include("entityVariants/registry")
+
+for _, entityVariant in pairs(DukeHelpers.EntityVariants) do
+    if entityVariant.callbacks then
+        for _, callback in pairs(entityVariant.callbacks) do
+            dukeMod:AddCallback(table.unpack(callback))
+        end
+    end
+end
+
+include("sounds/registry")
 
 -- Save and continue callbacks
 
@@ -119,9 +150,9 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_GAME_STARTED, function(_, isContinued)
                     end
                 end
 
-				if familiar.Variant == DukeHelpers.FLY_VARIANT then
-					DukeHelpers.PositionHeartFly(familiar, familiar:GetData().layer)
-				end
+                if familiar.Variant == DukeHelpers.FLY_VARIANT then
+                    DukeHelpers.PositionHeartFly(familiar, familiar:GetData().layer)
+                end
 
                 if DukeHelpers.IsAttackFly(familiar) then
                     DukeHelpers.InitializeAttackFly(familiar)
@@ -157,10 +188,10 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_NEW_ROOM, function()
                 DukeHelpers.ForEachPlayer(function(p, pData)
                     local savedPlayerData = data.players[tostring(p.InitSeed)]
                     if savedPlayerData then
-						if DukeHelpers.IsDuke(p) then
+                        if DukeHelpers.IsDuke(p) then
                             DukeHelpers.InitializeDuke(p, true)
-							pData = DukeHelpers.GetDukeData(p)
-						end
+                            pData = DukeHelpers.GetDukeData(p)
+                        end
                         for key, value in pairs(DukeHelpers.RehydrateEntityData(savedPlayerData)) do
                             pData[key] = value
                         end
@@ -180,7 +211,7 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_NEW_ROOM, function()
             dukeMod.f = table.deepCopy(defaultGlobal)
             dukeMod.unlocks = {}
             dukeMod.mcmOptions = {}
-		end
+        end
         --InitializeMCM(defaultMcmOptions)
         dukeMod.global.isInitialized = true
     end
@@ -198,7 +229,7 @@ end)
 local unlocks = include("unlocks/registry")
 
 local function saveUnlock(tag)
-    CCO.PlayAchievement("gfx/ui/achievements/achievement_"..tag..".png")
+    GiantBookAPI.ShowAchievement("achievement_" .. tag .. ".png")
     dukeMod.unlocks[tag] = true
     DukeHelpers.SaveGame()
 end
@@ -257,53 +288,6 @@ for _, unlock in pairs(unlocks) do
     end
 end
 
-if Test then
-    Test.RegisterTest("duke", {
-        {
-            action = "RESTART"
-        },
-        {
-            action = "ENABLE_DEBUG_FLAG",
-            flag = 4
-        },
-        {
-            action = "ENABLE_DEBUG_FLAG",
-            flag = 8
-        },
-        {
-            action = "GIVE_ITEM",
-            id = CollectibleType.COLLECTIBLE_SOY_MILK
-        },
-        {
-            action = "EXECUTE_LUA",
-            code = function()
-                for _ = 1, 500 do
-                    Isaac.GetPlayer(0):AddCollectible(CollectibleType.COLLECTIBLE_BRIMSTONE)
-                end
-            end
-        },
-        {
-            action = "GIVE_PILL",
-            color = function()
-                return Isaac.AddPillEffectToPool(PillEffect.PILLEFFECT_TEARS_DOWN)
-            end
-        },
-        {
-            action = "REPEAT",
-            times = 50,
-            steps = {
-                {
-                    action = "USE_ITEM",
-                    id = CollectibleType.COLLECTIBLE_PLACEBO,
-                    force = true,
-                    async = true
-                }
-            }
-        },
-        {
-            action = "GIVE_ITEM",
-            id = CollectibleType.COLLECTIBLE_DATAMINER,
-            charged = true
-        }
-    })
+if Poglite then
+    Poglite:AddPogCostume("DukePog", DukeHelpers.DUKE_ID, Isaac.GetCostumeIdByPath("gfx/characters/costume_duke_pog.anm2"))
 end

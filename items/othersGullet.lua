@@ -9,7 +9,7 @@ local Descriptions = {
     en_us = "Poops and shits everywhere",
     spa = "Caca y mierda por todos lados"
 }
-local WikiDescription = "Poops and shits everywhere."--helper.GenerateEncyclopediaPage("Poops and shits everywhere.")
+local WikiDescription = DukeHelpers.GenerateEncyclopediaPage("Poops and shits everywhere.")
 
 local function MC_USE_ITEM(_, type, rng, p)
     DukeHelpers.sfx:Play(SoundEffect.SOUND_WHEEZY_COUGH, 1, 0)

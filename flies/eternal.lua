@@ -6,6 +6,7 @@ local function MC_FAMILIAR_UPDATE(_, f)
 	if f.SubType == subType then
 		if f.FrameCount == 6 then
 			DukeHelpers.ForEachEntityInRoom(function(entity)
+				GiantBookAPI.playDukeGiantBook("Appear", nil, "gfx/ui/giantbook/giantbook_eternalfly.anm2", Color(1, 1, 1, 1), Color(1, 1, 1, 1), Color(1, 1, 1, 1))
 				for i=1, 4 do
 					DukeHelpers.AddHeartFly(f.SpawnerEntity, DukeHelpers.Flies.FLY_RED)
 					DukeHelpers.RemoveHeartFly(entity)
@@ -26,6 +27,8 @@ return {
     canAttack = false,
     subType = subType,
     fliesCount = 1,
+	poofColor = Color(0.62, 0.62, 0.62, 1, 0.78, 0.78, 0.78),
+	sacAltarQuality = 6,
     sfx = SoundEffect.SOUND_SUPERHOLY,
     callbacks = {
         {

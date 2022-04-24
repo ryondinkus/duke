@@ -33,6 +33,8 @@ return {
     subType = subType,
     fliesCount = 1,
 	weight = 1,
+	poofColor = Color(0.62, 0.62, 0.62, 1, 0.78, 0.55, 0),
+	sacAltarQuality = 4,
     sfx = SoundEffect.SOUND_GOLD_HEART,
     callbacks = {
         {

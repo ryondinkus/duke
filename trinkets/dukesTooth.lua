@@ -9,7 +9,7 @@ local Descriptions = {
     en_us = "Nom Nom Nom",
     spa = "Nom Nom Nom"
 }
-local WikiDescription = "Nom Nom Nom"--helper.GenerateEncyclopediaPage("Poops and shits everywhere.")
+local WikiDescription = DukeHelpers.GenerateEncyclopediaPage("Nom Nom Nom")
 
 local function MC_POST_NEW_ROOM()
     if DukeHelpers.AreEnemiesInRoom() then

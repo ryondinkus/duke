@@ -8,13 +8,13 @@ function DukeHelpers.FindByProperties(t, props)
                 break
             end
         end
-        
+
         if not notEquals then
             found = value
             break
         end
     end
-    
+
     return found
 end
 
@@ -28,12 +28,12 @@ function DukeHelpers.CountByProperties(t, props)
                 break
             end
         end
-        
+
         if not notEquals then
             found = found + 1
         end
     end
-    
+
     return found
 end
 
@@ -68,7 +68,7 @@ function DukeHelpers.ForEachEntityInRoom(callback, entityType, entityVariant, en
         if shouldReturn then
             callback(entity)
         end
-	end
+    end
 end
 
 function DukeHelpers.ForEachDuke(callback, collectibleId)
@@ -162,7 +162,7 @@ function DukeHelpers.CalculateDevilDealPrice(collectible, counts)
     if not dukeMod.global.floorDevilDealChance then
         dukeMod.global.floorDevilDealChance = DukeHelpers.rng:RandomInt(99)
     end
-    
+
     local devilPrice = Isaac.GetItemConfig():GetCollectible(collectible.SubType).DevilPrice
 
     local canAffordSouls = DukeHelpers.Find(counts, function(player) return player.SOUL >= 6 end)
@@ -260,21 +260,21 @@ function DukeHelpers.GetBlackHearts(player)
 end
 
 function DukeHelpers.IntegerToBinary(n)
-	local binNum = ""
-	if n ~= 0 then
-		while n >= 1 do
-			if n % 2 == 0 then
-				binNum = binNum.."0"
-				n = n / 2
-			else
-				binNum = binNum.."1"
-				n = (n-1)/2
-			end
-		end
-	else
-		binNum = "0"
-	end
-	return binNum
+    local binNum = ""
+    if n ~= 0 then
+        while n >= 1 do
+            if n % 2 == 0 then
+                binNum = binNum .. "0"
+                n = n / 2
+            else
+                binNum = binNum .. "1"
+                n = (n - 1) / 2
+            end
+        end
+    else
+        binNum = "0"
+    end
+    return binNum
 end
 
 local notEnemies = {
@@ -302,14 +302,14 @@ local notEnemies = {
 }
 
 function DukeHelpers.ListEnemiesInRoom(ignoreVulnerability, filter)
-	local entities = Isaac.GetRoomEntities()
-	local enemies = {}
-	for _, entity in pairs(entities) do
-		if DukeHelpers.Find(PartitionedEntities[EntityPartition.ENEMY], function(t) return t == entity.Type end) and not DukeHelpers.Find(notEnemies, function(t) return t == entity.Type end) and (ignoreVulnerability or entity:IsVulnerableEnemy()) and (not filter or filter(entity, entity:GetData())) then
+    local entities = Isaac.GetRoomEntities()
+    local enemies = {}
+    for _, entity in pairs(entities) do
+        if DukeHelpers.Find(PartitionedEntities[EntityPartition.ENEMY], function(t) return t == entity.Type end) and not DukeHelpers.Find(notEnemies, function(t) return t == entity.Type end) and (ignoreVulnerability or entity:IsVulnerableEnemy()) and (not filter or filter(entity, entity:GetData())) then
             table.insert(enemies, entity)
-		end
-	end
-	return enemies
+        end
+    end
+    return enemies
 end
 
 function DukeHelpers.AreEnemiesInRoom()

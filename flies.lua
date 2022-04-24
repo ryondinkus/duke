@@ -24,9 +24,11 @@ dukeMod:AddCallback(ModCallbacks.MC_FAMILIAR_UPDATE, function(_, f)
 		sprite:LoadGraphics()
 		sprite:Play("Idle", true)
 	end
+
 	if data.layer == DukeHelpers.INNER then
 		f.OrbitDistance = Vector(20, 20)
 		f.OrbitSpeed = 0.045
+		f.CollisionDamage = 7
 	elseif data.layer == DukeHelpers.MIDDLE then
 		f.OrbitDistance = Vector(40, 36)
 		f.OrbitSpeed = 0.02
@@ -36,7 +38,14 @@ dukeMod:AddCallback(ModCallbacks.MC_FAMILIAR_UPDATE, function(_, f)
 		f.OrbitSpeed = 0.01
 		f.CollisionDamage = 2
 	end
-	f.Velocity = f:GetOrbitPosition(f.Player.Position + f.Player.Velocity) - f.Position
+
+	local centerPos = f.Player.Position
+	if DukeHelpers.IsDuke(f.Player) and f.Player:GetEffects():HasCollectibleEffect(CollectibleType.COLLECTIBLE_MEGA_MUSH) then
+		f.OrbitDistance = f.OrbitDistance * 3
+		f.OrbitSpeed = f.OrbitSpeed * 1.3
+		centerPos = centerPos - Vector(0, 75)
+	end
+	f.Velocity = f:GetOrbitPosition(centerPos + f.Player.Velocity) - f.Position
 end, DukeHelpers.FLY_VARIANT)
 
 -- Turns heart flies into attack flies when hit
@@ -57,7 +66,7 @@ dukeMod:AddCallback(ModCallbacks.MC_PRE_FAMILIAR_COLLISION, function(_, f, e)
 				data.hitPoints = data.hitPoints - 1
 			end
 		end
-    end
+	end
 end, DukeHelpers.FLY_VARIANT)
 
 -- Handles attacking an enemy when attack fly
@@ -70,21 +79,26 @@ dukeMod:AddCallback(ModCallbacks.MC_FAMILIAR_UPDATE, function(_, f)
 			f:GetData().attacker = nil
 		end
 	end
+	if f:GetData().bffs then
+		f.SpriteScale = Vector(1.2, 1.2)
+	end
 end, FamiliarVariant.BLUE_FLY)
 
 -- Registers the flies
 for _, fly in pairs(flies) do
 	local newFly = {
-        key = fly.key,
-        spritesheet = fly.spritesheet,
-        canAttack = fly.canAttack,
-        pickupSubType = fly.subType,
-        heartFlySubType = fly.subType,
-        attackFlySubType = DukeHelpers.GetAttackFlySubTypeBySubType(fly.subType),
-    	fliesCount = fly.fliesCount,
+		key = fly.key,
+		spritesheet = fly.spritesheet,
+		canAttack = fly.canAttack,
+		pickupSubType = fly.subType,
+		heartFlySubType = fly.subType,
+		attackFlySubType = DukeHelpers.GetAttackFlySubTypeBySubType(fly.subType),
+		fliesCount = fly.fliesCount,
 		weight = fly.weight,
-		sfx = fly.sfx
-    }
+		sfx = fly.sfx,
+		poofColor = fly.poofColor,
+		sacAltarQuality = fly.sacAltarQuality
+	}
 
 	if fly.useFly then
 		local existingFly = DukeHelpers.Flies[fly.useFly]
@@ -92,13 +106,55 @@ for _, fly in pairs(flies) do
 		newFly.canAttack = existingFly.canAttack
 		newFly.heartFlySubType = existingFly.heartFlySubType
 		newFly.attackFlySubType = existingFly.attackFlySubType
+		newFly.poofColor = existingFly.poofColor
+		newFly.sacAltarQuality = existingFly.sacAltarQuality
 	end
 
-    if fly.callbacks then
-        for _, callback in pairs(fly.callbacks) do
-            dukeMod:AddCallback(table.unpack(callback))
-        end
-    end
 
-    DukeHelpers.Flies[fly.key] = newFly
+	if fly.callbacks then
+		for _, callback in pairs(fly.callbacks) do
+			dukeMod:AddCallback(table.unpack(callback))
+		end
+	end
+
+	DukeHelpers.Flies[fly.key] = newFly
 end
+
+dukeMod:AddCallback(ModCallbacks.MC_USE_ITEM, function(_, type, rng, player)
+	local flyScore = 0
+	local fliesData = DukeHelpers.GetDukeData(player).heartFlies
+
+	if fliesData and #fliesData > 0 then
+		for i = #fliesData, 1, -1 do
+			local fly = fliesData[i]
+			local f = DukeHelpers.GetEntityByInitSeed(fly.initSeed)
+			local heartFly = DukeHelpers.GetFlyByHeartSubType(fly.subType)
+			flyScore = flyScore + heartFly.sacAltarQuality
+			DukeHelpers.SpawnHeartFlyPoof(fly.subType, f.Position, player)
+			DukeHelpers.RemoveHeartFly(f)
+		end
+
+		if flyScore > 24 then flyScore = 24 end
+		local itemQuality = math.floor(flyScore / 5)
+
+		local itemPool = Game():GetItemPool()
+		local roomPool = itemPool:GetPoolForRoom(RoomType.ROOM_DEVIL, Game():GetLevel():GetCurrentRoomDesc().SpawnSeed)
+
+		local chosenItem
+
+		while not chosenItem or (Isaac.GetItemConfig():GetCollectible(chosenItem).Quality ~= itemQuality and Isaac.GetItemConfig():GetCollectible(chosenItem).ID ~= CollectibleType.COLLECTIBLE_MAGIC_SKIN) do
+			chosenItem = itemPool:GetCollectible(roomPool, true)
+		end
+
+		if chosenItem then
+			Isaac.Spawn(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_COLLECTIBLE, chosenItem, Game():GetRoom():FindFreePickupSpawnPosition(player.Position), Vector.Zero, player)
+		end
+
+		DukeHelpers.sfx:Play(SoundEffect.SOUND_SATAN_GROW, 1, 0)
+		Game():Darken(1, 60)
+		if player:HasCollectible(CollectibleType.COLLECTIBLE_SACRIFICIAL_ALTAR) then
+			player:RemoveCollectible(CollectibleType.COLLECTIBLE_SACRIFICIAL_ALTAR, false, ActiveSlot.ACTIVE_PRIMARY)
+		end
+	end
+
+end, CollectibleType.COLLECTIBLE_SACRIFICIAL_ALTAR)
