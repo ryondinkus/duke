@@ -121,6 +121,16 @@ for _, card in pairs(DukeHelpers.Cards) do
 	end
 end
 
+include("entityVariants/registry")
+
+for _, entityVariant in pairs(DukeHelpers.EntityVariants) do
+    if entityVariant.callbacks then
+        for _, callback in pairs(entityVariant.callbacks) do
+            dukeMod:AddCallback(table.unpack(callback))
+        end
+    end
+end
+
 -- Save and continue callbacks
 
 -- Loads familiar data on startup

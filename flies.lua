@@ -79,6 +79,9 @@ dukeMod:AddCallback(ModCallbacks.MC_FAMILIAR_UPDATE, function(_, f)
 			f:GetData().attacker = nil
 		end
 	end
+	if f:GetData().bffs then
+		f.SpriteScale = Vector(1.2, 1.2)
+	end
 end, FamiliarVariant.BLUE_FLY)
 
 -- Registers the flies
