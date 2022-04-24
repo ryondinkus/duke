@@ -15,7 +15,7 @@ local CONSTANTS = {
 	ATTACK_COOLDOWN_MIN = 1,
 	ATTACK_COOLDOWN_MAX = 3,
 	MOVE_SPEED = 2,
-	FLY_SPAWN_OFFSET = Vector(0,40)
+	FLY_SPAWN_OFFSET = Vector(0, 40)
 }
 
 local function MC_FAMILIAR_UPDATE(_, f)
@@ -51,22 +51,22 @@ local function MC_FAMILIAR_UPDATE(_, f)
 			local attackType = DukeHelpers.rng:RandomInt(2)
 			if attackType == 0 then
 				sprite:Play("Attack01", true)
-				data.State= STATE.ATTACK_SMALL
+				data.State = STATE.ATTACK_SMALL
 			elseif attackType == 1 then
 				sprite:Play("Attack02", true)
-				data.State= STATE.ATTACK_BIG
+				data.State = STATE.ATTACK_BIG
 			end
 		end
 		if data.existenceTimer <= 0 then
 			sprite:Play("Death", true)
-			data.State= STATE.DEATH
+			data.State = STATE.DEATH
 			f.Velocity = Vector.Zero
 		end
 		data.existenceTimer = data.existenceTimer - 1
 	end
 	if data.State == STATE.ATTACK_SMALL then
 		if sprite:IsEventTriggered("Barf") then
-			for _= 1,3 do
+			for _ = 1, 3 do
 				local fly = Isaac.Spawn(EntityType.ENTITY_ATTACKFLY, 0, 0, f.Position + CONSTANTS.FLY_SPAWN_OFFSET, Vector.Zero, f)
 				fly:AddCharmed(EntityRef(f.Player), -1)
 				fly:ClearEntityFlags(EntityFlag.FLAG_APPEAR)
@@ -112,7 +112,7 @@ local function MC_FAMILIAR_UPDATE(_, f)
 		-- this is because the rotation always adds 90, when it occasionally needs to subtract 90
 		-- the switch between addition and subtraction happens when a top or bottom wall is hit after a change in horizontal speed
 		if f:CollidesWithGrid() then
-			data.moveAngle = (data.moveAngle + 90)%360
+			data.moveAngle = (data.moveAngle + 90) % 360
 		end
 		f.Velocity = Vector.FromAngle(data.moveAngle) * CONSTANTS.MOVE_SPEED
 	end
@@ -120,7 +120,7 @@ local function MC_FAMILIAR_UPDATE(_, f)
 		if sprite:IsEventTriggered("Die") then
 			Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.LARGE_BLOOD_EXPLOSION, 0, f.Position, Vector.Zero, f)
 			DukeHelpers.sfx:Play(SoundEffect.SOUND_ROCKET_BLAST_DEATH)
-			for _= 1,6 do
+			for _ = 1, 6 do
 				local fly = Isaac.Spawn(EntityType.ENTITY_ATTACKFLY, 0, 0, f.Position, Vector.FromAngle(DukeHelpers.rng:RandomInt(360)) * 5, f)
 				fly:AddCharmed(EntityRef(f.Player), -1)
 				fly:ClearEntityFlags(EntityFlag.FLAG_APPEAR)
@@ -150,15 +150,15 @@ local function MC_POST_UPDATE(_, e)
 end
 
 return {
-    Name = Name,
-    Tag = Tag,
+	Name = Name,
+	Tag = Tag,
 	Id = Id,
-    callbacks = {
+	callbacks = {
 		{
-            ModCallbacks.MC_FAMILIAR_UPDATE,
-            MC_FAMILIAR_UPDATE,
-            Id
-        },
+			ModCallbacks.MC_FAMILIAR_UPDATE,
+			MC_FAMILIAR_UPDATE,
+			Id
+		},
 		{
 			ModCallbacks.MC_POST_NEW_ROOM,
 			MC_POST_NEW_ROOM
@@ -167,5 +167,5 @@ return {
 			ModCallbacks.MC_POST_UPDATE,
 			MC_POST_UPDATE
 		}
-    }
+	}
 }
