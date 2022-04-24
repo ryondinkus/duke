@@ -40,13 +40,30 @@ local function MC_POST_PLAYER_UPDATE(_, player)
         end
 
         if playersTakenDamage[tostring(player.InitSeed)] then
-            DukeHelpers.AddHeartFly(player, DukeHelpers.Flies.FLY_RED, dukeData[Tag].RED - updatedHearts.RED)
-            DukeHelpers.AddHeartFly(player, DukeHelpers.Flies.FLY_BLACK, dukeData[Tag].BLACK - updatedHearts.BLACK)
-            DukeHelpers.AddHeartFly(player, DukeHelpers.Flies.FLY_SOUL, dukeData[Tag].SOUL - updatedHearts.SOUL)
-            DukeHelpers.AddHeartFly(player, DukeHelpers.Flies.FLY_BONE, dukeData[Tag].BONE - updatedHearts.BONE)
-            DukeHelpers.AddHeartFly(player, DukeHelpers.Flies.FLY_ETERNAL, dukeData[Tag].ETERNAL - updatedHearts.ETERNAL)
-            DukeHelpers.AddHeartFly(player, DukeHelpers.Flies.FLY_GOLDEN, dukeData[Tag].GOLDEN - updatedHearts.GOLDEN)
-            DukeHelpers.AddHeartFly(player, DukeHelpers.Flies.FLY_ROTTEN, dukeData[Tag].ROTTEN - updatedHearts.ROTTEN)
+            if player:GetPlayerType() == PlayerType.PLAYER_KEEPER or player:GetPlayerType() == PlayerType.PLAYER_KEEPER_B then
+                local totalFliesToSpawn = 0
+
+                DukeHelpers.ForEach(dukeData[Tag], function(value, key)
+                    totalFliesToSpawn = totalFliesToSpawn + (value - updatedHearts[key])
+                end)
+
+                totalFliesToSpawn = math.floor(totalFliesToSpawn / 2)
+
+                DukeHelpers.AddHeartFly(player, DukeHelpers.Flies.FLY_GOLDEN, totalFliesToSpawn)
+            else
+                local redSpawnAmount = dukeData[Tag].RED - updatedHearts.RED
+                local boneSpawnAmount = dukeData[Tag].BONE - updatedHearts.BONE
+
+                redSpawnAmount = redSpawnAmount - (boneSpawnAmount * 2)
+
+                DukeHelpers.AddHeartFly(player, DukeHelpers.Flies.FLY_RED, redSpawnAmount)
+                DukeHelpers.AddHeartFly(player, DukeHelpers.Flies.FLY_BLACK, dukeData[Tag].BLACK - updatedHearts.BLACK)
+                DukeHelpers.AddHeartFly(player, DukeHelpers.Flies.FLY_SOUL, dukeData[Tag].SOUL - updatedHearts.SOUL)
+                DukeHelpers.AddHeartFly(player, DukeHelpers.Flies.FLY_BONE, boneSpawnAmount)
+                DukeHelpers.AddHeartFly(player, DukeHelpers.Flies.FLY_ETERNAL, dukeData[Tag].ETERNAL - updatedHearts.ETERNAL)
+                DukeHelpers.AddHeartFly(player, DukeHelpers.Flies.FLY_GOLDEN, dukeData[Tag].GOLDEN - updatedHearts.GOLDEN)
+                DukeHelpers.AddHeartFly(player, DukeHelpers.Flies.FLY_ROTTEN, dukeData[Tag].ROTTEN - updatedHearts.ROTTEN)
+            end
 
             playersTakenDamage[tostring(player.InitSeed)] = nil
         end
