@@ -15,7 +15,6 @@ local playersTakenDamage = {}
 
 local function MC_ENTITY_TAKE_DMG(_, entity, amount, f)
     local player = entity:ToPlayer()
-	print(player:GetBlackHearts())
     if f & DamageFlag.DAMAGE_FAKE == 0 and player and player:HasCollectible(Id) and amount >= 0 then
         playersTakenDamage[tostring(player.InitSeed)] = true
     end
@@ -27,7 +26,7 @@ local function MC_POST_PLAYER_UPDATE(_, player)
 
         local updatedHearts = {
             RED = player:GetHearts(),
-            BLACK = player:GetBlackHearts(),
+            BLACK = DukeHelpers.GetBlackHearts(player),
             SOUL = DukeHelpers.GetTrueSoulHearts(player),
             BONE = player:GetBoneHearts(),
             ETERNAL = player:GetEternalHearts(),
