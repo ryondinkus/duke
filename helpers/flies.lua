@@ -168,12 +168,7 @@ function DukeHelpers.GetWeightedFly(rng, attack)
 		rng = DukeHelpers.rng
 	end
 
-	local flies = {}
-	for _, fly in pairs(DukeHelpers.Flies) do
-		if fly.weight and (not attack or fly.attackFlySubType) then
-			table.insert(flies, fly)
-		end
-	end
+	local flies = DukeHelpers.Filter(DukeHelpers.Flies, function(fly) return fly.weight and (not attack or DukeHelpers.CanBecomeAttackFly(fly)) end)
 
 	if DukeHelpers.LengthOfTable(flies) > 0 then
 		local csum = 0

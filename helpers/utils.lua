@@ -113,6 +113,22 @@ function DukeHelpers.Map(t, func)
     return mapped
 end
 
+function DukeHelpers.Filter(t, func)
+    local filtered = {}
+    local isArray = DukeHelpers.IsArray(t)
+    for k, v in pairs(t) do
+        if func(v, k) then
+            if isArray then
+                table.insert(filtered, v)
+            else
+                filtered[k] = v
+            end
+        end
+    end
+
+    return filtered
+end
+
 function DukeHelpers.GetEntityByInitSeed(initSeed)
     local entities = Isaac.GetRoomEntities()
 
@@ -335,4 +351,19 @@ function DukeHelpers.PercentageChance(percent, max, rng)
     end
 
     return rng:RandomInt(99) + 1 <= value
+end
+
+function DukeHelpers.GetClosestPlayer(position, filter)
+    local closestPlayerDistance = nil
+    local closestPlayer = nil
+
+    DukeHelpers.ForEachPlayer(function(player)
+        local distance = position:Distance(player.Position)
+        if (not closestPlayer or distance < closestPlayerDistance) and (not filter or filter(player)) then
+            closestPlayer = player
+            closestPlayerDistance = distance
+        end
+    end)
+
+    return closestPlayer
 end
