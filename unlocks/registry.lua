@@ -4,7 +4,7 @@ return {
     include("unlocks/dukesGullet"),
     include("unlocks/dukesTooth"),
     include("unlocks/fiendishSwarm"),
-    include("unlocks/hollowHeart"),
+    include("unlocks/infestedHeart"),
     include("unlocks/huskBaby"),
     include("unlocks/lilDuke"),
     include("unlocks/queenFly"),

@@ -1,3 +1,4 @@
 DukeHelpers.Trinkets = {
-    include("trinkets/dukesTooth")
+    dukesTooth = include("trinkets/dukesTooth"),
+    infestedHeart = include("trinkets/infestedHeart")
 }

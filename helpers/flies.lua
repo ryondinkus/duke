@@ -85,35 +85,35 @@ function DukeHelpers.RemoveHeartFly(heartFly)
 end
 
 function DukeHelpers.GetFlyByHeartSubType(subType)
-    return DukeHelpers.FindByProperties(DukeHelpers.Flies, { heartFlySubType = subType })
+	return DukeHelpers.FindByProperties(DukeHelpers.Flies, { heartFlySubType = subType })
 end
 
 function DukeHelpers.GetFlyByAttackSubType(subType)
-    return DukeHelpers.FindByProperties(DukeHelpers.Flies, { attackFlySubType = subType })
+	return DukeHelpers.FindByProperties(DukeHelpers.Flies, { attackFlySubType = subType })
 end
 
 function DukeHelpers.GetFlyByPickupSubType(subType)
-    return DukeHelpers.FindByProperties(DukeHelpers.Flies, { pickupSubType = subType })
+	return DukeHelpers.FindByProperties(DukeHelpers.Flies, { pickupSubType = subType })
 end
 
 function DukeHelpers.GetFlySpritesheet(subType)
-    local foundFly = DukeHelpers.GetFlyByHeartSubType(subType) or DukeHelpers.GetFlyByAttackSubType(subType)
+	local foundFly = DukeHelpers.GetFlyByHeartSubType(subType) or DukeHelpers.GetFlyByAttackSubType(subType)
 
-    if foundFly then
-        return foundFly.spritesheet
+	if foundFly then
+		return foundFly.spritesheet
 	end
 
-    return DukeHelpers.Flies.FLY_RED.spritesheet
+	return DukeHelpers.Flies.FLY_RED.spritesheet
 end
 
 function DukeHelpers.CanBecomeAttackFly(fly)
-    local foundFly = DukeHelpers.GetFlyByHeartSubType(fly.SubType)
+	local foundFly = DukeHelpers.GetFlyByHeartSubType(fly.SubType)
 
-    if foundFly then
-        return foundFly.canAttack
-    end
+	if foundFly then
+		return foundFly.canAttack
+	end
 
-    return false
+	return false
 end
 
 function DukeHelpers.SpawnAttackFly(heartFly)
@@ -132,7 +132,7 @@ function DukeHelpers.InitializeAttackFly(fly)
 end
 
 function DukeHelpers.SpawnAttackFlyBySubType(subType, position, spawnerEntity)
-    local fly = DukeHelpers.GetFlyByHeartSubType(subType)
+	local fly = DukeHelpers.GetFlyByHeartSubType(subType)
 	local attackFly = Isaac.Spawn(EntityType.ENTITY_FAMILIAR, FamiliarVariant.BLUE_FLY, fly.attackFlySubType, position, Vector.Zero, spawnerEntity)
 	DukeHelpers.InitializeAttackFly(attackFly)
 	attackFly:ClearEntityFlags(EntityFlag.FLAG_APPEAR)
@@ -159,7 +159,7 @@ end
 
 function DukeHelpers.GetAttackFlySubTypeBySubType(subType)
 	if subType then
-    	return DukeHelpers.ATTACK_FLY_STARTING_SUBTYPE + subType
+		return DukeHelpers.ATTACK_FLY_STARTING_SUBTYPE + subType
 	end
 end
 
@@ -168,27 +168,27 @@ function DukeHelpers.GetWeightedFly(rng, attack)
 		rng = DukeHelpers.rng
 	end
 
-    local flies = {}
-    for _, fly in pairs(DukeHelpers.Flies) do
-        if fly.weight and (not attack or fly.attackFlySubType) then
+	local flies = {}
+	for _, fly in pairs(DukeHelpers.Flies) do
+		if fly.weight and (not attack or fly.attackFlySubType) then
 			table.insert(flies, fly)
 		end
-    end
+	end
 
-    if DukeHelpers.LengthOfTable(flies) > 0 then
-        local csum = 0
-        local outcome = flies[1]
-        for _, fly in pairs(flies) do
-            local weight = fly.weight
-            local r = rng:RandomInt(csum + weight)
+	if DukeHelpers.LengthOfTable(flies) > 0 then
+		local csum = 0
+		local outcome = flies[1]
+		for _, fly in pairs(flies) do
+			local weight = fly.weight
+			local r = rng:RandomInt(csum + weight)
 
-            if r >= csum then
-                outcome = fly
-            end
-            csum = csum + weight
-        end
-        return outcome
-    end
+			if r >= csum then
+				outcome = fly
+			end
+			csum = csum + weight
+		end
+		return outcome
+	end
 end
 
 function DukeHelpers.IsFlyOfPlayer(fly, player)
@@ -211,6 +211,59 @@ end
 
 function DukeHelpers.AddStartupFlies(p)
 	DukeHelpers.AddHeartFly(p, DukeHelpers.Flies.FLY_RED, 3)
+end
+
+function DukeHelpers.SpawnPickupHeartFly(player, pickup, overriddenSubType, amount)
+	if not overriddenSubType then
+		overriddenSubType = pickup.SubType
+	end
+	local sfx = SoundEffect.SOUND_BOSS2_BUBBLES
+	if overriddenSubType == HeartSubType.HEART_BLENDED then
+		local redAmount = 1
+		local soulAmount = 1
+
+		if DukeHelpers.IsDuke(player) and DukeHelpers.Trinkets.infestedHeart.helpers.RandomlySpawnHeartFlyFromPickup(player, pickup) then
+			if DukeHelpers.PercentageChance(50) then
+				redAmount = redAmount + 1
+			else
+				soulAmount = soulAmount + 1
+			end
+		end
+
+		DukeHelpers.AddHeartFly(player, DukeHelpers.Flies.FLY_RED, redAmount)
+		DukeHelpers.AddHeartFly(player, DukeHelpers.Flies.FLY_SOUL, soulAmount)
+	else
+		local flyToSpawn = DukeHelpers.GetFlyByPickupSubType(overriddenSubType)
+		if flyToSpawn.sfx then
+			sfx = flyToSpawn.sfx
+		end
+
+		local amountToSpawn = (amount or flyToSpawn.fliesCount)
+
+		if DukeHelpers.IsDuke(player) then
+			if DukeHelpers.Trinkets.infestedHeart.helpers.RandomlySpawnHeartFlyFromPickup(player, pickup) then
+				amountToSpawn = amountToSpawn + 1
+			end
+			if (overriddenSubType == HeartSubType.HEART_SOUL or overriddenSubType == HeartSubType.HEART_HALF_SOUL or overriddenSubType == HeartSubType.HEART_BLACK) and DukeHelpers.GetTrueSoulHearts(player) < DukeHelpers.MAX_HEALTH then
+				local heartSlots = 2
+
+				if overriddenSubType == HeartSubType.HEART_HALF_SOUL then
+					heartSlots = 1
+				end
+
+				local heartsToGive = math.min(DukeHelpers.MAX_HEALTH - DukeHelpers.GetTrueSoulHearts(player), heartSlots)
+				player:AddSoulHearts(heartsToGive)
+				amountToSpawn = amountToSpawn - heartsToGive
+			end
+		end
+		DukeHelpers.AddHeartFly(player, flyToSpawn, amountToSpawn)
+	end
+	DukeHelpers.sfx:Play(sfx)
+	pickup:Remove()
+
+	if pickup.Price > 0 then
+		player:AddCoins(-pickup.Price)
+	end
 end
 
 function DukeHelpers.SpawnHeartFlyPoof(flySubType, pos, spawner)

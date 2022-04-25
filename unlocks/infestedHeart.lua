@@ -1,5 +1,5 @@
 return {
-    tag = "hollowHeart",
+    tag = "infestedHeart",
     entityType = EntityType.ENTITY_SATAN,
     stage = LevelStage.STAGE5,
     roomType = RoomType.ROOM_BOSS,

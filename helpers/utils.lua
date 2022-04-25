@@ -89,7 +89,7 @@ function DukeHelpers.ForEachPlayer(callback, collectibleId)
 end
 
 function DukeHelpers.IsDuke(player)
-    return player:GetPlayerType() == DukeHelpers.DUKE_ID
+    return player and (player:GetPlayerType() == DukeHelpers.DUKE_ID)
 end
 
 function DukeHelpers.HasDuke()
@@ -314,4 +314,19 @@ end
 
 function DukeHelpers.AreEnemiesInRoom()
     return #DukeHelpers.ListEnemiesInRoom(true, function(entity) return not EntityRef(entity).IsCharmed end) > 0
+end
+
+function DukeHelpers.PercentageChance(percent, max, rng)
+    local value
+    if percent > (max or 100) then
+        value = max or 100
+    else
+        value = percent
+    end
+
+    if not rng then
+        rng = DukeHelpers.rng
+    end
+
+    return rng:RandomInt(99) + 1 <= value
 end
