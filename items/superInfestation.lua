@@ -15,6 +15,7 @@ local playersTakenDamage = {}
 
 local function MC_ENTITY_TAKE_DMG(_, entity, amount, f)
     local player = entity:ToPlayer()
+	print(player:GetBlackHearts())
     if f & DamageFlag.DAMAGE_FAKE == 0 and player and player:HasCollectible(Id) and amount >= 0 then
         playersTakenDamage[tostring(player.InitSeed)] = true
     end
@@ -52,17 +53,17 @@ local function MC_POST_PLAYER_UPDATE(_, player)
                 DukeHelpers.AddHeartFly(player, DukeHelpers.Flies.FLY_GOLDEN, totalFliesToSpawn)
             else
                 local redSpawnAmount = dukeData[Tag].RED - updatedHearts.RED
-                local boneSpawnAmount = dukeData[Tag].BONE - updatedHearts.BONE
+                local rottenSpawnAmount = dukeData[Tag].ROTTEN - updatedHearts.ROTTEN
 
-                redSpawnAmount = redSpawnAmount - (boneSpawnAmount * 2)
+                redSpawnAmount = redSpawnAmount - (rottenSpawnAmount * 2)
 
                 DukeHelpers.AddHeartFly(player, DukeHelpers.Flies.FLY_RED, redSpawnAmount)
                 DukeHelpers.AddHeartFly(player, DukeHelpers.Flies.FLY_BLACK, dukeData[Tag].BLACK - updatedHearts.BLACK)
                 DukeHelpers.AddHeartFly(player, DukeHelpers.Flies.FLY_SOUL, dukeData[Tag].SOUL - updatedHearts.SOUL)
-                DukeHelpers.AddHeartFly(player, DukeHelpers.Flies.FLY_BONE, boneSpawnAmount)
+                DukeHelpers.AddHeartFly(player, DukeHelpers.Flies.FLY_BONE, dukeData[Tag].BONE - updatedHearts.BONE)
                 DukeHelpers.AddHeartFly(player, DukeHelpers.Flies.FLY_ETERNAL, dukeData[Tag].ETERNAL - updatedHearts.ETERNAL)
                 DukeHelpers.AddHeartFly(player, DukeHelpers.Flies.FLY_GOLDEN, dukeData[Tag].GOLDEN - updatedHearts.GOLDEN)
-                DukeHelpers.AddHeartFly(player, DukeHelpers.Flies.FLY_ROTTEN, dukeData[Tag].ROTTEN - updatedHearts.ROTTEN)
+                DukeHelpers.AddHeartFly(player, DukeHelpers.Flies.FLY_ROTTEN, rottenSpawnAmount)
             end
 
             playersTakenDamage[tostring(player.InitSeed)] = nil
