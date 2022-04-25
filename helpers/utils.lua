@@ -98,6 +98,12 @@ function DukeHelpers.HasDuke()
     return found
 end
 
+function DukeHelpers.ForEach(t, func)
+    for k, v in pairs(t) do
+        func(v, k)
+    end
+end
+
 function DukeHelpers.Map(t, func)
     local mapped = {}
     for k, v in pairs(t) do
