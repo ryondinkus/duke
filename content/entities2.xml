@@ -59,5 +59,8 @@
   	  <preload-snd id="108" /> <!-- SOUND_MONSTER_GRUNT_2 -->
   	  <preload-snd id="106" /> <!-- SOUND_MONSTER_GRUNT_1 -->
   	  <preload-snd id="112" /> <!-- SOUND_MONSTER_GRUNT_4 -->
-    </entity>
+  </entity>
+	<entity id="245" anm2path="familiars/love_poop.anm2" baseHP="5" boss="0" champion="0" collisionDamage="0" collisionMass="500" collisionRadius="13" friction="1.0" name="Love Poop" numGridCollisionPoints="12" shadowSize="14" stageHP="0" variant="332" portrait="40" shutdoors="false">
+			<gibs amount="4" blood="0" bone="0" eye="0" gut="0" large="0" poop="1" />
+	</entity>
 </entities>
