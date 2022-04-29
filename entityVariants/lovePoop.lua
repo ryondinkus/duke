@@ -18,8 +18,6 @@ local function MC_NPC_UPDATE(_, entity)
             sprite:LoadGraphics()
         end
 
-        print(entity.SpawnerEntity:GetData().poopCount .. ": " .. entity.EntityCollisionClass)
-
         if sprite:IsFinished("Appear") then
             entity.EntityCollisionClass = EntityCollisionClass.ENTCOLL_ALL
             data.state = 1
@@ -39,7 +37,7 @@ local function MC_NPC_UPDATE(_, entity)
             sprite:Play("State" .. data.state)
 
             local enemies = DukeHelpers.ListEnemiesInRoom(true)
-            for _,enemy in pairs(enemies) do
+            for _, enemy in pairs(enemies) do
                 if data.state < 5 then
                     enemy.Target = entity
                 else
@@ -49,11 +47,11 @@ local function MC_NPC_UPDATE(_, entity)
 
             if data.state >= 5 then
                 local explosion = Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.FART, 0, entity.Position, Vector.Zero, entity)
-                explosion.Color = Color(1,1,1,1,0.59,0,0.39)
+                explosion.Color = Color(1, 1, 1, 1, 0.59, 0, 0.39)
                 local damage = 40
                 local player = entity.SpawnerEntity:ToFamiliar().Player:ToPlayer()
                 if player and (player:HasCollectible(CollectibleType.COLLECTIBLE_HIVE_MIND)
-                or player:HasCollectible(CollectibleType.COLLECTIBLE_BFFS)) then
+                    or player:HasCollectible(CollectibleType.COLLECTIBLE_BFFS)) then
                     damage = damage * 2
                 end
                 local radius = 75
@@ -75,14 +73,14 @@ local function MC_NPC_UPDATE(_, entity)
 end
 
 return {
-	Name = Name,
-	Tag = Tag,
-	Id = Id,
-	callbacks = {
-		{
-			ModCallbacks.MC_NPC_UPDATE,
-			MC_NPC_UPDATE,
-			EntityType.ENTITY_POOP
-		}
-	}
+    Name = Name,
+    Tag = Tag,
+    Id = Id,
+    callbacks = {
+        {
+            ModCallbacks.MC_NPC_UPDATE,
+            MC_NPC_UPDATE,
+            EntityType.ENTITY_POOP
+        }
+    }
 }
