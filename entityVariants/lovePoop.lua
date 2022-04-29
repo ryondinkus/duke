@@ -7,13 +7,18 @@ local function MC_NPC_UPDATE(_, entity)
         local sprite = entity:GetSprite()
         local data = entity:GetData()
 
+        if entity.FrameCount <= 1 then
+            entity.EntityCollisionClass = EntityCollisionClass.ENTCOLL_NONE
+        end
+
         if not entity:HasEntityFlags(EntityFlag.FLAG_NO_PHYSICS_KNOCKBACK) then
             entity:AddEntityFlags(EntityFlag.FLAG_NO_PHYSICS_KNOCKBACK)
-            entity.EntityCollisionClass = EntityCollisionClass.ENTCOLL_NONE
             data.timer = 300
             sprite:ReplaceSpritesheet(0, "gfx/familiars/love_poop.png")
             sprite:LoadGraphics()
         end
+
+        print(entity.SpawnerEntity:GetData().poopCount .. ": " .. entity.EntityCollisionClass)
 
         if sprite:IsFinished("Appear") then
             entity.EntityCollisionClass = EntityCollisionClass.ENTCOLL_ALL
@@ -24,7 +29,7 @@ local function MC_NPC_UPDATE(_, entity)
             entity.HitPoints = 999
         end
 
-        if data.state then
+        if data.state and data.state >= 0 then
             data.timer = data.timer - 1
 
             if data.timer % 30 == 0 then
@@ -46,18 +51,24 @@ local function MC_NPC_UPDATE(_, entity)
                 local explosion = Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.FART, 0, entity.Position, Vector.Zero, entity)
                 explosion.Color = Color(1,1,1,1,0.59,0,0.39)
                 local damage = 40
-                if entity.SpawnerEntity and (entity.SpawnerEntity:ToPlayer():HasCollectible(CollectibleType.COLLECTIBLE_HIVE_MIND)
-                or entity.SpawnerEntity:ToPlayer():HasCollectible(CollectibleType.COLLECTIBLE_BFFS)) then
+                local player = entity.SpawnerEntity:ToFamiliar().Player:ToPlayer()
+                if player and (player:HasCollectible(CollectibleType.COLLECTIBLE_HIVE_MIND)
+                or player:HasCollectible(CollectibleType.COLLECTIBLE_BFFS)) then
                     damage = damage * 2
                 end
+                local radius = 75
+                if Sewn_API:IsSuper(entity.SpawnerEntity:GetData()) then
+                    radius = radius * 2
+                    explosion.SpriteScale = explosion.SpriteScale * 2
+                end
                 for i, enemy in ipairs(Isaac.FindInRadius(entity.Position, 75, EntityPartition.ENEMY)) do
-                    enemy:TakeDamage(damage, DamageFlag.DAMAGE_EXPLOSION, EntityRef(entity.SpawnerEntity), 0)
+                    enemy:TakeDamage(damage, DamageFlag.DAMAGE_EXPLOSION, EntityRef(player), 0)
                 end
                 entity.EntityCollisionClass = EntityCollisionClass.ENTCOLL_NONE
-                data.state = nil
+                data.state = -1
             end
         end
-        if not data.state and not sprite:IsPlaying("Appear") then
+        if data.state == -1 and not sprite:IsPlaying("Appear") then
             sprite:Play("State5")
         end
     end
