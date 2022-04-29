@@ -11,11 +11,57 @@ local Descriptions = {
 }
 local WikiDescription = DukeHelpers.GenerateEncyclopediaPage("Total bitch.")
 
-local function MC_POST_NPC_INIT(_, entity)
+local flyEnemies = {
+    {
+        entityType = 13
+    },
+    {
+        entityType = 18
+    },
+    {
+        entityType = 222
+    },
+    {
+        entityType = 80
+    },
+    {
+        entityType = 96
+    },
+    {
+        entityType = 256
+    },
+    {
+        entityType = 281
+    },
+    {
+        entityType = 296
+    },
+    {
+        entityType = 868
+    },
+    {
+        entityType = 808
+    },
+    {
+        entityType = 951,
+        variant = 11
+    },
+    {
+        entityType = 951,
+        variant = 21
+    }
+}
+
+local function MC_POST_NPC_DEATH(_, entity)
+    if not DukeHelpers.Find(flyEnemies, function(enemy) return enemy.entityType == entity.Type and (not enemy.variant or enemy.variant == entity.Variant) end) then
+        return
+    end
     local closestPlayer = DukeHelpers.GetClosestPlayer(entity.Position, function(p) return p:HasCollectible(Id) end)
 
     if closestPlayer then
-        DukeHelpers.AddHeartFly(closestPlayer, DukeHelpers.GetWeightedFly(DukeHelpers.rng), 1)
+        local flyToSpawn = DukeHelpers.GetWeightedFly(DukeHelpers.rng, true)
+
+        DukeHelpers.SpawnAttackFlyBySubType(flyToSpawn.heartFlySubType, entity.Position, closestPlayer)
         entity:Remove()
     end
 end
@@ -42,9 +88,8 @@ return {
     WikiDescription = WikiDescription,
     callbacks = {
         {
-            ModCallbacks.MC_POST_NPC_INIT,
-            MC_POST_NPC_INIT,
-            EntityType.ENTITY_FLY
+            ModCallbacks.MC_POST_NPC_DEATH,
+            MC_POST_NPC_DEATH
         },
         {
             ModCallbacks.MC_FAMILIAR_UPDATE,
