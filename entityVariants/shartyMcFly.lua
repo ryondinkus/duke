@@ -5,7 +5,7 @@ local Id = Isaac.GetEntityVariantByName(Name)
 local STATE = {
 	IDLE = 1,
 	ATTACK = 2,
-    EMPTY = 3
+	EMPTY = 3
 }
 
 local function MC_FAMILIAR_INIT(_, f)
@@ -20,7 +20,7 @@ local function MC_FAMILIAR_UPDATE(_, f)
 		data.State = STATE.IDLE
 	end
 	if data.State == STATE.IDLE then
-		for i=4, 7 do --all shooting enums in ButtonAction
+		for i = 4, 7 do --all shooting enums in ButtonAction
 			if Input.IsActionPressed(i, f.Player.ControllerIndex) then
 				sprite:Play("Attack", true)
 				data.State = STATE.ATTACK
@@ -40,7 +40,7 @@ local function MC_FAMILIAR_UPDATE(_, f)
 			data.State = STATE.EMPTY
 		end
 	end
-    f:FollowParent()
+	f:FollowParent()
 end
 
 local function MC_POST_NEW_ROOM()
