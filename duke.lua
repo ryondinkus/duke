@@ -154,16 +154,7 @@ end, DukeHelpers.DUKE_ID)
 
 dukeMod:AddCallback(ModCallbacks.MC_POST_PICKUP_UPDATE, function(_, pickup)
 	if DukeHelpers.HasDuke() and pickup.Price < 0 then
-		local closestPlayerDistance = nil
-		local closestPlayer = nil
-
-		DukeHelpers.ForEachPlayer(function(player)
-			local distance = pickup.Position:Distance(player.Position)
-			if not closestPlayer or distance < closestPlayerDistance then
-				closestPlayer = player
-				closestPlayerDistance = distance
-			end
-		end)
+		local closestPlayer = DukeHelpers.GetClosestPlayer(pickup.Position)
 
 		if closestPlayer and DukeHelpers.IsDuke(closestPlayer) then
 			pickup:GetData().showFliesPrice = true

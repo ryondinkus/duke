@@ -2,7 +2,6 @@ if not GiantBookAPI then
 	GiantBookAPI = RegisterMod("GiantBook API", 1)
 end
 
-local mod = GiantBookAPI
 local sfx = SFXManager()
 --GIANTBOOK ANIMATION
 local bigBook = Sprite()
@@ -65,7 +64,7 @@ function GiantBookAPI.playDukeGiantBook(_animName, _popup, _gfxRoot, _poofColor,
 	end
 end
 
-function mod.bookRender()
+function GiantBookAPI.bookRender()
 	if bookLength > 0 then
 		if (Isaac.GetFrameCount() % 2 == 0) then
 			bigBook:Update()
@@ -81,20 +80,20 @@ function mod.bookRender()
 	end
 end
 
-mod:AddCallback(ModCallbacks.MC_POST_RENDER, mod.bookRender)
+GiantBookAPI:AddCallback(ModCallbacks.MC_POST_RENDER, GiantBookAPI.bookRender)
 
 function GetScreenCenterPosition()
 	return Vector(Isaac.GetScreenWidth() / 2, Isaac.GetScreenHeight() / 2)
 end
 
 --giving berkano back it's visual effect
-function mod:useBerkano()
+function GiantBookAPI:useBerkano()
 	if not bookHideBerkano then
 		GiantBookAPI.playGiantBook("Appear", "Rune_07_Berkand.png", Color(0.2, 0.1, 0.3, 1, 0, 0, 0), Color(0.117, 0.0117, 0.2, 1, 0, 0, 0), Color(0, 0, 0, 0.8, 0, 0, 0), nil, true)
 	end
 end
 
-mod:AddCallback(ModCallbacks.MC_USE_CARD, mod.useBerkano, Card.RUNE_BERKANO)
+GiantBookAPI:AddCallback(ModCallbacks.MC_USE_CARD, GiantBookAPI.useBerkano, Card.RUNE_BERKANO)
 
 --ACHIEVEMENT DISPLAY
 local achievementQueue = {}
@@ -102,7 +101,7 @@ local bigPaper = Sprite()
 local paperFrames = 0
 local paperSwitch = false
 
-function mod.paperRender()
+function GiantBookAPI.paperRender()
 	if (paperFrames <= 0) then
 		if paperSwitch then
 			for i = 1, #achievementQueue - 1 do
@@ -140,7 +139,7 @@ function mod.paperRender()
 	end
 end
 
-mod:AddCallback(ModCallbacks.MC_POST_RENDER, mod.paperRender)
+GiantBookAPI:AddCallback(ModCallbacks.MC_POST_RENDER, GiantBookAPI.paperRender)
 
 function GiantBookAPI.ShowAchievement(_drawingSprite)
 	table.insert(achievementQueue, #achievementQueue + 1, _drawingSprite)
