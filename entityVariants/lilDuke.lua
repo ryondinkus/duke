@@ -27,12 +27,21 @@ local function MC_FAMILIAR_UPDATE(_, f)
 			local effect = Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.POOF01, 0, f.Position, Vector.Zero, nil)
 			effect.Color = Color(0, 0, 0, 1)
 			effect.SpriteScale = Vector(0.5, 0.5)
-			for _ = 1, DukeHelpers.rng:RandomInt(2) + 1 do
+			local fliesToSpawn = DukeHelpers.rng:RandomInt(2) + 1
+			if Sewn_API:IsSuper(data) then
+				fliesToSpawn = fliesToSpawn * 2
+			end
+			for _ = 1, fliesToSpawn do
 				local flyToSpawn = DukeHelpers.GetWeightedFly(DukeHelpers.rng)
 				local attackFly = DukeHelpers.SpawnAttackFlyBySubType(flyToSpawn.heartFlySubType, f.Position, f.Player)
 				if f.Player and f.Player:HasCollectible(CollectibleType.COLLECTIBLE_BFFS) and not f.Player:HasCollectible(CollectibleType.COLLECTIBLE_HIVE_MIND) then
 					attackFly:GetData().bffs = true
 					attackFly.CollisionDamage = attackFly.CollisionDamage * 2
+				end
+			end
+			if Sewn_API:IsUltra(data) then
+				for _ = 1, DukeHelpers.rng:RandomInt(2) + 1 do
+					DukeHelpers.AddHeartFly(f.Player, DukeHelpers.GetWeightedFly(DukeHelpers.rng, false), 1)
 				end
 			end
 		end
@@ -55,6 +64,10 @@ local function MC_PRE_FAMILIAR_COLLISION(_, f, e)
 			data.State = STATE.ATTACK
 		end
 	end
+end
+
+if Sewn_API then
+	Sewn_API:MakeFamiliarAvailable(Id, DukeHelpers.Items.lilDuke.Id)
 end
 
 return {
