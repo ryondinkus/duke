@@ -123,6 +123,7 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_PEFFECT_UPDATE, function(_, p)
 		if DukeHelpers.GetTrueSoulHearts(p) < DukeHelpers.MAX_HEALTH then
 			p:AddSoulHearts(DukeHelpers.MAX_HEALTH)
 		end
+		DukeHelpers.KillAtMaxBrokenFlies(p)
 	end
 
 	if p:GetEternalHearts() > 0 then
@@ -224,8 +225,13 @@ dukeMod:AddCallback(ModCallbacks.MC_EVALUATE_CACHE, function(_, player, flags)
 				local f = DukeHelpers.GetEntityByInitSeed(fly.initSeed)
 				if f:GetData().layer == DukeHelpers.BIRTHRIGHT then
 					DukeHelpers.RemoveHeartFly(f)
+					DukeHelpers.SpawnAttackFly(f)
 				end
 			end
 		end
 	end
+end)
+
+dukeMod:AddCallback(ModCallbacks.MC_EVALUATE_CACHE, function(_, player, flags)
+
 end)

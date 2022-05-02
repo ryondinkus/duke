@@ -260,3 +260,26 @@ function DukeHelpers.SpawnHeartFlyPoof(flySubType, pos, spawner)
 		poof.Color = color
 	end
 end
+
+function DukeHelpers.KillAtMaxBrokenFlies(player)
+	if DukeHelpers.IsDuke(player) and player:GetData().duke then
+		local heartFlies = DukeHelpers.GetDukeData(player).heartFlies
+		local brokenFlyCount = 0
+		if heartFlies then
+			for i = #heartFlies, 1, -1 do
+				local fly = heartFlies[i]
+				if fly.subType == DukeHelpers.Flies.FLY_BROKEN.heartFlySubType then
+					brokenFlyCount = brokenFlyCount + 1
+				end
+			end
+		end
+		local brokenFlyLimit = 24
+		if player:HasCollectible(CollectibleType.COLLECTIBLE_BIRTHRIGHT) then
+			brokenFlyLimit = 42
+		end
+		if brokenFlyCount >= brokenFlyLimit then
+			player:Kill()
+		end
+		print(brokenFlyCount)
+	end
+end
