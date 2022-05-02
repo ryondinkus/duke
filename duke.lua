@@ -13,7 +13,7 @@ dukeMod:AddCallback(ModCallbacks.MC_EVALUATE_CACHE, function(_, p, f)
 	end
 end, CacheFlag.CACHE_FLYING)
 
--- Adds flies when a heart is spawned
+-- Adds flies when a heart is collected
 dukeMod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, function(_, pickup, collider)
 	local p = collider:ToPlayer()
 
@@ -35,6 +35,9 @@ dukeMod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, function(_, pickup, co
 		end
 
 		local layer = DukeHelpers.OUTER
+		if p:HasCollectible(CollectibleType.COLLECTIBLE_BIRTHRIGHT) then
+			layer = DukeHelpers.BIRTHRIGHT
+		end
 		local shouldSkip = false
 
 		for _ = 1, heartPrice.RED do
@@ -65,6 +68,9 @@ dukeMod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, function(_, pickup, co
 		end
 
 		layer = DukeHelpers.OUTER
+		if p:HasCollectible(CollectibleType.COLLECTIBLE_BIRTHRIGHT) then
+			layer = DukeHelpers.BIRTHRIGHT
+		end
 
 		for _ = 1, heartPrice.SOUL do
 			local foundFly
@@ -207,4 +213,19 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_UPDATE, function()
 			DukeHelpers.sfx:Play(SoundEffect.SOUND_ROCKET_BLAST_DEATH)
 		end
 	end)
+end)
+
+dukeMod:AddCallback(ModCallbacks.MC_EVALUATE_CACHE, function(_, player, flags)
+	if DukeHelpers.IsDuke(player) and player:GetData().duke and not player:HasCollectible(CollectibleType.COLLECTIBLE_BIRTHRIGHT) then
+		local heartFlies = DukeHelpers.GetDukeData(player).heartFlies
+		if heartFlies then
+			for i = #heartFlies, 1, -1 do
+				local fly = heartFlies[i]
+				local f = DukeHelpers.GetEntityByInitSeed(fly.initSeed)
+				if f:GetData().layer == DukeHelpers.BIRTHRIGHT then
+					DukeHelpers.RemoveHeartFly(f)
+				end
+			end
+		end
+	end
 end)
