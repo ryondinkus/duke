@@ -11,6 +11,5 @@
 		    extraportrait="duke_extraportrait.anm2"
         skinColor="5"
         costumeSuffix="duke"
-        birthright="Your court expands"
     />
 </players>
