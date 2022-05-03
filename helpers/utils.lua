@@ -187,10 +187,11 @@ function DukeHelpers.CalculateDevilDealPrice(collectible, counts)
 
     local devilPrice = Isaac.GetItemConfig():GetCollectible(collectible.SubType).DevilPrice
 
-    local canAffordSouls = DukeHelpers.Find(counts, function(player) return player.SOUL >= 6 end)
+    local canAffordSouls = DukeHelpers.Find(counts, function(player) return player.SOUL >= 1 end)
+    local canAffordReds = DukeHelpers.Find(counts, function(player) return player.RED >= 1 end)
+    local canReallyAffordReds = DukeHelpers.Find(counts, function(player) return player.RED >= 5 end)
 
     if devilPrice == 1 then
-        local canAffordReds = DukeHelpers.Find(counts, function(player) return player.RED >= 4 end)
 
         if canAffordReds and canAffordSouls then
             -- 4 red flies or 6 soul flies for Duke
@@ -205,52 +206,61 @@ function DukeHelpers.CalculateDevilDealPrice(collectible, counts)
                     SOUL = 6
                 }
             end
-        elseif not canAffordReds and canAffordSouls then
-            -- 6 soul flies for Duke
-            return {
-                RED = 0,
-                SOUL = 6
-            }
-        else
+        elseif canAffordReds and not canAffordSouls then
             -- 4 red flies for Duke
             return {
                 RED = 4,
                 SOUL = 0
             }
+        else
+            -- 6 soul flies for Duke
+            return {
+                RED = 0,
+                SOUL = 6
+            }
         end
     else
-        local canAffordReds = DukeHelpers.Find(counts, function(player) return player.RED >= 8 end)
-
         if canAffordReds and canAffordSouls then
             -- 8 red flies or 6 soul flies for Duke
             if dukeMod.global.floorDevilDealChance < 75 then
-                return {
-                    RED = 4,
-                    SOUL = 0
-                }
+                if canReallyAffordReds then
+                    -- 8 red flies for Duke
+                    return {
+                        RED = 8,
+                        SOUL = 0
+                    }
+                else
+                    -- 4 red flies and 4 soul flies for Duke
+                    return {
+                        RED = 4,
+                        SOUL = 4
+                    }
+                end
             else
                 return {
                     RED = 0,
                     SOUL = 6
                 }
             end
-        elseif DukeHelpers.Find(counts, function(player) return player.RED >= 4 end) and DukeHelpers.Find(counts, function(player) return player.SOUL >= 4 end) then
-            -- 4 red flies and 4 soul flies for Duke
-            return {
-                RED = 4,
-                SOUL = 4
-            }
-        elseif not canAffordReds and canAffordSouls then
+        elseif canAffordReds and not canAffordSouls then
+            if canReallyAffordReds then
+                -- 8 red flies for Duke
+                return {
+                    RED = 8,
+                    SOUL = 0
+                }
+            else
+                -- 4 red flies and 4 soul flies for Duke
+                return {
+                    RED = 4,
+                    SOUL = 4
+                }
+            end
+        else
             -- 6 soul flies for Duke
             return {
                 RED = 0,
                 SOUL = 6
-            }
-        else
-            -- 8 red flies for Duke
-            return {
-                RED = 8,
-                SOUL = 0
             }
         end
     end

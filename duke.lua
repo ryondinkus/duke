@@ -30,7 +30,7 @@ dukeMod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, function(_, pickup, co
 		local fliesData = DukeHelpers.GetDukeData(p).heartFlies
 
 		local playerFlyCounts = DukeHelpers.GetFlyCounts()[tostring(p.InitSeed)]
-		if playerFlyCounts.RED < heartPrice.RED or playerFlyCounts.SOUL < heartPrice.SOUL then
+		if (playerFlyCounts.RED < 1 or heartPrice.RED < 1) and (playerFlyCounts.SOUL < 1 or heartPrice.SOUL < 1) then
 			return true
 		end
 
@@ -55,6 +55,9 @@ dukeMod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, function(_, pickup, co
 
 				if not foundFly then
 					layer = layer - 1
+					if layer < DukeHelpers.INNER then
+						break
+					end
 				else
 					if foundFly.subType == DukeHelpers.Flies.FLY_BONE.heartFlySubType or foundFly.subType == DukeHelpers.Flies.FLY_ROTTEN.heartFlySubType then
 						shouldSkip = true
@@ -62,7 +65,9 @@ dukeMod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, function(_, pickup, co
 				end
 			end
 
-			DukeHelpers.RemoveHeartFly(DukeHelpers.GetEntityByInitSeed(foundFly.initSeed))
+			if foundFly then
+				DukeHelpers.RemoveHeartFly(DukeHelpers.GetEntityByInitSeed(foundFly.initSeed))
+			end
 
 			::skip::
 		end
@@ -82,10 +87,15 @@ dukeMod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, function(_, pickup, co
 
 				if not foundFly then
 					layer = layer - 1
+					if layer < DukeHelpers.INNER then
+						break
+					end
 				end
 			end
 
-			DukeHelpers.RemoveHeartFly(DukeHelpers.GetEntityByInitSeed(foundFly.initSeed))
+			if foundFly then
+				DukeHelpers.RemoveHeartFly(DukeHelpers.GetEntityByInitSeed(foundFly.initSeed))
+			end
 		end
 	end
 end)
@@ -230,8 +240,4 @@ dukeMod:AddCallback(ModCallbacks.MC_EVALUATE_CACHE, function(_, player, flags)
 			end
 		end
 	end
-end)
-
-dukeMod:AddCallback(ModCallbacks.MC_EVALUATE_CACHE, function(_, player, flags)
-
 end)
