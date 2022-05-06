@@ -52,6 +52,13 @@
       tags="fly nolostbr summonable"
       quality="4"
   />
+  <passive name="Ultra Heart Fly"
+      description="He does it all!"
+      gfx="ultra_heart_fly.png"
+      id="9"
+      tags="fly offensive summonable"
+      quality="2"
+  />
   <familiar name="Lil Duke"
       description="Humble beginnings"
       gfx="lil_duke.png"

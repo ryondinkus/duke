@@ -1,21 +1,19 @@
 local Names = {
-    en_us = "The Princes",
-    spa = "I don't know spanish and I'm on a plane lmao"
+    en_us = "Ultra Heart Fly",
+    spa = "I don't know spanish and I'm in my room lmao"
 }
 local Name = Names.en_us
-local Tag = "thePrinces"
+local Tag = "ultraHeartFly"
 local Id = Isaac.GetItemIdByName(Name)
 local Descriptions = {
-    en_us = "Like a princess, but a man.",
-    spa = "I don't know spanish and I'm on a plane lmao"
+    en_us = "Big fucker",
+    spa = "I don't know spanish and I'm in my room lmao"
 }
 local WikiDescription = DukeHelpers.GenerateEncyclopediaPage("Like a princess, but a man.")
 
 local function MC_POST_NEW_LEVEL()
     DukeHelpers.ForEachPlayer(function(duke)
-        for i = 1, 3 do
-            DukeHelpers.AddHeartFly(duke, DukeHelpers.GetWeightedFly(), 1)
-        end
+        DukeHelpers.AddHeartFly(duke, DukeHelpers.Flies.FLY_ULTRA, 1)
     end, Id)
 end
 
@@ -24,9 +22,7 @@ local function MC_POST_PEFFECT_UPDATE(_, p)
     if data[Tag] then
         if p:IsExtraAnimationFinished() then
             data[Tag] = nil
-            for i = 1, 3 do
-                DukeHelpers.AddHeartFly(p, DukeHelpers.GetWeightedFly(), 1)
-            end
+            DukeHelpers.AddHeartFly(p, DukeHelpers.Flies.FLY_ULTRA, 1)
         end
     else
         local targetItem = p.QueuedItem.Item
