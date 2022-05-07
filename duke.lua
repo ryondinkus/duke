@@ -30,7 +30,7 @@ dukeMod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, function(_, pickup, co
 		local fliesData = DukeHelpers.GetDukeData(p).heartFlies
 
 		local playerFlyCounts = DukeHelpers.GetFlyCounts()[tostring(p.InitSeed)]
-		if (playerFlyCounts.RED < 1 or heartPrice.RED < 1) and (playerFlyCounts.SOUL < 1 or heartPrice.SOUL < 1) then
+		if (playerFlyCounts.RED < heartPrice.RED) or (playerFlyCounts.SOUL < heartPrice.SOUL) then
 			return true
 		end
 

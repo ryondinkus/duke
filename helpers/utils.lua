@@ -198,9 +198,9 @@ function DukeHelpers.CalculateDevilDealPrice(collectible, counts)
 
     local devilPrice = Isaac.GetItemConfig():GetCollectible(collectible.SubType).DevilPrice
 
-    local canAffordSouls = DukeHelpers.Find(counts, function(player) return player.SOUL >= 1 end)
-    local canAffordReds = DukeHelpers.Find(counts, function(player) return player.RED >= 1 end)
-    local canReallyAffordReds = DukeHelpers.Find(counts, function(player) return player.RED >= 5 end)
+    local canAffordSouls = DukeHelpers.Find(counts, function(player) return player.SOUL >= 4 end)
+    local canAffordReds = DukeHelpers.Find(counts, function(player) return player.RED >= 4 end)
+    local canReallyAffordReds = DukeHelpers.Find(counts, function(player) return player.RED >= 8 end)
     local hasPocketOfFlies = false
     DukeHelpers.ForEachDuke(function(duke)
         if duke:HasTrinket(DukeHelpers.Trinkets.pocketOfFlies.Id) then
@@ -236,7 +236,6 @@ function DukeHelpers.CalculateDevilDealPrice(collectible, counts)
             }
         end
     elseif not hasPocketOfFlies then
-        print("munch")
         if canAffordReds and canAffordSouls then
             -- 8 red flies or 6 soul flies for Duke
             if dukeMod.global.floorDevilDealChance < 75 then
