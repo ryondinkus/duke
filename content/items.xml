@@ -81,4 +81,8 @@
       description="It's buzzing..."
       gfx="infested_heart.png"
   />
+  <trinket name="Pocket of Flies"
+      description="Beelzebub's currency"
+      gfx="pocket_of_flies.png"
+  />
 </items>

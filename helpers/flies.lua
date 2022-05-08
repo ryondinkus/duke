@@ -7,10 +7,12 @@ DukeHelpers.ATTACK_FLY_STARTING_SUBTYPE = 903
 DukeHelpers.INNER = 1
 DukeHelpers.MIDDLE = 2
 DukeHelpers.OUTER = 3
+DukeHelpers.BIRTHRIGHT = 4
 
 local INNER = DukeHelpers.INNER
 local MIDDLE = DukeHelpers.MIDDLE
 local OUTER = DukeHelpers.OUTER
+local BIRTHRIGHT = DukeHelpers.BIRTHRIGHT
 
 DukeHelpers.Flies = {}
 
@@ -42,6 +44,8 @@ function DukeHelpers.AddHeartFly(player, fly, specificAmount)
 			layer = MIDDLE
 		elseif DukeHelpers.CountByProperties(playerData.heartFlies, { layer = OUTER }) < 12 then
 			layer = OUTER
+		elseif player:ToPlayer():HasCollectible(CollectibleType.COLLECTIBLE_BIRTHRIGHT) and DukeHelpers.CountByProperties(playerData.heartFlies, { layer = BIRTHRIGHT }) < 18 then
+			layer = BIRTHRIGHT
 		else
 			local replacableFly = DukeHelpers.Find(playerData.heartFlies, function(f)
 				return f.subType ~= DukeHelpers.Flies.FLY_BROKEN.heartFlySubType
@@ -68,20 +72,6 @@ end
 
 function DukeHelpers.PositionHeartFly(fly, layer)
 	fly:ToFamiliar():AddToOrbit(DukeHelpers.ATTACK_FLY_STARTING_SUBTYPE + layer)
-end
-
-function DukeHelpers.RemoveHeartFly(heartFly)
-	local p = heartFly.SpawnerEntity
-	local playerData = DukeHelpers.GetDukeData(p)
-	if playerData.heartFlies then
-		for i, fly in pairs(playerData.heartFlies) do
-			if fly.initSeed == heartFly.InitSeed then
-				table.remove(playerData.heartFlies, i)
-				heartFly:Remove()
-				return
-			end
-		end
-	end
 end
 
 function DukeHelpers.GetFlyByHeartSubType(subType)
@@ -268,5 +258,28 @@ function DukeHelpers.SpawnHeartFlyPoof(flySubType, pos, spawner)
 
 	if color then
 		poof.Color = color
+	end
+end
+
+function DukeHelpers.KillAtMaxBrokenFlies(player)
+	if DukeHelpers.IsDuke(player) and player:GetData().duke then
+		local heartFlies = DukeHelpers.GetDukeData(player).heartFlies
+		local brokenFlyCount = 0
+		if heartFlies then
+			for i = #heartFlies, 1, -1 do
+				local fly = heartFlies[i]
+				if fly.subType == DukeHelpers.Flies.FLY_BROKEN.heartFlySubType then
+					brokenFlyCount = brokenFlyCount + 1
+				end
+			end
+		end
+		local brokenFlyLimit = 24
+		if player:HasCollectible(CollectibleType.COLLECTIBLE_BIRTHRIGHT) then
+			brokenFlyLimit = 42
+		end
+		if brokenFlyCount >= brokenFlyLimit then
+			player:Kill()
+		end
+		print(brokenFlyCount)
 	end
 end
