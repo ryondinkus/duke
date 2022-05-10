@@ -30,7 +30,23 @@ dukeMod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, function(_, pickup, co
 		local fliesData = DukeHelpers.GetDukeData(p).heartFlies
 
 		local playerFlyCounts = DukeHelpers.GetFlyCounts()[tostring(p.InitSeed)]
-		if (playerFlyCounts.RED < heartPrice.RED) or (playerFlyCounts.SOUL < heartPrice.SOUL) then
+
+		local neededRedFlies = heartPrice.RED - playerFlyCounts.RED
+		local remainingUltraFlies = playerFlyCounts.ULTRA
+
+		if neededRedFlies > 0 and remainingUltraFlies >= neededRedFlies then
+			remainingUltraFlies = remainingUltraFlies - neededRedFlies
+			neededRedFlies = 0
+		end
+
+		local neededSoulFlies = heartPrice.SOUL - playerFlyCounts.SOUL
+
+		if neededSoulFlies > 0 and remainingUltraFlies >= neededSoulFlies then
+			remainingUltraFlies = remainingUltraFlies - neededSoulFlies
+			neededSoulFlies = 0
+		end
+
+		if neededRedFlies > 0 or neededSoulFlies > 0 then
 			return true
 		end
 
@@ -83,6 +99,32 @@ dukeMod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, function(_, pickup, co
 			while not foundFly do
 				foundFly = DukeHelpers.Find(fliesData, function(fly)
 					return (fly.subType == DukeHelpers.Flies.FLY_SOUL.heartFlySubType or fly.subType == DukeHelpers.Flies.FLY_BLACK.heartFlySubType) and fly.layer == layer
+				end)
+
+				if not foundFly then
+					layer = layer - 1
+					if layer < DukeHelpers.INNER then
+						break
+					end
+				end
+			end
+
+			if foundFly then
+				DukeHelpers.RemoveHeartFly(DukeHelpers.GetEntityByInitSeed(foundFly.initSeed))
+			end
+		end
+
+		layer = DukeHelpers.OUTER
+		if p:HasCollectible(CollectibleType.COLLECTIBLE_BIRTHRIGHT) then
+			layer = DukeHelpers.BIRTHRIGHT
+		end
+
+		for _ = 1, playerFlyCounts.ULTRA - remainingUltraFlies do
+			local foundFly
+
+			while not foundFly do
+				foundFly = DukeHelpers.Find(fliesData, function(fly)
+					return (fly.subType == DukeHelpers.Flies.FLY_ULTRA.heartFlySubType) and fly.layer == layer
 				end)
 
 				if not foundFly then
