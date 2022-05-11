@@ -6,4 +6,5 @@ DukeHelpers.Items = {
     dukeFlute = include("items/dukeFlute"),
     superInfestation = include("items/superInfestation"),
     queenFly = include("items/queenFly")
+    shartyMcFly = include("items/shartyMcFly")
 }
