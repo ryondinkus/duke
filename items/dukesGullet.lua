@@ -28,7 +28,13 @@ local function MC_USE_ITEM(_, type, rng, p, flags)
             effect.Color = Color(0, 0, 0, 1)
         else
             DukeHelpers.ForEachEntityInRoom(function(entity)
-                if DukeHelpers.IsFlyOfPlayer(entity, p) then
+                local outerLayer = DukeHelpers.OUTER
+                local outerLayerCount = 12
+                if p:HasCollectible(CollectibleType.COLLECTIBLE_BIRTHRIGHT) then
+                    outerLayer = DukeHelpers.BIRTHRIGHT
+                    outerLayerCount = 18
+                end
+                if DukeHelpers.IsFlyOfPlayer(entity, p) and DukeHelpers.CountByProperties(fliesData, { layer = outerLayer }) < outerLayerCount then
                     DukeHelpers.AddHeartFly(p, DukeHelpers.GetFlyByAttackSubType(entity.SubType), 1)
                     entity:Remove()
                 end
