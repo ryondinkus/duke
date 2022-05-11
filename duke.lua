@@ -206,9 +206,13 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_PEFFECT_UPDATE, function(_, p)
 	if DukeHelpers.GetBlackHearts(p) > 0 then
 		local totalSoulHearts = DukeHelpers.GetTrueSoulHearts(p)
 		local immortalHeartCount = ComplianceImmortal.GetImmortalHearts(p)
+		local webHeartCount = ARACHNAMOD:GetData(p).webHearts
 		if immortalHeartCount > 0 then
 			DukeHelpers.AddHeartFly(p, DukeHelpers.Flies.FLY_IMMORTAL, immortalHeartCount)
 			ComplianceImmortal.AddImmortalHearts(p, -immortalHeartCount)
+		elseif webHeartCount > 0 then
+			DukeHelpers.AddHeartFly(p, DukeHelpers.Flies.FLY_WEB, webHeartCount)
+			addWebHearts(-webHeartCount, p)
 		else
 			DukeHelpers.AddHeartFly(p, DukeHelpers.Flies.FLY_BLACK, DukeHelpers.GetBlackHearts(p))
 		end

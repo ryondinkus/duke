@@ -10,16 +10,17 @@ local flies = {
 	include("flies/broken"),
 	include("flies/ultra"),
 	-- modded
-	include("flies/immortal"),
-	include("flies/moonlight"),
+	include("flies/modded/immortal"),
+	include("flies/modded/moonlight"),
+	include("flies/modded/web"),
 	-- Make sure any fly types that are used by other heart types are registered first
 	include("flies/halfRed"),
 	include("flies/doubleRed"),
 	include("flies/halfSoul"),
 	include("flies/scared"),
 	--modded
-	include("flies/patched"),
-	include("flies/doublePatched")
+	include("flies/modded/patched"),
+	include("flies/modded/doublePatched")
 }
 
 -- Handles fly orbiting
