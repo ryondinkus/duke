@@ -174,6 +174,7 @@ function DukeHelpers.GetFlyCounts()
             local flyCount = {}
             flyCount.RED = DukeHelpers.CountByProperties(playerData.heartFlies, { subType = DukeHelpers.Flies.FLY_RED.heartFlySubType }) + (DukeHelpers.CountByProperties(playerData.heartFlies, { subType = DukeHelpers.Flies.FLY_BONE.heartFlySubType }) * 2) + (DukeHelpers.CountByProperties(playerData.heartFlies, { subType = DukeHelpers.Flies.FLY_ROTTEN.heartFlySubType }) * 2)
             flyCount.SOUL = DukeHelpers.CountByProperties(playerData.heartFlies, { subType = DukeHelpers.Flies.FLY_SOUL.heartFlySubType }) + DukeHelpers.CountByProperties(playerData.heartFlies, { subType = DukeHelpers.Flies.FLY_BLACK.heartFlySubType })
+            flyCount.ULTRA = DukeHelpers.CountByProperties(playerData.heartFlies, { subType = DukeHelpers.Flies.FLY_ULTRA.heartFlySubType })
             flyCounts[tostring(player.InitSeed)] = flyCount
         end
     end)
