@@ -83,7 +83,7 @@ function DukeHelpers.GetFlyByAttackSubType(subType)
 end
 
 function DukeHelpers.GetFlyByPickupSubType(subType)
-	return DukeHelpers.FindByProperties(DukeHelpers.Flies, { pickupSubType = subType })
+	return DukeHelpers.FindByProperties(DukeHelpers.Flies, { pickupSubType = subType }) or DukeHelpers.Flies.FLY_RED
 end
 
 function DukeHelpers.GetFlySpritesheet(subType)
@@ -280,6 +280,5 @@ function DukeHelpers.KillAtMaxBrokenFlies(player)
 		if brokenFlyCount >= brokenFlyLimit then
 			player:Kill()
 		end
-		print(brokenFlyCount)
 	end
 end

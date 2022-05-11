@@ -16,20 +16,58 @@ end, CacheFlag.CACHE_FLYING)
 -- Adds flies when a heart is collected
 dukeMod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, function(_, pickup, collider)
 	local p = collider:ToPlayer()
+	-- TODO: get rid of all of this reused code :)
+	if p and DukeHelpers.IsDuke(p) and (pickup.Price <= 0 or p:GetNumCoins() >= pickup.Price) then
+		local playerData = DukeHelpers.GetDukeData(p)
+		if (pickup.SubType == 3320 or pickup.SubType == 3321) then
+			local patchedFly = DukeHelpers.GetFlyByPickupSubType(pickup.SubType)
+			for i=1, patchedFly.fliesCount do
+				if DukeHelpers.CountByProperties(playerData.heartFlies, { subType = DukeHelpers.Flies.FLY_BROKEN.heartFlySubType }) > 0 then
+					print(i)
+					local foundFly
+					local layer = DukeHelpers.OUTER
+					if p:HasCollectible(CollectibleType.COLLECTIBLE_BIRTHRIGHT) then
+						layer = DukeHelpers.BIRTHRIGHT
+					end
+					while not foundFly do
+						foundFly = DukeHelpers.Find(playerData.heartFlies, function(fly)
+							return (fly.subType == DukeHelpers.Flies.FLY_BROKEN.heartFlySubType) and fly.layer == layer
+						end)
+
+						if not foundFly then
+							layer = layer - 1
+							if layer < DukeHelpers.INNER then
+								break
+							end
+						end
+					end
+
+					if foundFly then
+						local fly = DukeHelpers.GetEntityByInitSeed(foundFly.initSeed)
+						DukeHelpers.RemoveHeartFly(fly)
+						DukeHelpers.SpawnHeartFlyPoof(DukeHelpers.Flies.FLY_BROKEN.heartFlySubType, fly.Position, p)
+					end
+				else
+					DukeHelpers.AddHeartFly(p, patchedFly, patchedFly.fliesCount - i + 1)
+					break
+				end
+			end
+			pickup:Remove()
+		else
+			DukeHelpers.SpawnPickupHeartFly(p, pickup)
+		end
+		return true
+	end
+end, PickupVariant.PICKUP_HEART)
+
+-- Adds flies when a heart is collected
+dukeMod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, function(_, pickup, collider)
+	local p = collider:ToPlayer()
 	if p and DukeHelpers.IsDuke(p) and (pickup.Price <= 0 or p:GetNumCoins() >= pickup.Price) then
 		DukeHelpers.SpawnPickupHeartFly(p, pickup)
 		return true
 	end
 end, PickupVariant.PICKUP_HEART)
---
--- -- Moonlight fly stuff
--- dukeMod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, function(_, pickup, collider)
--- 	local p = collider:ToPlayer()
--- 	if p and DukeHelpers.IsDuke(p) and (pickup.Price <= 0 or p:GetNumCoins() >= pickup.Price) then
--- 		DukeHelpers.SpawnPickupHeartFly(p, pickup, 901)
--- 		return true
--- 	end
--- end, 901)
 
 dukeMod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, function(_, pickup, collider)
 	local p = collider:ToPlayer()

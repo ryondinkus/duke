@@ -16,7 +16,10 @@ local flies = {
 	include("flies/halfRed"),
 	include("flies/doubleRed"),
 	include("flies/halfSoul"),
-	include("flies/scared")
+	include("flies/scared"),
+	--modded
+	include("flies/patched"),
+	include("flies/doublePatched")
 }
 
 -- Handles fly orbiting
