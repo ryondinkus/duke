@@ -21,6 +21,15 @@ dukeMod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, function(_, pickup, co
 		return true
 	end
 end, PickupVariant.PICKUP_HEART)
+--
+-- -- Moonlight fly stuff
+-- dukeMod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, function(_, pickup, collider)
+-- 	local p = collider:ToPlayer()
+-- 	if p and DukeHelpers.IsDuke(p) and (pickup.Price <= 0 or p:GetNumCoins() >= pickup.Price) then
+-- 		DukeHelpers.SpawnPickupHeartFly(p, pickup, 901)
+-- 		return true
+-- 	end
+-- end, 901)
 
 dukeMod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, function(_, pickup, collider)
 	local p = collider:ToPlayer()
@@ -213,6 +222,11 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_PEFFECT_UPDATE, function(_, p)
 		local fliesToSpawn = DukeHelpers.GetTrueSoulHearts(p) - DukeHelpers.MAX_HEALTH
 		DukeHelpers.AddHeartFly(p, DukeHelpers.Flies.FLY_SOUL, fliesToSpawn)
 		p:AddSoulHearts(-fliesToSpawn)
+	end
+
+	if p:GetData().moons and p:GetData().moons > 0 then
+		DukeHelpers.AddHeartFly(p, DukeHelpers.Flies.FLY_MOONLIGHT, p:GetData().moons)
+		p:GetData().moons = 0
 	end
 end, DukeHelpers.DUKE_ID)
 

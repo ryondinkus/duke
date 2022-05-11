@@ -32,7 +32,7 @@ return {
     canAttack = true,
     subType = subType,
     fliesCount = 2,
-	weight = 1,
+	weight = 0,
     poofColor = Color(0.62, 0.62, 0.62, 1, 0.78, 0.78, 1),
     sacAltarQuality = 3,
     sfx = Isaac.GetSoundIdByName("immortal"),

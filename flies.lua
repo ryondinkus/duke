@@ -9,7 +9,9 @@ local flies = {
 	include("flies/rotten"),
 	include("flies/broken"),
 	include("flies/ultra"),
+	-- modded
 	include("flies/immortal"),
+	include("flies/moonlight"),
 	-- Make sure any fly types that are used by other heart types are registered first
 	include("flies/halfRed"),
 	include("flies/doubleRed"),
