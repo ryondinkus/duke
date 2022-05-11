@@ -16,7 +16,6 @@ end, CacheFlag.CACHE_FLYING)
 -- Adds flies when a heart is collected
 dukeMod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, function(_, pickup, collider)
 	local p = collider:ToPlayer()
-	print("pussy")
 	if p and DukeHelpers.IsDuke(p) and (pickup.Price <= 0 or p:GetNumCoins() >= pickup.Price) then
 		DukeHelpers.SpawnPickupHeartFly(p, pickup)
 		return true
@@ -159,7 +158,13 @@ end)
 dukeMod:AddCallback(ModCallbacks.MC_POST_PEFFECT_UPDATE, function(_, p)
 	if DukeHelpers.GetBlackHearts(p) > 0 then
 		local totalSoulHearts = DukeHelpers.GetTrueSoulHearts(p)
-		DukeHelpers.AddHeartFly(p, DukeHelpers.Flies.FLY_BLACK, DukeHelpers.GetBlackHearts(p))
+		local immortalHeartCount = ComplianceImmortal.GetImmortalHearts(p)
+		if immortalHeartCount > 0 then
+			DukeHelpers.AddHeartFly(p, DukeHelpers.Flies.FLY_IMMORTAL, immortalHeartCount)
+			ComplianceImmortal.AddImmortalHearts(p, -immortalHeartCount)
+		else
+			DukeHelpers.AddHeartFly(p, DukeHelpers.Flies.FLY_BLACK, DukeHelpers.GetBlackHearts(p))
+		end
 		p:AddSoulHearts(-p:GetSoulHearts())
 		p:AddSoulHearts(totalSoulHearts)
 	end
