@@ -18,6 +18,12 @@ local function MC_USE_ITEM(_, type, rng, player, flags)
     return true
 end
 
+local function MC_FAMILIAR_INIT(_, familiar)
+    if familiar.SubType == Id then
+        familiar:Remove()
+    end
+end
+
 return {
     Name = Name,
     Names = Names,
@@ -30,6 +36,11 @@ return {
             ModCallbacks.MC_USE_ITEM,
             MC_USE_ITEM,
             Id
+        },
+        {
+            ModCallbacks.MC_FAMILIAR_INIT,
+            MC_FAMILIAR_INIT,
+            FamiliarVariant.WISP
         }
     }
 }
