@@ -23,7 +23,6 @@ dukeMod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, function(_, pickup, co
 			local patchedFly = DukeHelpers.GetFlyByPickupSubType(pickup.SubType)
 			for i=1, patchedFly.fliesCount do
 				if DukeHelpers.CountByProperties(playerData.heartFlies, { subType = DukeHelpers.Flies.FLY_BROKEN.heartFlySubType }) > 0 then
-					print(i)
 					local foundFly
 					local layer = DukeHelpers.OUTER
 					if p:HasCollectible(CollectibleType.COLLECTIBLE_BIRTHRIGHT) then

@@ -1,0 +1,10 @@
+<wisps gfxroot="gfx/familiars/wisps/">
+
+  <color name="flame_white" r="460" g="460" b="420"/>
+	<color name="core_white" r="510" g="510" b="510"/>
+	<color name="tear_white" r="383" g="510" b="510" or="40" og="50" ob="50"/>
+
+  <!-- Fly Wisp -->
+  <wisp id="4" hp="1" layer="2" damage="1.5" tearScale="0.5" flameColor="flame_white" coreColor="core_white" tearColor="tear_white" count="1" coreGfx="fly.png"  />
+
+</wisps>

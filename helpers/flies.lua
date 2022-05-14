@@ -282,3 +282,16 @@ function DukeHelpers.KillAtMaxBrokenFlies(player)
 		end
 	end
 end
+
+function DukeHelpers.SpawnAttackFlyWispBySubType(flySubType, pos, spawner, spawnFlyOnDeath)
+	local player = spawner:ToPlayer()
+	if player then
+		local wisp = spawner:ToPlayer():AddWisp(DukeHelpers.Items.thePrinces.Id, pos)
+		if wisp then
+			local wispData = wisp:GetData()
+			wispData.heartType = flySubType
+			wispData.spawnFlyOnDeath = spawnFlyOnDeath
+			return wisp
+		end
+	end
+end

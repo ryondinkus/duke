@@ -49,6 +49,7 @@ include("helpers/data")
 -- Initialize player and flies
 include("flies")
 include("duke")
+include("wisps")
 
 include("items/registry")
 
@@ -132,6 +133,8 @@ for _, entityVariant in pairs(DukeHelpers.EntityVariants) do
 end
 
 include("sounds/registry")
+
+include("wisps/registry")
 
 -- Save and continue callbacks
 
