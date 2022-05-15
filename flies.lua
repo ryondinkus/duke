@@ -97,7 +97,8 @@ for _, fly in pairs(flies) do
 		weight = fly.weight,
 		sfx = fly.sfx,
 		poofColor = fly.poofColor,
-		sacAltarQuality = fly.sacAltarQuality
+		sacAltarQuality = fly.sacAltarQuality,
+		baseFly = true
 	}
 
 	if fly.useFly then
@@ -108,6 +109,7 @@ for _, fly in pairs(flies) do
 		newFly.attackFlySubType = existingFly.attackFlySubType
 		newFly.poofColor = existingFly.poofColor
 		newFly.sacAltarQuality = existingFly.sacAltarQuality
+		newFly.baseFly = false
 	end
 
 
