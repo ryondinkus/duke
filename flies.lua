@@ -8,6 +8,7 @@ local flies = {
 	include("flies/bone"),
 	include("flies/rotten"),
 	include("flies/broken"),
+	include("flies/ultra"),
 	-- Make sure any fly types that are used by other heart types are registered first
 	include("flies/halfRed"),
 	include("flies/doubleRed"),
@@ -37,6 +38,10 @@ dukeMod:AddCallback(ModCallbacks.MC_FAMILIAR_UPDATE, function(_, f)
 		f.OrbitDistance = Vector(60, 56)
 		f.OrbitSpeed = 0.01
 		f.CollisionDamage = 2
+	elseif data.layer == DukeHelpers.BIRTHRIGHT then
+		f.OrbitDistance = Vector(80, 76)
+		f.OrbitSpeed = 0.005
+		f.CollisionDamage = 1
 	end
 
 	local centerPos = f.Player.Position

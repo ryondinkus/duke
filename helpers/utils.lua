@@ -98,6 +98,16 @@ function DukeHelpers.HasDuke()
     return found
 end
 
+function DukeHelpers.HasPocketOfFlies()
+    local found = false
+    DukeHelpers.ForEachPlayer(function(p)
+        if p:HasTrinket(DukeHelpers.Trinkets.pocketOfFlies.Id) then
+            found = true
+        end
+    end)
+    return found
+end
+
 function DukeHelpers.ForEach(t, func)
     for k, v in pairs(t) do
         func(v, k)
@@ -111,6 +121,22 @@ function DukeHelpers.Map(t, func)
     end
 
     return mapped
+end
+
+function DukeHelpers.Filter(t, func)
+    local filtered = {}
+    local isArray = DukeHelpers.IsArray(t)
+    for k, v in pairs(t) do
+        if func(v, k) then
+            if isArray then
+                table.insert(filtered, v)
+            else
+                filtered[k] = v
+            end
+        end
+    end
+
+    return filtered
 end
 
 function DukeHelpers.GetEntityByInitSeed(initSeed)
@@ -142,12 +168,14 @@ end
 function DukeHelpers.GetFlyCounts()
     local flyCounts = {}
 
-    DukeHelpers.ForEachDuke(function(duke, dukeData)
-        if dukeData.heartFlies then
+    DukeHelpers.ForEachPlayer(function(player)
+        local playerData = DukeHelpers.GetDukeData(player)
+        if playerData.heartFlies then
             local flyCount = {}
-            flyCount.RED = DukeHelpers.CountByProperties(dukeData.heartFlies, { subType = DukeHelpers.Flies.FLY_RED.heartFlySubType }) + (DukeHelpers.CountByProperties(dukeData.heartFlies, { subType = DukeHelpers.Flies.FLY_BONE.heartFlySubType }) * 2) + (DukeHelpers.CountByProperties(dukeData.heartFlies, { subType = DukeHelpers.Flies.FLY_ROTTEN.heartFlySubType }) * 2)
-            flyCount.SOUL = DukeHelpers.CountByProperties(dukeData.heartFlies, { subType = DukeHelpers.Flies.FLY_SOUL.heartFlySubType }) + DukeHelpers.CountByProperties(dukeData.heartFlies, { subType = DukeHelpers.Flies.FLY_BLACK.heartFlySubType })
-            flyCounts[tostring(duke.InitSeed)] = flyCount
+            flyCount.RED = DukeHelpers.CountByProperties(playerData.heartFlies, { subType = DukeHelpers.Flies.FLY_RED.heartFlySubType }) + (DukeHelpers.CountByProperties(playerData.heartFlies, { subType = DukeHelpers.Flies.FLY_BONE.heartFlySubType }) * 2) + (DukeHelpers.CountByProperties(playerData.heartFlies, { subType = DukeHelpers.Flies.FLY_ROTTEN.heartFlySubType }) * 2)
+            flyCount.SOUL = DukeHelpers.CountByProperties(playerData.heartFlies, { subType = DukeHelpers.Flies.FLY_SOUL.heartFlySubType }) + DukeHelpers.CountByProperties(playerData.heartFlies, { subType = DukeHelpers.Flies.FLY_BLACK.heartFlySubType })
+            flyCount.ULTRA = DukeHelpers.CountByProperties(playerData.heartFlies, { subType = DukeHelpers.Flies.FLY_ULTRA.heartFlySubType })
+            flyCounts[tostring(player.InitSeed)] = flyCount
         end
     end)
 
@@ -171,11 +199,17 @@ function DukeHelpers.CalculateDevilDealPrice(collectible, counts)
 
     local devilPrice = Isaac.GetItemConfig():GetCollectible(collectible.SubType).DevilPrice
 
-    local canAffordSouls = DukeHelpers.Find(counts, function(player) return player.SOUL >= 6 end)
+    local canAffordSouls = DukeHelpers.Find(counts, function(player) return player.SOUL >= 4 end)
+    local canAffordReds = DukeHelpers.Find(counts, function(player) return player.RED >= 4 end)
+    local canReallyAffordReds = DukeHelpers.Find(counts, function(player) return player.RED >= 8 end)
+    local hasPocketOfFlies = false
+    DukeHelpers.ForEachDuke(function(duke)
+        if duke:HasTrinket(DukeHelpers.Trinkets.pocketOfFlies.Id) then
+            hasPocketOfFlies = true
+        end
+    end)
 
-    if devilPrice == 1 then
-        local canAffordReds = DukeHelpers.Find(counts, function(player) return player.RED >= 4 end)
-
+    if devilPrice == 1 or hasPocketOfFlies then
         if canAffordReds and canAffordSouls then
             -- 4 red flies or 6 soul flies for Duke
             if dukeMod.global.floorDevilDealChance < 75 then
@@ -189,52 +223,61 @@ function DukeHelpers.CalculateDevilDealPrice(collectible, counts)
                     SOUL = 6
                 }
             end
-        elseif not canAffordReds and canAffordSouls then
-            -- 6 soul flies for Duke
-            return {
-                RED = 0,
-                SOUL = 6
-            }
-        else
+        elseif canAffordReds and not canAffordSouls then
             -- 4 red flies for Duke
             return {
                 RED = 4,
                 SOUL = 0
             }
+        else
+            -- 6 soul flies for Duke
+            return {
+                RED = 0,
+                SOUL = 6
+            }
         end
-    else
-        local canAffordReds = DukeHelpers.Find(counts, function(player) return player.RED >= 8 end)
-
+    elseif not hasPocketOfFlies then
         if canAffordReds and canAffordSouls then
             -- 8 red flies or 6 soul flies for Duke
             if dukeMod.global.floorDevilDealChance < 75 then
-                return {
-                    RED = 4,
-                    SOUL = 0
-                }
+                if canReallyAffordReds then
+                    -- 8 red flies for Duke
+                    return {
+                        RED = 8,
+                        SOUL = 0
+                    }
+                else
+                    -- 4 red flies and 4 soul flies for Duke
+                    return {
+                        RED = 4,
+                        SOUL = 4
+                    }
+                end
             else
                 return {
                     RED = 0,
                     SOUL = 6
                 }
             end
-        elseif DukeHelpers.Find(counts, function(player) return player.RED >= 4 end) and DukeHelpers.Find(counts, function(player) return player.SOUL >= 4 end) then
-            -- 4 red flies and 4 soul flies for Duke
-            return {
-                RED = 4,
-                SOUL = 4
-            }
-        elseif not canAffordReds and canAffordSouls then
+        elseif canAffordReds and not canAffordSouls then
+            if canReallyAffordReds then
+                -- 8 red flies for Duke
+                return {
+                    RED = 8,
+                    SOUL = 0
+                }
+            else
+                -- 4 red flies and 4 soul flies for Duke
+                return {
+                    RED = 4,
+                    SOUL = 4
+                }
+            end
+        else
             -- 6 soul flies for Duke
             return {
                 RED = 0,
                 SOUL = 6
-            }
-        else
-            -- 8 red flies for Duke
-            return {
-                RED = 8,
-                SOUL = 0
             }
         end
     end
@@ -339,4 +382,19 @@ function DukeHelpers.PercentageChance(percent, max, rng)
     end
 
     return rng:RandomInt(99) + 1 <= value
+end
+
+function DukeHelpers.GetClosestPlayer(position, filter)
+    local closestPlayerDistance = nil
+    local closestPlayer = nil
+
+    DukeHelpers.ForEachPlayer(function(player)
+        local distance = position:Distance(player.Position)
+        if (not closestPlayer or distance < closestPlayerDistance) and (not filter or filter(player)) then
+            closestPlayer = player
+            closestPlayerDistance = distance
+        end
+    end)
+
+    return closestPlayer
 end

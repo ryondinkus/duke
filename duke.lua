@@ -13,7 +13,7 @@ dukeMod:AddCallback(ModCallbacks.MC_EVALUATE_CACHE, function(_, p, f)
 	end
 end, CacheFlag.CACHE_FLYING)
 
--- Adds flies when a heart is spawned
+-- Adds flies when a heart is collected
 dukeMod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, function(_, pickup, collider)
 	local p = collider:ToPlayer()
 
@@ -25,16 +25,35 @@ end, PickupVariant.PICKUP_HEART)
 
 dukeMod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, function(_, pickup, collider)
 	local p = collider:ToPlayer()
-	if p and DukeHelpers.IsDuke(p) and DukeHelpers.IsFlyPrice(pickup.Price) then
+	if p and (DukeHelpers.IsDuke(p) or p:HasTrinket(DukeHelpers.Trinkets.pocketOfFlies.Id))and DukeHelpers.IsFlyPrice(pickup.Price) then
 		local heartPrice = DukeHelpers.GetDukeDevilDealPrice(pickup)
 		local fliesData = DukeHelpers.GetDukeData(p).heartFlies
 
 		local playerFlyCounts = DukeHelpers.GetFlyCounts()[tostring(p.InitSeed)]
-		if playerFlyCounts.RED < heartPrice.RED or playerFlyCounts.SOUL < heartPrice.SOUL then
+
+		local neededRedFlies = heartPrice.RED - playerFlyCounts.RED
+		local remainingUltraFlies = playerFlyCounts.ULTRA
+
+		if neededRedFlies > 0 and remainingUltraFlies >= neededRedFlies then
+			remainingUltraFlies = remainingUltraFlies - neededRedFlies
+			neededRedFlies = 0
+		end
+
+		local neededSoulFlies = heartPrice.SOUL - playerFlyCounts.SOUL
+
+		if neededSoulFlies > 0 and remainingUltraFlies >= neededSoulFlies then
+			remainingUltraFlies = remainingUltraFlies - neededSoulFlies
+			neededSoulFlies = 0
+		end
+
+		if neededRedFlies > 0 or neededSoulFlies > 0 then
 			return true
 		end
 
 		local layer = DukeHelpers.OUTER
+		if p:HasCollectible(CollectibleType.COLLECTIBLE_BIRTHRIGHT) then
+			layer = DukeHelpers.BIRTHRIGHT
+		end
 		local shouldSkip = false
 
 		for _ = 1, heartPrice.RED do
@@ -52,6 +71,9 @@ dukeMod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, function(_, pickup, co
 
 				if not foundFly then
 					layer = layer - 1
+					if layer < DukeHelpers.INNER then
+						break
+					end
 				else
 					if foundFly.subType == DukeHelpers.Flies.FLY_BONE.heartFlySubType or foundFly.subType == DukeHelpers.Flies.FLY_ROTTEN.heartFlySubType then
 						shouldSkip = true
@@ -59,12 +81,17 @@ dukeMod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, function(_, pickup, co
 				end
 			end
 
-			DukeHelpers.RemoveHeartFly(DukeHelpers.GetEntityByInitSeed(foundFly.initSeed))
+			if foundFly then
+				DukeHelpers.RemoveHeartFly(DukeHelpers.GetEntityByInitSeed(foundFly.initSeed))
+			end
 
 			::skip::
 		end
 
 		layer = DukeHelpers.OUTER
+		if p:HasCollectible(CollectibleType.COLLECTIBLE_BIRTHRIGHT) then
+			layer = DukeHelpers.BIRTHRIGHT
+		end
 
 		for _ = 1, heartPrice.SOUL do
 			local foundFly
@@ -76,10 +103,41 @@ dukeMod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, function(_, pickup, co
 
 				if not foundFly then
 					layer = layer - 1
+					if layer < DukeHelpers.INNER then
+						break
+					end
 				end
 			end
 
-			DukeHelpers.RemoveHeartFly(DukeHelpers.GetEntityByInitSeed(foundFly.initSeed))
+			if foundFly then
+				DukeHelpers.RemoveHeartFly(DukeHelpers.GetEntityByInitSeed(foundFly.initSeed))
+			end
+		end
+
+		layer = DukeHelpers.OUTER
+		if p:HasCollectible(CollectibleType.COLLECTIBLE_BIRTHRIGHT) then
+			layer = DukeHelpers.BIRTHRIGHT
+		end
+
+		for _ = 1, playerFlyCounts.ULTRA - remainingUltraFlies do
+			local foundFly
+
+			while not foundFly do
+				foundFly = DukeHelpers.Find(fliesData, function(fly)
+					return (fly.subType == DukeHelpers.Flies.FLY_ULTRA.heartFlySubType) and fly.layer == layer
+				end)
+
+				if not foundFly then
+					layer = layer - 1
+					if layer < DukeHelpers.INNER then
+						break
+					end
+				end
+			end
+
+			if foundFly then
+				DukeHelpers.RemoveHeartFly(DukeHelpers.GetEntityByInitSeed(foundFly.initSeed))
+			end
 		end
 	end
 end)
@@ -117,6 +175,7 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_PEFFECT_UPDATE, function(_, p)
 		if DukeHelpers.GetTrueSoulHearts(p) < DukeHelpers.MAX_HEALTH then
 			p:AddSoulHearts(DukeHelpers.MAX_HEALTH)
 		end
+		DukeHelpers.KillAtMaxBrokenFlies(p)
 	end
 
 	if p:GetEternalHearts() > 0 then
@@ -153,19 +212,10 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_PEFFECT_UPDATE, function(_, p)
 end, DukeHelpers.DUKE_ID)
 
 dukeMod:AddCallback(ModCallbacks.MC_POST_PICKUP_UPDATE, function(_, pickup)
-	if DukeHelpers.HasDuke() and pickup.Price < 0 then
-		local closestPlayerDistance = nil
-		local closestPlayer = nil
+	if (DukeHelpers.HasDuke() or DukeHelpers.HasPocketOfFlies()) and pickup.Price < 0 then
+		local closestPlayer = DukeHelpers.GetClosestPlayer(pickup.Position)
 
-		DukeHelpers.ForEachPlayer(function(player)
-			local distance = pickup.Position:Distance(player.Position)
-			if not closestPlayer or distance < closestPlayerDistance then
-				closestPlayer = player
-				closestPlayerDistance = distance
-			end
-		end)
-
-		if closestPlayer and DukeHelpers.IsDuke(closestPlayer) then
+		if closestPlayer and (DukeHelpers.IsDuke(closestPlayer) or closestPlayer:HasTrinket(DukeHelpers.Trinkets.pocketOfFlies.Id)) then
 			pickup:GetData().showFliesPrice = true
 			pickup.AutoUpdatePrice = false
 			pickup.Price = (pickup.Price % DukeHelpers.PRICE_OFFSET) + DukeHelpers.PRICE_OFFSET
@@ -174,6 +224,11 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_PICKUP_UPDATE, function(_, pickup)
 			if not pickup.AutoUpdatePrice then
 				pickup.AutoUpdatePrice = true
 			end
+		end
+	elseif pickup:GetData().showFliesPrice == true then
+		pickup:GetData().showFliesPrice = nil
+		if not pickup.AutoUpdatePrice then
+			pickup.AutoUpdatePrice = true
 		end
 	end
 end)
@@ -216,4 +271,20 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_UPDATE, function()
 			DukeHelpers.sfx:Play(SoundEffect.SOUND_ROCKET_BLAST_DEATH)
 		end
 	end)
+end)
+
+dukeMod:AddCallback(ModCallbacks.MC_EVALUATE_CACHE, function(_, player, flags)
+	if DukeHelpers.IsDuke(player) and player:GetData().duke and not player:HasCollectible(CollectibleType.COLLECTIBLE_BIRTHRIGHT) then
+		local heartFlies = DukeHelpers.GetDukeData(player).heartFlies
+		if heartFlies then
+			for i = #heartFlies, 1, -1 do
+				local fly = heartFlies[i]
+				local f = DukeHelpers.GetEntityByInitSeed(fly.initSeed)
+				if f:GetData().layer == DukeHelpers.BIRTHRIGHT then
+					DukeHelpers.RemoveHeartFly(f)
+					DukeHelpers.SpawnAttackFly(f)
+				end
+			end
+		end
+	end
 end)
