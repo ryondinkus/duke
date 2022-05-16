@@ -79,12 +79,21 @@ local function MC_USE_ITEM(_, type, rng, player, f)
     end
 
     ::keeper::
+
+    fliesToSpawn[DukeHelpers.Flies.FLY_FIENDISH.heartFlySubType] = 1
+
     local addedFlies = {}
 
     DukeHelpers.ForEach(fliesToSpawn, function(numFlies, flyId)
-        DukeHelpers.ForEach(DukeHelpers.AddHeartFly(player, DukeHelpers.FindByProperties(DukeHelpers.Flies, { heartFlySubType = flyId }), numFlies), function(addedFly)
-            table.insert(addedFlies, addedFly.InitSeed)
-        end)
+        if player:HasCollectible(CollectibleType.COLLECTIBLE_BOOK_OF_VIRTUES) then
+            DukeHelpers.ForEach(DukeHelpers.AddHeartFly(player, DukeHelpers.FindByProperties(DukeHelpers.Flies, { heartFlySubType = flyId }), numFlies), function(addedFly)
+                table.insert(addedFlies, addedFly.InitSeed)
+            end)
+        else
+            DukeHelpers.ForEach(DukeHelpers.AddHeartFly(player, DukeHelpers.FindByProperties(DukeHelpers.Flies, { heartFlySubType = flyId }), numFlies), function(addedFly)
+                table.insert(addedFlies, addedFly.InitSeed)
+            end)
+        end
     end)
 
     dukeData[Tag] = addedFlies
@@ -95,6 +104,7 @@ local function MC_POST_NEW_ROOM()
         local data = DukeHelpers.GetDukeData(player)
 
         if data[Tag] then
+
             local heartsToAdd = {}
 
             DukeHelpers.ForEach(data[Tag], function(flyInitSeed)
@@ -103,10 +113,12 @@ local function MC_POST_NEW_ROOM()
                 if foundFly then
                     local heartFly = DukeHelpers.FindByProperties(DukeHelpers.Flies, { heartFlySubType = foundFly.SubType, baseFly = true })
 
-                    if heartsToAdd[heartFly.pickupSubType] then
-                        heartsToAdd[heartFly.pickupSubType] = heartsToAdd[heartFly.pickupSubType] + 1
-                    else
-                        heartsToAdd[heartFly.pickupSubType] = 1
+                    if heartFly.pickupSubType ~= 102 then
+                        if heartsToAdd[heartFly.pickupSubType] then
+                            heartsToAdd[heartFly.pickupSubType] = heartsToAdd[heartFly.pickupSubType] + 1
+                        else
+                            heartsToAdd[heartFly.pickupSubType] = 1
+                        end
                     end
                     DukeHelpers.RemoveHeartFly(foundFly)
                 end

@@ -1,5 +1,5 @@
 local key = "FLY_ULTRA"
-local subType = 96
+local subType = 101
 local attackFlySubType = DukeHelpers.GetAttackFlySubTypeBySubType(subType)
 
 local function ATTACK_FLY_MC_FAMILIAR_UPDATE_ATTACK(_, f)

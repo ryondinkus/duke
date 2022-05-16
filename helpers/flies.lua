@@ -280,6 +280,5 @@ function DukeHelpers.KillAtMaxBrokenFlies(player)
 		if brokenFlyCount >= brokenFlyLimit then
 			player:Kill()
 		end
-		print(brokenFlyCount)
 	end
 end
