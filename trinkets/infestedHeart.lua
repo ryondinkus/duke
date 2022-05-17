@@ -11,10 +11,16 @@ local Descriptions = {
 }
 local WikiDescription = "It's buzzing..." --helper.GenerateEncyclopediaPage("Poops and shits everywhere.")
 
+local function ShouldSpawnExtraFly(player)
+    return player:HasTrinket(Id) and DukeHelpers.PercentageChance(50)
+end
+
 local function RandomlySpawnHeartFlyFromPickup(player, pickup)
     if player and player:HasTrinket(Id) then
         local canPickup = pickup.Variant == PickupVariant.PICKUP_HEART
-
+        if pickup.SubType > HeartSubType.HEART_ROTTEN then
+            return
+        end
         if pickup.SubType == HeartSubType.HEART_FULL or pickup.SubType == HeartSubType.HEART_HALF or pickup.SubType == HeartSubType.HEART_DOUBLEPACK or pickup.SubType == HeartSubType.HEART_SCARED then
             canPickup = player:CanPickRedHearts()
         elseif pickup.SubType == HeartSubType.HEART_SOUL or pickup.SubType == HeartSubType.HEART_HALF_SOUL then
@@ -31,22 +37,9 @@ local function RandomlySpawnHeartFlyFromPickup(player, pickup)
             canPickup = player:CanPickRedHearts() or player:CanPickSoulHearts()
         end
 
-        if (DukeHelpers.IsDuke(player) or canPickup) and DukeHelpers.PercentageChance(50) then
+        if (DukeHelpers.IsDuke(player) or canPickup) and ShouldSpawnExtraFly(player) then
             if DukeHelpers.IsDuke(player) then
                 return true
-            end
-
-            local heartSubType = DukeHelpers.GetFlyByPickupSubType(pickup.SubType)
-            if pickup.SubType == HeartSubType.HEART_BLENDED then
-                if DukeHelpers.PercentageChance(50) then
-                    heartSubType = HeartSubType.HEART_FULL
-                else
-                    heartSubType = HeartSubType.HEART_SOUL
-                end
-            end
-
-            if type(heartSubType) ~= "number" then
-                heartSubType = heartSubType.heartFlySubType
             end
             DukeHelpers.SpawnPickupHeartFly(player, pickup)
 
@@ -71,10 +64,12 @@ return {
     callbacks = {
         {
             ModCallbacks.MC_PRE_PICKUP_COLLISION,
-            MC_PRE_PICKUP_COLLISION
+            MC_PRE_PICKUP_COLLISION,
+            PickupVariant.PICKUP_HEART
         }
     },
     helpers = {
-        RandomlySpawnHeartFlyFromPickup = RandomlySpawnHeartFlyFromPickup
+        RandomlySpawnHeartFlyFromPickup = RandomlySpawnHeartFlyFromPickup,
+        ShouldSpawnExtraFly = ShouldSpawnExtraFly
     }
 }

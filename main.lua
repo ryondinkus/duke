@@ -232,7 +232,7 @@ end)
 local unlocks = include("unlocks/registry")
 
 local function saveUnlock(tag)
-    GiantBookAPI.ShowAchievement("achievement_" .. tag .. ".png")
+    DukeGiantBookAPI.ShowAchievement("achievement_" .. tag .. ".png")
     dukeMod.unlocks[tag] = true
     DukeHelpers.SaveGame()
 end

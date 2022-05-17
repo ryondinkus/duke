@@ -1,7 +1,3 @@
-if not GiantBookAPI then
-	GiantBookAPI = RegisterMod("GiantBook API", 1)
-end
-
 local sfx = SFXManager()
 --GIANTBOOK ANIMATION
 local bigBook = Sprite()
@@ -24,7 +20,9 @@ local function doBerkanoPause()
 	end
 end
 
-function GiantBookAPI.playGiantBook(_animName, _popup, _poofColor, _bgColor, _poof2Color, _soundName, _notHide)
+DukeGiantBookAPI = {}
+
+function DukeGiantBookAPI.playGiantBook(_animName, _popup, _poofColor, _bgColor, _poof2Color, _soundName, _notHide)
 	bigBook:Load("gfx/ui/giantbook/giantbook.anm2", true)
 	bigBook:ReplaceSpritesheet(0, "gfx/ui/giantbook/" .. _popup)
 	bigBook:LoadGraphics()
@@ -43,7 +41,7 @@ function GiantBookAPI.playGiantBook(_animName, _popup, _poofColor, _bgColor, _po
 	end
 end
 
-function GiantBookAPI.playDukeGiantBook(_animName, _popup, _gfxRoot, _poofColor, _bgColor, _poof2Color, _soundName, _notHide)
+function DukeGiantBookAPI.playDukeGiantBook(_animName, _popup, _gfxRoot, _poofColor, _bgColor, _poof2Color, _soundName, _notHide)
 	bigBook:Load(_gfxRoot or "gfx/ui/giantbook/giantbook.anm2", true)
 	if _popup then
 		bigBook:ReplaceSpritesheet(0, "gfx/ui/giantbook/" .. _popup)
@@ -64,7 +62,7 @@ function GiantBookAPI.playDukeGiantBook(_animName, _popup, _gfxRoot, _poofColor,
 	end
 end
 
-function GiantBookAPI.bookRender()
+function DukeGiantBookAPI.bookRender()
 	if bookLength > 0 then
 		if (Isaac.GetFrameCount() % 2 == 0) then
 			bigBook:Update()
@@ -80,20 +78,20 @@ function GiantBookAPI.bookRender()
 	end
 end
 
-GiantBookAPI:AddCallback(ModCallbacks.MC_POST_RENDER, GiantBookAPI.bookRender)
+dukeMod:AddCallback(ModCallbacks.MC_POST_RENDER, DukeGiantBookAPI.bookRender)
 
 function GetScreenCenterPosition()
 	return Vector(Isaac.GetScreenWidth() / 2, Isaac.GetScreenHeight() / 2)
 end
 
 --giving berkano back it's visual effect
-function GiantBookAPI:useBerkano()
+function DukeGiantBookAPI:useBerkano()
 	if not bookHideBerkano then
-		GiantBookAPI.playGiantBook("Appear", "Rune_07_Berkand.png", Color(0.2, 0.1, 0.3, 1, 0, 0, 0), Color(0.117, 0.0117, 0.2, 1, 0, 0, 0), Color(0, 0, 0, 0.8, 0, 0, 0), nil, true)
+		DukeGiantBookAPI.playGiantBook("Appear", "Rune_07_Berkand.png", Color(0.2, 0.1, 0.3, 1, 0, 0, 0), Color(0.117, 0.0117, 0.2, 1, 0, 0, 0), Color(0, 0, 0, 0.8, 0, 0, 0), nil, true)
 	end
 end
 
-GiantBookAPI:AddCallback(ModCallbacks.MC_USE_CARD, GiantBookAPI.useBerkano, Card.RUNE_BERKANO)
+dukeMod:AddCallback(ModCallbacks.MC_USE_CARD, DukeGiantBookAPI.useBerkano, Card.RUNE_BERKANO)
 
 --ACHIEVEMENT DISPLAY
 local achievementQueue = {}
@@ -101,7 +99,7 @@ local bigPaper = Sprite()
 local paperFrames = 0
 local paperSwitch = false
 
-function GiantBookAPI.paperRender()
+function DukeGiantBookAPI.paperRender()
 	if (paperFrames <= 0) then
 		if paperSwitch then
 			for i = 1, #achievementQueue - 1 do
@@ -139,8 +137,8 @@ function GiantBookAPI.paperRender()
 	end
 end
 
-GiantBookAPI:AddCallback(ModCallbacks.MC_POST_RENDER, GiantBookAPI.paperRender)
+dukeMod:AddCallback(ModCallbacks.MC_POST_RENDER, DukeGiantBookAPI.paperRender)
 
-function GiantBookAPI.ShowAchievement(_drawingSprite)
+function DukeGiantBookAPI.ShowAchievement(_drawingSprite)
 	table.insert(achievementQueue, #achievementQueue + 1, _drawingSprite)
 end
