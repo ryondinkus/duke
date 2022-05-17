@@ -66,10 +66,14 @@ local function MC_FAMILIAR_UPDATE(_, f)
 	end
 	if data.State == STATE.ATTACK_SMALL then
 		if sprite:IsEventTriggered("Barf") then
-			for _ = 1, 3 do
-				local fly = Isaac.Spawn(EntityType.ENTITY_ATTACKFLY, 0, 0, f.Position + CONSTANTS.FLY_SPAWN_OFFSET, Vector.Zero, f)
-				fly:AddCharmed(EntityRef(f.Player), -1)
-				fly:ClearEntityFlags(EntityFlag.FLAG_APPEAR)
+			if f.Player:HasCollectible(CollectibleType.COLLECTIBLE_BOOK_OF_VIRTUES) then
+				DukeHelpers.SpawnAttackFlyWispBySubType(1, f.Position, f.Player, false)
+			else
+				for _ = 1, 3 do
+					local fly = Isaac.Spawn(EntityType.ENTITY_ATTACKFLY, 0, 0, f.Position + CONSTANTS.FLY_SPAWN_OFFSET, Vector.Zero, f)
+					fly:AddCharmed(EntityRef(f.Player), -1)
+					fly:ClearEntityFlags(EntityFlag.FLAG_APPEAR)
+				end
 			end
 			DukeHelpers.sfx:Play(SoundEffect.SOUND_MONSTER_GRUNT_1, 1, 0)
 		end
@@ -82,21 +86,27 @@ local function MC_FAMILIAR_UPDATE(_, f)
 	end
 	if data.State == STATE.ATTACK_BIG then
 		if sprite:IsEventTriggered("Barf") then
-			if data.Champion == "Green" then
-				local fly = Isaac.Spawn(EntityType.ENTITY_MOTER, 0, 0, f.Position + CONSTANTS.FLY_SPAWN_OFFSET, Vector.Zero, f)
-				fly:AddCharmed(EntityRef(f.Player), -1)
-				fly:ClearEntityFlags(EntityFlag.FLAG_APPEAR)
-			elseif data.Champion == "Orange" then
-				local fly = Isaac.Spawn(EntityType.ENTITY_SUCKER, 0, 0, f.Position + CONSTANTS.FLY_SPAWN_OFFSET, Vector.Zero, f)
-				fly:AddCharmed(EntityRef(f.Player), -1)
-				fly:ClearEntityFlags(EntityFlag.FLAG_APPEAR)
+			if f.Player:HasCollectible(CollectibleType.COLLECTIBLE_BOOK_OF_VIRTUES) then
+				for _=1,2 do
+					DukeHelpers.SpawnAttackFlyWispBySubType(1, f.Position, f.Player, false)
+				end
 			else
-				local fly = Isaac.Spawn(EntityType.ENTITY_ATTACKFLY, 0, 0, f.Position + CONSTANTS.FLY_SPAWN_OFFSET, Vector.Zero, f)
-				fly:AddCharmed(EntityRef(f.Player), -1)
-				fly:ClearEntityFlags(EntityFlag.FLAG_APPEAR)
-				fly:GetData().bigFly = true
-				fly.MaxHitPoints = fly.MaxHitPoints * 1.5
-				fly.HitPoints = fly.HitPoints * 1.5
+				if data.Champion == "Green" then
+					local fly = Isaac.Spawn(EntityType.ENTITY_MOTER, 0, 0, f.Position + CONSTANTS.FLY_SPAWN_OFFSET, Vector.Zero, f)
+					fly:AddCharmed(EntityRef(f.Player), -1)
+					fly:ClearEntityFlags(EntityFlag.FLAG_APPEAR)
+				elseif data.Champion == "Orange" then
+					local fly = Isaac.Spawn(EntityType.ENTITY_SUCKER, 0, 0, f.Position + CONSTANTS.FLY_SPAWN_OFFSET, Vector.Zero, f)
+					fly:AddCharmed(EntityRef(f.Player), -1)
+					fly:ClearEntityFlags(EntityFlag.FLAG_APPEAR)
+				else
+					local fly = Isaac.Spawn(EntityType.ENTITY_ATTACKFLY, 0, 0, f.Position + CONSTANTS.FLY_SPAWN_OFFSET, Vector.Zero, f)
+					fly:AddCharmed(EntityRef(f.Player), -1)
+					fly:ClearEntityFlags(EntityFlag.FLAG_APPEAR)
+					fly:GetData().bigFly = true
+					fly.MaxHitPoints = fly.MaxHitPoints * 1.5
+					fly.HitPoints = fly.HitPoints * 1.5
+				end
 			end
 			DukeHelpers.sfx:Play(SoundEffect.SOUND_MONSTER_GRUNT_2, 1, 0)
 		end

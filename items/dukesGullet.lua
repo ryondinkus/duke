@@ -21,6 +21,9 @@ local function MC_USE_ITEM(_, type, rng, p, flags)
                 if DukeHelpers.GetFlyByHeartSubType(fly.subType).canAttack then
                     DukeHelpers.SpawnAttackFly(f)
                     DukeHelpers.RemoveHeartFly(f)
+                    if p:HasCollectible(CollectibleType.COLLECTIBLE_BOOK_OF_VIRTUES) then
+                        DukeHelpers.SpawnAttackFlyWispBySubType(fly.subType, p.Position, p, false, 60)
+                    end
                 end
             end
             DukeHelpers.sfx:Play(SoundEffect.SOUND_WHEEZY_COUGH, 1, 0)

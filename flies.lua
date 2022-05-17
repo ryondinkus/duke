@@ -10,11 +10,19 @@ local flies = {
 	include("flies/broken"),
 	include("flies/ultra"),
 	include("flies/fiendish"),
+	-- modded
+	include("flies/modded/immortal"),
+	include("flies/modded/moonlight"),
+	include("flies/modded/web"),
 	-- Make sure any fly types that are used by other heart types are registered first
 	include("flies/halfRed"),
 	include("flies/doubleRed"),
 	include("flies/halfSoul"),
-	include("flies/scared")
+	include("flies/scared"),
+	include("flies/blended"),
+	--modded
+	include("flies/modded/patched"),
+	include("flies/modded/doublePatched")
 }
 
 -- Handles fly orbiting
@@ -118,6 +126,9 @@ for _, fly in pairs(flies) do
 		newFly.baseFly = false
 	end
 
+	if fly.useFlies then
+		newFly.heartFlySubType = fly.useFlies
+	end
 
 	if fly.callbacks then
 		for _, callback in pairs(fly.callbacks) do
