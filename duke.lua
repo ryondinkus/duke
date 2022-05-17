@@ -21,7 +21,7 @@ dukeMod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, function(_, pickup, co
 		local playerData = DukeHelpers.GetDukeData(p)
 		if (pickup.SubType == 3320 or pickup.SubType == 3321) then
 			local patchedFly = DukeHelpers.GetFlyByPickupSubType(pickup.SubType)
-			for i=1, patchedFly.fliesCount do
+			for i = 1, patchedFly.fliesCount do
 				if DukeHelpers.CountByProperties(playerData.heartFlies, { subType = DukeHelpers.Flies.FLY_BROKEN.heartFlySubType }) > 0 then
 					local foundFly
 					local layer = DukeHelpers.OUTER
@@ -70,7 +70,7 @@ end, PickupVariant.PICKUP_HEART)
 
 dukeMod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, function(_, pickup, collider)
 	local p = collider:ToPlayer()
-	if p and (DukeHelpers.IsDuke(p) or p:HasTrinket(DukeHelpers.Trinkets.pocketOfFlies.Id))and DukeHelpers.IsFlyPrice(pickup.Price) then
+	if p and (DukeHelpers.IsDuke(p) or p:HasTrinket(DukeHelpers.Trinkets.pocketOfFlies.Id)) and DukeHelpers.IsFlyPrice(pickup.Price) then
 		local heartPrice = DukeHelpers.GetDukeDevilDealPrice(pickup)
 		local fliesData = DukeHelpers.GetDukeData(p).heartFlies
 

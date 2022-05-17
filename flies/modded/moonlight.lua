@@ -23,49 +23,49 @@ local function MC_PRE_FAMILIAR_COLLISION(_, f, e)
 			local data = p:GetData()
 			local effect = DukeHelpers.rng:RandomInt(6)
 			if effect == 0 then
-			 	Game():GetLevel():ApplyBlueMapEffect()
+				Game():GetLevel():ApplyBlueMapEffect()
 			elseif effect == 1 then
-			 	Game():GetLevel():ApplyCompassEffect()
+				Game():GetLevel():ApplyCompassEffect()
 			elseif effect == 2 then
-			 	Game():GetLevel():ApplyMapEffect()
-		 	elseif effect == 3 then
-			 	Game():GetLevel():RemoveCurses(LevelCurse.CURSE_OF_DARKNESS | LevelCurse.CURSE_OF_BLIND | LevelCurse.CURSE_OF_THE_LOST | LevelCurse.CURSE_OF_THE_UNKNOWN | LevelCurse.CURSE_OF_MAZE)
+				Game():GetLevel():ApplyMapEffect()
+			elseif effect == 3 then
+				Game():GetLevel():RemoveCurses(LevelCurse.CURSE_OF_DARKNESS | LevelCurse.CURSE_OF_BLIND | LevelCurse.CURSE_OF_THE_LOST | LevelCurse.CURSE_OF_THE_UNKNOWN | LevelCurse.CURSE_OF_MAZE)
 			elseif effect == 4 then
 				p:UseCard(Card.CARD_SOUL_CAIN, (UseFlag.USE_NOANNOUNCER | UseFlag.USE_NOANIM))
 			elseif effect == 5 then
-			 	data.moontears = data.moontears+2
+				data.moontears = data.moontears + 2
 				p:AddCacheFlags(CacheFlag.CACHE_FIREDELAY)
 				p:EvaluateItems()
 			end
-	    end
+		end
 	end
 end
 
 return {
-    key = key,
-    spritesheet = "gfx/familiars/moonlight_heart_fly.png",
-    canAttack = true,
-    subType = subType,
-    fliesCount = 1,
+	key = key,
+	spritesheet = "gfx/familiars/moonlight_heart_fly.png",
+	canAttack = true,
+	subType = subType,
+	fliesCount = 1,
 	weight = 0,
-    poofColor = Color(0.62, 0.62, 0.62, 1, 0.90, 0.78, 1),
-    sacAltarQuality = 3,
-    sfx = SoundEffect.SOUND_SOUL_PICKUP,
-    callbacks = {
-        {
-            ModCallbacks.MC_FAMILIAR_UPDATE,
-            ATTACK_FLY_MC_FAMILIAR_UPDATE_ATTACK,
-            FamiliarVariant.BLUE_FLY
-        },
+	poofColor = Color(0.62, 0.62, 0.62, 1, 0.90, 0.78, 1),
+	sacAltarQuality = 3,
+	sfx = SoundEffect.SOUND_SOUL_PICKUP,
+	callbacks = {
 		{
-            ModCallbacks.MC_FAMILIAR_UPDATE,
-            HEART_FLY_MC_FAMILIAR_UPDATE_ATTACK,
-            DukeHelpers.FLY_VARIANT
-        },
+			ModCallbacks.MC_FAMILIAR_UPDATE,
+			ATTACK_FLY_MC_FAMILIAR_UPDATE_ATTACK,
+			FamiliarVariant.BLUE_FLY
+		},
+		{
+			ModCallbacks.MC_FAMILIAR_UPDATE,
+			HEART_FLY_MC_FAMILIAR_UPDATE_ATTACK,
+			DukeHelpers.FLY_VARIANT
+		},
 		{
 			ModCallbacks.MC_PRE_FAMILIAR_COLLISION,
 			MC_PRE_FAMILIAR_COLLISION,
 			DukeHelpers.FLY_VARIANT
 		}
-    }
+	}
 }
