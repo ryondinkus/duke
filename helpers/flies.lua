@@ -313,14 +313,18 @@ function DukeHelpers.SpawnPickupHeartFly(player, pickup, overriddenSubType, amou
 
 		DukeHelpers.sfx:Play(sfx)
 
-		pickup:Remove()
+	  player:AnimatePickup(pickup:GetSprite())
+
+	  pickup:Remove()
+
+	  player:AnimatePickup()
 
 		if pickup.Price > 0 then
 			player:AddCoins(-pickup.Price)
 		end
 	end
-
-	return spawnedFlies
+  
+  return spawnedFlies
 end
 
 function DukeHelpers.SpawnHeartFlyPoof(flySubType, pos, spawner)
