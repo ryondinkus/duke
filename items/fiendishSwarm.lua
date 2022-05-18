@@ -85,10 +85,11 @@ local function MC_USE_ITEM(_, type, rng, player, f)
     local addedFlies = {}
 
     DukeHelpers.ForEach(fliesToSpawn, function(numFlies, flyId)
-        if player:HasCollectible(CollectibleType.COLLECTIBLE_BOOK_OF_VIRTUES) then
-            DukeHelpers.ForEach(DukeHelpers.AddHeartFly(player, DukeHelpers.FindByProperties(DukeHelpers.Flies, { heartFlySubType = flyId }), numFlies), function(addedFly)
-                table.insert(addedFlies, addedFly.InitSeed)
-            end)
+        if player:HasCollectible(CollectibleType.COLLECTIBLE_BOOK_OF_VIRTUES) and DukeHelpers.Wisps[flyId] then
+            for i=1,numFlies do
+                local wisp = DukeHelpers.SpawnAttackFlyWispBySubType(flyId, player.Position, player, true)
+                table.insert(addedFlies, wisp.InitSeed)
+            end
         else
             DukeHelpers.ForEach(DukeHelpers.AddHeartFly(player, DukeHelpers.FindByProperties(DukeHelpers.Flies, { heartFlySubType = flyId }), numFlies), function(addedFly)
                 table.insert(addedFlies, addedFly.InitSeed)
@@ -96,7 +97,13 @@ local function MC_USE_ITEM(_, type, rng, player, f)
         end
     end)
 
-    dukeData[Tag] = addedFlies
+    if dukeData[Tag] then
+        for _,id in ipairs(addedFlies) do
+            table.insert(dukeData[Tag], id)
+        end
+    else
+        dukeData[Tag] = addedFlies
+    end
 end
 
 local function MC_POST_NEW_ROOM()
@@ -111,16 +118,26 @@ local function MC_POST_NEW_ROOM()
                 local foundFly = DukeHelpers.GetEntityByInitSeed(flyInitSeed)
 
                 if foundFly then
-                    local heartFly = DukeHelpers.FindByProperties(DukeHelpers.Flies, { heartFlySubType = foundFly.SubType, baseFly = true })
-
-                    if heartFly.pickupSubType ~= 102 then
-                        if heartsToAdd[heartFly.pickupSubType] then
-                            heartsToAdd[heartFly.pickupSubType] = heartsToAdd[heartFly.pickupSubType] + 1
+                    if foundFly.Variant == FamiliarVariant.WISP then
+                        local wispData = foundFly:GetData()
+                        if heartsToAdd[wispData.heartType] then
+                            heartsToAdd[wispData.heartType] = heartsToAdd[wispData.heartType] + 1
                         else
-                            heartsToAdd[heartFly.pickupSubType] = 1
+                            heartsToAdd[wispData.heartType] = 1
                         end
+                        foundFly:Kill()
+                    else
+                        local heartFly = DukeHelpers.FindByProperties(DukeHelpers.Flies, { heartFlySubType = foundFly.SubType, baseFly = true })
+
+                        if heartFly.pickupSubType ~= 102 then
+                            if heartsToAdd[heartFly.pickupSubType] then
+                                heartsToAdd[heartFly.pickupSubType] = heartsToAdd[heartFly.pickupSubType] + 1
+                            else
+                                heartsToAdd[heartFly.pickupSubType] = 1
+                            end
+                        end
+                        DukeHelpers.RemoveHeartFly(foundFly)
                     end
-                    DukeHelpers.RemoveHeartFly(foundFly)
                 end
             end)
 
@@ -156,6 +173,12 @@ local function MC_POST_NEW_ROOM()
     end)
 end
 
+local function MC_FAMILIAR_INIT(_, familiar)
+    if familiar.SubType == Id then
+        familiar:Remove()
+    end
+end
+
 return {
     Name = Name,
     Names = Names,
@@ -172,6 +195,11 @@ return {
         {
             ModCallbacks.MC_POST_NEW_ROOM,
             MC_POST_NEW_ROOM
+        },
+        {
+            ModCallbacks.MC_FAMILIAR_INIT,
+            MC_FAMILIAR_INIT,
+            FamiliarVariant.WISP
         }
     }
 }
