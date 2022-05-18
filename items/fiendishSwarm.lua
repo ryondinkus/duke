@@ -83,18 +83,16 @@ local function MC_USE_ITEM(_, type, rng, player, f)
     fliesToSpawn[DukeHelpers.Flies.FLY_FIENDISH.heartFlySubType] = 1
 
     local addedFlies = {}
+    local addedWisps = {}
 
     DukeHelpers.ForEach(fliesToSpawn, function(numFlies, flyId)
-        if player:HasCollectible(CollectibleType.COLLECTIBLE_BOOK_OF_VIRTUES) and DukeHelpers.Wisps[flyId] then
-            for i=1,numFlies do
-                local wisp = DukeHelpers.SpawnAttackFlyWispBySubType(flyId, player.Position, player, true)
-                table.insert(addedFlies, wisp.InitSeed)
+        DukeHelpers.ForEach(DukeHelpers.AddHeartFly(player, DukeHelpers.FindByProperties(DukeHelpers.Flies, { heartFlySubType = flyId }), numFlies), function(addedFly)
+            if player:HasCollectible(CollectibleType.COLLECTIBLE_BOOK_OF_VIRTUES) and DukeHelpers.Wisps[flyId] then
+                local wisp = DukeHelpers.SpawnAttackFlyWispBySubType(flyId, player.Position, player, true, nil, true)
+                table.insert(addedWisps, wisp.InitSeed)
             end
-        else
-            DukeHelpers.ForEach(DukeHelpers.AddHeartFly(player, DukeHelpers.FindByProperties(DukeHelpers.Flies, { heartFlySubType = flyId }), numFlies), function(addedFly)
-                table.insert(addedFlies, addedFly.InitSeed)
-            end)
-        end
+            table.insert(addedFlies, addedFly.InitSeed)
+        end)
     end)
 
     if dukeData[Tag] then
@@ -103,6 +101,14 @@ local function MC_USE_ITEM(_, type, rng, player, f)
         end
     else
         dukeData[Tag] = addedFlies
+    end
+
+    if dukeData[Tag .. "Wisps"] then
+        for _,id in ipairs(addedWisps) do
+            table.insert(dukeData[Tag .. "Wisps"], id)
+        end
+    else
+        dukeData[Tag .. "Wisps"] = addedWisps
     end
 end
 
@@ -118,26 +124,15 @@ local function MC_POST_NEW_ROOM()
                 local foundFly = DukeHelpers.GetEntityByInitSeed(flyInitSeed)
 
                 if foundFly then
-                    if foundFly.Variant == FamiliarVariant.WISP then
-                        local wispData = foundFly:GetData()
-                        if heartsToAdd[wispData.heartType] then
-                            heartsToAdd[wispData.heartType] = heartsToAdd[wispData.heartType] + 1
-                        else
-                            heartsToAdd[wispData.heartType] = 1
-                        end
-                        foundFly:Kill()
-                    else
-                        local heartFly = DukeHelpers.FindByProperties(DukeHelpers.Flies, { heartFlySubType = foundFly.SubType, baseFly = true })
-
+                    local heartFly = DukeHelpers.FindByProperties(DukeHelpers.Flies, { heartFlySubType = foundFly.SubType, baseFly = true })
                         if heartFly.pickupSubType ~= 102 then
-                            if heartsToAdd[heartFly.pickupSubType] then
-                                heartsToAdd[heartFly.pickupSubType] = heartsToAdd[heartFly.pickupSubType] + 1
-                            else
-                                heartsToAdd[heartFly.pickupSubType] = 1
-                            end
+                        if heartsToAdd[heartFly.pickupSubType] then
+                            heartsToAdd[heartFly.pickupSubType] = heartsToAdd[heartFly.pickupSubType] + 1
+                        else
+                            heartsToAdd[heartFly.pickupSubType] = 1
                         end
-                        DukeHelpers.RemoveHeartFly(foundFly)
                     end
+                    DukeHelpers.RemoveHeartFly(foundFly)
                 end
             end)
 
@@ -166,6 +161,18 @@ local function MC_POST_NEW_ROOM()
                     else
                         player:AddGoldenHearts(numHearts)
                     end
+                elseif pickupSubType == 13 then
+                    player:AddBrokenHearts(numHearts / 2)
+                end
+
+            end)
+            data[Tag] = nil
+        end
+        if data[Tag .. "Wisps"] then
+            DukeHelpers.ForEach(data[Tag .. "Wisps"], function(wispInitSeed)
+                local foundWisp = DukeHelpers.GetEntityByInitSeed(wispInitSeed)
+                if foundWisp then
+                    foundWisp:Remove()
                 end
             end)
             data[Tag] = nil
