@@ -308,6 +308,10 @@ function DukeHelpers.GetBlackHearts(player)
     return count
 end
 
+function DukeHelpers.GetTrueRedHearts(player)
+    return player:GetHearts() - (player:GetRottenHearts() * 2)
+end
+
 function DukeHelpers.IntegerToBinary(n)
     local binNum = ""
     if n ~= 0 then

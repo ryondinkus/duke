@@ -68,8 +68,8 @@ function DukeHelpers.SaveGame()
         unlocks = dukeMod.unlocks or {}
     }
 
-    DukeHelpers.ForEachDuke(function(duke)
-        data.players[tostring(duke.InitSeed)] = DukeHelpers.GetDukeData(duke)
+    DukeHelpers.ForEachPlayer(function(player)
+        data.players[tostring(player.InitSeed)] = DukeHelpers.GetDukeData(player)
     end)
 
     DukeHelpers.ForEachEntityInRoom(function(familiar)

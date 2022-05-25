@@ -18,10 +18,7 @@ local function MC_POST_NEW_LEVEL()
 end
 
 local function MC_POST_PEFFECT_UPDATE(_, p)
-	local data
-	if p:GetData().duke then
-    	data = DukeHelpers.GetDukeData(p)
-	end
+	local data = DukeHelpers.GetDukeData(p)
     if data and data[Tag] then
         if p:IsExtraAnimationFinished() then
             data[Tag] = nil

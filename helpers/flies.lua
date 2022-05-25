@@ -364,9 +364,7 @@ function DukeHelpers.SpawnAttackFlyWispBySubType(flySubType, pos, spawner, spawn
 			local wispData = wisp:GetData()
 			wispData.heartType = flySubType
 			wispData.spawnFlyOnDeath = spawnFlyOnDeath
-			if lifeTime then
-				wispData.lifeTime = lifeTime
-			end
+			wispData.lifeTime = lifeTime
 			return wisp
 		end
 	end
