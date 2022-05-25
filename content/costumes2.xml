@@ -1,3 +1,4 @@
 <costumes anm2root="gfx/characters/">
 	<costume anm2path="costume_duke_pog.anm2" priority="900" type="none" />
+	<costume anm2path="character_duke_b_scars.anm2" priority="99" type="none" hasSkinAlt="true"/>
 </costumes>

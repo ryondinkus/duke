@@ -4,13 +4,24 @@
          nameimageroot="gfx/ui/boss/"
          bigportraitroot="gfx/ui/stage/">
 	<player name="Duke"
-        skin="character_duke.png"
-        armor="4"
-        nameimage="duke_name.png"
-        portrait="duke_portrait.png"
-		    extraportrait="duke_extraportrait.anm2"
-        skinColor="5"
-        costumeSuffix="duke"
-        birthright="Your court expands"
-    />
+      skin="character_duke.png"
+      armor="4"
+      nameimage="duke_name.png"
+      portrait="duke_portrait.png"
+	    extraportrait="duke_extraportrait.anm2"
+      skinColor="5"
+      costumeSuffix="duke"
+      birthright="Your court expands"
+  />
+  <player name="DukeB"
+      skin="character_duke_b.png"
+      armor="4"
+      nameimage="duke_name.png"
+      portrait="duke_portrait.png"
+	    extraportrait="duke_extraportrait.anm2"
+      skinColor="1"
+      costumeSuffix="duke"
+      birthright="Heartier hearts"
+      bSkinParent="Duke"
+  />
 </players>
