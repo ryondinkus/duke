@@ -8,7 +8,7 @@ end)
 
 -- Allows the player to fly
 dukeMod:AddCallback(ModCallbacks.MC_EVALUATE_CACHE, function(_, p, f)
-	if DukeHelpers.IsDuke(p) then
+	if DukeHelpers.IsDuke(p, true) then
 		p.CanFly = true
 	end
 end, CacheFlag.CACHE_FLYING)

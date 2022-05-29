@@ -20,7 +20,7 @@
       portrait="duke_b_portrait.png"
 	  extraportrait="duke_b_extraportrait.anm2"
       skinColor="1"
-      costumeSuffix="duke"
+      costumeSuffix="duke_b"
       birthright="Heartier hearts"
       bSkinParent="Duke"
   />
