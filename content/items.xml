@@ -12,8 +12,9 @@
       gfx="dukes_gullet.png"
       id="1"
       maxcharges="0"
-      tags="offensive hidden"
+      tags="offensive"
       quality="0"
+	  hidden="true"
   />
   <active name="Fiendish Swarm"
       description="Heart attack"
