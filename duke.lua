@@ -15,6 +15,7 @@ end, CacheFlag.CACHE_FLYING)
 
 -- Adds flies when a heart is collected
 dukeMod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, function(_, pickup, collider)
+	print("callback ran")
 	local p = collider:ToPlayer()
 	if p and DukeHelpers.IsDuke(p) and (pickup.Price <= 0 or p:GetNumCoins() >= pickup.Price) then
 		local playerData = DukeHelpers.GetDukeData(p)
