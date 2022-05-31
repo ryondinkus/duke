@@ -17,7 +17,6 @@ function DukeHelpers.InitializeHusk(p, continued)
 	local dukeData = DukeHelpers.GetDukeData(p)
 	local sprite = p:GetSprite()
 	sprite:Load("gfx/characters/duke_b.anm2", true)
-	print("eggs")
 	if not continued then
 		p:AddNullCostume(Isaac.GetCostumeIdByPath("gfx/characters/character_duke_b_scars.anm2"))
 	end
