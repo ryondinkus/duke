@@ -47,6 +47,9 @@ include("helpers/utils")
 include("helpers/flies")
 include("helpers/data")
 
+include("flies/registry")
+include("spiders/registry")
+
 -- Initialize player and flies
 include("flies")
 include("duke")

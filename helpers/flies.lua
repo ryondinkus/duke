@@ -2,7 +2,7 @@
 
 DukeHelpers.FLY_VARIANT = Isaac.GetEntityVariantByName("Red Heart Fly")
 
-DukeHelpers.ATTACK_FLY_STARTING_SUBTYPE = 903
+DukeHelpers.SUBTYPE_OFFSET = 903
 
 DukeHelpers.INNER = 1
 DukeHelpers.MIDDLE = 2
@@ -92,7 +92,7 @@ function DukeHelpers.AddHeartFly(player, fly, specificAmount, applyInfestedHeart
 end
 
 function DukeHelpers.PositionHeartFly(fly, layer)
-	fly:ToFamiliar():AddToOrbit(DukeHelpers.ATTACK_FLY_STARTING_SUBTYPE + layer)
+	fly:ToFamiliar():AddToOrbit(DukeHelpers.SUBTYPE_OFFSET + layer)
 end
 
 function DukeHelpers.GetFlyByHeartSubType(subType)
@@ -221,7 +221,7 @@ end
 
 function DukeHelpers.GetAttackFlySubTypeBySubType(subType)
 	if subType then
-		return DukeHelpers.ATTACK_FLY_STARTING_SUBTYPE + subType
+		return DukeHelpers.SUBTYPE_OFFSET + subType
 	end
 end
 
