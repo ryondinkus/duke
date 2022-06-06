@@ -14,8 +14,8 @@ local function MC_FAMILIAR_UPDATE(_, f)
 				end
 			end, EntityType.ENTITY_FAMILIAR, DukeHelpers.FLY_VARIANT, subType,
 				function(entity)
-				return entity.SpawnerEntity.InitSeed == f.SpawnerEntity.InitSeed and entity.InitSeed ~= f.InitSeed
-			end)
+					return entity.SpawnerEntity.InitSeed == f.SpawnerEntity.InitSeed and entity.InitSeed ~= f.InitSeed
+				end)
 		end
 		f.CollisionDamage = f.CollisionDamage * 1.5
 	end
@@ -23,7 +23,7 @@ end
 
 return {
 	key = key,
-	spritesheet = "gfx/familiars/eternal_heart_fly.png",
+	spritesheet = "eternal_heart_fly.png",
 	canAttack = false,
 	subType = subType,
 	fliesCount = 1,

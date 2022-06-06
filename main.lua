@@ -45,7 +45,9 @@ include("helpers/giantbook")
 include("helpers/partitions")
 include("helpers/utils")
 include("helpers/flies")
+include("helpers/spiders")
 include("helpers/data")
+include("helpers/husk")
 
 include("flies/registry")
 include("spiders/registry")
@@ -299,3 +301,9 @@ end
 if Poglite then
     Poglite:AddPogCostume("DukePog", DukeHelpers.DUKE_ID, Isaac.GetCostumeIdByPath("gfx/characters/costume_duke_pog.anm2"))
 end
+
+dukeMod:AddCallback(ModCallbacks.MC_EXECUTE_CMD, function(_, cmd, args)
+    if cmd == "fillSlot" then
+        DukeHelpers.FillRottenGulletSlot(Isaac.GetPlayer(0), tonumber(args, 10), 1)
+    end
+end)

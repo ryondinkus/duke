@@ -28,7 +28,7 @@ end
 
 return {
     key = key,
-    spritesheet = "gfx/familiars/immortal_heart_fly.png",
+    spritesheet = "immortal_heart_fly.png",
     canAttack = true,
     subType = subType,
     fliesCount = 2,

@@ -1,3 +1,5 @@
+DukeHelpers.Flies = {}
+
 local flies = {
     include("flies/red"),
     include("flies/soul"),
@@ -50,6 +52,10 @@ for _, fly in pairs(flies) do
         newFly.poofColor = existingFly.poofColor
         newFly.sacAltarQuality = existingFly.sacAltarQuality
         newFly.baseFly = false
+    end
+
+    if fly.spritesheet then
+        fly.spritesheet = "gfx/familiars/flies/" .. fly.spritesheet
     end
 
     if fly.useFlies then

@@ -91,8 +91,8 @@ end
 function DukeHelpers.IsDuke(player, tainted)
     return player and (
         (player:GetPlayerType() == DukeHelpers.DUKE_ID and not tainted)
-        or (player:GetPlayerType() == DukeHelpers.HUSK_ID and tainted)
-    )
+            or (player:GetPlayerType() == DukeHelpers.HUSK_ID and tainted)
+        )
 end
 
 function DukeHelpers.HasDuke()
@@ -400,4 +400,44 @@ function DukeHelpers.GetClosestPlayer(position, filter)
     end)
 
     return closestPlayer
+end
+
+function DukeHelpers.GetWeightedIndex(t, weightTag, filters, rng)
+    if not rng then
+        rng = DukeHelpers.rng
+    end
+
+    local elements = DukeHelpers.Filter(t, function(element) return element[weightTag] and (not filters or filters(element)) end)
+
+    if DukeHelpers.LengthOfTable(t) > 0 then
+        local csum = 0
+        local outcome = elements[1]
+        for _, element in pairs(elements) do
+            local weight = element[weightTag]
+            local r = rng:RandomInt(csum + weight)
+
+            if r >= csum then
+                outcome = element
+            end
+            csum = csum + weight
+        end
+        return outcome
+    end
+end
+
+function DukeHelpers.GetPlayerControllerIndex(player)
+    local controllerIndexes = {}
+    DukeHelpers.ForEachPlayer(function(p)
+        for _, index in pairs(controllerIndexes) do
+            if index == p.ControllerIndex then
+                return
+            end
+        end
+        table.insert(controllerIndexes, p.ControllerIndex)
+    end)
+    for i, index in pairs(controllerIndexes) do
+        if index == player.ControllerIndex then
+            return i - 1
+        end
+    end
 end

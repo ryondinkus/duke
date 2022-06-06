@@ -14,8 +14,6 @@ local MIDDLE = DukeHelpers.MIDDLE
 local OUTER = DukeHelpers.OUTER
 local BIRTHRIGHT = DukeHelpers.BIRTHRIGHT
 
-DukeHelpers.Flies = {}
-
 -- FUNCTIONS
 
 function DukeHelpers.SpawnHeartFly(player, subType, layer)
@@ -226,26 +224,7 @@ function DukeHelpers.GetAttackFlySubTypeBySubType(subType)
 end
 
 function DukeHelpers.GetWeightedFly(rng, attack)
-	if not rng then
-		rng = DukeHelpers.rng
-	end
-
-	local flies = DukeHelpers.Filter(DukeHelpers.Flies, function(fly) return fly.weight and (not attack or DukeHelpers.CanBecomeAttackFly(fly)) end)
-
-	if DukeHelpers.LengthOfTable(flies) > 0 then
-		local csum = 0
-		local outcome = flies[1]
-		for _, fly in pairs(flies) do
-			local weight = fly.weight
-			local r = rng:RandomInt(csum + weight)
-
-			if r >= csum then
-				outcome = fly
-			end
-			csum = csum + weight
-		end
-		return outcome
-	end
+	return DukeHelpers.GetWeightedIndex(DukeHelpers.Flies, "weight", function(fly) return not attack or DukeHelpers.CanBecomeAttackFly(fly) end, rng)
 end
 
 function DukeHelpers.IsFlyOfPlayer(fly, player)

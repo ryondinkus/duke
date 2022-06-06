@@ -10,9 +10,20 @@ local function MC_PRE_FAMILIAR_COLLISION(_, f, e)
     end
 end
 
+local function applyTearEffects(tear)
+    local function tearCollision(_, t)
+        if tear.InitSeed == t.InitSeed then
+            Isaac.Spawn(EntityType.ENTITY_FAMILIAR, FamiliarVariant.BLUE_FLY, 0, t.Position, Vector.Zero, t)
+            dukeMod:RemoveCallback(ModCallbacks.MC_PRE_TEAR_COLLISION, tearCollision, tear.Variant)
+        end
+    end
+
+    dukeMod:AddCallback(ModCallbacks.MC_PRE_TEAR_COLLISION, tearCollision, tear.Variant)
+end
+
 return {
     key = key,
-    spritesheet = "gfx/familiars/rotten_heart_spider.png",
+    spritesheet = "rotten_heart_spider.png",
     pickupSubType = pickupSubType,
     count = 1,
     weight = 1,
@@ -24,5 +35,7 @@ return {
             MC_PRE_FAMILIAR_COLLISION,
             FamiliarVariant.BLUE_SPIDER
         }
-    }
+    },
+    applyTearEffects = applyTearEffects,
+    tearDamageMultiplier = 1.5
 }

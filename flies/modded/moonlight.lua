@@ -43,7 +43,7 @@ end
 
 return {
 	key = key,
-	spritesheet = "gfx/familiars/moonlight_heart_fly.png",
+	spritesheet = "moonlight_heart_fly.png",
 	canAttack = true,
 	subType = subType,
 	fliesCount = 1,

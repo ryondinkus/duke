@@ -16,9 +16,13 @@ local function MC_POST_NPC_DEATH(_, e)
 	end
 end
 
+local function applyTearEffects(tear)
+	tear:AddTearFlags(TearFlags.TEAR_MIDAS)
+end
+
 return {
 	key = key,
-	spritesheet = "gfx/familiars/gold_heart_spider.png",
+	spritesheet = "gold_heart_spider.png",
 	pickupSubType = pickupSubType,
 	count = 1,
 	weight = 1,
@@ -35,5 +39,7 @@ return {
 			MC_POST_NPC_DEATH,
 			EntityType.ENTITY_FAMILIAR
 		}
-	}
+	},
+	applyTearEffects = applyTearEffects,
+	tearDamageMultiplier = 1.5
 }

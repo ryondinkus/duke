@@ -8,9 +8,13 @@ local function MC_POST_NPC_DEATH(_, e)
     end
 end
 
+local function applyTearEffects(tear)
+    tear:ChangeVariant(TearVariant.BONE)
+end
+
 return {
     key = key,
-    spritesheet = "gfx/familiars/bone_heart_spider.png",
+    spritesheet = "bone_heart_spider.png",
     pickupSubType = pickupSubType,
     count = 1,
     weight = 1,
@@ -23,5 +27,7 @@ return {
             EntityType.ENTITY_FAMILIAR
         }
     },
-    damageMultiplier = 1.3
+    damageMultiplier = 1.3,
+    applyTearEffects = applyTearEffects,
+    tearDamageMultiplier = 2
 }

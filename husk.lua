@@ -22,13 +22,13 @@ function DukeHelpers.InitializeHusk(p, continued)
 	local sprite = p:GetSprite()
 	sprite:Load("gfx/characters/duke_b.anm2", true)
 	if not continued then
+		p:SetPocketActiveItem(DukeHelpers.Items.rottenGullet.Id)
+		Game():GetItemPool():RemoveCollectible(DukeHelpers.Items.othersRottenGullet.Id)
 		p:AddNullCostume(Isaac.GetCostumeIdByPath("gfx/characters/character_duke_b_scars.anm2"))
 	end
 	dukeData.isInitialized = true
 end
 
 function DukeHelpers.AddStartupSpiders(player)
-	for _ = 1, 2 do
-		DukeHelpers.SpawnSpidersFromPickupSubType(HeartSubType.HEART_RED, player.Position, player, 2)
-	end
+	DukeHelpers.SpawnSpidersFromPickupSubType(HeartSubType.HEART_FULL, player.Position, player, 2)
 end

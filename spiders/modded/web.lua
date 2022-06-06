@@ -12,7 +12,7 @@ end
 
 return {
 	key = key,
-	spritesheet = "gfx/familiars/web_heart_spider.png",
+	spritesheet = "web_heart_spider.png",
 	pickupSubType = pickupSubType,
 	count = 1,
 	weight = 0,

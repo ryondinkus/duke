@@ -8,9 +8,13 @@ local function MC_POST_NPC_DEATH(_, e)
 	end
 end
 
+local function applyTearEffects(tear)
+	tear:AddTearFlags(TearFlags.TEAR_PIERCING)
+end
+
 return {
 	key = key,
-	spritesheet = "gfx/familiars/eternal_heart_spider.png",
+	spritesheet = "eternal_heart_spider.png",
 	pickupSubType = pickupSubType,
 	count = 1,
 	poofColor = Color(0.62, 0.62, 0.62, 1, 0.78, 0.78, 0.78),
@@ -22,5 +26,7 @@ return {
 			EntityType.ENTITY_FAMILIAR
 		}
 	},
-	damageMultiplier = 1.5
+	damageMultiplier = 1.5,
+	applyTearEffects = applyTearEffects,
+	tearDamageMultiplier = 4
 }

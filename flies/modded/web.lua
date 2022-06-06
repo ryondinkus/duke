@@ -43,7 +43,7 @@ end
 
 return {
 	key = key,
-	spritesheet = "gfx/familiars/web_heart_fly.png",
+	spritesheet = "web_heart_fly.png",
 	canAttack = true,
 	subType = subType,
 	fliesCount = 1,

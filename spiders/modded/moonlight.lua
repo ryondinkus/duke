@@ -4,7 +4,7 @@ local subType = DukeHelpers.GetSpiderSubTypeByPickupSubType(pickupSubType)
 
 return {
 	key = key,
-	spritesheet = "gfx/familiars/moonlight_heart_spider.png",
+	spritesheet = "moonlight_heart_spider.png",
 	pickupSubType = pickupSubType,
 	count = 1,
 	weight = 0,

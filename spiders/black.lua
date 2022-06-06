@@ -12,7 +12,7 @@ end
 
 return {
 	key = key,
-	spritesheet = "gfx/familiars/black_heart_spider.png",
+	spritesheet = "black_heart_spider.png",
 	pickupSubType = pickupSubType,
 	count = 2,
 	weight = 1,
@@ -25,5 +25,6 @@ return {
 			FamiliarVariant.BLUE_SPIDER
 		}
 	},
-	damageMultiplier = 1.3
+	damageMultiplier = 1.3,
+	tearDamageMultiplier = 2
 }

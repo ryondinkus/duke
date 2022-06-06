@@ -1,3 +1,5 @@
+DukeHelpers.Spiders = {}
+
 local spiders = {
     include("spiders/red"),
     include("spiders/soul"),
@@ -32,12 +34,17 @@ for _, spider in pairs(spiders) do
         spider.spritesheet = existingSpider.spritesheet
         spider.subType = existingSpider.subType
         spider.poofColor = existingSpider.poofColor
+        spider.applyTearEffects = existingSpider.applyTearEffects
 
         if not spider.damageMultiplier then
             spider.damageMultiplier = existingSpider.damageMultiplier
         end
 
         existingSpider.isBase = false
+    end
+
+    if spider.spritesheet then
+        spider.spritesheet = "gfx/familiars/spiders/" .. spider.spritesheet
     end
 
     if spider.uses then
@@ -51,7 +58,7 @@ for _, spider in pairs(spiders) do
     end
 
     if spider.damageMultiplier then
-        dukeMod:AddCallback(ModCallbacks.MC_FAMILIAR_UPDATE_ATTACK, function(_, f)
+        dukeMod:AddCallback(ModCallbacks.MC_FAMILIAR_UPDATE, function(_, f)
             if f.SubType == spider.subType then
                 if f.FrameCount == 6 then
                     f.CollisionDamage = f.CollisionDamage * spider.damageMultiplier

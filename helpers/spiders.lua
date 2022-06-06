@@ -4,6 +4,10 @@ function DukeHelpers.GetSpiderSubTypeByPickupSubType(subType)
     end
 end
 
+function DukeHelpers.GetSpiderByPickupSubType(pickupSubType)
+    return DukeHelpers.Find(DukeHelpers.Spiders, function(spider) return spider.pickupSubType == pickupSubType end)
+end
+
 function DukeHelpers.SpawnSpidersFromPickupSubType(pickupSubType, position, spawnerEntity, specificAmount)
     local foundSpider = DukeHelpers.Find(DukeHelpers.Spiders, function(spider) return spider.pickupSubType == pickupSubType end)
 
@@ -26,4 +30,22 @@ function DukeHelpers.SpawnSpidersFromPickupSubType(pickupSubType, position, spaw
     end
 
     return spawnedSpiders
+end
+
+function DukeHelpers.GetWeightedSpider(rng)
+    return DukeHelpers.GetWeightedIndex(DukeHelpers.Spiders, "weight", nil, rng)
+end
+
+function DukeHelpers.SpawnSpiderWispBySubType(flySubType, pos, spawner, spawnSpiderOnDeath, lifeTime)
+    local player = spawner:ToPlayer()
+    if player then
+        local wisp = spawner:ToPlayer():AddWisp(DukeHelpers.Items.dukeOfEyes.Id, pos)
+        if wisp then
+            local wispData = wisp:GetData()
+            wispData.heartType = flySubType
+            wispData.spawnFlyOnDeath = spawnSpiderOnDeath
+            wispData.lifeTime = lifeTime
+            return wisp
+        end
+    end
 end
