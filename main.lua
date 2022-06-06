@@ -295,4 +295,5 @@ end
 
 if Poglite then
     Poglite:AddPogCostume("DukePog", DukeHelpers.DUKE_ID, Isaac.GetCostumeIdByPath("gfx/characters/costume_duke_pog.anm2"))
+    Poglite:AddPogCostume("DukeBPog", DukeHelpers.HUSK_ID, Isaac.GetCostumeIdByPath("gfx/characters/costume_duke_b_pog.anm2"))
 end
