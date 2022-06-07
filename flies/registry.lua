@@ -55,7 +55,8 @@ for _, fly in pairs(flies) do
     end
 
     if fly.spritesheet then
-        fly.spritesheet = "gfx/familiars/flies/" .. fly.spritesheet
+        newFly.spritesheet = "gfx/familiars/flies/" .. fly.spritesheet
+        print(fly.spritesheet)
     end
 
     if fly.useFlies then
