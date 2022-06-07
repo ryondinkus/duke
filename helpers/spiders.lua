@@ -8,6 +8,20 @@ function DukeHelpers.GetSpiderByPickupSubType(pickupSubType)
     return DukeHelpers.Find(DukeHelpers.Spiders, function(spider) return spider.pickupSubType == pickupSubType end)
 end
 
+function DukeHelpers.GetSpiderSpritesheet(subType)
+	local foundSpider = DukeHelpers.GetSpiderByPickupSubType(subType % 903)
+	if foundSpider then
+		return foundSpider.spritesheet
+	end
+	return DukeHelpers.Spiders.SPIDER_RED.spritesheet
+end
+
+function DukeHelpers.InitializeHeartSpider(spider)
+	local sprite = spider:GetSprite()
+	sprite:ReplaceSpritesheet(0, DukeHelpers.GetSpiderSpritesheet(spider.SubType))
+	sprite:LoadGraphics()
+end
+
 function DukeHelpers.SpawnSpidersFromPickupSubType(pickupSubType, position, spawnerEntity, specificAmount)
     local foundSpider = DukeHelpers.Find(DukeHelpers.Spiders, function(spider) return spider.pickupSubType == pickupSubType end)
 
@@ -23,8 +37,9 @@ function DukeHelpers.SpawnSpidersFromPickupSubType(pickupSubType, position, spaw
                 end
             end)
         else
-            for _ = 1, specificAmount or foundSpider.count or 1 do
+            for i = 1, specificAmount or foundSpider.count or 1 do
                 table.insert(spawnedSpiders, Isaac.Spawn(EntityType.ENTITY_FAMILIAR, FamiliarVariant.BLUE_SPIDER, foundSpider.subType, position, Vector.Zero, spawnerEntity))
+                DukeHelpers.InitializeHeartSpider(spawnedSpiders[i])
             end
         end
     end
@@ -37,15 +52,5 @@ function DukeHelpers.GetWeightedSpider(rng)
 end
 
 function DukeHelpers.SpawnSpiderWispBySubType(flySubType, pos, spawner, spawnSpiderOnDeath, lifeTime)
-    local player = spawner:ToPlayer()
-    if player then
-        local wisp = spawner:ToPlayer():AddWisp(DukeHelpers.Items.dukeOfEyes.Id, pos)
-        if wisp then
-            local wispData = wisp:GetData()
-            wispData.heartType = flySubType
-            wispData.spawnFlyOnDeath = spawnSpiderOnDeath
-            wispData.lifeTime = lifeTime
-            return wisp
-        end
-    end
+    return DukeHelpers.SpawnAttackFlyWispBySubType(flySubType, pos, spawner, false, lifeTime, spawnSpiderOnDeath)
 end

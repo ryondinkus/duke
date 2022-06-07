@@ -1,5 +1,5 @@
 <AnimatedActor>
-	<Info CreatedBy="robot" CreatedOn="6/6/2022 6:07:52 PM" Version="109" Fps="30"/>
+	<Info CreatedBy="robot" CreatedOn="6/7/2022 12:50:09 PM" Version="110" Fps="30"/>
 	<Content>
 		<Spritesheets>
 			<Spritesheet Path="soul of duke.png" Id="0"/>

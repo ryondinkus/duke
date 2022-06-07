@@ -113,7 +113,7 @@
 	<entity anm2path="items/pickups/tapeworm card.anm2" baseHP="0" boss="0" champion="0" collisionDamage="0" collisionMass="3" collisionRadius="12" friction="1" id="5" name="Tapeworm Card" numGridCollisionPoints="24" shadowSize="16" stageHP="0" variant="300" subtype="327">
 		<preload-snd id="8" /> <!-- BOOK_PAGE_TURN_12 -->
 	</entity>
-	<entity anm2path="soul of duke.anm2" baseHP="0" boss="0" champion="0" collisionDamage="0" collisionMass="3" collisionRadius="12" friction="1" id="5" name="Soul of Duke" numGridCollisionPoints="24" shadowSize="16" stageHP="0" variant="300" subtype="328">
+	<entity anm2path="items/pickups/soul of duke.anm2" baseHP="0" boss="0" champion="0" collisionDamage="0" collisionMass="3" collisionRadius="12" friction="1" id="5" name="Soul of Duke" numGridCollisionPoints="24" shadowSize="16" stageHP="0" variant="300" subtype="328">
 			<gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0"/>
 			<preload-snd id="8"/>
 	</entity>

@@ -109,7 +109,6 @@ function DukeHelpers.GetFlySpritesheet(subType)
 	local foundFly = DukeHelpers.GetFlyByHeartSubType(subType) or DukeHelpers.GetFlyByAttackSubType(subType)
 
 	if foundFly then
-		print(foundFly.spritesheet)
 		return foundFly.spritesheet
 	end
 
@@ -335,16 +334,28 @@ function DukeHelpers.KillAtMaxBrokenFlies(player)
 	end
 end
 
-function DukeHelpers.SpawnAttackFlyWispBySubType(flySubType, pos, spawner, spawnFlyOnDeath, lifeTime)
+function DukeHelpers.SpawnAttackFlyWispBySubType(flySubType, pos, spawner, spawnFlyOnDeath, lifeTime, spawnSpiderOnDeath)
 	local player = spawner:ToPlayer()
 	if player then
-		local wisp = spawner:ToPlayer():AddWisp(DukeHelpers.Items.thePrinces.Id, pos)
+		local id = DukeHelpers.Items.thePrinces.Id
+		if spawnSpiderOnDeath then
+			id = DukeHelpers.Items.dukeOfEyes.Id
+		end
+		local wisp = spawner:ToPlayer():AddWisp(id, pos)
 		if wisp then
 			local wispData = wisp:GetData()
 			wispData.heartType = flySubType
 			wispData.spawnFlyOnDeath = spawnFlyOnDeath
+			wispData.spawnSpiderOnDeath = spawnSpiderOnDeath
 			wispData.lifeTime = lifeTime
 			return wisp
 		end
 	end
+end
+
+function DukeHelpers.IsValidCustomWisp(id)
+	if id == DukeHelpers.Items.dukeOfEyes.id or id == DukeHelpers.Items.thePrinces.id then
+		return true
+	end
+	return false
 end
