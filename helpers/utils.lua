@@ -88,8 +88,11 @@ function DukeHelpers.ForEachPlayer(callback, collectibleId)
     end
 end
 
-function DukeHelpers.IsDuke(player)
-    return player and (player:GetPlayerType() == DukeHelpers.DUKE_ID)
+function DukeHelpers.IsDuke(player, tainted)
+    return player and (
+        (player:GetPlayerType() == DukeHelpers.DUKE_ID and not tainted)
+        or (player:GetPlayerType() == DukeHelpers.HUSK_ID and tainted)
+    )
 end
 
 function DukeHelpers.HasDuke()

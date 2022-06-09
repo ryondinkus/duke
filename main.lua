@@ -21,6 +21,7 @@ dukeMod.global = table.deepCopy(defaultGlobal)
 
 DukeHelpers = {
     DUKE_ID = Isaac.GetPlayerTypeByName("Duke"),
+    HUSK_ID = Isaac.GetPlayerTypeByName("DukeB", true),
     rng = RNG(),
     sfx = SFXManager(),
     PRICE_OFFSET = -50,
@@ -50,6 +51,7 @@ include("helpers/data")
 include("flies")
 include("duke")
 include("wisps")
+include("husk")
 
 include("items/registry")
 
@@ -133,7 +135,7 @@ for _, entityVariant in pairs(DukeHelpers.EntityVariants) do
 end
 
 include("sounds/registry")
-
+include("costumes/registry")
 include("wisps/registry")
 
 -- Save and continue callbacks
@@ -293,4 +295,5 @@ end
 
 if Poglite then
     Poglite:AddPogCostume("DukePog", DukeHelpers.DUKE_ID, Isaac.GetCostumeIdByPath("gfx/characters/costume_duke_pog.anm2"))
+    Poglite:AddPogCostume("DukeBPog", DukeHelpers.HUSK_ID, Isaac.GetCostumeIdByPath("gfx/characters/costume_duke_b_pog.anm2"))
 end
