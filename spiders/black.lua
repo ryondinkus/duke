@@ -1,4 +1,4 @@
-local key = "SPIDER_BLACK"
+local key = "BLACK"
 local pickupSubType = HeartSubType.HEART_BLACK
 local subType = DukeHelpers.GetSpiderSubTypeByPickupSubType(pickupSubType)
 
@@ -8,6 +8,10 @@ local function MC_PRE_FAMILIAR_COLLISION(_, f, e)
 			e:AddFear(EntityRef(f), 150)
 		end
 	end
+end
+
+local function onRelease(player)
+	player:UseActiveItem(CollectibleType.COLLECTIBLE_NECRONOMICON)
 end
 
 return {
@@ -26,5 +30,10 @@ return {
 		}
 	},
 	damageMultiplier = 1.3,
-	tearDamageMultiplier = 2
+	tearDamageMultiplier = 2,
+	tearColor = Color(0.2, 0.2, 0.2, 1, 0, 0, 0),
+	uiHeart = {
+		animationName = "BlackHeartHalf"
+	},
+	onRelease = onRelease
 }

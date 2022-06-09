@@ -1,4 +1,4 @@
-local key = "FLY_ULTRA"
+local key = "ULTRA"
 local subType = 101
 local attackFlySubType = DukeHelpers.GetAttackFlySubTypeBySubType(subType)
 
@@ -92,7 +92,7 @@ return {
     spritesheet = "ultra_heart_fly.png",
     canAttack = true,
     subType = subType,
-    fliesCount = 1,
+    count = 1,
     weight = 0,
     poofColor = Color(1, 1, 1, 1, 1, 1, 1),
     sacAltarQuality = 6,

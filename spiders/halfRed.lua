@@ -1,4 +1,4 @@
-local key = "SPIDER_HALF"
+local key = "HALF_RED"
 local use = include("spiders/red").key
 local pickupSubType = HeartSubType.HEART_HALF
 

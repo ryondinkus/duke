@@ -38,7 +38,7 @@ end, DukeHelpers.FLY_VARIANT)
 -- Turns heart flies into attack flies when hit
 dukeMod:AddCallback(ModCallbacks.MC_PRE_FAMILIAR_COLLISION, function(_, f, e)
 	if e.Type == EntityType.ENTITY_PROJECTILE and not e:ToProjectile():HasProjectileFlags(ProjectileFlags.CANT_HIT_PLAYER) then
-		if f.SubType ~= DukeHelpers.FLY_BROKEN then
+		if f.SubType ~= DukeHelpers.Flies.BROKEN.heartFlySubType then
 			e:Die()
 		end
 		local data = f:GetData()

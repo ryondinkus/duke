@@ -9,17 +9,17 @@ function DukeHelpers.GetSpiderByPickupSubType(pickupSubType)
 end
 
 function DukeHelpers.GetSpiderSpritesheet(subType)
-	local foundSpider = DukeHelpers.GetSpiderByPickupSubType(subType % 903)
-	if foundSpider then
-		return foundSpider.spritesheet
-	end
-	return DukeHelpers.Spiders.SPIDER_RED.spritesheet
+    local foundSpider = DukeHelpers.GetSpiderByPickupSubType(subType % 903)
+    if foundSpider then
+        return foundSpider.spritesheet
+    end
+    return DukeHelpers.Spiders.RED.spritesheet
 end
 
 function DukeHelpers.InitializeHeartSpider(spider)
-	local sprite = spider:GetSprite()
-	sprite:ReplaceSpritesheet(0, DukeHelpers.GetSpiderSpritesheet(spider.SubType))
-	sprite:LoadGraphics()
+    local sprite = spider:GetSprite()
+    sprite:ReplaceSpritesheet(0, DukeHelpers.GetSpiderSpritesheet(spider.SubType))
+    sprite:LoadGraphics()
 end
 
 function DukeHelpers.SpawnSpidersFromPickupSubType(pickupSubType, position, spawnerEntity, specificAmount)

@@ -35,7 +35,7 @@ for _, fly in pairs(flies) do
         pickupSubType = fly.subType,
         heartFlySubType = fly.subType,
         attackFlySubType = DukeHelpers.GetAttackFlySubTypeBySubType(fly.subType),
-        fliesCount = fly.fliesCount,
+        count = fly.count,
         weight = fly.weight,
         sfx = fly.sfx,
         poofColor = fly.poofColor,
@@ -69,4 +69,8 @@ for _, fly in pairs(flies) do
     end
 
     DukeHelpers.Flies[fly.key] = newFly
+
+    if not DukeHelpers.HeartKeys[fly.key] then
+        DukeHelpers.HeartKeys[fly.key] = fly.key
+    end
 end

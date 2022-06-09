@@ -1,4 +1,4 @@
-local key = "SPIDER_IMMORTAL" -- From Team Compliance Immortal Heart Mod
+local key = "IMMORTAL" -- From Team Compliance Immortal Heart Mod
 local pickupSubType = HeartSubType.HEART_IMMORTAL
 local subType = DukeHelpers.GetSpiderSubTypeByPickupSubType(pickupSubType)
 
@@ -10,5 +10,9 @@ return {
     weight = 0,
     poofColor = Color(0.62, 0.62, 0.62, 1, 0.78, 0.78, 1),
     sfx = Isaac.GetSoundIdByName("immortal"),
-    damageMultiplier = 1.3
+    damageMultiplier = 1.3,
+    uiHeart = {
+        animationPath = "gfx/ui/ui_remix_hearts.anm2",
+        animationName = "ImmortalHeartHalf"
+    }
 }

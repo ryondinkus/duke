@@ -1,4 +1,4 @@
-local key = "SPIDER_GOLDEN"
+local key = "GOLDEN"
 local pickupSubType = HeartSubType.HEART_GOLDEN
 local subType = DukeHelpers.GetSpiderSubTypeByPickupSubType(pickupSubType)
 
@@ -10,9 +10,9 @@ local function MC_PRE_FAMILIAR_COLLISION(_, f, e)
 	end
 end
 
-local function MC_POST_NPC_DEATH(_, e)
+local function MC_POST_ENTITY_REMOVE(_, e)
 	if e.Variant == FamiliarVariant.BLUE_SPIDER and e.SubType == subType then
-		Isaac.Spawn(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_COIN, 0, e.Position, Vector.Zero, e)
+		Isaac.Spawn(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_COIN, 0, e.Position, Vector.FromAngle(DukeHelpers.rng:RandomInt(0, 360)), e)
 	end
 end
 
@@ -35,11 +35,16 @@ return {
 			FamiliarVariant.BLUE_SPIDER
 		},
 		{
-			ModCallbacks.MC_POST_NPC_DEATH,
-			MC_POST_NPC_DEATH,
+			ModCallbacks.MC_POST_ENTITY_REMOVE,
+			MC_POST_ENTITY_REMOVE,
 			EntityType.ENTITY_FAMILIAR
 		}
 	},
 	applyTearEffects = applyTearEffects,
-	tearDamageMultiplier = 1.5
+	tearDamageMultiplier = 1.5,
+	tearColor = Color(0.9, 0.8, 0.1, 1, 0.4, 0.2, 0),
+	uiHeart = {
+		animationName = "RedHeartFull",
+		overlayAnimationName = "GoldHeartOverlay"
+	}
 }

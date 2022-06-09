@@ -1,3 +1,5 @@
+local json = include("json")
+
 function DukeHelpers.FindByProperties(t, props)
     local found
     for _, value in pairs(t) do
@@ -101,6 +103,16 @@ function DukeHelpers.HasDuke()
     return found
 end
 
+function DukeHelpers.HasHusk()
+    local found = false
+    DukeHelpers.ForEachPlayer(function(player)
+        if player:GetPlayerType() == DukeHelpers.HUSK_ID then
+            found = true
+        end
+    end)
+    return found
+end
+
 function DukeHelpers.HasPocketOfFlies()
     local found = false
     DukeHelpers.ForEachPlayer(function(p)
@@ -168,21 +180,19 @@ function DukeHelpers.LengthOfTable(t)
     return num
 end
 
-function DukeHelpers.GetFlyCounts()
-    local flyCounts = {}
+function DukeHelpers.GetFlyCount(player, includeBroken)
+    if not DukeHelpers.IsDuke(player) and not player:HasTrinket(DukeHelpers.Trinkets.pocketOfFlies.Id) then
+        return
+    end
 
-    DukeHelpers.ForEachPlayer(function(player)
-        local playerData = DukeHelpers.GetDukeData(player)
-        if playerData.heartFlies then
-            local flyCount = {}
-            flyCount.RED = DukeHelpers.CountByProperties(playerData.heartFlies, { subType = DukeHelpers.Flies.FLY_RED.heartFlySubType }) + (DukeHelpers.CountByProperties(playerData.heartFlies, { subType = DukeHelpers.Flies.FLY_BONE.heartFlySubType }) * 2) + (DukeHelpers.CountByProperties(playerData.heartFlies, { subType = DukeHelpers.Flies.FLY_ROTTEN.heartFlySubType }) * 2)
-            flyCount.SOUL = DukeHelpers.CountByProperties(playerData.heartFlies, { subType = DukeHelpers.Flies.FLY_SOUL.heartFlySubType }) + DukeHelpers.CountByProperties(playerData.heartFlies, { subType = DukeHelpers.Flies.FLY_BLACK.heartFlySubType })
-            flyCount.ULTRA = DukeHelpers.CountByProperties(playerData.heartFlies, { subType = DukeHelpers.Flies.FLY_ULTRA.heartFlySubType })
-            flyCounts[tostring(player.InitSeed)] = flyCount
+    local playerData = DukeHelpers.GetDukeData(player)
+    if playerData.heartFlies then
+        local flyCount = DukeHelpers.LengthOfTable(playerData.heartFlies)
+        if not includeBroken then
+            flyCount = flyCount - DukeHelpers.CountByProperties(playerData.heartFlies, { subType = DukeHelpers.Flies.BROKEN.heartFlySubType })
         end
-    end)
-
-    return flyCounts
+        return flyCount
+    end
 end
 
 function DukeHelpers.IsFlyPrice(x)
@@ -190,100 +200,7 @@ function DukeHelpers.IsFlyPrice(x)
 end
 
 function DukeHelpers.GetDukeDevilDealPrice(collectible)
-    local flyCounts = DukeHelpers.GetFlyCounts()
-
-    return DukeHelpers.CalculateDevilDealPrice(collectible, flyCounts)
-end
-
-function DukeHelpers.CalculateDevilDealPrice(collectible, counts)
-    if not dukeMod.global.floorDevilDealChance then
-        dukeMod.global.floorDevilDealChance = DukeHelpers.rng:RandomInt(99)
-    end
-
-    local devilPrice = Isaac.GetItemConfig():GetCollectible(collectible.SubType).DevilPrice
-
-    local canAffordSouls = DukeHelpers.Find(counts, function(player) return player.SOUL >= 4 end)
-    local canAffordReds = DukeHelpers.Find(counts, function(player) return player.RED >= 4 end)
-    local canReallyAffordReds = DukeHelpers.Find(counts, function(player) return player.RED >= 8 end)
-    local hasPocketOfFlies = false
-    DukeHelpers.ForEachDuke(function(duke)
-        if duke:HasTrinket(DukeHelpers.Trinkets.pocketOfFlies.Id) then
-            hasPocketOfFlies = true
-        end
-    end)
-
-    if devilPrice == 1 or hasPocketOfFlies then
-        if canAffordReds and canAffordSouls then
-            -- 4 red flies or 6 soul flies for Duke
-            if dukeMod.global.floorDevilDealChance < 75 then
-                return {
-                    RED = 4,
-                    SOUL = 0
-                }
-            else
-                return {
-                    RED = 0,
-                    SOUL = 6
-                }
-            end
-        elseif canAffordReds and not canAffordSouls then
-            -- 4 red flies for Duke
-            return {
-                RED = 4,
-                SOUL = 0
-            }
-        else
-            -- 6 soul flies for Duke
-            return {
-                RED = 0,
-                SOUL = 6
-            }
-        end
-    elseif not hasPocketOfFlies then
-        if canAffordReds and canAffordSouls then
-            -- 8 red flies or 6 soul flies for Duke
-            if dukeMod.global.floorDevilDealChance < 75 then
-                if canReallyAffordReds then
-                    -- 8 red flies for Duke
-                    return {
-                        RED = 8,
-                        SOUL = 0
-                    }
-                else
-                    -- 4 red flies and 4 soul flies for Duke
-                    return {
-                        RED = 4,
-                        SOUL = 4
-                    }
-                end
-            else
-                return {
-                    RED = 0,
-                    SOUL = 6
-                }
-            end
-        elseif canAffordReds and not canAffordSouls then
-            if canReallyAffordReds then
-                -- 8 red flies for Duke
-                return {
-                    RED = 8,
-                    SOUL = 0
-                }
-            else
-                -- 4 red flies and 4 soul flies for Duke
-                return {
-                    RED = 4,
-                    SOUL = 4
-                }
-            end
-        else
-            -- 6 soul flies for Duke
-            return {
-                RED = 0,
-                SOUL = 6
-            }
-        end
-    end
+    return Isaac.GetItemConfig():GetCollectible(collectible.SubType).DevilPrice * 4
 end
 
 function DukeHelpers.IsArray(t)
@@ -296,7 +213,16 @@ function DukeHelpers.IsArray(t)
 end
 
 function DukeHelpers.GetTrueSoulHearts(player)
-    return player:GetSoulHearts() - DukeHelpers.GetBlackHearts(player)
+    local output = player:GetSoulHearts() - DukeHelpers.GetBlackHearts(player)
+
+    if ComplianceImmortal then
+        output = output - ComplianceImmortal.GetImmortalHearts(player)
+    end
+
+    if ARACHNAMOD then
+        output = output - (player:GetData().webHearts or 0)
+    end
+    return output
 end
 
 function DukeHelpers.GetBlackHearts(player)
@@ -439,5 +365,108 @@ function DukeHelpers.GetPlayerControllerIndex(player)
         if index == player.ControllerIndex then
             return i - 1
         end
+    end
+end
+
+function DukeHelpers.RemoveUnallowedHearts(player)
+    local removedHearts = {}
+
+    local blackHearts = DukeHelpers.GetBlackHearts(player)
+    if blackHearts > 0 then
+        local totalSoulHearts = DukeHelpers.GetTrueSoulHearts(player)
+
+        if ComplianceImmortal then
+            local immortalHeartCount = ComplianceImmortal.GetImmortalHearts(player)
+
+            removedHearts[DukeHelpers.HeartKeys.IMMORTAL] = immortalHeartCount
+            ComplianceImmortal.AddImmortalHearts(player, -immortalHeartCount)
+            blackHearts = blackHearts - immortalHeartCount
+        end
+
+        if ARACHNAMOD then
+            local webHeartCount = ARACHNAMOD:GetData(player).webHearts
+
+            removedHearts[DukeHelpers.HeartKeys.WEB] = webHeartCount
+            addWebHearts(-webHeartCount, player)
+            blackHearts = blackHearts - webHeartCount
+        end
+
+        removedHearts[DukeHelpers.HeartKeys.BLACK] = blackHearts
+
+        player:AddSoulHearts(-player:GetSoulHearts())
+        player:AddSoulHearts(totalSoulHearts)
+    end
+
+    local boneHearts = player:GetBoneHearts()
+    if boneHearts > 0 then
+        removedHearts[DukeHelpers.HeartKeys.BONE] = boneHearts
+        player:AddBoneHearts(-boneHearts)
+    end
+
+    local brokenHearts = player:GetBrokenHearts()
+    if brokenHearts > 0 then
+        removedHearts[DukeHelpers.HeartKeys.BROKEN] = brokenHearts * 2
+        player:AddBrokenHearts(-brokenHearts)
+
+        if DukeHelpers.GetTrueSoulHearts(player) < DukeHelpers.MAX_HEALTH then
+            player:AddSoulHearts(DukeHelpers.MAX_HEALTH)
+        end
+    end
+
+    local eternalHearts = player:GetEternalHearts()
+    if eternalHearts > 0 then
+        removedHearts[DukeHelpers.HeartKeys.ETERNAL] = eternalHearts
+        player:AddEternalHearts(-eternalHearts)
+    end
+
+    local goldenHearts = player:GetGoldenHearts()
+    if goldenHearts > 0 then
+        removedHearts[DukeHelpers.HeartKeys.GOLDEN] = goldenHearts
+        player:AddGoldenHearts(-goldenHearts)
+    end
+
+    local rottenHearts = player:GetRottenHearts()
+    if rottenHearts > 0 then
+        removedHearts[DukeHelpers.HeartKeys.ROTTEN] = rottenHearts
+        player:AddRottenHearts(-rottenHearts * 2)
+    end
+
+    local redHearts = player:GetHearts() + player:GetMaxHearts()
+    if redHearts > 0 then
+        removedHearts[DukeHelpers.HeartKeys.RED] = redHearts
+        player:AddHearts(-player:GetHearts())
+        player:AddMaxHearts(-player:GetMaxHearts())
+    end
+
+    local soulHearts = DukeHelpers.GetTrueSoulHearts(player)
+    if soulHearts > DukeHelpers.MAX_HEALTH then
+        local removedAmount = soulHearts - DukeHelpers.MAX_HEALTH
+        removedHearts[DukeHelpers.HeartKeys.SOUL] = removedAmount
+        player:AddSoulHearts(-removedAmount)
+    end
+
+    local moonHearts = player:GetData().moons
+    if moonHearts and moonHearts > 0 then
+        removedHearts[DukeHelpers.HeartKeys.MOONLIGHT] = moonHearts
+        player:GetData().moons = 0
+    end
+
+    return removedHearts
+end
+
+function DukeHelpers.PrintJson(obj)
+    print(json.encode(obj))
+end
+
+function DukeHelpers.RenderCustomDevilDealPrice(pickup, key, animationPath)
+    local pos = Isaac.WorldToScreen(pickup.Position)
+
+    if pickup:GetData()[key] then
+        local devilPrice = DukeHelpers.GetDukeDevilDealPrice(pickup)
+
+        local priceSprite = Sprite()
+        priceSprite:Load(animationPath)
+        priceSprite:Play(tostring(devilPrice))
+        priceSprite:Render(Vector(pos.X, pos.Y + 10), Vector.Zero, Vector.Zero)
     end
 end

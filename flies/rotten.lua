@@ -1,4 +1,4 @@
-local key = "FLY_ROTTEN"
+local key = "ROTTEN"
 local subType = HeartSubType.HEART_ROTTEN
 local attackFlySubType = DukeHelpers.GetAttackFlySubTypeBySubType(subType)
 
@@ -36,7 +36,7 @@ return {
     spritesheet = "rotten_heart_fly.png",
     canAttack = true,
     subType = subType,
-    fliesCount = 1,
+    count = 1,
     weight = 1,
     poofColor = Color(0.62, 0.62, 0.62, 1, 0.78, 0.20, 0),
     sacAltarQuality = 4,

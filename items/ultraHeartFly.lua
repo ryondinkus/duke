@@ -13,16 +13,16 @@ local WikiDescription = DukeHelpers.GenerateEncyclopediaPage("Like a princess, b
 
 local function MC_POST_NEW_LEVEL()
     DukeHelpers.ForEachPlayer(function(duke)
-        DukeHelpers.AddHeartFly(duke, DukeHelpers.Flies.FLY_ULTRA, 1)
+        DukeHelpers.AddHeartFly(duke, DukeHelpers.Flies.ULTRA, 1)
     end, Id)
 end
 
 local function MC_POST_PEFFECT_UPDATE(_, p)
-	local data = DukeHelpers.GetDukeData(p)
+    local data = DukeHelpers.GetDukeData(p)
     if data and data[Tag] then
         if p:IsExtraAnimationFinished() then
             data[Tag] = nil
-            DukeHelpers.AddHeartFly(p, DukeHelpers.Flies.FLY_ULTRA, 1)
+            DukeHelpers.AddHeartFly(p, DukeHelpers.Flies.ULTRA, 1)
         end
     else
         local targetItem = p.QueuedItem.Item
@@ -37,7 +37,7 @@ return {
     Name = Name,
     Names = Names,
     Tag = Tag,
-	Id = Id,
+    Id = Id,
     Descriptions = Descriptions,
     WikiDescription = WikiDescription,
     callbacks = {

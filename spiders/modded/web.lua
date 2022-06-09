@@ -1,4 +1,4 @@
-local key = "SPIDER_WEB"
+local key = "WEB"
 local pickupSubType = 2000
 local subType = DukeHelpers.GetSpiderSubTypeByPickupSubType(pickupSubType)
 
@@ -24,5 +24,9 @@ return {
 			MC_PRE_FAMILIAR_COLLISION,
 			FamiliarVariant.BLUE_SPIDER
 		}
+	},
+	uiHeart = {
+		animationPath = "gfx/web_heart_ui.anm2",
+		animationName = "UI"
 	}
 }
