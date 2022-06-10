@@ -35,10 +35,6 @@ local defaultAnimationPath = "gfx/ui/ui_hearts.anm2"
 local defaultAnimationName = "RedHeartHalf"
 
 local function MC_USE_ITEM(_, type, rng, p)
-    DukeHelpers.sfx:Play(SoundEffect.SOUND_WHEEZY_COUGH, 1, 0)
-    local effect = Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.POOF01, 0, p.Position, Vector.Zero, nil)
-    effect.Color = Color(0, 0, 0, 1)
-
     local numberOfTears = 8
 
     if p:HasCollectible(CollectibleType.COLLECTIBLE_BIRTHRIGHT) then
@@ -48,6 +44,10 @@ local function MC_USE_ITEM(_, type, rng, p)
     local releasedSlots = DukeHelpers.ReleaseRottenGulletSlots(p, 1)
 
     if DukeHelpers.LengthOfTable(releasedSlots) <= 0 then
+        DukeHelpers.sfx:Play(SoundEffect.SOUND_WORM_SPIT, 1, 0)
+        local effect = Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.POOF01, 0, p.Position, Vector.Zero, p)
+        effect.Color = Color(0, 0, 0, 1)
+
         DukeHelpers.GetDukeData(p)[Tag .. "Error"] = errorFrames
         return true
     end
@@ -57,14 +57,22 @@ local function MC_USE_ITEM(_, type, rng, p)
     local pickupSubType = releasedSlots[1]
     local foundSpider = DukeHelpers.GetSpiderByPickupSubType(pickupSubType)
 
-    local radius = 100
+    DukeHelpers.sfx:Play(SoundEffect.SOUND_WHEEZY_COUGH, 1, 0)
+    DukeHelpers.sfx:Play(SoundEffect.SOUND_DEATH_BURST_LARGE, 1, 0)
+    DukeHelpers.SpawnPickupPoof(p, pickupSubType)
+    local effect = Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.POOF02, 4, p.Position, Vector.Zero, p)
+    effect.Color = foundSpider.poofColor
+
+    local radius = 80
     local enemiesInRadius = DukeHelpers.FindInRadius(p.Position, radius)
 
-    local radiusDamage = 0
+    local radiusDamage = 40
 
-    if foundSpider and foundSpider.tearDamageMultiplier then
-        radiusDamage = radiusDamage * foundSpider.tearDamageMultiplier
+    if foundSpider and foundSpider.damageMultiplier then
+        radiusDamage = radiusDamage * foundSpider.damageMultiplier
     end
+
+    print(foundSpider.spritesheet)
 
     for _, enemy in pairs(enemiesInRadius) do
         local directionVector = enemy.Position - p.Position

@@ -9,10 +9,12 @@ function DukeHelpers.GetSpiderByPickupSubType(pickupSubType)
 end
 
 function DukeHelpers.GetSpiderSpritesheet(subType)
-    local foundSpider = DukeHelpers.GetSpiderByPickupSubType(subType % 903)
+    local foundSpider = DukeHelpers.GetSpiderByPickupSubType(subType - 903)
     if foundSpider then
+        print("we found it :)")
         return foundSpider.spritesheet
     end
+    print("we did not ifnd it")
     return DukeHelpers.Spiders.RED.spritesheet
 end
 

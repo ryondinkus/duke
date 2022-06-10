@@ -133,6 +133,6 @@ function DukeHelpers.InitializeHusk(p, continued)
 end
 
 function DukeHelpers.AddStartupSpiders(player)
-	DukeHelpers.FillRottenGulletSlot(player, DukeHelpers.Spiders.RED.pickupSubType, 10)
-	--DukeHelpers.SpawnSpidersFromPickupSubType(HeartSubType.HEART_FULL, player.Position, player, 2)
+	DukeHelpers.FillRottenGulletSlot(player, DukeHelpers.Spiders.RED.pickupSubType, 1)
+	DukeHelpers.SpawnSpidersFromPickupSubType(HeartSubType.HEART_FULL, player.Position, player, 2)
 end
