@@ -298,6 +298,19 @@ local notEnemies = {
     EntityType.ENTITY_FROZEN_ENEMY,
 }
 
+function DukeHelpers.FindInRadius(position, radius, filter)
+    local enemies = DukeHelpers.ListEnemiesInRoom(true, filter)
+
+    local inRadiusEnemies = {}
+    for _, enemy in pairs(enemies) do
+        if position:Distance(enemy.Position) < radius then
+            table.insert(inRadiusEnemies, enemy)
+        end
+    end
+
+    return inRadiusEnemies
+end
+
 function DukeHelpers.ListEnemiesInRoom(ignoreVulnerability, filter)
     local entities = Isaac.GetRoomEntities()
     local enemies = {}
@@ -499,4 +512,8 @@ function DukeHelpers.RenderCustomDevilDealPrice(pickup, key, animationPath)
         priceSprite:Play(tostring(devilPrice))
         priceSprite:Render(Vector(pos.X, pos.Y + 10), Vector.Zero, Vector.Zero)
     end
+end
+
+function DukeHelpers.Sign(x)
+    return x > 0 and 1 or x < 0 and -1 or 0
 end

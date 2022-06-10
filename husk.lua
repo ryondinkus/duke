@@ -44,6 +44,9 @@ dukeMod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, function(_, pickup, co
 
 			DukeHelpers.FillRottenGulletSlot(p, spider.pickupSubType, leftoverSlots)
 		else
+			if DukeHelpers.LengthOfTable(DukeHelpers.GetFilledRottenGulletSlots(p)) >= DukeHelpers.GetMaxRottenGulletSlots(p) then
+				return nil
+			end
 			DukeHelpers.FillRottenGulletSlot(p, pickup.SubType)
 		end
 
@@ -130,6 +133,6 @@ function DukeHelpers.InitializeHusk(p, continued)
 end
 
 function DukeHelpers.AddStartupSpiders(player)
-	DukeHelpers.FillRottenGulletSlot(player, DukeHelpers.Spiders.RED.pickupSubType, 1)
-	DukeHelpers.SpawnSpidersFromPickupSubType(HeartSubType.HEART_FULL, player.Position, player, 2)
+	DukeHelpers.FillRottenGulletSlot(player, DukeHelpers.Spiders.RED.pickupSubType, 10)
+	--DukeHelpers.SpawnSpidersFromPickupSubType(HeartSubType.HEART_FULL, player.Position, player, 2)
 end

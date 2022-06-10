@@ -50,12 +50,15 @@ function DukeHelpers.FillRottenGulletSlot(player, pickupSubType, amount)
         local filledSlots = DukeHelpers.GetFilledRottenGulletSlots(player)
         local numberOfFilledSlots = DukeHelpers.LengthOfTable(filledSlots)
 
-        if DukeHelpers.GetTrueSoulHearts(player) < DukeHelpers.MAX_HEALTH and (slotPickupSubType == HeartSubType.HEART_SOUL or slotPickupSubType == HeartSubType.HEART_HALF_SOUL or slotPickupSubType == HeartSubType.HEART_BLACK) then
+        if DukeHelpers.GetTrueSoulHearts(player) < DukeHelpers.MAX_HEALTH and
+            (
+            slotPickupSubType == HeartSubType.HEART_SOUL or slotPickupSubType == HeartSubType.HEART_HALF_SOUL or
+                slotPickupSubType == HeartSubType.HEART_BLACK) then
             player:AddSoulHearts(1)
             return
         end
 
-        if numberOfFilledSlots + 1 < DukeHelpers.GetMaxRottenGulletSlots(player) then
+        if numberOfFilledSlots + 1 <= DukeHelpers.GetMaxRottenGulletSlots(player) then
             table.insert(filledSlots, slotPickupSubType)
 
             DukeHelpers.SpawnPickupPoof(player, slotPickupSubType)

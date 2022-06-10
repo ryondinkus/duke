@@ -57,6 +57,33 @@ local function MC_USE_ITEM(_, type, rng, p)
     local pickupSubType = releasedSlots[1]
     local foundSpider = DukeHelpers.GetSpiderByPickupSubType(pickupSubType)
 
+    local radius = 100
+    local enemiesInRadius = DukeHelpers.FindInRadius(p.Position, radius)
+
+    local radiusDamage = 0
+
+    if foundSpider and foundSpider.tearDamageMultiplier then
+        radiusDamage = radiusDamage * foundSpider.tearDamageMultiplier
+    end
+
+    for _, enemy in pairs(enemiesInRadius) do
+        local directionVector = enemy.Position - p.Position
+        local maxVector = Vector(radius / 2 * DukeHelpers.Sign(directionVector.X),
+            radius / 2 * DukeHelpers.Sign(directionVector.Y))
+        directionVector = (maxVector - directionVector)
+
+        if DukeHelpers.Sign(directionVector.X) ~= DukeHelpers.Sign(maxVector.X) then
+            directionVector = Vector(-directionVector.X, directionVector.Y)
+        end
+
+        if DukeHelpers.Sign(directionVector.Y) ~= DukeHelpers.Sign(maxVector.Y) then
+            directionVector = Vector(directionVector.X, -directionVector.Y)
+        end
+
+        enemy.Velocity = directionVector
+        enemy:TakeDamage(radiusDamage, 0, EntityRef(p), 0)
+    end
+
     for i = 0, numberOfTears - 1 do
         local tear = p:FireTear(p.Position, Vector.FromAngle(i * (360 / numberOfTears)) * 10)
 
@@ -149,14 +176,16 @@ local playerHUDPositions = {
 
 local function MC_POST_RENDER()
     DukeHelpers.ForEachPlayer(function(player)
-        if DukeHelpers.IsHusk(player) and (player:GetActiveItem(ActiveSlot.SLOT_POCKET) == Id and player:GetCard(0) == 0 and player:GetPill(0) == 0) then
+        if DukeHelpers.IsHusk(player) and
+            (player:GetActiveItem(ActiveSlot.SLOT_POCKET) == Id and player:GetCard(0) == 0 and player:GetPill(0) == 0) then
             local controllerIndex = DukeHelpers.GetPlayerControllerIndex(player)
             local hudOffset = math.floor((Options.HUDOffset * 10) + 0.5)
 
             local playerSlots = DukeHelpers.GetFilledRottenGulletSlots(player)
             local numberOfFilledSlots = DukeHelpers.LengthOfTable(playerSlots)
             local playerHudPositions = playerHUDPositions[controllerIndex]
-            local hudPosition = type(playerHudPositions) == "table" and playerHudPositions[hudOffset] or playerHudPositions
+            local hudPosition = type(playerHudPositions) == "table" and playerHudPositions[hudOffset] or
+                playerHudPositions
 
             local isSmall = controllerIndex ~= 0
 
@@ -196,11 +225,15 @@ local function MC_POST_RENDER()
 
             font:DrawStringScaled("x" .. numberOfFilledSlots, x, y, scale, scale, currentCountColor, 1, false)
 
-            local percentBrokenSlots = (DukeHelpers.MAX_ROTTEN_GULLET_COUNT - DukeHelpers.GetMaxRottenGulletSlots(player)) / DukeHelpers.MAX_ROTTEN_GULLET_COUNT
+            local percentBrokenSlots = (
+                DukeHelpers.MAX_ROTTEN_GULLET_COUNT - DukeHelpers.GetMaxRottenGulletSlots(player)) /
+                DukeHelpers.MAX_ROTTEN_GULLET_COUNT
 
             local blueAndGreenValues = 0.5 - (0.5 * percentBrokenSlots)
 
-            font:DrawStringScaled("/" .. tostring(DukeHelpers.GetMaxRottenGulletSlots(player)), x + maxSlotTextXOffset, y + maxSlotTextYOffset, scale * maxSlotTextScale, scale * maxSlotTextScale, KColor(0.5, blueAndGreenValues, blueAndGreenValues, 1), 1, false)
+            font:DrawStringScaled("/" .. tostring(DukeHelpers.GetMaxRottenGulletSlots(player)), x + maxSlotTextXOffset,
+                y + maxSlotTextYOffset, scale * maxSlotTextScale, scale * maxSlotTextScale,
+                KColor(0.5, blueAndGreenValues, blueAndGreenValues, 1), 1, false)
 
             local amountToRender = math.min(numberOfFilledSlots, shownHearts)
 
@@ -246,15 +279,19 @@ local function MC_POST_RENDER()
                 sprite.Scale = Vector(scale, scale)
                 renderAboveSprite.Scale = Vector(scale, scale)
 
-                renderAboveSprite.Color = Color(renderAboveSprite.Color.R, renderAboveSprite.Color.G, renderAboveSprite.Color.B, 1 - (i * (1 / shownHearts) - (1 / shownHearts)))
-                sprite.Color = Color(sprite.Color.R, sprite.Color.G, sprite.Color.B, 1 - (i * (1 / shownHearts) - (1 / shownHearts)))
+                renderAboveSprite.Color = Color(renderAboveSprite.Color.R, renderAboveSprite.Color.G,
+                    renderAboveSprite.Color.B, 1 - (i * (1 / shownHearts) - (1 / shownHearts)))
+                sprite.Color = Color(sprite.Color.R, sprite.Color.G, sprite.Color.B,
+                    1 - (i * (1 / shownHearts) - (1 / shownHearts)))
 
                 local extraXOffset = -(isSmall and smallXTextOffset or largeXTextOffset)
 
-                local position = Vector(x + extraXOffset - ((isSmall and smallXHeartSpacing or largeXHeartSpacing) * i), startingY)
+                local position = Vector(x + extraXOffset - ((isSmall and smallXHeartSpacing or largeXHeartSpacing) * i),
+                    startingY)
 
                 if renderAbove then
-                    renderAboveSprite:Render(position + (renderAbove.spriteOffset or Vector.Zero), Vector.Zero, Vector.Zero)
+                    renderAboveSprite:Render(position + (renderAbove.spriteOffset or Vector.Zero), Vector.Zero,
+                        Vector.Zero)
                 end
                 sprite:Render(position + spriteOffset, Vector.Zero, Vector.Zero)
             end
