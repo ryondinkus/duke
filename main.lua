@@ -54,6 +54,12 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_RENDER, function()
     end
 end)
 
+-- dukeMod:AddCallback(ModCallbacks.MC_POST_TEAR_INIT, function(_, cmd, args)
+--     --Isaac.GetPlayer(0):AddBlackHearts(2)
+--     --addWebHearts(2, Isaac.GetPlayer(0))
+--     ComplianceImmortal.AddImmortalHearts(Isaac.GetPlayer(0), 2)
+-- end)
+
 -- Helpers
 include("helpers/docs")
 include("helpers/giantbook")

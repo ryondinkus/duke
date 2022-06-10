@@ -1,6 +1,7 @@
 -- Add flies on player startup
 dukeMod:AddCallback(ModCallbacks.MC_POST_PLAYER_UPDATE, function(_, player)
-	if dukeMod.global.isInitialized and DukeHelpers.IsHusk(player) and (not player:GetData().duke or not player:GetData().duke.isInitialized) then
+	if dukeMod.global.isInitialized and DukeHelpers.IsHusk(player) and
+		(not player:GetData().duke or not player:GetData().duke.isInitialized) then
 		DukeHelpers.InitializeHusk(player)
 		DukeHelpers.AddStartupSpiders(player)
 	end

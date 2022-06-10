@@ -26,7 +26,7 @@ local function MC_POST_PLAYER_UPDATE(_, player)
 
         local updatedHearts = {
             RED = player:GetHearts(),
-            BLACK = DukeHelpers.GetBlackHearts(player),
+            BLACK = DukeHelpers.GetTrueBlackHearts(player),
             SOUL = DukeHelpers.GetTrueSoulHearts(player),
             BONE = player:GetBoneHearts(),
             ETERNAL = player:GetEternalHearts(),
