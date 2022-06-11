@@ -35,7 +35,7 @@ local function MC_POST_FIRE_TEAR(_, tear)
     local player = tear:GetLastParent():ToPlayer()
 
     if player:HasCollectible(Id) then
-        if DukeHelpers.PercentageChance(player.Luck * 5, 50) then
+        if DukeHelpers.PercentageChance(player.Luck * 5 + 5, 50) then
             tear:GetData()[Tag] = true
 
             local sprite = tear:GetSprite()
