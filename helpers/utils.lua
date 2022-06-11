@@ -517,3 +517,16 @@ end
 function DukeHelpers.Sign(x)
     return x > 0 and 1 or x < 0 and -1 or 0
 end
+
+function DukeHelpers.CountOccurencesInTable(table, value)
+    local found = 0
+
+    for _, v in pairs(table) do
+        local notEquals = false
+        if v == value then
+			found = found + 1
+		end
+    end
+
+    return found
+end
