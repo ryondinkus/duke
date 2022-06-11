@@ -62,6 +62,7 @@ local function MC_USE_ITEM(_, type, rng, p)
     DukeHelpers.SpawnPickupPoof(p, pickupSubType)
     local effect = Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.POOF02, 4, p.Position, Vector.Zero, p)
     effect.Color = foundSpider.poofColor
+	Game():ShakeScreen(10)
 
     local radius = 80
     local enemiesInRadius = DukeHelpers.FindInRadius(p.Position, radius)
