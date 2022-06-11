@@ -311,6 +311,11 @@ function DukeHelpers.FindInRadius(position, radius, filter)
     return inRadiusEnemies
 end
 
+function DukeHelpers.IsActualEnemy(entity)
+    return DukeHelpers.IsInPartition(entity.Type, PartitionedEntities[EntityPartition.ENEMY]) and
+        not DukeHelpers.Find(notEnemies, function(t) return t == entity.Type end)
+end
+
 function DukeHelpers.ListEnemiesInRoom(ignoreVulnerability, filter)
     local entities = Isaac.GetRoomEntities()
     local enemies = {}
@@ -516,4 +521,8 @@ end
 
 function DukeHelpers.Sign(x)
     return x > 0 and 1 or x < 0 and -1 or 0
+end
+
+function DukeHelpers.ConvertBitSet64ToBitSet128(x)
+    return x >= 64 and BitSet128(0, 1 << (x - 64)) or BitSet128(1 << x, 0)
 end

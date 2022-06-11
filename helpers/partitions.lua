@@ -416,3 +416,7 @@ for i = 1, 127 do
 
     table.insert(PartitionedEntities, group)
 end
+
+function DukeHelpers.IsInPartition(entityType, entityPartition)
+    return not not DukeHelpers.Find(entityPartition, function(p) return p == entityType end)
+end
