@@ -517,3 +517,41 @@ end
 function DukeHelpers.Sign(x)
     return x > 0 and 1 or x < 0 and -1 or 0
 end
+
+function DukeHelpers.Stagger(tag, player, interval, occurences, callback, onEnd, noAutoDecrement)
+    local data = DukeHelpers.GetDukeData(player)
+    if data[tag] and (type(data[tag]) ~= "number" or data[tag] > 0) then
+        local timerTag = tag .. "Timer"
+        local counterTag = tag .. "Counter"
+        if not data[timerTag] then data[timerTag] = 0 end
+        if not data[counterTag] then data[counterTag] = occurences end
+
+        data[timerTag] = data[timerTag] - 1
+        if data[timerTag] <= 0 then
+            local previousResult
+
+            for _ = 1, data[tag] or 1 do
+                previousResult = callback(counterTag, previousResult)
+            end
+
+            data[timerTag] = interval
+            if not noAutoDecrement then
+                data[counterTag] = data[counterTag] - 1
+            end
+            if data[counterTag] <= 0 then
+                DukeHelpers.StopStagger(player, tag)
+                if onEnd then
+                    onEnd()
+                end
+            end
+        end
+    end
+end
+
+function DukeHelpers.StopStagger(player, tag)
+    local data = DukeHelpers.GetDukeData(player)
+
+    data[tag] = nil
+    data[tag .. "Timer"] = nil
+    data[tag .. "Counter"] = nil
+end
