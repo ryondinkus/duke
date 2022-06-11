@@ -13,7 +13,7 @@ local WikiDescription = DukeHelpers.GenerateEncyclopediaPage("Ghosty")
 
 local function MC_USE_CARD(_, card, player, flags)
     for _ = 1, 10 do
-        DukeHelpers.AddHeartFly(player, DukeHelpers.GetWeightedFly(DukeHelpers.rng))
+        DukeHelpers.AddHeartFly(player, DukeHelpers.GetWeightedFly(DukeHelpers.rng), 1)
         DukeHelpers.SpawnSpidersFromPickupSubType(DukeHelpers.GetWeightedSpider(DukeHelpers.rng).pickupSubType,
             player.Position, player, 1)
     end
