@@ -72,8 +72,6 @@ local function MC_USE_ITEM(_, type, rng, p)
         radiusDamage = radiusDamage * foundSpider.damageMultiplier
     end
 
-    print(foundSpider.spritesheet)
-
     for _, enemy in pairs(enemiesInRadius) do
         local directionVector = enemy.Position - p.Position
         local maxVector = Vector(radius / 2 * DukeHelpers.Sign(directionVector.X),
