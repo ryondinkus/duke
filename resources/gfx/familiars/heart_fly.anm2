@@ -1,8 +1,8 @@
 <AnimatedActor>
-	<Info CreatedBy="robot" CreatedOn="2/15/2022 3:22:44 PM" Version="111" Fps="30"/>
+	<Info CreatedBy="robot" CreatedOn="6/5/2022 8:18:58 AM" Version="112" Fps="30"/>
 	<Content>
 		<Spritesheets>
-			<Spritesheet Path="red_heart_fly.png" Id="0"/>
+			<Spritesheet Path="flies\red_heart_fly.png" Id="0"/>
 		</Spritesheets>
 		<Layers>
 			<Layer Name="body" Id="0" SpritesheetId="0"/>

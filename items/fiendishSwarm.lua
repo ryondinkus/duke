@@ -18,60 +18,60 @@ local function MC_USE_ITEM(_, type, rng, player, f)
 
     if player:GetPlayerType() == PlayerType.PLAYER_KEEPER or player:GetPlayerType() == PlayerType.PLAYER_KEEPER_B then
         if player:GetHearts() >= 1 then
-            fliesToSpawn[DukeHelpers.Flies.FLY_GOLDEN.heartFlySubType] = (player:GetHearts() / 2) - 1
+            fliesToSpawn[DukeHelpers.Flies.GOLDEN.heartFlySubType] = (player:GetHearts() / 2) - 1
             player:AddHearts(-(player:GetHearts() - 2))
         end
 
         goto keeper
     end
 
-    fliesToSpawn[DukeHelpers.Flies.FLY_ROTTEN.heartFlySubType] = player:GetRottenHearts()
+    fliesToSpawn[DukeHelpers.Flies.ROTTEN.heartFlySubType] = player:GetRottenHearts()
     player:AddRottenHearts(-player:GetRottenHearts() * 2)
 
     if player:GetMaxHearts() >= 1 and (player:GetHearts() >= 1) then --or tempRottenHearts > 0) then
-        fliesToSpawn[DukeHelpers.Flies.FLY_RED.heartFlySubType] = player:GetHearts() - (player:GetRottenHearts() * 2) - 1
+        fliesToSpawn[DukeHelpers.Flies.RED.heartFlySubType] = player:GetHearts() - (player:GetRottenHearts() * 2) - 1
 
         player:AddHearts(-(player:GetHearts() - 1))
 
-        fliesToSpawn[DukeHelpers.Flies.FLY_SOUL.heartFlySubType] = DukeHelpers.GetTrueSoulHearts(player)
-        fliesToSpawn[DukeHelpers.Flies.FLY_BLACK.heartFlySubType] = DukeHelpers.GetBlackHearts(player)
-        fliesToSpawn[DukeHelpers.Flies.FLY_BONE.heartFlySubType] = player:GetBoneHearts()
+        fliesToSpawn[DukeHelpers.Flies.SOUL.heartFlySubType] = DukeHelpers.GetTrueSoulHearts(player)
+        fliesToSpawn[DukeHelpers.Flies.BLACK.heartFlySubType] = DukeHelpers.GetTrueBlackHearts(player)
+        fliesToSpawn[DukeHelpers.Flies.BONE.heartFlySubType] = player:GetBoneHearts()
 
         player:AddSoulHearts(-player:GetSoulHearts())
         player:AddBoneHearts(-player:GetBoneHearts())
     elseif player:GetSoulHearts() >= 1 then
-        fliesToSpawn[DukeHelpers.Flies.FLY_SOUL.heartFlySubType] = DukeHelpers.GetTrueSoulHearts(player)
-        if DukeHelpers.GetBlackHearts(player) > 0 then
-            fliesToSpawn[DukeHelpers.Flies.FLY_BLACK.heartFlySubType] = DukeHelpers.GetBlackHearts(player) - 1
+        fliesToSpawn[DukeHelpers.Flies.SOUL.heartFlySubType] = DukeHelpers.GetTrueSoulHearts(player)
+        if DukeHelpers.GetTrueBlackHearts(player) > 0 then
+            fliesToSpawn[DukeHelpers.Flies.BLACK.heartFlySubType] = DukeHelpers.GetTrueBlackHearts(player) - 1
         else
-            fliesToSpawn[DukeHelpers.Flies.FLY_SOUL.heartFlySubType] = fliesToSpawn[DukeHelpers.Flies.FLY_SOUL.heartFlySubType] - 1
+            fliesToSpawn[DukeHelpers.Flies.SOUL.heartFlySubType] = fliesToSpawn[DukeHelpers.Flies.SOUL.heartFlySubType] - 1
         end
 
         player:AddSoulHearts(-(player:GetSoulHearts() - 1))
 
-        fliesToSpawn[DukeHelpers.Flies.FLY_RED.heartFlySubType] = player:GetHearts() - (player:GetRottenHearts() * 2)
-        fliesToSpawn[DukeHelpers.Flies.FLY_BONE.heartFlySubType] = player:GetBoneHearts()
+        fliesToSpawn[DukeHelpers.Flies.RED.heartFlySubType] = player:GetHearts() - (player:GetRottenHearts() * 2)
+        fliesToSpawn[DukeHelpers.Flies.BONE.heartFlySubType] = player:GetBoneHearts()
 
         player:AddBoneHearts(-player:GetBoneHearts())
     elseif player:GetBoneHearts() >= 1 then
-        fliesToSpawn[DukeHelpers.Flies.FLY_SOUL.heartFlySubType] = DukeHelpers.GetTrueSoulHearts(player)
-        fliesToSpawn[DukeHelpers.Flies.FLY_BLACK.heartFlySubType] = DukeHelpers.GetBlackHearts(player)
-        fliesToSpawn[DukeHelpers.Flies.FLY_RED.heartFlySubType] = player:GetHearts() - (player:GetRottenHearts() * 2)
+        fliesToSpawn[DukeHelpers.Flies.SOUL.heartFlySubType] = DukeHelpers.GetTrueSoulHearts(player)
+        fliesToSpawn[DukeHelpers.Flies.BLACK.heartFlySubType] = DukeHelpers.GetTrueBlackHearts(player)
+        fliesToSpawn[DukeHelpers.Flies.RED.heartFlySubType] = player:GetHearts() - (player:GetRottenHearts() * 2)
 
-        fliesToSpawn[DukeHelpers.Flies.FLY_BONE.heartFlySubType] = player:GetBoneHearts() - 1
+        fliesToSpawn[DukeHelpers.Flies.BONE.heartFlySubType] = player:GetBoneHearts() - 1
 
         player:AddBoneHearts(-(player:GetBoneHearts() - 1))
         player:AddSoulHearts(-player:GetSoulHearts())
         player:AddHearts(-player:GetHearts())
     end
 
-    fliesToSpawn[DukeHelpers.Flies.FLY_BROKEN.heartFlySubType] = player:GetBrokenHearts() * 2
+    fliesToSpawn[DukeHelpers.Flies.BROKEN.heartFlySubType] = player:GetBrokenHearts() * 2
     player:AddBrokenHearts(-player:GetBrokenHearts())
 
-    fliesToSpawn[DukeHelpers.Flies.FLY_ETERNAL.heartFlySubType] = player:GetEternalHearts()
+    fliesToSpawn[DukeHelpers.Flies.ETERNAL.heartFlySubType] = player:GetEternalHearts()
     player:AddEternalHearts(-player:GetEternalHearts())
 
-    fliesToSpawn[DukeHelpers.Flies.FLY_GOLDEN.heartFlySubType] = player:GetGoldenHearts()
+    fliesToSpawn[DukeHelpers.Flies.GOLDEN.heartFlySubType] = player:GetGoldenHearts()
     player:AddGoldenHearts(-player:GetGoldenHearts())
 
     if player:GetMaxHearts() >= 1 and player:GetHearts() <= 0 then
@@ -79,8 +79,7 @@ local function MC_USE_ITEM(_, type, rng, player, f)
     end
 
     ::keeper::
-
-    fliesToSpawn[DukeHelpers.Flies.FLY_FIENDISH.heartFlySubType] = 1
+    fliesToSpawn[DukeHelpers.Flies.FIENDISH.heartFlySubType] = 1
 
     local addedFlies = {}
     local addedWisps = {}
@@ -96,7 +95,7 @@ local function MC_USE_ITEM(_, type, rng, player, f)
     end)
 
     if dukeData[Tag] then
-        for _,id in ipairs(addedFlies) do
+        for _, id in ipairs(addedFlies) do
             table.insert(dukeData[Tag], id)
         end
     else
@@ -104,7 +103,7 @@ local function MC_USE_ITEM(_, type, rng, player, f)
     end
 
     if dukeData[Tag .. "Wisps"] then
-        for _,id in ipairs(addedWisps) do
+        for _, id in ipairs(addedWisps) do
             table.insert(dukeData[Tag .. "Wisps"], id)
         end
     else
@@ -125,7 +124,7 @@ local function MC_POST_NEW_ROOM()
 
                 if foundFly then
                     local heartFly = DukeHelpers.FindByProperties(DukeHelpers.Flies, { heartFlySubType = foundFly.SubType, baseFly = true })
-                        if heartFly.pickupSubType ~= 102 then
+                    if heartFly.pickupSubType ~= 102 then
                         if heartsToAdd[heartFly.pickupSubType] then
                             heartsToAdd[heartFly.pickupSubType] = heartsToAdd[heartFly.pickupSubType] + 1
                         else

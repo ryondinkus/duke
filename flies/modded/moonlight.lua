@@ -1,4 +1,4 @@
-local key = "FLY_MOONLIGHT" -- From Moonlight Hearts Mod
+local key = "MOONLIGHT" -- From Moonlight Hearts Mod
 local subType = 901
 local attackFlySubType = DukeHelpers.GetAttackFlySubTypeBySubType(subType)
 
@@ -43,10 +43,10 @@ end
 
 return {
 	key = key,
-	spritesheet = "gfx/familiars/moonlight_heart_fly.png",
+	spritesheet = "moonlight_heart_fly.png",
 	canAttack = true,
 	subType = subType,
-	fliesCount = 1,
+	count = 1,
 	weight = 0,
 	poofColor = Color(0.62, 0.62, 0.62, 1, 0.90, 0.78, 1),
 	sacAltarQuality = 3,

@@ -8,5 +8,8 @@ DukeHelpers.Items = {
     fiendishSwarm = include("items/fiendishSwarm"),
     queenFly = include("items/queenFly"),
     shartyMcFly = include("items/shartyMcFly"),
-    ultraHeartFly = include("items/ultraHeartFly")
+    ultraHeartFly = include("items/ultraHeartFly"),
+    rottenGullet = include("items/rottenGullet"),
+    othersRottenGullet = include("items/othersRottenGullet"),
+    dukeOfEyes = include("items/dukeOfEyes")
 }

@@ -1,4 +1,4 @@
-local key = "FLY_DOUBLE"
+local key = "DOUBLE_RED"
 local useFly = include("flies/red").key
 local subType = HeartSubType.HEART_DOUBLEPACK
 
@@ -6,5 +6,5 @@ return {
     key = key,
     useFly = useFly,
     subType = subType,
-    fliesCount = 4
+    count = 4
 }

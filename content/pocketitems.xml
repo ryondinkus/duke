@@ -1,9 +1,23 @@
 <pocketitems>
 	<card name="Tapeworm Card"
-        description="Infest all"
-        hud="Tapeworm Card"
-        type="special"
-        pickup="327"
-        mimiccharge="12"
-    />
+      description="Infest all"
+      hud="Tapeworm Card"
+      type="special"
+      pickup="327"
+      mimiccharge="12"
+  />
+	<card name="Red Tapeworm Card"
+      description="Forceful infestation"
+      hud="Red Tapeworm Card"
+      type="special"
+      pickup="327"
+      mimiccharge="6"
+  />
+	<card name="Soul of Duke"
+      description="Release the swarm"
+      hud="Soul of Duke"
+      type="rune"
+      pickup="328"
+      mimiccharge="6"
+  />
 </pocketitems>
