@@ -1,4 +1,4 @@
-local key = "SPIDER_BLENDED"
+local key = "BLENDED"
 local uses = {
     {
         key = include("spiders/red").key,

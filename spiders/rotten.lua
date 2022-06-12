@@ -1,4 +1,4 @@
-local key = "SPIDER_ROTTEN"
+local key = "ROTTEN"
 local pickupSubType = HeartSubType.HEART_ROTTEN
 local subType = DukeHelpers.GetSpiderSubTypeByPickupSubType(pickupSubType)
 
@@ -14,11 +14,11 @@ local function applyTearEffects(tear)
     local function tearCollision(_, t)
         if tear.InitSeed == t.InitSeed then
             Isaac.Spawn(EntityType.ENTITY_FAMILIAR, FamiliarVariant.BLUE_FLY, 0, t.Position, Vector.Zero, t)
-            dukeMod:RemoveCallback(ModCallbacks.MC_PRE_TEAR_COLLISION, tearCollision, tear.Variant)
+            dukeMod:RemoveCallback(ModCallbacks.MC_POST_ENTITY_REMOVE, tearCollision)
         end
     end
 
-    dukeMod:AddCallback(ModCallbacks.MC_PRE_TEAR_COLLISION, tearCollision, tear.Variant)
+    dukeMod:AddCallback(ModCallbacks.MC_POST_ENTITY_REMOVE, tearCollision)
 end
 
 return {
@@ -37,5 +37,9 @@ return {
         }
     },
     applyTearEffects = applyTearEffects,
-    tearDamageMultiplier = 1.5
+    tearDamageMultiplier = 1.5,
+    tearColor = Color(1, 0.2, 0.2, 1, 0, 0.1, 0),
+    uiHeart = {
+        animationName = "RottenHeartFull"
+    }
 }

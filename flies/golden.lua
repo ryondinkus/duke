@@ -1,4 +1,4 @@
-local key = "FLY_GOLDEN"
+local key = "GOLDEN"
 local subType = HeartSubType.HEART_GOLDEN
 local attackFlySubType = DukeHelpers.GetAttackFlySubTypeBySubType(subType)
 
@@ -38,7 +38,7 @@ return {
 	spritesheet = "gold_heart_fly.png",
 	canAttack = true,
 	subType = subType,
-	fliesCount = 1,
+	count = 1,
 	weight = 1,
 	poofColor = Color(0.62, 0.62, 0.62, 1, 0.78, 0.55, 0),
 	sacAltarQuality = 4,
@@ -52,6 +52,11 @@ return {
 		{
 			ModCallbacks.MC_PRE_FAMILIAR_COLLISION,
 			HEART_FLY_MC_PRE_FAMILIAR_COLLISION,
+			DukeHelpers.FLY_VARIANT
+		},
+		{
+			ModCallbacks.MC_PRE_FAMILIAR_COLLISION,
+			MC_PRE_FAMILIAR_COLLISION,
 			DukeHelpers.FLY_VARIANT
 		}
 	}

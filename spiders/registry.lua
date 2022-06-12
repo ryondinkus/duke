@@ -8,6 +8,7 @@ local spiders = {
     include("spiders/golden"),
     include("spiders/bone"),
     include("spiders/rotten"),
+    include("spiders/broken"),
     -- modded
     include("spiders/modded/immortal"),
     include("spiders/modded/moonlight"),
@@ -40,6 +41,22 @@ for _, spider in pairs(spiders) do
             spider.damageMultiplier = existingSpider.damageMultiplier
         end
 
+        if not spider.tearDamageMultiplier then
+            spider.tearDamageMultiplier = existingSpider.tearDamageMultiplier
+        end
+
+        if not spider.tearColor then
+            spider.tearColor = existingSpider.tearColor
+        end
+
+        if not spider.uiHeart then
+            spider.uiHeart = existingSpider.uiHeart
+        end
+
+        if not spider.onRelease then
+            spider.onRelease = existingSpider.onRelease
+        end
+
         existingSpider.isBase = false
     end
 
@@ -68,4 +85,8 @@ for _, spider in pairs(spiders) do
     end
 
     DukeHelpers.Spiders[spider.key] = spider
+
+    if not DukeHelpers.HeartKeys[spider.key] then
+        DukeHelpers.HeartKeys[spider.key] = spider.key
+    end
 end

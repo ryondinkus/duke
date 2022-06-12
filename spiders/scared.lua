@@ -1,4 +1,4 @@
-local key = "SPIDER_SCARED"
+local key = "SCARED"
 local use = include("spiders/red").key
 local pickupSubType = HeartSubType.HEART_SCARED
 local subType = DukeHelpers.GetSpiderSubTypeByPickupSubType(pickupSubType)

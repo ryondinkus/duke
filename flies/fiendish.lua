@@ -1,4 +1,4 @@
-local key = "FLY_FIENDISH"
+local key = "FIENDISH"
 local subType = 102
 local attackFlySubType = DukeHelpers.GetAttackFlySubTypeBySubType(subType)
 

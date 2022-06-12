@@ -20,13 +20,13 @@ dukeMod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, function(_, pickup, co
 		local playerData = DukeHelpers.GetDukeData(p)
 		if (pickup.SubType == 3320 or pickup.SubType == 3321) then
 			local patchedFly = DukeHelpers.GetFlyByPickupSubType(pickup.SubType)
-			for i = 1, patchedFly.fliesCount do
-				if DukeHelpers.CountByProperties(playerData.heartFlies, { subType = DukeHelpers.Flies.FLY_BROKEN.heartFlySubType }) > 0 then
-					local removedFlies = DukeHelpers.RemoveHeartFlyBySubType(p, DukeHelpers.Flies.FLY_BROKEN.heartFlySubType, 1)
+			for i = 1, patchedFly.count do
+				if DukeHelpers.CountByProperties(playerData.heartFlies, { subType = DukeHelpers.Flies.BROKEN.heartFlySubType }) > 0 then
+					local removedFlies = DukeHelpers.RemoveHeartFlyBySubType(p, DukeHelpers.Flies.BROKEN.heartFlySubType, 1)
 
-					DukeHelpers.SpawnHeartFlyPoof(DukeHelpers.Flies.FLY_BROKEN.heartFlySubType, removedFlies[1].Position, p)
+					DukeHelpers.SpawnHeartFlyPoof(DukeHelpers.Flies.BROKEN.heartFlySubType, removedFlies[1].Position, p)
 				else
-					DukeHelpers.AddHeartFly(p, patchedFly, patchedFly.fliesCount - i + 1)
+					DukeHelpers.AddHeartFly(p, patchedFly, patchedFly.count - i + 1)
 					break
 				end
 			end
@@ -38,145 +38,27 @@ dukeMod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, function(_, pickup, co
 	end
 end, PickupVariant.PICKUP_HEART)
 
--- Adds flies when a heart is collected
-dukeMod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, function(_, pickup, collider)
-	local p = collider:ToPlayer()
-	if p and DukeHelpers.IsDuke(p) and (pickup.Price <= 0 or p:GetNumCoins() >= pickup.Price) then
-		DukeHelpers.SpawnPickupHeartFly(p, pickup)
-		return true
-	end
-end, PickupVariant.PICKUP_HEART)
 
+-- Handles fly devil deals for Duke
 dukeMod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, function(_, pickup, collider)
 	local p = collider:ToPlayer()
 	if p and (DukeHelpers.IsDuke(p) or p:HasTrinket(DukeHelpers.Trinkets.pocketOfFlies.Id)) and DukeHelpers.IsFlyPrice(pickup.Price) then
 		local heartPrice = DukeHelpers.GetDukeDevilDealPrice(pickup)
 
-		local playerFlyCounts = DukeHelpers.GetFlyCounts()[tostring(p.InitSeed)]
+		local playerFlyCount = DukeHelpers.GetFlyCount(p)
 
-		local neededRedFlies = heartPrice.RED - playerFlyCounts.RED
-		local remainingUltraFlies = playerFlyCounts.ULTRA
-
-		if neededRedFlies > 0 and remainingUltraFlies >= neededRedFlies then
-			remainingUltraFlies = remainingUltraFlies - neededRedFlies
-			neededRedFlies = 0
-		end
-
-		local neededSoulFlies = heartPrice.SOUL - playerFlyCounts.SOUL
-
-		if neededSoulFlies > 0 and remainingUltraFlies >= neededSoulFlies then
-			remainingUltraFlies = remainingUltraFlies - neededSoulFlies
-			neededSoulFlies = 0
-		end
-
-		if neededRedFlies > 0 or neededSoulFlies > 0 then
+		if not playerFlyCount or playerFlyCount < heartPrice then
 			return true
 		end
 
-		DukeHelpers.RemoveHeartFlyBySubType(p, {
-			DukeHelpers.Flies.FLY_RED.heartFlySubType,
-			{
-				count = 2,
-				subType = DukeHelpers.Flies.FLY_BONE.heartFlySubType
-			},
-			{
-				count = 2,
-				subType = DukeHelpers.Flies.FLY_ROTTEN.heartFlySubType
-			}
-		}, heartPrice.RED)
-
-		DukeHelpers.RemoveHeartFlyBySubType(p, {
-			DukeHelpers.Flies.FLY_SOUL.heartFlySubType,
-			DukeHelpers.Flies.FLY_BLACK.heartFlySubType
-		}, heartPrice.SOUL)
-
-		DukeHelpers.RemoveHeartFlyBySubType(p, DukeHelpers.Flies.FLY_ULTRA.heartFlySubType, playerFlyCounts.ULTRA - remainingUltraFlies)
+		DukeHelpers.RemoveOutermostHeartFlies(p, heartPrice)
 	end
 end)
 
+-- Renders fly devil deal prices
 dukeMod:AddCallback(ModCallbacks.MC_POST_PICKUP_RENDER, function(_, pickup)
-	local pos = Isaac.WorldToScreen(pickup.Position)
-
-	if pickup:GetData().showFliesPrice then
-		local devilPrice = DukeHelpers.GetDukeDevilDealPrice(pickup)
-
-		local flyPriceSprite = Sprite()
-		flyPriceSprite:Load("gfx/ui/fly_devil_deal_price.anm2")
-		flyPriceSprite:Play(string.format("%s_%s", devilPrice.RED, devilPrice.SOUL))
-		flyPriceSprite:Render(Vector(pos.X, pos.Y + 10), Vector.Zero, Vector.Zero)
-	end
+	DukeHelpers.RenderCustomDevilDealPrice(pickup, "showFliesPrice", "gfx/ui/fly_devil_deal_price.anm2")
 end)
-
--- Adds flies when the player's health changes
-dukeMod:AddCallback(ModCallbacks.MC_POST_PEFFECT_UPDATE, function(_, p)
-	if DukeHelpers.GetBlackHearts(p) > 0 then
-		local totalSoulHearts = DukeHelpers.GetTrueSoulHearts(p)
-		local immortalHeartCount = ComplianceImmortal.GetImmortalHearts(p)
-		local webHeartCount = ARACHNAMOD:GetData(p).webHearts
-		if immortalHeartCount > 0 then
-			DukeHelpers.AddHeartFly(p, DukeHelpers.Flies.FLY_IMMORTAL, immortalHeartCount)
-			ComplianceImmortal.AddImmortalHearts(p, -immortalHeartCount)
-		elseif webHeartCount > 0 then
-			DukeHelpers.AddHeartFly(p, DukeHelpers.Flies.FLY_WEB, webHeartCount)
-			addWebHearts(-webHeartCount, p)
-		else
-			DukeHelpers.AddHeartFly(p, DukeHelpers.Flies.FLY_BLACK, DukeHelpers.GetBlackHearts(p))
-		end
-		p:AddSoulHearts(-p:GetSoulHearts())
-		p:AddSoulHearts(totalSoulHearts)
-	end
-
-	if p:GetBoneHearts() > 0 then
-		DukeHelpers.AddHeartFly(p, DukeHelpers.Flies.FLY_BONE, p:GetBoneHearts())
-		p:AddBoneHearts(-p:GetBoneHearts())
-	end
-
-	if p:GetBrokenHearts() > 0 then
-		DukeHelpers.AddHeartFly(p, DukeHelpers.Flies.FLY_BROKEN, p:GetBrokenHearts() * 2)
-		p:AddBrokenHearts(-p:GetBrokenHearts())
-		if DukeHelpers.GetTrueSoulHearts(p) < DukeHelpers.MAX_HEALTH then
-			p:AddSoulHearts(DukeHelpers.MAX_HEALTH)
-		end
-		DukeHelpers.KillAtMaxBrokenFlies(p)
-	end
-
-	if p:GetEternalHearts() > 0 then
-		DukeHelpers.AddHeartFly(p, DukeHelpers.Flies.FLY_ETERNAL, p:GetEternalHearts())
-		p:AddEternalHearts(-p:GetEternalHearts())
-	end
-
-	if p:GetGoldenHearts() > 0 then
-		DukeHelpers.AddHeartFly(p, DukeHelpers.Flies.FLY_GOLDEN, p:GetGoldenHearts())
-		p:AddGoldenHearts(-p:GetGoldenHearts())
-	end
-
-	if p:GetHearts() > 0 then
-		DukeHelpers.AddHeartFly(p, DukeHelpers.Flies.FLY_RED, p:GetHearts())
-		p:AddHearts(-p:GetHearts())
-	end
-
-	if p:GetMaxHearts() > 0 then
-		DukeHelpers.AddHeartFly(p, DukeHelpers.Flies.FLY_RED, p:GetMaxHearts())
-		p:AddMaxHearts(-p:GetMaxHearts(), true)
-	end
-
-	if p:GetRottenHearts() > 0 then
-		DukeHelpers.AddHeartFly(p, DukeHelpers.Flies.FLY_ROTTEN, p:GetRottenHearts())
-		p:AddRottenHearts(-p:GetRottenHearts())
-		p:AddHearts(p:GetRottenHearts())
-	end
-
-	if DukeHelpers.GetTrueSoulHearts(p) > DukeHelpers.MAX_HEALTH then
-		local fliesToSpawn = DukeHelpers.GetTrueSoulHearts(p) - DukeHelpers.MAX_HEALTH
-		DukeHelpers.AddHeartFly(p, DukeHelpers.Flies.FLY_SOUL, fliesToSpawn)
-		p:AddSoulHearts(-fliesToSpawn)
-	end
-
-	if p:GetData().moons and p:GetData().moons > 0 then
-		DukeHelpers.AddHeartFly(p, DukeHelpers.Flies.FLY_MOONLIGHT, p:GetData().moons)
-		p:GetData().moons = 0
-	end
-end, DukeHelpers.DUKE_ID)
 
 dukeMod:AddCallback(ModCallbacks.MC_POST_PICKUP_UPDATE, function(_, pickup)
 	if (DukeHelpers.HasDuke() or DukeHelpers.HasPocketOfFlies()) and pickup.Price < 0 then
@@ -199,6 +81,21 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_PICKUP_UPDATE, function(_, pickup)
 		end
 	end
 end)
+
+-- Adds flies when the player's health changes
+dukeMod:AddCallback(ModCallbacks.MC_POST_PEFFECT_UPDATE, function(_, p)
+	local removedHearts = DukeHelpers.RemoveUnallowedHearts(p)
+
+	if DukeHelpers.LengthOfTable(removedHearts) > 0 then
+		DukeHelpers.PrintJson(removedHearts)
+	end
+
+	for heartKey, removedAmount in pairs(removedHearts) do
+		DukeHelpers.AddHeartFly(p, DukeHelpers.Flies[heartKey], removedAmount)
+	end
+
+	DukeHelpers.KillAtMaxBrokenFlies(p)
+end, DukeHelpers.DUKE_ID)
 
 function DukeHelpers.GetDukeData(p)
 	local data = p:GetData()

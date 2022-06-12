@@ -13,8 +13,7 @@ end
 
 local defaultGlobal = {
     isInitialized = false,
-    isGameStarted = false,
-    floorDevilDealChance = nil
+    isGameStarted = false
 }
 
 dukeMod.global = table.deepCopy(defaultGlobal)
@@ -25,7 +24,8 @@ DukeHelpers = {
     rng = RNG(),
     sfx = SFXManager(),
     PRICE_OFFSET = -50,
-    MAX_HEALTH = 4
+    MAX_HEALTH = 4,
+    HeartKeys = {}
 }
 
 -- Sets the RNG seed for the run
@@ -34,10 +34,31 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_GAME_STARTED, function()
     DukeHelpers.rng:SetSeed(seeds:GetStartSeed(), 35)
 end)
 
--- Resets the floor devil deal randomness on new floor
-dukeMod:AddCallback(ModCallbacks.MC_POST_NEW_LEVEL, function()
-    dukeMod.global.floorDevilDealChance = nil
+-- Debug Commands
+
+local debugHudSprite = Sprite()
+debugHudSprite:Load("gfx/ui/debugHud.anm2", true)
+debugHudSprite.Scale = Vector(800, 800)
+local debugHud = false
+
+dukeMod:AddCallback(ModCallbacks.MC_EXECUTE_CMD, function(_, cmd, args)
+    if cmd == "debugHud" then
+        debugHud = not debugHud
+    end
 end)
+
+dukeMod:AddCallback(ModCallbacks.MC_POST_RENDER, function()
+    if debugHud then
+        debugHudSprite:Play("Debug")
+        debugHudSprite:Render(Vector(Isaac.GetScreenWidth() / 2, Isaac.GetScreenHeight() / 2))
+    end
+end)
+
+-- dukeMod:AddCallback(ModCallbacks.MC_POST_TEAR_INIT, function(_, cmd, args)
+--     --Isaac.GetPlayer(0):AddBlackHearts(2)
+--     --addWebHearts(2, Isaac.GetPlayer(0))
+--     ComplianceImmortal.AddImmortalHearts(Isaac.GetPlayer(0), 2)
+-- end)
 
 -- Helpers
 include("helpers/docs")
@@ -300,10 +321,5 @@ end
 
 if Poglite then
     Poglite:AddPogCostume("DukePog", DukeHelpers.DUKE_ID, Isaac.GetCostumeIdByPath("gfx/characters/costume_duke_pog.anm2"))
+    Poglite:AddPogCostume("DukeBPog", DukeHelpers.HUSK_ID, Isaac.GetCostumeIdByPath("gfx/characters/costume_duke_b_pog.anm2"))
 end
-
-dukeMod:AddCallback(ModCallbacks.MC_EXECUTE_CMD, function(_, cmd, args)
-    if cmd == "fillSlot" then
-        DukeHelpers.FillRottenGulletSlot(Isaac.GetPlayer(0), tonumber(args, 10), 1)
-    end
-end)
