@@ -45,8 +45,6 @@ local function MC_POST_FIRE_TEAR(_, tear)
                 local animationToPlay = sprite:GetAnimation()
 
                 sprite:Load("gfx/tears/dukeOfEyesTear.anm2", true)
-                sprite:ReplaceSpritesheet(0, string.format("gfx/tears/dukeOfEyes_%s.png", spriteSheetDirection))
-                sprite:LoadGraphics()
                 sprite:Play(animationToPlay, true)
             end
         end
@@ -59,10 +57,10 @@ local function MC_PRE_TEAR_COLLISION(_, tear, collider)
     if DukeHelpers.IsActualEnemy(collider) and tear:GetData()[Tag] then
         local amount = DukeHelpers.PercentageChance(50) and 1 or 2
         if DukeHelpers.PercentageChance(50) then
-            DukeHelpers.AddHeartFly(player, DukeHelpers.GetWeightedFly(DukeHelpers.rng), amount)
+            DukeHelpers.SpawnAttackFlyBySubType(DukeHelpers.GetWeightedFly(DukeHelpers.rng).heartFlySubType, player.Position, player)
         else
             DukeHelpers.SpawnSpidersFromPickupSubType(DukeHelpers.GetWeightedSpider(DukeHelpers.rng).pickupSubType,
-                player.Position, player, amount)
+                player.Position, player, amount, true)
         end
     end
 end
