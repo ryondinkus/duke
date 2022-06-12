@@ -22,7 +22,7 @@ function DukeHelpers.InitializeHeartSpider(spider)
     sprite:LoadGraphics()
 end
 
-function DukeHelpers.SpawnSpidersFromPickupSubType(pickupSubType, position, spawnerEntity, specificAmount)
+function DukeHelpers.SpawnSpidersFromPickupSubType(pickupSubType, position, spawnerEntity, specificAmount, noPoof)
     local foundSpider = DukeHelpers.Find(DukeHelpers.Spiders,
         function(spider) return spider.pickupSubType == pickupSubType end)
 
@@ -44,6 +44,9 @@ function DukeHelpers.SpawnSpidersFromPickupSubType(pickupSubType, position, spaw
                     Isaac.Spawn(EntityType.ENTITY_FAMILIAR, FamiliarVariant.BLUE_SPIDER, foundSpider.subType, position,
                         Vector.Zero, spawnerEntity))
                 DukeHelpers.InitializeHeartSpider(spawnedSpiders[i])
+				if noPoof then
+					spawnedSpiders[i]:ClearEntityFlags(EntityFlag.FLAG_APPEAR)
+				end
             end
         end
     end
