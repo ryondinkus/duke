@@ -3,5 +3,5 @@
 	<costume anm2path="character_duke_b_scars.anm2" priority="99" type="none" hasSkinAlt="true"/>
 	<costume anm2path="costume_queen_fly.anm2" type="passive" id="5" />
 	<costume anm2path="costume_super_infestation.anm2" type="passive" id="6" skinColor="3" overwriteColor="true" />
-	<costume anm2path="costume_duke_of_eyes.anm2" type="passive" id="12" />
+	<costume anm2path="costume_duke_of_eyes.anm2" type="passive" id="13" />
 </costumes>
