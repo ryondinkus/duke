@@ -12,10 +12,10 @@
     <trinket name="Duke's Tooth" description="Attracts flies" gfx="dukes_tooth.png" />
     <trinket name="Infested Heart" description="It's buzzing..." gfx="infested_heart.png" />
     <trinket name="Pocket of Flies" description="Beelzebub's currency" gfx="pocket_of_flies.png" />
-    <active name="ROTTEN GULLET" description="Full of spiders" gfx="rotten_gullet.png" id="9" maxcharges="2" tags="offensive" quality="3" />
-    <active name="Rotten Gullet" description="Full of spiders" gfx="rotten_gullet.png" id="10" maxcharges="0" tags="offensive" quality="0" hidden="true" />
-    <familiar name="Lil Husk" description="Reanimated monarch" gfx="lil_husk.png" id="11" tags="monstermanual offensive summonable" quality="3" />
-    <passive name="Duke of Eyes" description="They're in there" gfx="duke_of_eyes.png" id="12" tags="offensive summonable" quality="4" />
-    <familiar name="The Invader" description="Monster possessor" gfx="the_invader.png" id="3" tags="spider offensive monstermanual summonable" quality="2" />
+    <active name="ROTTEN GULLET" description="Full of spiders" gfx="rotten_gullet.png" id="10" maxcharges="2" tags="offensive" quality="3" />
+    <active name="Rotten Gullet" description="Full of spiders" gfx="rotten_gullet.png" id="11" maxcharges="0" tags="offensive" quality="0" hidden="true" />
+    <familiar name="Lil Husk" description="Reanimated monarch" gfx="lil_husk.png" id="12" tags="monstermanual offensive summonable" quality="3" />
+    <passive name="Duke of Eyes" description="They're in there" gfx="duke_of_eyes.png" id="13" tags="offensive summonable" quality="4" />
+    <familiar name="The Invader" description="Monster possessor" gfx="the_invader.png" id="14" tags="spider offensive monstermanual summonable" quality="2" />
     <trinket name="Mosquito" description="Full of blood" gfx="mosquito.png" />
 </items>

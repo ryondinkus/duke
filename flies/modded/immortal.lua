@@ -17,13 +17,15 @@ local function HEART_FLY_MC_FAMILIAR_UPDATE_ATTACK(_, f)
 end
 
 local function HEART_FLY_PRE_SPAWN_CLEAN_AWARD()
-    DukeHelpers.ForEachPlayer(function(player)
-        local playerData = DukeHelpers.GetDukeData(player)
-        local immortalFlies = DukeHelpers.CountByProperties(playerData.heartFlies, { subType = DukeHelpers.Flies.IMMORTAL.heartFlySubType })
-        if immortalFlies % 2 == 1 then
-            DukeHelpers.AddHeartFly(player, DukeHelpers.Flies.IMMORTAL, 1)
-        end
-    end)
+	if ComplianceImmortal then
+	    DukeHelpers.ForEachPlayer(function(player)
+	        local playerData = DukeHelpers.GetDukeData(player)
+	        local immortalFlies = DukeHelpers.CountByProperties(playerData.heartFlies, { subType = DukeHelpers.Flies.IMMORTAL.heartFlySubType })
+	        if immortalFlies % 2 == 1 then
+	            DukeHelpers.AddHeartFly(player, DukeHelpers.Flies.IMMORTAL, 1)
+	        end
+	    end)
+	end
 end
 
 return {

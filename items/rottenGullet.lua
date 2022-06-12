@@ -48,6 +48,7 @@ local function fireRottenGulletShot(player, pickupSubType, rng)
     DukeHelpers.SpawnPickupPoof(player, pickupSubType)
     local effect = Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.POOF02, 4, player.Position, Vector.Zero, player)
     effect.Color = foundSpider.poofColor
+	Game():ShakeScreen(10)
 
     local radius = 80
     local enemiesInRadius = DukeHelpers.FindInRadius(player.Position, radius)
@@ -99,6 +100,10 @@ local function fireRottenGulletShot(player, pickupSubType, rng)
             if tear.InitSeed == t.InitSeed then
                 if DukeHelpers.PercentageChance(50, 100, rng) then
                     DukeHelpers.SpawnSpidersFromPickupSubType(pickupSubType, t.Position, t, 1)
+					local player = t.SpawnerEntity:ToPlayer()
+					if player and player:HasCollectible(CollectibleType.COLLECTIBLE_BOOK_OF_VIRTUES) then
+			            DukeHelpers.SpawnSpiderWispBySubType(pickupSubType, t.Position, player, false)
+			        end
                 end
                 dukeMod:RemoveCallback(ModCallbacks.MC_POST_ENTITY_REMOVE, tearCollision, EntityType.ENTITY_TEAR)
             end

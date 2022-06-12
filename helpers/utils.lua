@@ -81,6 +81,14 @@ function DukeHelpers.ForEachDuke(callback, collectibleId)
     end, collectibleId)
 end
 
+function DukeHelpers.ForEachHusk(callback, collectibleId)
+    DukeHelpers.ForEachPlayer(function(player, playerData)
+        if DukeHelpers.IsDuke(player, true) then
+            callback(player, DukeHelpers.GetDukeData(player))
+        end
+    end, collectibleId)
+end
+
 function DukeHelpers.ForEachPlayer(callback, collectibleId)
     for x = 0, Game():GetNumPlayers() - 1 do
         local p = Isaac.GetPlayer(x)
@@ -554,4 +562,15 @@ function DukeHelpers.StopStagger(player, tag)
     data[tag] = nil
     data[tag .. "Timer"] = nil
     data[tag .. "Counter"] = nil
+end
+  
+function DukeHelpers.CountOccurencesInTable(table, value)
+    local found = 0
+        for _, v in pairs(table) do
+            local notEquals = false
+            if v == value then
+	              found = found + 1
+            end
+        end
+   return found
 end
