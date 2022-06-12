@@ -34,38 +34,24 @@ local smallMaxSlotTextScale = 1
 local defaultAnimationPath = "gfx/ui/ui_hearts.anm2"
 local defaultAnimationName = "RedHeartHalf"
 
-local function MC_USE_ITEM(_, type, rng, p)
+local function fireRottenGulletShot(player, pickupSubType, rng)
     local numberOfTears = 8
 
-    if p:HasCollectible(CollectibleType.COLLECTIBLE_BIRTHRIGHT) then
+    if player:HasCollectible(CollectibleType.COLLECTIBLE_BIRTHRIGHT) then
         numberOfTears = 12
     end
 
-    local releasedSlots = DukeHelpers.ReleaseRottenGulletSlots(p, 1)
-
-    if DukeHelpers.LengthOfTable(releasedSlots) <= 0 then
-        DukeHelpers.sfx:Play(SoundEffect.SOUND_WORM_SPIT, 1, 0)
-        local effect = Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.POOF01, 0, p.Position, Vector.Zero, p)
-        effect.Color = Color(0, 0, 0, 1)
-
-        DukeHelpers.GetDukeData(p)[Tag .. "Error"] = errorFrames
-        return true
-    end
-
-    DukeHelpers.GetDukeData(p)[Tag .. "Error"] = nil
-
-    local pickupSubType = releasedSlots[1]
     local foundSpider = DukeHelpers.GetSpiderByPickupSubType(pickupSubType)
 
     DukeHelpers.sfx:Play(SoundEffect.SOUND_WHEEZY_COUGH, 1, 0)
     DukeHelpers.sfx:Play(SoundEffect.SOUND_DEATH_BURST_LARGE, 1, 0)
-    DukeHelpers.SpawnPickupPoof(p, pickupSubType)
-    local effect = Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.POOF02, 4, p.Position, Vector.Zero, p)
+    DukeHelpers.SpawnPickupPoof(player, pickupSubType)
+    local effect = Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.POOF02, 4, player.Position, Vector.Zero, player)
     effect.Color = foundSpider.poofColor
 	Game():ShakeScreen(10)
 
     local radius = 80
-    local enemiesInRadius = DukeHelpers.FindInRadius(p.Position, radius)
+    local enemiesInRadius = DukeHelpers.FindInRadius(player.Position, radius)
 
     local radiusDamage = 40
 
@@ -74,7 +60,7 @@ local function MC_USE_ITEM(_, type, rng, p)
     end
 
     for _, enemy in pairs(enemiesInRadius) do
-        local directionVector = enemy.Position - p.Position
+        local directionVector = enemy.Position - player.Position
         local maxVector = Vector(radius / 2 * DukeHelpers.Sign(directionVector.X),
             radius / 2 * DukeHelpers.Sign(directionVector.Y))
         directionVector = (maxVector - directionVector)
@@ -88,11 +74,11 @@ local function MC_USE_ITEM(_, type, rng, p)
         end
 
         enemy.Velocity = directionVector
-        enemy:TakeDamage(radiusDamage, 0, EntityRef(p), 0)
+        enemy:TakeDamage(radiusDamage, 0, EntityRef(player), 0)
     end
 
     for i = 0, numberOfTears - 1 do
-        local tear = p:FireTear(p.Position, Vector.FromAngle(i * (360 / numberOfTears)) * 10)
+        local tear = player:FireTear(player.Position, Vector.FromAngle(i * (360 / numberOfTears)) * 10)
 
         if foundSpider then
             if foundSpider.tearDamageMultiplier then
@@ -125,9 +111,29 @@ local function MC_USE_ITEM(_, type, rng, p)
 
         dukeMod:AddCallback(ModCallbacks.MC_POST_ENTITY_REMOVE, tearCollision, EntityType.ENTITY_TEAR)
     end
+end
 
+local function MC_USE_ITEM(_, type, rng, p, flags)
+    local releasedSlots = DukeHelpers.ReleaseRottenGulletSlots(p, 1)
 
-    return true
+	if (flags & UseFlag.USE_NOANIM == 0) then
+		p:PlayExtraAnimation("DukeBarf")
+	end
+
+    if DukeHelpers.LengthOfTable(releasedSlots) <= 0 then
+        DukeHelpers.sfx:Play(SoundEffect.SOUND_WORM_SPIT, 1, 0)
+        local effect = Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.POOF01, 0, p.Position, Vector.Zero, p)
+        effect.Color = Color(0, 0, 0, 1)
+
+        DukeHelpers.GetDukeData(p)[Tag .. "Error"] = errorFrames
+        return false
+    end
+
+    DukeHelpers.GetDukeData(p)[Tag .. "Error"] = nil
+
+    fireRottenGulletShot(p, releasedSlots[1], rng)
+
+	return false
 end
 
 local playerHUDPositions = {
@@ -327,5 +333,8 @@ return {
             ModCallbacks.MC_POST_RENDER,
             MC_POST_RENDER
         }
+    },
+    helpers = {
+        fireRottenGulletShot = fireRottenGulletShot
     }
 }

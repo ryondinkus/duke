@@ -83,15 +83,19 @@ function DukeHelpers.ReleaseRottenGulletSlots(player, amount)
     for _ = 1, amount do
         table.insert(releasedSlots, filledSlots[1])
 
-        local spider = DukeHelpers.GetSpiderByPickupSubType(filledSlots[1])
-        if spider and spider.onRelease then
-            spider.onRelease(player)
-        end
+        DukeHelpers.ReleaseRottenGulletSlot(player, filledSlots[1])
 
         table.remove(filledSlots, 1)
     end
 
     return releasedSlots
+end
+
+function DukeHelpers.ReleaseRottenGulletSlot(player, pickupSubType)
+    local spider = DukeHelpers.GetSpiderByPickupSubType(pickupSubType)
+    if spider and spider.onRelease then
+        spider.onRelease(player)
+    end
 end
 
 function DukeHelpers.GetMaxRottenGulletSlots(player)
