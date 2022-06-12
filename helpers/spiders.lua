@@ -59,5 +59,5 @@ function DukeHelpers.GetWeightedSpider(rng)
 end
 
 function DukeHelpers.SpawnSpiderWispBySubType(flySubType, pos, spawner, spawnSpiderOnDeath, lifeTime)
-    return DukeHelpers.SpawnAttackFlyWispBySubType(flySubType, pos, spawner, false, lifeTime, spawnSpiderOnDeath)
+    return DukeHelpers.SpawnAttackFlyWispBySubType(flySubType, pos, spawner, spawnSpiderOnDeath, lifeTime, true)
 end

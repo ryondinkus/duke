@@ -136,3 +136,13 @@ function DukeHelpers.AddStartupSpiders(player)
 	DukeHelpers.FillRottenGulletSlot(player, DukeHelpers.Spiders.RED.pickupSubType, 1)
 	DukeHelpers.SpawnSpidersFromPickupSubType(HeartSubType.HEART_FULL, player.Position, player, 2)
 end
+
+dukeMod:AddCallback(ModCallbacks.MC_POST_UPDATE, function()
+	DukeHelpers.ForEachHusk(function(p)
+		local sprite = p:GetSprite()
+		if sprite:IsPlaying("Death") and sprite:GetFrame() == 19 then
+			Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.LARGE_BLOOD_EXPLOSION, 0, p.Position, Vector.Zero, p)
+			DukeHelpers.sfx:Play(SoundEffect.SOUND_ROCKET_BLAST_DEATH)
+		end
+	end)
+end)

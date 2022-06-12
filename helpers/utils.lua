@@ -81,6 +81,14 @@ function DukeHelpers.ForEachDuke(callback, collectibleId)
     end, collectibleId)
 end
 
+function DukeHelpers.ForEachHusk(callback, collectibleId)
+    DukeHelpers.ForEachPlayer(function(player, playerData)
+        if DukeHelpers.IsDuke(player, true) then
+            callback(player, DukeHelpers.GetDukeData(player))
+        end
+    end, collectibleId)
+end
+
 function DukeHelpers.ForEachPlayer(callback, collectibleId)
     for x = 0, Game():GetNumPlayers() - 1 do
         local p = Isaac.GetPlayer(x)
@@ -525,4 +533,53 @@ end
 
 function DukeHelpers.ConvertBitSet64ToBitSet128(x)
     return x >= 64 and BitSet128(0, 1 << (x - 64)) or BitSet128(1 << x, 0)
+end
+
+function DukeHelpers.Stagger(tag, player, interval, occurences, callback, onEnd, noAutoDecrement)
+    local data = DukeHelpers.GetDukeData(player)
+    if data[tag] and (type(data[tag]) ~= "number" or data[tag] > 0) then
+        local timerTag = tag .. "Timer"
+        local counterTag = tag .. "Counter"
+        if not data[timerTag] then data[timerTag] = 0 end
+        if not data[counterTag] then data[counterTag] = occurences end
+
+        data[timerTag] = data[timerTag] - 1
+        if data[timerTag] <= 0 then
+            local previousResult
+
+            for _ = 1, data[tag] or 1 do
+                previousResult = callback(counterTag, previousResult)
+            end
+
+            data[timerTag] = interval
+            if not noAutoDecrement then
+                data[counterTag] = data[counterTag] - 1
+            end
+            if data[counterTag] <= 0 then
+                DukeHelpers.StopStagger(player, tag)
+                if onEnd then
+                    onEnd()
+                end
+            end
+        end
+    end
+end
+
+function DukeHelpers.StopStagger(player, tag)
+    local data = DukeHelpers.GetDukeData(player)
+
+    data[tag] = nil
+    data[tag .. "Timer"] = nil
+    data[tag .. "Counter"] = nil
+end
+  
+function DukeHelpers.CountOccurencesInTable(table, value)
+    local found = 0
+        for _, v in pairs(table) do
+            local notEquals = false
+            if v == value then
+	              found = found + 1
+            end
+        end
+   return found
 end
