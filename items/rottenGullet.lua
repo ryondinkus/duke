@@ -108,8 +108,12 @@ local function fireRottenGulletShot(player, pickupSubType, rng)
     end
 end
 
-local function MC_USE_ITEM(_, type, rng, p)
+local function MC_USE_ITEM(_, type, rng, p, flags)
     local releasedSlots = DukeHelpers.ReleaseRottenGulletSlots(p, 1)
+
+	if (flags & UseFlag.USE_NOANIM == 0) then
+		p:PlayExtraAnimation("DukeBarf")
+	end
 
     if DukeHelpers.LengthOfTable(releasedSlots) <= 0 then
         DukeHelpers.sfx:Play(SoundEffect.SOUND_WORM_SPIT, 1, 0)
@@ -117,14 +121,14 @@ local function MC_USE_ITEM(_, type, rng, p)
         effect.Color = Color(0, 0, 0, 1)
 
         DukeHelpers.GetDukeData(p)[Tag .. "Error"] = errorFrames
-        return true
+        return false
     end
 
     DukeHelpers.GetDukeData(p)[Tag .. "Error"] = nil
 
     fireRottenGulletShot(p, releasedSlots[1], rng)
 
-    return true
+	return false
 end
 
 local playerHUDPositions = {
