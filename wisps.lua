@@ -1,5 +1,5 @@
 dukeMod:AddCallback(ModCallbacks.MC_FAMILIAR_UPDATE, function(_, familiar)
-    if DukeHelpers.IsValidCustomWisp(familiar.SubType) then
+    if DukeHelpers.IsValidCustomWisp(familiar) then
         if familiar.FrameCount == 5 then
             local familiarData = familiar:GetData()
             if familiarData.heartType and DukeHelpers.Wisps[familiarData.heartType] then
@@ -31,7 +31,7 @@ end, FamiliarVariant.WISP)
 dukeMod:AddCallback(ModCallbacks.MC_POST_TEAR_UPDATE, function(_, tear)
     if tear.FrameCount == 1 and tear.SpawnerEntity then
         local familiar = tear.SpawnerEntity:ToFamiliar()
-        if familiar and DukeHelpers.IsValidCustomWisp(familiar.SubType) then
+        if familiar and DukeHelpers.IsValidCustomWisp(familiar) then
             local familiarData = familiar:GetData()
             local wisp = DukeHelpers.Wisps[familiarData.heartType]
             tear:AddTearFlags(wisp.tearFlags)

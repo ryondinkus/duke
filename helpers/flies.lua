@@ -393,12 +393,11 @@ function DukeHelpers.SpawnAttackFlyWispBySubType(flySubType, pos, spawner, spawn
 	end
 end
 
-function DukeHelpers.IsValidCustomWisp(id)
-	print(id)
-	print(DukeHelpers.Items.dukeOfEyes.Id)
-	print(DukeHelpers.Items.thePrinces.Id)
-	if id == DukeHelpers.Items.dukeOfEyes.Id or id == DukeHelpers.Items.thePrinces.Id then
-		return true
+function DukeHelpers.IsValidCustomWisp(familiar)
+	if (familiar.Variant == FamiliarVariant.WISP) then
+		if (familiar.SubType == DukeHelpers.Items.dukeOfEyes.Id) or (familiar.SubType == DukeHelpers.Items.thePrinces.Id) then
+			return true
+		end
 	end
 	return false
 end
