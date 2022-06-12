@@ -374,19 +374,19 @@ function DukeHelpers.KillAtMaxBrokenFlies(player)
 	end
 end
 
-function DukeHelpers.SpawnAttackFlyWispBySubType(flySubType, pos, spawner, spawnFlyOnDeath, lifeTime, spawnSpiderOnDeath)
+function DukeHelpers.SpawnAttackFlyWispBySubType(flySubType, pos, spawner, spawnFlyOnDeath, lifeTime, spider)
 	local player = spawner:ToPlayer()
 	if player then
 		local id = DukeHelpers.Items.thePrinces.Id
-		if spawnSpiderOnDeath then
+		if spider then
 			id = DukeHelpers.Items.dukeOfEyes.Id
 		end
 		local wisp = spawner:ToPlayer():AddWisp(id, pos)
 		if wisp then
 			local wispData = wisp:GetData()
 			wispData.heartType = flySubType
-			wispData.spawnFlyOnDeath = spawnFlyOnDeath
-			wispData.spawnSpiderOnDeath = spawnSpiderOnDeath
+			wispData.spawnFlyOnDeath = spawnFlyOnDeath and not spider
+			wispData.spawnSpiderOnDeath = spawnFlyOnDeath and spider
 			wispData.lifeTime = lifeTime
 			return wisp
 		end
@@ -394,6 +394,9 @@ function DukeHelpers.SpawnAttackFlyWispBySubType(flySubType, pos, spawner, spawn
 end
 
 function DukeHelpers.IsValidCustomWisp(id)
+	print(id)
+	print(DukeHelpers.Items.dukeOfEyes.Id)
+	print(DukeHelpers.Items.thePrinces.Id)
 	if id == DukeHelpers.Items.dukeOfEyes.Id or id == DukeHelpers.Items.thePrinces.Id then
 		return true
 	end

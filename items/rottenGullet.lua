@@ -114,6 +114,10 @@ local function MC_USE_ITEM(_, type, rng, p)
             if tear.InitSeed == t.InitSeed then
                 if DukeHelpers.PercentageChance(50, 100, rng) then
                     DukeHelpers.SpawnSpidersFromPickupSubType(pickupSubType, t.Position, t, 1)
+					local player = t.SpawnerEntity:ToPlayer()
+					if player and player:HasCollectible(CollectibleType.COLLECTIBLE_BOOK_OF_VIRTUES) then
+			            DukeHelpers.SpawnSpiderWispBySubType(pickupSubType, t.Position, player, false)
+			        end
                 end
                 dukeMod:RemoveCallback(ModCallbacks.MC_POST_ENTITY_REMOVE, tearCollision, EntityType.ENTITY_TEAR)
             end
