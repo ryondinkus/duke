@@ -76,13 +76,17 @@ for _, enemy in pairs(flyAndSpiderEnemies) do
 end
 
 local function MC_POST_NPC_DEATH(_, entity)
-    local foundEnemy = DukeHelpers.Find(validEnemies, function(enemy)
-        return entity.Type == enemy.Type and (not enemy.Variant or entity.Variant == enemy.Variant)
-    end)
+	DukeHelpers.ForEachPlayer(function(player)
+		if player:HasTrinket(Id) then
+			local foundEnemy = DukeHelpers.Find(validEnemies, function(enemy)
+				return entity.Type == enemy.Type and (not enemy.Variant or entity.Variant == enemy.Variant)
+			end)
 
-    if foundEnemy then
-        Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.PLAYER_CREEP_RED, 0, entity.Position, Vector.Zero, entity)
-    end
+			if foundEnemy then
+				Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.PLAYER_CREEP_RED, 0, entity.Position, Vector.Zero, entity)
+			end
+		end
+    end)
 end
 
 return {
