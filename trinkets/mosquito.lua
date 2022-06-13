@@ -81,7 +81,7 @@ local function MC_POST_NPC_DEATH(_, entity)
     end)
 
     if foundEnemy then
-        Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.CREEP_RED, 0, entity.Position, Vector.Zero, entity)
+        Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.PLAYER_CREEP_RED, 0, entity.Position, Vector.Zero, entity)
     end
 end
 
