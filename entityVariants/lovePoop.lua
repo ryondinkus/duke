@@ -55,7 +55,7 @@ local function MC_NPC_UPDATE(_, entity)
                     damage = damage * 2
                 end
                 local radius = 75
-                if Sewn_API:IsSuper(entity.SpawnerEntity:GetData()) then
+                if Sewn_API and Sewn_API:IsSuper(entity.SpawnerEntity:GetData()) then
                     radius = radius * 2
                     explosion.SpriteScale = explosion.SpriteScale * 2
                 end

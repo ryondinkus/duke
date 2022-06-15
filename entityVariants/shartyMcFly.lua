@@ -37,7 +37,7 @@ local function MC_FAMILIAR_UPDATE(_, f)
 			Isaac.Spawn(EntityType.ENTITY_POOP, DukeHelpers.EntityVariants.lovePoop.Id, 0, f.Position, Vector.Zero, f)
 		end
 		if sprite:IsFinished("Attack") then
-			if Sewn_API:IsUltra(data) then
+			if Sewn_API and Sewn_API:IsUltra(data) then
 				data.poopCount = data.poopCount - 0.5
 			else
 				data.poopCount = data.poopCount - 1

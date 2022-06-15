@@ -132,4 +132,7 @@
 	<entity id="245" anm2path="familiars/love_poop.anm2" baseHP="999" boss="0" champion="0" collisionDamage="0" collisionMass="500" collisionRadius="13" friction="1.0" name="Love Poop" numGridCollisionPoints="12" shadowSize="14" stageHP="0" variant="332" portrait="40" shutdoors="false">
 		<gibs amount="4" blood="0" bone="0" eye="0" gut="0" large="0" poop="1" />
 	</entity>
+	<entity anm2path="familiars/lil_husk.anm2" tags="cansacrifice" baseHP="0" boss="0" champion="0" collisionDamage="0" collisionMass="3" collisionRadius="13" friction="1" id="3" name="Lil Husk" numGridCollisionPoints="12" shadowSize="14" stageHP="0" variant="832">
+		<gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0" />
+	</entity>
 </entities>

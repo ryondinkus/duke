@@ -11,5 +11,6 @@ DukeHelpers.Items = {
     ultraHeartFly = include("items/ultraHeartFly"),
     rottenGullet = include("items/rottenGullet"),
     othersRottenGullet = include("items/othersRottenGullet"),
-    dukeOfEyes = include("items/dukeOfEyes")
+    dukeOfEyes = include("items/dukeOfEyes"),
+	lilHusk = include("items/lilHusk")
 }
