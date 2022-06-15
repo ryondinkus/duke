@@ -9,7 +9,8 @@ local DIRECTION = {
 	[3] = "Down"
 }
 
-local fireCooldown = 7
+local fireCooldown = 19
+local lullabyFireCooldown = 7
 
 local function MC_FAMILIAR_INIT(_, familiar)
 	familiar:AddToFollowers()
@@ -45,21 +46,35 @@ local function MC_FAMILIAR_UPDATE(_, familiar)
 		effect.SpriteScale = Vector(0.5, 0.5)
 		local spawnedSpider = DukeHelpers.SpawnSpidersFromPickupSubType(DukeHelpers.GetWeightedSpider(DukeHelpers.rng).pickupSubType,
 			familiar.Position, familiar, 1, true)
-		data.fireCooldown = fireCooldown
+		if familiar.Player and familiar.Player:HasCollectible(CollectibleType.COLLECTIBLE_BFFS) and not familiar.Player:HasCollectible(CollectibleType.COLLECTIBLE_HIVE_MIND) then
+			spawnedSpider[1]:GetData().bffs = true
+			spawnedSpider[1].CollisionDamage = spawnedSpider[1].CollisionDamage * 2
+		end
+		if player:HasTrinket(TrinketType.TRINKET_FORGOTTEN_LULLABY) then
+			data.fireCooldown = lullabyFireCooldown
+		else
+			data.fireCooldown = fireCooldown
+		end
 		data.canSpawnSpider = false
 	end
-	-- if sprite:IsFinished("ShootDown") or sprite:IsFinished("ShootLeft") or sprite:IsFinished("ShootRight") or sprite:IsFinished("ShootUp") then
-	-- end
+
 	if data.canSpawnSpider then
 		data.fireCooldown = data.fireCooldown - 1
 	end
 	familiar:FollowParent()
+	print(data.fireCooldown)
 end
 
 local function MC_POST_ENTITY_REMOVE(_, e)
     if e.Variant == FamiliarVariant.BLUE_SPIDER and e.SpawnerEntity and e.SpawnerType == EntityType.ENTITY_FAMILIAR and e.SpawnerVariant == Id then
         e.SpawnerEntity:GetData().canSpawnSpider = true
     end
+end
+
+local function MC_SPIDER_FAMILIAR_UPDATE(_, familiar)
+	if familiar:GetData().bffs then
+		familiar.SpriteScale = Vector(1.2, 1.2)
+	end
 end
 
 if Sewn_API then
@@ -85,6 +100,11 @@ return {
 			ModCallbacks.MC_POST_ENTITY_REMOVE,
 			MC_POST_ENTITY_REMOVE,
 			EntityType.ENTITY_FAMILIAR
+		},
+		{
+			ModCallbacks.MC_FAMILIAR_UPDATE,
+			MC_SPIDER_FAMILIAR_UPDATE,
+			FamiliarVariant.BLUE_SPIDER
 		}
 	}
 }
