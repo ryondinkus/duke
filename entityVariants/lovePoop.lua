@@ -7,8 +7,8 @@ local function MC_NPC_UPDATE(_, entity)
         local sprite = entity:GetSprite()
         local data = entity:GetData()
 
-        if entity.FrameCount <= 1 then
-            entity.EntityCollisionClass = EntityCollisionClass.ENTCOLL_NONE
+        if entity.FrameCount == 0 then
+            entity.EntityCollisionClass = EntityCollisionClass.EntityCollisionClass.ENTCOLL_NONE
         end
 
         if not entity:HasEntityFlags(EntityFlag.FLAG_NO_PHYSICS_KNOCKBACK) then
@@ -18,7 +18,7 @@ local function MC_NPC_UPDATE(_, entity)
             sprite:LoadGraphics()
         end
 
-        if sprite:IsFinished("Appear") then
+        if sprite:IsFinished("Appear") or sprite:IsEventTriggered("Primed") then
             entity.EntityCollisionClass = EntityCollisionClass.ENTCOLL_ALL
             data.state = 1
         end

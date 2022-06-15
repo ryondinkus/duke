@@ -39,6 +39,10 @@ local function MC_FAMILIAR_UPDATE(_, familiar)
 		end
 	end
 	if sprite:IsEventTriggered("Barf") then
+		DukeHelpers.sfx:Play(SoundEffect.SOUND_WORM_SPIT, 1, 0, false, 1.5)
+		local effect = Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.POOF01, 0, familiar.Position, Vector.Zero, nil)
+		effect.Color = Color(0, 0, 0, 1)
+		effect.SpriteScale = Vector(0.5, 0.5)
 		local spawnedSpider = DukeHelpers.SpawnSpidersFromPickupSubType(DukeHelpers.GetWeightedSpider(DukeHelpers.rng).pickupSubType,
 			familiar.Position, familiar, 1, true)
 		data.fireCooldown = fireCooldown
@@ -53,7 +57,7 @@ local function MC_FAMILIAR_UPDATE(_, familiar)
 end
 
 local function MC_POST_ENTITY_REMOVE(_, e)
-    if e.Variant == FamiliarVariant.BLUE_SPIDER and e.SpawnerType == EntityType.ENTITY_FAMILIAR and e.SpawnerVariant == Id then
+    if e.Variant == FamiliarVariant.BLUE_SPIDER and e.SpawnerEntity and e.SpawnerType == EntityType.ENTITY_FAMILIAR and e.SpawnerVariant == Id then
         e.SpawnerEntity:GetData().canSpawnSpider = true
     end
 end
