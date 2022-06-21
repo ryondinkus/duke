@@ -50,11 +50,7 @@ local function MC_FAMILIAR_UPDATE(_, familiar)
 			local destinationPosition = (data.startPosition + (moveVector * 14))
 			local room = Game():GetRoom()
 			if room:GetGridCollisionAtPos(destinationPosition) ~= GridCollisionClass.COLLISION_NONE then
-				local newDestinationPosition = room:FindFreeTilePosition(data.targetPosition, 0) - data.startPosition
-				local sign = 1
-				if DukeHelpers.Sign(newDestinationPosition.X) ~= 1 or DukeHelpers.Sign(newDestinationPosition.Y) ~= 1 then
-					sign = -1
-				end
+				local newDestinationPosition = room:FindFreeTilePosition(destinationPosition, 0) - data.startPosition
 				moveVector = ((newDestinationPosition)/14)
 			end
 			familiar.Velocity = moveVector
@@ -88,7 +84,7 @@ local function MC_PRE_FAMILIAR_COLLISION(_, familiar, entity)
 	local sprite = familiar:GetSprite()
 	local player = familiar.Player
 
-	if DukeHelpers.IsActualEnemy(entity) then
+	if DukeHelpers.IsActualEnemy(entity) and not entity:HasEntityFlags(EntityFlag.FLAG_FRIENDLY) then
 		data.State = STATE.POSSESS
 		data.possessedEntity = entity
 		familiar.SpriteScale = Vector.Zero
