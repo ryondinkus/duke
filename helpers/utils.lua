@@ -572,7 +572,7 @@ function DukeHelpers.StopStagger(player, tag)
     data[tag .. "Timer"] = nil
     data[tag .. "Counter"] = nil
 end
-  
+
 function DukeHelpers.CountOccurencesInTable(table, value)
     local found = 0
         for _, v in pairs(table) do
@@ -582,4 +582,28 @@ function DukeHelpers.CountOccurencesInTable(table, value)
             end
         end
    return found
+end
+
+-- referenced abortionbirth for this function, never forget your roots ✌️
+function DukeHelpers.GetNearestEnemy(pos)
+    local dist
+    local near
+	local enemies = DukeHelpers.ListEnemiesInRoom(false, function(entity) return not entity:HasEntityFlags(EntityFlag.FLAG_FRIENDLY) end)
+    for _, ent in ipairs(enemies) do
+        local distance = ent.Position:Distance(pos or player.Position)
+        if not dist or distance < dist then
+            dist = distance
+            near = ent
+        end
+    end
+
+    return near
+end
+
+function DukeHelpers.ToBoolean(v)
+    return v ~= nil and v ~= false
+end
+
+function DukeHelpers.Xor(a, b)
+    return DukeHelpers.ToBoolean(a) ~= DukeHelpers.ToBoolean(b)
 end
