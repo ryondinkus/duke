@@ -5,7 +5,8 @@ local Id = Isaac.GetEntityVariantByName(Name)
 local STATE = {
 	IDLE = 1,
 	HOP = 2,
-	APPEAR = 3
+	APPEAR = 3,
+	POSSESS = 4
 }
 
 local jumpCooldown = 10
@@ -19,6 +20,8 @@ local function MC_FAMILIAR_UPDATE(_, familiar)
 	if sprite:IsFinished("Appear") or sprite:IsFinished("Hop") then
 		data.jumpCooldown = jumpCooldown
 		sprite:Play("Idle", false)
+		familiar.SpriteScale = Vector.One
+		familiar.EntityCollisionClass = EntityCollisionClass.ENTCOLL_ENEMIES
 		familiar.GridCollisionClass = EntityGridCollisionClass.GRIDCOLL_NOPITS
 	end
 
@@ -64,6 +67,39 @@ local function MC_FAMILIAR_UPDATE(_, familiar)
 		print(familiar.Position)
 	end
 
+	if data.State == STATE.POSSESS then
+		familiar.Position = data.possessedEntity.Position
+		if data.possessedEntity:IsDead() then
+			data.State = STATE.SPAWN
+			data.possessedEntity = nil
+			data.jumpCooldown = jumpCooldown
+
+			DukeHelpers.sfx:Play(SoundEffect.SOUND_BOIL_HATCH, 1, 0)
+			Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.BLOOD_EXPLOSION, 0, familiar.Position, Vector.Zero, familiar)
+
+			sprite:Play("Appear", false)
+		end
+	end
+
+end
+
+local function MC_PRE_FAMILIAR_COLLISION(_, familiar, entity)
+	local data = familiar:GetData()
+	local sprite = familiar:GetSprite()
+	local player = familiar.Player
+
+	if DukeHelpers.IsActualEnemy(entity) then
+		data.State = STATE.POSSESS
+		data.possessedEntity = entity
+		familiar.SpriteScale = Vector.Zero
+		familiar.EntityCollisionClass = EntityCollisionClass.ENTCOLL_NONE
+
+		DukeHelpers.sfx:Play(SoundEffect.SOUND_MEAT_JUMPS, 1, 0)
+		Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.BLOOD_EXPLOSION, 0, entity.Position, Vector.Zero, familiar)
+
+		sprite:Play("Possess", false)
+		entity:AddCharmed(EntityRef(player), -1)
+	end
 end
 
 if Sewn_API then
@@ -78,6 +114,11 @@ return {
 		{
 			ModCallbacks.MC_FAMILIAR_UPDATE,
 			MC_FAMILIAR_UPDATE,
+			Id
+		},
+		{
+			ModCallbacks.MC_PRE_FAMILIAR_COLLISION,
+			MC_PRE_FAMILIAR_COLLISION,
 			Id
 		}
 	}

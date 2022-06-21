@@ -54,7 +54,7 @@ end
 local function MC_PRE_TEAR_COLLISION(_, tear, collider)
     local player = tear:GetLastParent():ToPlayer()
 
-    if DukeHelpers.IsActualEnemy(collider) and tear:GetData()[Tag] then
+    if DukeHelpers.IsActualEnemy(collider, true) and tear:GetData()[Tag] then
         local amount = DukeHelpers.PercentageChance(50) and 1 or 2
         if DukeHelpers.PercentageChance(50) then
             DukeHelpers.SpawnAttackFlyBySubType(DukeHelpers.GetWeightedFly(DukeHelpers.rng).heartFlySubType, player.Position, player)

@@ -319,9 +319,9 @@ function DukeHelpers.FindInRadius(position, radius, filter)
     return inRadiusEnemies
 end
 
-function DukeHelpers.IsActualEnemy(entity)
+function DukeHelpers.IsActualEnemy(entity, includeBosses, includeInvulnerable)
     return DukeHelpers.IsInPartition(entity.Type, PartitionedEntities[EntityPartition.ENEMY]) and
-        not DukeHelpers.Find(notEnemies, function(t) return t == entity.Type end)
+        not DukeHelpers.Find(notEnemies, function(t) return t == entity.Type end) and (includeBosses or not entity:IsBoss()) and (includeInvulnerable or entity:IsVulnerableEnemy())
 end
 
 function DukeHelpers.ListEnemiesInRoom(ignoreVulnerability, filter)
@@ -585,10 +585,14 @@ function DukeHelpers.CountOccurencesInTable(table, value)
 end
 
 -- referenced abortionbirth for this function, never forget your roots ✌️
-function DukeHelpers.GetNearestEnemy(pos)
+function DukeHelpers.GetNearestEnemy(pos, includeBosses, includeInvulnerable)
     local dist
     local near
-	local enemies = DukeHelpers.ListEnemiesInRoom(false, function(entity) return not entity:HasEntityFlags(EntityFlag.FLAG_FRIENDLY) end)
+	local enemies = DukeHelpers.ListEnemiesInRoom(false, function(entity)
+        return not entity:HasEntityFlags(EntityFlag.FLAG_FRIENDLY)
+            and (includeBosses or not entity:IsBoss())
+            and (includeInvulnerable or entity:IsVulnerableEnemy())
+        end)
     for _, ent in ipairs(enemies) do
         local distance = ent.Position:Distance(pos or player.Position)
         if not dist or distance < dist then
