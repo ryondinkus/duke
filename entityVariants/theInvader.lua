@@ -68,6 +68,10 @@ local function MC_FAMILIAR_UPDATE(_, familiar)
 	if data.State == STATE.POSSESS then
 		familiar.Position = data.possessedEntity.Position
 		if data.possessedEntity:IsDead() then
+			if Sewn_API and Sewn_API:IsUltra(data) then
+				Isaac.Explode(data.possessedEntity.Position, player, 40)
+			end
+
 			data.State = STATE.SPAWN
 			data.possessedEntity = nil
 			data.jumpCooldown = jumpCooldown
@@ -101,6 +105,9 @@ local function MC_PRE_FAMILIAR_COLLISION(_, familiar, entity)
 		or player:HasCollectible(CollectibleType.COLLECTIBLE_BFFS)) then
 			entity.MaxHitPoints = entity.MaxHitPoints * 2
 			entity.HitPoints = entity.HitPoints * 2
+		end
+		if Sewn_API and Sewn_API:IsSuper(data) then
+			entity:ToNPC():MakeChampion(DukeHelpers.rng:Next())
 		end
 	end
 end
