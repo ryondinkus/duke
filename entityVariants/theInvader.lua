@@ -17,6 +17,12 @@ local function MC_FAMILIAR_UPDATE(_, familiar)
 	local sprite = familiar:GetSprite()
 	local player = familiar.Player
 
+	if player:HasTrinket(TrinketType.TRINKET_FORGOTTEN_LULLABY) then
+		jumpCooldown = 3
+	else
+		jumpCooldown = 10
+	end
+
 	if sprite:IsFinished("Appear") or sprite:IsFinished("Hop") then
 		data.jumpCooldown = jumpCooldown
 		sprite:Play("Idle", false)
@@ -112,6 +118,17 @@ local function MC_PRE_FAMILIAR_COLLISION(_, familiar, entity)
 	end
 end
 
+local function MC_POST_NEW_ROOM()
+	DukeHelpers.ForEachEntityInRoom(function(familiar)
+		local data = familiar:GetData()
+		if data.State ~= STATE.POSSESS then
+			print("hey")
+			familiar.Velocity = Vector.Zero
+			data.State = STATE.IDLE
+		end
+	end, EntityType.ENTITY_FAMILIAR, Id, 0)
+end
+
 if Sewn_API then
 	Sewn_API:MakeFamiliarAvailable(Id, DukeHelpers.Items.theInvader.Id)
 end
@@ -130,6 +147,10 @@ return {
 			ModCallbacks.MC_PRE_FAMILIAR_COLLISION,
 			MC_PRE_FAMILIAR_COLLISION,
 			Id
+		},
+		{
+			ModCallbacks.MC_POST_NEW_ROOM,
+			MC_POST_NEW_ROOM
 		}
 	}
 }
