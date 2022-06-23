@@ -23,6 +23,9 @@ local function MC_FAMILIAR_UPDATE(_, familiar)
 		familiar.SpriteScale = Vector.One
 		familiar.EntityCollisionClass = EntityCollisionClass.ENTCOLL_ENEMIES
 		familiar.GridCollisionClass = EntityGridCollisionClass.GRIDCOLL_NOPITS
+		if not familiar:HasEntityFlags(EntityFlag.FLAG_NO_PHYSICS_KNOCKBACK) then
+			familiar:AddEntityFlags(EntityFlag.FLAG_NO_PHYSICS_KNOCKBACK)
+		end
 	end
 
 	if data.State == STATE.IDLE then
@@ -60,7 +63,6 @@ local function MC_FAMILIAR_UPDATE(_, familiar)
 	if sprite:IsEventTriggered("Land") then
 		familiar.Velocity = Vector.Zero
 		data.State = STATE.IDLE
-		print(familiar.Position)
 	end
 
 	if data.State == STATE.POSSESS then
@@ -95,6 +97,11 @@ local function MC_PRE_FAMILIAR_COLLISION(_, familiar, entity)
 
 		sprite:Play("Possess", false)
 		entity:AddCharmed(EntityRef(player), -1)
+		if player and (player:HasCollectible(CollectibleType.COLLECTIBLE_HIVE_MIND)
+		or player:HasCollectible(CollectibleType.COLLECTIBLE_BFFS)) then
+			entity.MaxHitPoints = entity.MaxHitPoints * 2
+			entity.HitPoints = entity.HitPoints * 2
+		end
 	end
 end
 
