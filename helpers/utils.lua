@@ -603,11 +603,3 @@ function DukeHelpers.GetNearestEnemy(pos, includeBosses, includeInvulnerable)
 
     return near
 end
-
-function DukeHelpers.ToBoolean(v)
-    return v ~= nil and v ~= false
-end
-
-function DukeHelpers.Xor(a, b)
-    return DukeHelpers.ToBoolean(a) ~= DukeHelpers.ToBoolean(b)
-end
