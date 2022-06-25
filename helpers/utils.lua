@@ -572,14 +572,40 @@ function DukeHelpers.StopStagger(player, tag)
     data[tag .. "Timer"] = nil
     data[tag .. "Counter"] = nil
 end
-  
+
 function DukeHelpers.CountOccurencesInTable(table, value)
     local found = 0
-        for _, v in pairs(table) do
-            local notEquals = false
-            if v == value then
-	              found = found + 1
-            end
+    for _, v in pairs(table) do
+        local notEquals = false
+        if v == value then
+            found = found + 1
         end
-   return found
+    end
+    return found
+end
+
+-- TODO add modded support
+function DukeHelpers.CanPickUpHeart(player, pickup)
+    local canPickup = false
+    if pickup.SubType > HeartSubType.HEART_ROTTEN then
+        return canPickup
+    end
+    if pickup.SubType == HeartSubType.HEART_FULL or pickup.SubType == HeartSubType.HEART_HALF or
+        pickup.SubType == HeartSubType.HEART_DOUBLEPACK or pickup.SubType == HeartSubType.HEART_SCARED then
+        canPickup = player:CanPickRedHearts()
+    elseif pickup.SubType == HeartSubType.HEART_SOUL or pickup.SubType == HeartSubType.HEART_HALF_SOUL then
+        canPickup = player:CanPickSoulHearts()
+    elseif pickup.SubType == HeartSubType.HEART_BLACK then
+        canPickup = player:CanPickBlackHearts()
+    elseif pickup.SubType == HeartSubType.HEART_BONE then
+        canPickup = player:CanPickBoneHearts()
+    elseif pickup.SubType == HeartSubType.HEART_ROTTEN then
+        canPickup = player:CanPickRottenHearts()
+    elseif pickup.SubType == HeartSubType.HEART_GOLDEN then
+        canPickup = player:CanPickGoldenHearts()
+    elseif pickup.SubType == HeartSubType.HEART_BLENDED then
+        canPickup = player:CanPickRedHearts() or player:CanPickSoulHearts()
+    end
+
+    return canPickup
 end

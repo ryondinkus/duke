@@ -13,7 +13,8 @@ end
 
 local defaultGlobal = {
     isInitialized = false,
-    isGameStarted = false
+    isGameStarted = false,
+    flyHearts = {}
 }
 
 dukeMod.global = table.deepCopy(defaultGlobal)
@@ -78,6 +79,7 @@ include("flies")
 include("duke")
 include("wisps")
 include("husk")
+include("flyHearts")
 
 include("items/registry")
 
@@ -269,7 +271,10 @@ local function handleUnlock(unlock, entity)
     if DukeHelpers.HasDuke()
         and Game():GetLevel():GetStage() == unlock.stage
         and Game():GetRoom():GetType() == unlock.roomType
-        and (not unlock.stageTypes or DukeHelpers.Find(unlock.stageTypes, function(t) return t == Game():GetLevel():GetStageType() end))
+        and
+        (
+        not unlock.stageTypes or
+            DukeHelpers.Find(unlock.stageTypes, function(t) return t == Game():GetLevel():GetStageType() end))
         and (not unlock.roomShape or Game():GetRoom():GetRoomShape() == unlock.roomShape)
         and (not unlock.difficulty or Game().Difficulty == unlock.difficulty)
         and (not entity or not unlock.entityVariant or entity.Variant == unlock.entityVariant)
@@ -315,11 +320,14 @@ for _, unlock in pairs(unlocks) do
     if unlock.onClear then
         dukeMod:AddCallback(ModCallbacks.MC_PRE_SPAWN_CLEAN_AWARD, function() handleUnlock(unlock) end, unlock.entityType)
     else
-        dukeMod:AddCallback(ModCallbacks.MC_POST_ENTITY_KILL, function(_, entity) handleUnlock(unlock, entity) end, unlock.entityType)
+        dukeMod:AddCallback(ModCallbacks.MC_POST_ENTITY_KILL, function(_, entity) handleUnlock(unlock, entity) end,
+            unlock.entityType)
     end
 end
 
 if Poglite then
-    Poglite:AddPogCostume("DukePog", DukeHelpers.DUKE_ID, Isaac.GetCostumeIdByPath("gfx/characters/costume_duke_pog.anm2"))
-    Poglite:AddPogCostume("DukeBPog", DukeHelpers.HUSK_ID, Isaac.GetCostumeIdByPath("gfx/characters/costume_duke_b_pog.anm2"))
+    Poglite:AddPogCostume("DukePog", DukeHelpers.DUKE_ID,
+        Isaac.GetCostumeIdByPath("gfx/characters/costume_duke_pog.anm2"))
+    Poglite:AddPogCostume("DukeBPog", DukeHelpers.HUSK_ID,
+        Isaac.GetCostumeIdByPath("gfx/characters/costume_duke_b_pog.anm2"))
 end
