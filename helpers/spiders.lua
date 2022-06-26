@@ -16,6 +16,11 @@ function DukeHelpers.GetSpiderSpritesheet(subType)
     return DukeHelpers.Spiders.RED.spritesheet
 end
 
+function DukeHelpers.IsHeartSpider(spider)
+    return spider.Variant == FamiliarVariant.BLUE_SPIDER and
+        not not DukeHelpers.Find(DukeHelpers.Spiders, function(f) return f.subType == spider.SubType end)
+end
+
 function DukeHelpers.InitializeHeartSpider(spider)
     local sprite = spider:GetSprite()
     sprite:ReplaceSpritesheet(0, DukeHelpers.GetSpiderSpritesheet(spider.SubType))
@@ -44,9 +49,9 @@ function DukeHelpers.SpawnSpidersFromPickupSubType(pickupSubType, position, spaw
                     Isaac.Spawn(EntityType.ENTITY_FAMILIAR, FamiliarVariant.BLUE_SPIDER, foundSpider.subType, position,
                         Vector.Zero, spawnerEntity))
                 DukeHelpers.InitializeHeartSpider(spawnedSpiders[i])
-				if noPoof then
-					spawnedSpiders[i]:ClearEntityFlags(EntityFlag.FLAG_APPEAR)
-				end
+                if noPoof then
+                    spawnedSpiders[i]:ClearEntityFlags(EntityFlag.FLAG_APPEAR)
+                end
             end
         end
     end

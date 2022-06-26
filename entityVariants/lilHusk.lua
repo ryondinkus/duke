@@ -25,7 +25,7 @@ local function MC_FAMILIAR_UPDATE(_, familiar)
 	local fireDirection = player:GetFireDirection()
 	local fireDirectionSprite = DIRECTION[fireDirection]
 
-	if familiar.FrameCount == 6 then
+	if familiar.FrameCount >= 6 and not data.canSpawnSpider then
 		data.fireCooldown = 0
 		data.canSpawnSpider = spiderLimit
 	end
@@ -33,7 +33,7 @@ local function MC_FAMILIAR_UPDATE(_, familiar)
 	if fireDirection == Direction.NO_DIRECTION then
 		sprite:Play("FloatDown", false)
 	else
-		if data.fireCooldown <= 0 then
+		if not data.fireCooldown or data.fireCooldown <= 0 then
 			if data.canSpawnSpider > 0 then
 				sprite:Play("Shoot" .. fireDirectionSprite, false)
 			end
@@ -51,16 +51,19 @@ local function MC_FAMILIAR_UPDATE(_, familiar)
 		effect.SpriteScale = Vector(0.5, 0.5)
 
 		local spiderType = DukeHelpers.GetWeightedSpider(DukeHelpers.rng).pickupSubType
-		local spawnedSpider = DukeHelpers.SpawnSpidersFromPickupSubType(spiderType, familiar.Position, familiar, 1, true)
+		local spawnedSpiders = DukeHelpers.SpawnSpidersFromPickupSubType(spiderType, familiar.Position, familiar, 1, true)
 		local spawnedFly = nil
+
+		spawnedSpiders[1]:GetData().spawnerEntityInitSeed = familiar.InitSeed
 
 		if Sewn_API and Sewn_API:IsUltra(data) then
 			spawnedFly = DukeHelpers.SpawnAttackFlyBySubType(spiderType, familiar.Position, familiar.Player)
 		end
 
-		if familiar.Player and familiar.Player:HasCollectible(CollectibleType.COLLECTIBLE_BFFS) and not familiar.Player:HasCollectible(CollectibleType.COLLECTIBLE_HIVE_MIND) then
-			spawnedSpider[1]:GetData().bffs = true
-			spawnedSpider[1].CollisionDamage = spawnedSpider[1].CollisionDamage * 2
+		if familiar.Player and familiar.Player:HasCollectible(CollectibleType.COLLECTIBLE_BFFS) and
+			not familiar.Player:HasCollectible(CollectibleType.COLLECTIBLE_HIVE_MIND) then
+			spawnedSpiders[1]:GetData().bffs = true
+			spawnedSpiders[1].CollisionDamage = spawnedSpiders[1].CollisionDamage * 2
 			if spawnedFly then
 				spawnedFly:GetData().bffs = true
 				spawnedFly.CollisionDamage = spawnedFly.CollisionDamage * 2
@@ -72,11 +75,11 @@ local function MC_FAMILIAR_UPDATE(_, familiar)
 		else
 			data.fireCooldown = fireCooldown
 		end
-		
+
 		data.canSpawnSpider = data.canSpawnSpider - 1
 	end
 
-	if data.canSpawnSpider and data.canSpawnSpider > 0 then
+	if data.canSpawnSpider and data.canSpawnSpider > 0 and data.fireCooldown > 0 then
 		data.fireCooldown = data.fireCooldown - 1
 	end
 
@@ -84,9 +87,17 @@ local function MC_FAMILIAR_UPDATE(_, familiar)
 end
 
 local function MC_POST_ENTITY_REMOVE(_, e)
-    if e.Variant == FamiliarVariant.BLUE_SPIDER and e.SpawnerEntity and e.SpawnerType == EntityType.ENTITY_FAMILIAR and e.SpawnerVariant == Id then
-        e.SpawnerEntity:GetData().canSpawnSpider = e.SpawnerEntity:GetData().canSpawnSpider + 1
-    end
+	if e.Variant == FamiliarVariant.BLUE_SPIDER then
+		local actualParentEntityInitSeed = e:GetData().spawnerEntityInitSeed
+		if actualParentEntityInitSeed then
+			local parentEntity = DukeHelpers.GetEntityByInitSeed(e:GetData().spawnerEntityInitSeed)
+
+			if parentEntity and parentEntity.Type == EntityType.ENTITY_FAMILIAR and
+				parentEntity.Variant == Id then
+				parentEntity:GetData().canSpawnSpider = (parentEntity:GetData().canSpawnSpider or 0) + 1
+			end
+		end
+	end
 end
 
 local function MC_SPIDER_FAMILIAR_UPDATE(_, familiar)
