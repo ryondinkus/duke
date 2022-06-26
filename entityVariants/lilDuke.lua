@@ -28,7 +28,7 @@ local function MC_FAMILIAR_UPDATE(_, f)
 			effect.Color = Color(0, 0, 0, 1)
 			effect.SpriteScale = Vector(0.5, 0.5)
 			local fliesToSpawn = DukeHelpers.rng:RandomInt(2) + 1
-			if Sewn_API:IsSuper(data) then
+			if Sewn_API and Sewn_API:IsSuper(data) then
 				fliesToSpawn = fliesToSpawn * 2
 			end
 			for _ = 1, fliesToSpawn do
@@ -39,7 +39,7 @@ local function MC_FAMILIAR_UPDATE(_, f)
 					attackFly.CollisionDamage = attackFly.CollisionDamage * 2
 				end
 			end
-			if Sewn_API:IsUltra(data) then
+			if Sewn_API and Sewn_API:IsUltra(data) then
 				for _ = 1, DukeHelpers.rng:RandomInt(2) + 1 do
 					DukeHelpers.AddHeartFly(f.Player, DukeHelpers.GetWeightedFly(DukeHelpers.rng, false), 1)
 				end

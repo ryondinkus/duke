@@ -93,12 +93,16 @@ dukeMod:AddCallback(ModCallbacks.MC_USE_ITEM, function(_, type, rng, player)
 
 		local chosenItem
 
-		while not chosenItem or (Isaac.GetItemConfig():GetCollectible(chosenItem).Quality ~= itemQuality and Isaac.GetItemConfig():GetCollectible(chosenItem).ID ~= CollectibleType.COLLECTIBLE_MAGIC_SKIN) do
+		while not chosenItem or
+			(
+			Isaac.GetItemConfig():GetCollectible(chosenItem).Quality ~= itemQuality and
+				Isaac.GetItemConfig():GetCollectible(chosenItem).ID ~= CollectibleType.COLLECTIBLE_MAGIC_SKIN) do
 			chosenItem = itemPool:GetCollectible(roomPool, true)
 		end
 
 		if chosenItem then
-			Isaac.Spawn(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_COLLECTIBLE, chosenItem, Game():GetRoom():FindFreePickupSpawnPosition(player.Position), Vector.Zero, player)
+			Isaac.Spawn(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_COLLECTIBLE, chosenItem,
+				Game():GetRoom():FindFreePickupSpawnPosition(player.Position), Vector.Zero, player)
 		end
 
 		DukeHelpers.sfx:Play(SoundEffect.SOUND_SATAN_GROW, 1, 0)

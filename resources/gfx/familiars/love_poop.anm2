@@ -1,5 +1,5 @@
 <AnimatedActor>
-	<Info CreatedBy="robot" CreatedOn="4/25/2022 3:47:10 PM" Version="106" Fps="30"/>
+	<Info CreatedBy="robot" CreatedOn="6/15/2022 2:56:36 PM" Version="107" Fps="30"/>
 	<Content>
 		<Spritesheets>
 			<Spritesheet Path="love_poop.png" Id="0"/>
@@ -10,7 +10,9 @@
 			<Layer Name="Spawn" Id="1" SpritesheetId="1"/>
 		</Layers>
 		<Nulls/>
-		<Events/>
+		<Events>
+			<Event Name="Primed" Id="0"/>
+		</Events>
 	</Content>
 	<Animations DefaultAnimation="Appear">
 		<Animation Name="Appear" FrameNum="20" Loop="false">
@@ -53,7 +55,9 @@
 				<LayerAnimation LayerId="1" Visible="true"/>
 			</LayerAnimations>
 			<NullAnimations/>
-			<Triggers/>
+			<Triggers>
+				<Trigger EventId="0" AtFrame="0"/>
+			</Triggers>
 		</Animation>
 		<Animation Name="State2" FrameNum="5" Loop="false">
 			<RootAnimation>
