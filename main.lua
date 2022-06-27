@@ -70,14 +70,14 @@ include("helpers/spiders")
 include("helpers/data")
 include("helpers/husk")
 
-include("flies/registry")
-include("spiders/registry")
-
 -- Initialize player and flies
 include("flies")
 include("duke")
 include("wisps")
 include("husk")
+
+include("flies/registry")
+include("spiders/registry")
 
 include("items/registry")
 
