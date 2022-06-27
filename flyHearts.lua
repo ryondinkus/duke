@@ -35,8 +35,7 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_NEW_LEVEL, function()
     dukeMod.global.flyHearts = {}
 end)
 
--- Choose which hearts to be fly hearts and restore them if they already existed
-dukeMod:AddCallback(ModCallbacks.MC_POST_PICKUP_UPDATE, function(_, pickup)
+local function flyHeartPickupUpdate(_, pickup)
     if pickup.FrameCount <= 1 then
         if pickup:GetSprite():GetAnimation() == "Appear" then
             if DukeHelpers.PercentageChance(100) then
@@ -56,12 +55,15 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_PICKUP_UPDATE, function(_, pickup)
     if pickupData.isFlyHeart then
         pickupData.flyHeartSpritesheet:Update()
     end
-end, PickupVariant.PICKUP_HEART)
+end
 
--- TODO add update and render callbacks for modded hearts
+-- Choose which hearts to be fly hearts and restore them if they already existed
+dukeMod:AddCallback(ModCallbacks.MC_POST_PICKUP_UPDATE, flyHeartPickupUpdate, PickupVariant.PICKUP_HEART)
+dukeMod:AddCallback(ModCallbacks.MC_POST_PICKUP_UPDATE, flyHeartPickupUpdate, 901)
+dukeMod:AddCallback(ModCallbacks.MC_POST_PICKUP_UPDATE, flyHeartPickupUpdate, 2000)
+dukeMod:AddCallback(ModCallbacks.MC_POST_PICKUP_UPDATE, flyHeartPickupUpdate, 2002)
 
--- Replace with the fly heart spritesheet
-dukeMod:AddCallback(ModCallbacks.MC_POST_PICKUP_RENDER, function(_, pickup)
+local function flyHeartPickupRender(_, pickup)
     local pickupData = pickup:GetData()
     if pickupData.isFlyHeart then
         if pickupData.flyHeartSpritesheet:IsFinished("FlyHeartAppear") then
@@ -70,7 +72,13 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_PICKUP_RENDER, function(_, pickup)
         pickupData.flyHeartSpritesheet:Render(Isaac.WorldToRenderPosition(pickup.Position) - Vector(1, 5), Vector.Zero,
             Vector.Zero)
     end
-end, PickupVariant.PICKUP_HEART)
+end
+
+-- Replace with the fly heart spritesheet
+dukeMod:AddCallback(ModCallbacks.MC_POST_PICKUP_RENDER, flyHeartPickupRender, PickupVariant.PICKUP_HEART)
+dukeMod:AddCallback(ModCallbacks.MC_POST_PICKUP_RENDER, flyHeartPickupRender, 901)
+dukeMod:AddCallback(ModCallbacks.MC_POST_PICKUP_RENDER, flyHeartPickupRender, 2000)
+dukeMod:AddCallback(ModCallbacks.MC_POST_PICKUP_RENDER, flyHeartPickupRender, 2002)
 
 -- Spawn flies on fly heart pickup
 dukeMod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, function(_, pickup, collider)
