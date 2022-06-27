@@ -21,7 +21,7 @@ function DukeHelpers.SpawnHeartFly(player, subType, layer)
 		, player)
 	fly:ClearEntityFlags(EntityFlag.FLAG_APPEAR)
 	DukeHelpers.SpawnHeartFlyPoof(subType, player.Position, player)
-	fly:GetData().layer = layer
+	DukeHelpers.GetDukeData(fly).layer = layer
 	DukeHelpers.PositionHeartFly(fly, layer)
 	return fly
 end
@@ -394,7 +394,7 @@ function DukeHelpers.SpawnAttackFlyWispBySubType(flySubType, pos, spawner, spawn
 		end
 		local wisp = spawner:ToPlayer():AddWisp(id, pos)
 		if wisp then
-			local wispData = wisp:GetData()
+			local wispData = DukeHelpers.GetDukeData(wisp)
 			wispData.heartType = flySubType
 			wispData.spawnFlyOnDeath = spawnFlyOnDeath and not spider
 			wispData.spawnSpiderOnDeath = spawnFlyOnDeath and spider

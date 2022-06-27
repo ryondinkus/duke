@@ -44,7 +44,8 @@ local function MC_USE_ITEM(_, type, rng, player, f)
         if DukeHelpers.GetTrueBlackHearts(player) > 0 then
             fliesToSpawn[DukeHelpers.Flies.BLACK.heartFlySubType] = DukeHelpers.GetTrueBlackHearts(player) - 1
         else
-            fliesToSpawn[DukeHelpers.Flies.SOUL.heartFlySubType] = fliesToSpawn[DukeHelpers.Flies.SOUL.heartFlySubType] - 1
+            fliesToSpawn[DukeHelpers.Flies.SOUL.heartFlySubType] = fliesToSpawn[DukeHelpers.Flies.SOUL.heartFlySubType] -
+                1
         end
 
         player:AddSoulHearts(-(player:GetSoulHearts() - 1))
@@ -85,13 +86,15 @@ local function MC_USE_ITEM(_, type, rng, player, f)
     local addedWisps = {}
 
     DukeHelpers.ForEach(fliesToSpawn, function(numFlies, flyId)
-        DukeHelpers.ForEach(DukeHelpers.AddHeartFly(player, DukeHelpers.FindByProperties(DukeHelpers.Flies, { heartFlySubType = flyId }), numFlies), function(addedFly)
-            if player:HasCollectible(CollectibleType.COLLECTIBLE_BOOK_OF_VIRTUES) and DukeHelpers.Wisps[flyId] then
-                local wisp = DukeHelpers.SpawnAttackFlyWispBySubType(flyId, player.Position, player, true, nil, true)
-                table.insert(addedWisps, wisp.InitSeed)
-            end
-            table.insert(addedFlies, addedFly.InitSeed)
-        end)
+        DukeHelpers.ForEach(DukeHelpers.AddHeartFly(player,
+            DukeHelpers.FindByProperties(DukeHelpers.Flies, { heartFlySubType = flyId }), numFlies),
+            function(addedFly)
+                if player:HasCollectible(CollectibleType.COLLECTIBLE_BOOK_OF_VIRTUES) and DukeHelpers.Wisps[flyId] then
+                    local wisp = DukeHelpers.SpawnAttackFlyWispBySubType(flyId, player.Position, player, true, nil, true)
+                    table.insert(addedWisps, wisp.InitSeed)
+                end
+                table.insert(addedFlies, addedFly.InitSeed)
+            end)
     end)
 
     if dukeData[Tag] then
@@ -123,7 +126,8 @@ local function MC_POST_NEW_ROOM()
                 local foundFly = DukeHelpers.GetEntityByInitSeed(flyInitSeed)
 
                 if foundFly then
-                    local heartFly = DukeHelpers.FindByProperties(DukeHelpers.Flies, { heartFlySubType = foundFly.SubType, baseFly = true })
+                    local heartFly = DukeHelpers.FindByProperties(DukeHelpers.Flies,
+                        { heartFlySubType = foundFly.SubType, baseFly = true })
                     if heartFly.pickupSubType ~= 102 then
                         if heartsToAdd[heartFly.pickupSubType] then
                             heartsToAdd[heartFly.pickupSubType] = heartsToAdd[heartFly.pickupSubType] + 1
@@ -155,7 +159,8 @@ local function MC_POST_NEW_ROOM()
                 elseif pickupSubType == HeartSubType.HEART_BLACK then
                     player:AddBlackHearts(numHearts)
                 elseif pickupSubType == HeartSubType.HEART_GOLDEN then
-                    if player:GetPlayerType() == PlayerType.PLAYER_KEEPER or player:GetPlayerType() == PlayerType.PLAYER_KEEPER_B then
+                    if player:GetPlayerType() == PlayerType.PLAYER_KEEPER or
+                        player:GetPlayerType() == PlayerType.PLAYER_KEEPER_B then
                         player:AddHearts(numHearts * 2)
                     else
                         player:AddGoldenHearts(numHearts)

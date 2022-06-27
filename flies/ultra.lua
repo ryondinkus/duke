@@ -26,7 +26,8 @@ local function ATTACK_FLY_MC_PRE_FAMILIAR_COLLISION(_, f, e)
                 tear:ChangeVariant(TearVariant.BONE)
             end
             for _ = 0, DukeHelpers.rng:RandomInt(8) do
-                Isaac.Spawn(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_COIN, 0, f.Position, Vector.FromAngle(DukeHelpers.rng:RandomInt(360)), f)
+                Isaac.Spawn(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_COIN, 0, f.Position,
+                    Vector.FromAngle(DukeHelpers.rng:RandomInt(360)), f)
             end
             Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.CRACKED_ORB_POOF, 0, f.Position, Vector.Zero, f)
             local effect = Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.BOMB_CRATER, 0, f.Position, Vector.Zero, f)
@@ -42,7 +43,7 @@ end
 local function HEART_FLY_MC_FAMILIAR_UPDATE_ATTACK(_, f)
     if f.SubType == subType then
         if f.FrameCount == 6 then
-            local data = f:GetData()
+            local data = DukeHelpers.GetDukeData(f)
             if data.hitPoints == nil then
                 data.hitPoints = 2
             end
@@ -65,7 +66,8 @@ end
 
 local function MC_PRE_FAMILIAR_COLLISION(_, f, e)
     if f.SubType == subType then
-        if e.Type == EntityType.ENTITY_PROJECTILE and not e:ToProjectile():HasProjectileFlags(ProjectileFlags.CANT_HIT_PLAYER) then
+        if e.Type == EntityType.ENTITY_PROJECTILE and
+            not e:ToProjectile():HasProjectileFlags(ProjectileFlags.CANT_HIT_PLAYER) then
             local p = f.SpawnerEntity or Isaac.GetPlayer(0)
             p:ToPlayer():UseActiveItem(CollectibleType.COLLECTIBLE_NECRONOMICON, UseFlag.USE_NOANIM)
             DukeHelpers.sfx:Play(SoundEffect.SOUND_BONE_SNAP, 1, 0)
@@ -80,7 +82,8 @@ local function HEART_FLY_PRE_SPAWN_CLEAN_AWARD()
             and entity.Variant == DukeHelpers.FLY_VARIANT
             and entity.SubType == subType then
             for _ = 1, 2 do
-                local spawnedEntity = Isaac.Spawn(EntityType.ENTITY_FAMILIAR, FamiliarVariant.BLUE_FLY, 0, entity.Position, Vector.Zero, entity.SpawnerEntity)
+                local spawnedEntity = Isaac.Spawn(EntityType.ENTITY_FAMILIAR, FamiliarVariant.BLUE_FLY, 0,
+                    entity.Position, Vector.Zero, entity.SpawnerEntity)
                 spawnedEntity:ClearEntityFlags(EntityFlag.FLAG_APPEAR)
             end
         end

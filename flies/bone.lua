@@ -26,7 +26,7 @@ end
 local function HEART_FLY_MC_FAMILIAR_UPDATE_ATTACK(_, f)
     if f.SubType == subType then
         if f.FrameCount == 6 then
-            local data = f:GetData()
+            local data = DukeHelpers.GetDukeData(f)
             if data.hitPoints == nil then
                 data.hitPoints = 2
             end
@@ -37,7 +37,8 @@ end
 
 local function MC_PRE_FAMILIAR_COLLISION(_, f, e)
     if f.SubType == subType then
-        if e.Type == EntityType.ENTITY_PROJECTILE and not e:ToProjectile():HasProjectileFlags(ProjectileFlags.CANT_HIT_PLAYER) then
+        if e.Type == EntityType.ENTITY_PROJECTILE and
+            not e:ToProjectile():HasProjectileFlags(ProjectileFlags.CANT_HIT_PLAYER) then
             DukeHelpers.sfx:Play(SoundEffect.SOUND_BONE_SNAP, 1, 0)
             Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.TOOTH_PARTICLE, 0, f.Position, Vector.Zero, nil)
         end

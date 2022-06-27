@@ -1,9 +1,9 @@
 local Names = {
-    en_us = "Sharty McFly",
-    spa = "Duque Pequeño"
+    en_us = "The Invader",
+    spa = "El Invador"
 }
 local Name = Names.en_us
-local Tag = "shartyMcFly"
+local Tag = "theInvader"
 local Id = Isaac.GetItemIdByName(Name)
 local Descriptions = {
     en_us = "Poops and shits everywhere",
@@ -19,7 +19,8 @@ local function MC_EVALUATE_CACHE(_, player, flag)
         local rng = RNG()
         rng:SetSeed(Random(), 1)
 
-        player:CheckFamiliar(DukeHelpers.EntityVariants.shartyMcFly.Id, familiarAmount, rng, itemConfig)
+        player:CheckFamiliar(DukeHelpers.EntityVariants.theInvader.Id, familiarAmount, rng,
+            itemConfig)
     end
 end
 
