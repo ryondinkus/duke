@@ -67,7 +67,7 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_PICKUP_RENDER, function(_, pickup)
         if pickupData.flyHeartSpritesheet:IsFinished("FlyHeartAppear") then
             pickupData.flyHeartSpritesheet:Play("FlyHeart")
         end
-        pickupData.flyHeartSpritesheet:Render(Isaac.WorldToRenderPosition(pickup.Position) - Vector(0, 5), Vector.Zero,
+        pickupData.flyHeartSpritesheet:Render(Isaac.WorldToRenderPosition(pickup.Position) - Vector(1, 5), Vector.Zero,
             Vector.Zero)
     end
 end, PickupVariant.PICKUP_HEART)
