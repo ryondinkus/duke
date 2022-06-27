@@ -23,6 +23,10 @@ local function MC_FAMILIAR_UPDATE(_, familiar)
 		jumpCooldown = 10
 	end
 
+	if data.State == STATE.POSSESS and not sprite:IsPlaying("Possess") then
+		sprite:Play("Possess", false)
+	end
+
 	if sprite:IsFinished("Appear") or sprite:IsFinished("Hop") then
 		data.jumpCooldown = jumpCooldown
 		sprite:Play("Idle", false)
@@ -72,20 +76,23 @@ local function MC_FAMILIAR_UPDATE(_, familiar)
 	end
 
 	if data.State == STATE.POSSESS then
-		familiar.Position = data.possessedEntity.Position
-		if data.possessedEntity:IsDead() then
-			if Sewn_API and Sewn_API:IsUltra(data) then
-				Isaac.Explode(data.possessedEntity.Position, player, 40)
+
+		if data.possessedEntity then
+			familiar.Position = data.possessedEntity.Position
+			if data.possessedEntity:IsDead() then
+				if Sewn_API and Sewn_API:IsUltra(data) then
+					Isaac.Explode(data.possessedEntity.Position, player, 40)
+				end
+
+				data.State = STATE.APPEAR
+				data.possessedEntity = nil
+				data.jumpCooldown = jumpCooldown
+
+				DukeHelpers.sfx:Play(SoundEffect.SOUND_BOIL_HATCH, 1, 0)
+				Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.BLOOD_EXPLOSION, 0, familiar.Position, Vector.Zero, familiar)
+
+				sprite:Play("Appear", false)
 			end
-
-			data.State = STATE.SPAWN
-			data.possessedEntity = nil
-			data.jumpCooldown = jumpCooldown
-
-			DukeHelpers.sfx:Play(SoundEffect.SOUND_BOIL_HATCH, 1, 0)
-			Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.BLOOD_EXPLOSION, 0, familiar.Position, Vector.Zero, familiar)
-
-			sprite:Play("Appear", false)
 		end
 	end
 
@@ -107,6 +114,7 @@ local function MC_PRE_FAMILIAR_COLLISION(_, familiar, entity)
 
 		sprite:Play("Possess", false)
 		entity:AddCharmed(EntityRef(player), -1)
+		data.possessedEntityPointer = entity.InitSeed
 		if player and (player:HasCollectible(CollectibleType.COLLECTIBLE_HIVE_MIND)
 		or player:HasCollectible(CollectibleType.COLLECTIBLE_BFFS)) then
 			entity.MaxHitPoints = entity.MaxHitPoints * 2
@@ -122,7 +130,6 @@ local function MC_POST_NEW_ROOM()
 	DukeHelpers.ForEachEntityInRoom(function(familiar)
 		local data = familiar:GetData()
 		if data.State ~= STATE.POSSESS then
-			print("hey")
 			familiar.Velocity = Vector.Zero
 			data.State = STATE.IDLE
 		end

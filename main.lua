@@ -177,6 +177,7 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_GAME_STARTED, function(_, isContinued)
                 if savedFamiliarData then
                     local familiarData = familiar:GetData()
                     for key, value in pairs(DukeHelpers.RehydrateEntityData(savedFamiliarData)) do
+						print(key .. ": " .. tostring(value))
                         familiarData[key] = value
                     end
                 end
