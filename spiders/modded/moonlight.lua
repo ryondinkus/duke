@@ -12,7 +12,8 @@ local function onRelease(player)
 	elseif effect == 2 then
 		Game():GetLevel():ApplyMapEffect()
 	elseif effect == 3 then
-		Game():GetLevel():RemoveCurses(LevelCurse.CURSE_OF_DARKNESS | LevelCurse.CURSE_OF_BLIND | LevelCurse.CURSE_OF_THE_LOST | LevelCurse.CURSE_OF_THE_UNKNOWN | LevelCurse.CURSE_OF_MAZE)
+		Game():GetLevel():RemoveCurses(LevelCurse.CURSE_OF_DARKNESS | LevelCurse.CURSE_OF_BLIND | LevelCurse.CURSE_OF_THE_LOST
+			| LevelCurse.CURSE_OF_THE_UNKNOWN | LevelCurse.CURSE_OF_MAZE)
 	elseif effect == 4 then
 		player:UseCard(Card.CARD_SOUL_CAIN, (UseFlag.USE_NOANNOUNCER | UseFlag.USE_NOANIM))
 	elseif effect == 5 then

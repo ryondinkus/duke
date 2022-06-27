@@ -48,7 +48,7 @@ local function fireRottenGulletShot(player, pickupSubType, rng)
     DukeHelpers.SpawnPickupPoof(player, pickupSubType)
     local effect = Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.POOF02, 4, player.Position, Vector.Zero, player)
     effect.Color = foundSpider.poofColor
-	Game():ShakeScreen(10)
+    Game():ShakeScreen(10)
 
     local radius = 80
     local enemiesInRadius = DukeHelpers.FindInRadius(player.Position, radius)
@@ -100,10 +100,10 @@ local function fireRottenGulletShot(player, pickupSubType, rng)
             if tear.InitSeed == t.InitSeed then
                 if DukeHelpers.PercentageChance(50, 100, rng) then
                     DukeHelpers.SpawnSpidersFromPickupSubType(pickupSubType, t.Position, t, 1)
-					local player = t.SpawnerEntity:ToPlayer()
-					if player and player:HasCollectible(CollectibleType.COLLECTIBLE_BOOK_OF_VIRTUES) then
-			            DukeHelpers.SpawnSpiderWispBySubType(pickupSubType, t.Position, player, false)
-			        end
+                    local player = t.SpawnerEntity:ToPlayer()
+                    if player and player:HasCollectible(CollectibleType.COLLECTIBLE_BOOK_OF_VIRTUES) then
+                        DukeHelpers.SpawnSpiderWispBySubType(pickupSubType, t.Position, player, false)
+                    end
                 end
                 dukeMod:RemoveCallback(ModCallbacks.MC_POST_ENTITY_REMOVE, tearCollision, EntityType.ENTITY_TEAR)
             end
@@ -116,9 +116,9 @@ end
 local function MC_USE_ITEM(_, type, rng, p, flags)
     local releasedSlots = DukeHelpers.ReleaseRottenGulletSlots(p, 1)
 
-	if (flags & UseFlag.USE_NOANIM == 0) then
-		p:PlayExtraAnimation("DukeBarf")
-	end
+    if (flags & UseFlag.USE_NOANIM == 0) then
+        p:PlayExtraAnimation("DukeBarf")
+    end
 
     if DukeHelpers.LengthOfTable(releasedSlots) <= 0 then
         DukeHelpers.sfx:Play(SoundEffect.SOUND_WORM_SPIT, 1, 0)
@@ -133,7 +133,7 @@ local function MC_USE_ITEM(_, type, rng, p, flags)
 
     fireRottenGulletShot(p, releasedSlots[1], rng)
 
-	return false
+    return false
 end
 
 local playerHUDPositions = {
