@@ -584,28 +584,93 @@ function DukeHelpers.CountOccurencesInTable(table, value)
     return found
 end
 
--- TODO add modded support
-function DukeHelpers.CanPickUpHeart(player, pickup)
-    local canPickup = false
-    if pickup.SubType > HeartSubType.HEART_ROTTEN then
-        return canPickup
-    end
-    if pickup.SubType == HeartSubType.HEART_FULL or pickup.SubType == HeartSubType.HEART_HALF or
-        pickup.SubType == HeartSubType.HEART_DOUBLEPACK or pickup.SubType == HeartSubType.HEART_SCARED then
-        canPickup = player:CanPickRedHearts()
-    elseif pickup.SubType == HeartSubType.HEART_SOUL or pickup.SubType == HeartSubType.HEART_HALF_SOUL then
-        canPickup = player:CanPickSoulHearts()
-    elseif pickup.SubType == HeartSubType.HEART_BLACK then
-        canPickup = player:CanPickBlackHearts()
-    elseif pickup.SubType == HeartSubType.HEART_BONE then
-        canPickup = player:CanPickBoneHearts()
-    elseif pickup.SubType == HeartSubType.HEART_ROTTEN then
-        canPickup = player:CanPickRottenHearts()
-    elseif pickup.SubType == HeartSubType.HEART_GOLDEN then
-        canPickup = player:CanPickGoldenHearts()
-    elseif pickup.SubType == HeartSubType.HEART_BLENDED then
-        canPickup = player:CanPickRedHearts() or player:CanPickSoulHearts()
+function DukeHelpers.IsMoonlightHeart(pickup)
+    return pickup.Type == EntityType.ENTITY_PICKUP and pickup.Variant == 901
+end
+
+function DukeHelpers.CanPickMoonlightHearts(player)
+    local data = player:GetData()
+
+    if not data.moons then
+        data = Isaac.GetPlayer(0):GetData()
     end
 
-    return canPickup
+    return data.moons and data.moons < 12
+end
+
+function DukeHelpers.IsImmortalHeart(pickup)
+    return pickup.Type == EntityType.ENTITY_PICKUP and pickup.Variant == PickupVariant.PICKUP_HEART and
+        HeartSubType.HEART_IMMORTAL
+end
+
+function DukeHelpers.CanPickImmortalHearts(player)
+    local hearts = DukeHelpers.GetTrueImmortalHearts(player)
+
+    return hearts and hearts < (player:GetHeartLimit() - player:GetEffectiveMaxHearts())
+end
+
+function DukeHelpers.IsWebHeart(pickup)
+    return pickup.Type == EntityType.ENTITY_PICKUP and pickup.Variant == 2000
+end
+
+function DukeHelpers.IsDoubleWebHeart(pickup)
+    return pickup.Type == EntityType.ENTITY_PICKUP and pickup.Variant == 2002
+end
+
+function DukeHelpers.CanPickWebHeart(player, double)
+    if not ARACHNAMOD or DukeHelpers.GetPlayerControllerIndex(player) ~= 0 then
+        return false
+    end
+
+    local playerType = player:GetPlayerType()
+    if (
+        playerType == PlayerType.PLAYER_KEEPER or playerType == PlayerType.PLAYER_KEEPER_B or
+            playerType == PlayerType.PLAYER_LOST or playerType == PlayerType.PLAYER_LOST_B)
+        or (not player:CanPickSoulHearts()) then
+        return false
+    end
+
+    player = playerType == PlayerType.PLAYER_THESOUL_B and player:GetMainTwin() or player
+    player = playerType == PlayerType.PLAYER_THEFORGOTTEN and player:GetSubPlayer() or player
+
+    local webHeartAmount = DukeHelpers.GetTrueWebHearts(player)
+
+    local maxHP = player:GetHeartLimit()
+    local healthAmount = maxHP
+    if webHeartAmount then
+        healthAmount = player:GetSoulHearts() + getRedContainers(player)
+    end
+    if healthAmount < maxHP then
+        return true
+    end
+    return false
+end
+
+function DukeHelpers.CanPickUpHeart(player, pickup)
+    if pickup.Variant == PickupVariant.PICKUP_HEART then
+        if pickup.SubType == HeartSubType.HEART_FULL or pickup.SubType == HeartSubType.HEART_HALF or
+            pickup.SubType == HeartSubType.HEART_DOUBLEPACK or pickup.SubType == HeartSubType.HEART_SCARED then
+            return player:CanPickRedHearts()
+        elseif pickup.SubType == HeartSubType.HEART_SOUL or pickup.SubType == HeartSubType.HEART_HALF_SOUL then
+            return player:CanPickSoulHearts()
+        elseif pickup.SubType == HeartSubType.HEART_BLACK then
+            return player:CanPickBlackHearts()
+        elseif pickup.SubType == HeartSubType.HEART_BONE then
+            return player:CanPickBoneHearts()
+        elseif pickup.SubType == HeartSubType.HEART_ROTTEN then
+            return player:CanPickRottenHearts()
+        elseif pickup.SubType == HeartSubType.HEART_GOLDEN then
+            return player:CanPickGoldenHearts()
+        elseif pickup.SubType == HeartSubType.HEART_BLENDED then
+            return player:CanPickRedHearts() or player:CanPickSoulHearts()
+        elseif DukeHelpers.IsImmortalHeart(pickup) then
+            return DukeHelpers.CanPickImmortalHearts(player)
+        end
+    elseif DukeHelpers.IsMoonlightHeart(pickup) then
+        return DukeHelpers.CanPickMoonlightHearts(player)
+    elseif DukeHelpers.IsWebHeart(pickup) then
+        return DukeHelpers.CanPickWebHeart(player)
+    end -- TODO add double web hearts
+
+    return false
 end

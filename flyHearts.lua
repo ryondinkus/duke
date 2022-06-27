@@ -1,5 +1,24 @@
 local function SetFlyHeart(pickup)
-    pickup:GetData().isFlyHeart = true
+    local pickupData = pickup:GetData()
+    pickupData.isFlyHeart = true
+
+    local fly = DukeHelpers.GetFlyByPickupSubType(pickup.SubType)
+
+    local spritesheet
+
+    if fly and fly.spritesheet then
+        spritesheet = fly.spritesheet
+    else
+        spritesheet = DukeHelpers.Flies.RED.spritesheet
+    end
+
+    pickupData.flyHeartSpritesheet = Sprite()
+    pickupData.flyHeartSpritesheet:Load("gfx/familiars/heart_fly.anm2", true)
+    pickupData.flyHeartSpritesheet:ReplaceSpritesheet(0, spritesheet)
+    pickupData.flyHeartSpritesheet:LoadGraphics()
+    pickupData.flyHeartSpritesheet.Color = Color(pickupData.flyHeartSpritesheet.Color.R,
+        pickupData.flyHeartSpritesheet.Color.G, pickupData.flyHeartSpritesheet.Color.B, 0.7)
+    pickupData.flyHeartSpritesheet:Play("FlyHeartAppear")
 end
 
 local function StoreFlyHeart(pickup)
@@ -18,9 +37,9 @@ end)
 
 -- Choose which hearts to be fly hearts and restore them if they already existed
 dukeMod:AddCallback(ModCallbacks.MC_POST_PICKUP_UPDATE, function(_, pickup)
-    if pickup.FrameCount <= 1 and pickup.SubType <= HeartSubType.HEART_ROTTEN then
+    if pickup.FrameCount <= 1 then
         if pickup:GetSprite():GetAnimation() == "Appear" then
-            if DukeHelpers.PercentageChance(5) then
+            if DukeHelpers.PercentageChance(100) then
                 StoreFlyHeart(pickup)
             end
         else
@@ -32,12 +51,24 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_PICKUP_UPDATE, function(_, pickup)
             end
         end
     end
+
+    local pickupData = pickup:GetData()
+    if pickupData.isFlyHeart then
+        pickupData.flyHeartSpritesheet:Update()
+    end
 end, PickupVariant.PICKUP_HEART)
+
+-- TODO add update and render callbacks for modded hearts
 
 -- Replace with the fly heart spritesheet
 dukeMod:AddCallback(ModCallbacks.MC_POST_PICKUP_RENDER, function(_, pickup)
-    if pickup:GetData().isFlyHeart then
-        -- Replace spritesheet
+    local pickupData = pickup:GetData()
+    if pickupData.isFlyHeart then
+        if pickupData.flyHeartSpritesheet:IsFinished("FlyHeartAppear") then
+            pickupData.flyHeartSpritesheet:Play("FlyHeart")
+        end
+        pickupData.flyHeartSpritesheet:Render(Isaac.WorldToRenderPosition(pickup.Position) - Vector(0, 5), Vector.Zero,
+            Vector.Zero)
     end
 end, PickupVariant.PICKUP_HEART)
 
