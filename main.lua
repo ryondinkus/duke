@@ -188,6 +188,10 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_GAME_STARTED, function(_, isContinued)
                 if DukeHelpers.IsAttackFly(familiar) then
                     DukeHelpers.InitializeAttackFly(familiar)
                 end
+
+                if DukeHelpers.IsHeartSpider(familiar) then
+                    DukeHelpers.InitializeHeartSpider(familiar)
+                end
             end, EntityType.ENTITY_FAMILIAR)
         end
     end

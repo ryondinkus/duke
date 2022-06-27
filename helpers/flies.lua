@@ -134,7 +134,8 @@ function DukeHelpers.SpawnAttackFly(heartFly)
 end
 
 function DukeHelpers.IsAttackFly(fly)
-	return not not DukeHelpers.Find(DukeHelpers.Flies, function(f) return f.attackFlySubType == fly.SubType end)
+	return fly.Variant == FamiliarVariant.BLUE_FLY and
+		not not DukeHelpers.Find(DukeHelpers.Flies, function(f) return f.attackFlySubType == fly.SubType end)
 end
 
 function DukeHelpers.InitializeAttackFly(fly)
