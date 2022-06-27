@@ -127,7 +127,7 @@ local function MC_POST_NEW_ROOM()
 
                 if foundFly then
                     local heartFly = DukeHelpers.FindByProperties(DukeHelpers.Flies,
-                        { heartFlySubType = foundFly.SubType, baseFly = true })
+                        { heartFlySubType = foundFly.SubType, isBase = true })
                     if heartFly.pickupSubType ~= 102 then
                         if heartsToAdd[heartFly.pickupSubType] then
                             heartsToAdd[heartFly.pickupSubType] = heartsToAdd[heartFly.pickupSubType] + 1

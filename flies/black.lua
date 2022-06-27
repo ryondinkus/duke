@@ -2,25 +2,11 @@ local key = "BLACK"
 local subType = HeartSubType.HEART_BLACK
 local attackFlySubType = DukeHelpers.GetAttackFlySubTypeBySubType(subType)
 
-local function ATTACK_FLY_MC_FAMILIAR_UPDATE_ATTACK(_, f)
-	if f.SubType == attackFlySubType then
-		if f.FrameCount == 6 then
-			f.CollisionDamage = f.CollisionDamage * 1.3
-		end
-	end
-end
-
 local function ATTACK_FLY_MC_PRE_FAMILIAR_COLLISION(_, f, e)
 	if f.SubType == attackFlySubType then
 		if e:ToNPC() and not e:HasEntityFlags(EntityFlag.FLAG_CHARM) then
 			e:AddFear(EntityRef(f), 150)
 		end
-	end
-end
-
-local function HEART_FLY_MC_FAMILIAR_UPDATE_ATTACK(_, f)
-	if f.SubType == subType then
-		f.CollisionDamage = f.CollisionDamage * 1.3
 	end
 end
 
@@ -45,16 +31,6 @@ return {
 	sfx = SoundEffect.SOUND_UNHOLY,
 	callbacks = {
 		{
-			ModCallbacks.MC_FAMILIAR_UPDATE,
-			ATTACK_FLY_MC_FAMILIAR_UPDATE_ATTACK,
-			FamiliarVariant.BLUE_FLY
-		},
-		{
-			ModCallbacks.MC_FAMILIAR_UPDATE,
-			HEART_FLY_MC_FAMILIAR_UPDATE_ATTACK,
-			DukeHelpers.FLY_VARIANT
-		},
-		{
 			ModCallbacks.MC_PRE_FAMILIAR_COLLISION,
 			MC_PRE_FAMILIAR_COLLISION,
 			DukeHelpers.FLY_VARIANT
@@ -64,5 +40,7 @@ return {
 			ATTACK_FLY_MC_PRE_FAMILIAR_COLLISION,
 			FamiliarVariant.BLUE_FLY
 		}
-	}
+	},
+	heartFlyDamageMultiplier = 1.3,
+	attackFlyDamageMultiplier = 1.3
 }

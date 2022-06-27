@@ -1,5 +1,5 @@
 local key = "BLENDED"
-local useFlies = {
+local uses = {
     {
         key = include("flies/red").key,
         count = 1
@@ -13,7 +13,7 @@ local subType = HeartSubType.HEART_BLENDED
 
 return {
     key = key,
-    useFlies = useFlies,
+    uses = uses,
     subType = subType,
     count = 1
 }
