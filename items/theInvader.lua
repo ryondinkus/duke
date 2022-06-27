@@ -15,7 +15,8 @@ local function MC_EVALUATE_CACHE(_, player, flag)
     if flag == CacheFlag.CACHE_FAMILIARS then
         local familiarAmount = player:GetCollectibleNum(Id) + player:GetEffects():GetCollectibleEffectNum(Id)
         local itemConfig = Isaac.GetItemConfig():GetCollectible(Id)
-        player:CheckFamiliar(DukeHelpers.EntityVariants.theInvader.Id, familiarAmount, RNG(), itemConfig)
+        player:CheckFamiliar(DukeHelpers.EntityVariants.theInvader.Id, familiarAmount, RNG(),
+            itemConfig)
     end
 end
 

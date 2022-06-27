@@ -46,7 +46,8 @@ local function MC_NPC_UPDATE(_, entity)
             end
 
             if data.state >= 5 then
-                local explosion = Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.FART, 0, entity.Position, Vector.Zero, entity)
+                local explosion = Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.FART, 0, entity.Position,
+                    Vector.Zero, entity)
                 explosion.Color = Color(1, 1, 1, 1, 0.59, 0, 0.39)
                 local damage = 40
                 local player = entity.SpawnerEntity:ToFamiliar().Player:ToPlayer()

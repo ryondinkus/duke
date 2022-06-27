@@ -19,7 +19,7 @@ local function MC_FAMILIAR_INIT(_, familiar)
 end
 
 local function MC_FAMILIAR_UPDATE(_, familiar)
-	local data = familiar:GetData()
+	local data = DukeHelpers.GetDukeData(familiar)
 	local sprite = familiar:GetSprite()
 	local player = familiar.Player
 	local fireDirection = player:GetFireDirection()
@@ -54,15 +54,16 @@ local function MC_FAMILIAR_UPDATE(_, familiar)
 		local spawnedSpider = DukeHelpers.SpawnSpidersFromPickupSubType(spiderType, familiar.Position, familiar, 1, true)
 		local spawnedFly = nil
 
-		if Sewn_API and Sewn_API:IsUltra(data) then
+		if Sewn_API and Sewn_API:IsUltra(familiar:GetData()) then
 			spawnedFly = DukeHelpers.SpawnAttackFlyBySubType(spiderType, familiar.Position, familiar.Player)
 		end
 
-		if familiar.Player and familiar.Player:HasCollectible(CollectibleType.COLLECTIBLE_BFFS) and not familiar.Player:HasCollectible(CollectibleType.COLLECTIBLE_HIVE_MIND) then
-			spawnedSpider[1]:GetData().bffs = true
+		if familiar.Player and familiar.Player:HasCollectible(CollectibleType.COLLECTIBLE_BFFS) and
+			not familiar.Player:HasCollectible(CollectibleType.COLLECTIBLE_HIVE_MIND) then
+			DukeHelpers.GetDukeData(spawnedSpider[1]).bffs = true
 			spawnedSpider[1].CollisionDamage = spawnedSpider[1].CollisionDamage * 2
 			if spawnedFly then
-				spawnedFly:GetData().bffs = true
+				DukeHelpers.GetDukeData(spawnedFly).bffs = true
 				spawnedFly.CollisionDamage = spawnedFly.CollisionDamage * 2
 			end
 		end
@@ -72,7 +73,7 @@ local function MC_FAMILIAR_UPDATE(_, familiar)
 		else
 			data.fireCooldown = fireCooldown
 		end
-		
+
 		data.canSpawnSpider = data.canSpawnSpider - 1
 	end
 
@@ -84,13 +85,14 @@ local function MC_FAMILIAR_UPDATE(_, familiar)
 end
 
 local function MC_POST_ENTITY_REMOVE(_, e)
-    if e.Variant == FamiliarVariant.BLUE_SPIDER and e.SpawnerEntity and e.SpawnerType == EntityType.ENTITY_FAMILIAR and e.SpawnerVariant == Id then
-        e.SpawnerEntity:GetData().canSpawnSpider = e.SpawnerEntity:GetData().canSpawnSpider + 1
-    end
+	if e.Variant == FamiliarVariant.BLUE_SPIDER and e.SpawnerEntity and e.SpawnerType == EntityType.ENTITY_FAMILIAR and
+		e.SpawnerVariant == Id then
+		DukeHelpers.GetDukeData(e.SpawnerEntity).canSpawnSpider = DukeHelpers.GetDukeData(e.SpawnerEntity).canSpawnSpider + 1
+	end
 end
 
 local function MC_SPIDER_FAMILIAR_UPDATE(_, familiar)
-	if familiar:GetData().bffs then
+	if DukeHelpers.GetDukeData(familiar).bffs then
 		familiar.SpriteScale = Vector(1.2, 1.2)
 	end
 end
@@ -98,8 +100,9 @@ end
 if Sewn_API then
 	Sewn_API:MakeFamiliarAvailable(Id, DukeHelpers.Items.lilHusk.Id)
 	Sewn_API:AddCallback(Sewn_API.Enums.ModCallbacks.ON_FAMILIAR_UPGRADED, function(_, familiar)
-		if familiar:GetData() then
-			familiar:GetData().canSpawnSpider = superSpiderLimit
+		local familiarData = DukeHelpers.GetDukeData(familiar)
+		if familiarData then
+			familiarData.canSpawnSpider = superSpiderLimit
 		end
 	end, Id)
 end

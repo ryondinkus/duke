@@ -321,7 +321,8 @@ end
 
 function DukeHelpers.IsActualEnemy(entity, includeBosses, includeInvulnerable)
     return DukeHelpers.IsInPartition(entity.Type, PartitionedEntities[EntityPartition.ENEMY]) and
-        not DukeHelpers.Find(notEnemies, function(t) return t == entity.Type end) and (includeBosses or not entity:IsBoss()) and (includeInvulnerable or entity:IsVulnerableEnemy())
+        not DukeHelpers.Find(notEnemies, function(t) return t == entity.Type end) and
+        (includeBosses or not entity:IsBoss()) and (includeInvulnerable or entity:IsVulnerableEnemy())
 end
 
 function DukeHelpers.ListEnemiesInRoom(ignoreVulnerability, filter)
@@ -575,26 +576,27 @@ end
 
 function DukeHelpers.CountOccurencesInTable(table, value)
     local found = 0
-        for _, v in pairs(table) do
-            local notEquals = false
-            if v == value then
-	              found = found + 1
-            end
+    for _, v in pairs(table) do
+        local notEquals = false
+        if v == value then
+            found = found + 1
         end
-   return found
+    end
+    return found
 end
 
 -- referenced abortionbirth for this function, never forget your roots ✌️
-function DukeHelpers.GetNearestEnemy(pos, includeBosses, includeInvulnerable)
+function DukeHelpers.GetNearestEnemy(pos, includeBosses, includeInvulnerable, filters)
     local dist
     local near
-	local enemies = DukeHelpers.ListEnemiesInRoom(false, function(entity)
+    local enemies = DukeHelpers.ListEnemiesInRoom(false, function(entity)
         return not entity:HasEntityFlags(EntityFlag.FLAG_FRIENDLY)
             and (includeBosses or not entity:IsBoss())
             and (includeInvulnerable or entity:IsVulnerableEnemy())
-        end)
+            and (not filters or filters(entity))
+    end)
     for _, ent in ipairs(enemies) do
-        local distance = ent.Position:Distance(pos or player.Position)
+        local distance = ent.Position:Distance(pos)
         if not dist or distance < dist then
             dist = distance
             near = ent

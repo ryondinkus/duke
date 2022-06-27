@@ -12,8 +12,24 @@ local STATE = {
 local jumpCooldown = 10
 local jumpDistance = 4
 
+local function chooseEnemy(entity, familiarData)
+	if entity then
+		entity:GetData()[Tag] = true
+	end
+
+	if familiarData then
+		if not entity then
+			entity = {}
+		end
+		familiarData.possessedEntity = entity
+		familiarData.possessedEntityType = entity.Type
+		familiarData.possessedEntityVariant = entity.Variant
+		familiarData.possessedEntitySubType = entity.SubType
+	end
+end
+
 local function MC_FAMILIAR_UPDATE(_, familiar)
-	local data = familiar:GetData()
+	local data = DukeHelpers.GetDukeData(familiar)
 	local sprite = familiar:GetSprite()
 	local player = familiar.Player
 
@@ -25,6 +41,7 @@ local function MC_FAMILIAR_UPDATE(_, familiar)
 
 	if data.State == STATE.POSSESS and not sprite:IsPlaying("Possess") then
 		sprite:Play("Possess", false)
+		familiar.GridCollisionClass = EntityGridCollisionClass.GRIDCOLL_NONE
 	end
 
 	if sprite:IsFinished("Appear") or sprite:IsFinished("Hop") then
@@ -64,7 +81,7 @@ local function MC_FAMILIAR_UPDATE(_, familiar)
 			local room = Game():GetRoom()
 			if room:GetGridCollisionAtPos(destinationPosition) ~= GridCollisionClass.COLLISION_NONE then
 				local newDestinationPosition = room:FindFreeTilePosition(destinationPosition, 0) - data.startPosition
-				moveVector = ((newDestinationPosition)/14)
+				moveVector = ((newDestinationPosition) / 14)
 			end
 			familiar.Velocity = moveVector
 		end
@@ -76,16 +93,24 @@ local function MC_FAMILIAR_UPDATE(_, familiar)
 	end
 
 	if data.State == STATE.POSSESS then
+		if not data.possessedEntity and data.possessedEntityType then
+			DukeHelpers.ForEachEntityInRoom(function(entity)
+				if not data.possessedEntity and (entity:HasEntityFlags(EntityFlag.FLAG_FRIENDLY) or EntityRef(entity).IsCharmed) and
+					not entity:GetData()[Tag] then
+					chooseEnemy(entity, data)
+				end
+			end, data.possessedEntityType, (data.possessedEntityVariant or 0), (data.possessedEntitySubType or 0))
+		end
 
 		if data.possessedEntity then
 			familiar.Position = data.possessedEntity.Position
 			if data.possessedEntity:IsDead() then
-				if Sewn_API and Sewn_API:IsUltra(data) then
+				if Sewn_API and Sewn_API:IsUltra(familiar:GetData()) then
 					Isaac.Explode(data.possessedEntity.Position, player, 40)
 				end
 
 				data.State = STATE.APPEAR
-				data.possessedEntity = nil
+				chooseEnemy(nil, data)
 				data.jumpCooldown = jumpCooldown
 
 				DukeHelpers.sfx:Play(SoundEffect.SOUND_BOIL_HATCH, 1, 0)
@@ -99,13 +124,14 @@ local function MC_FAMILIAR_UPDATE(_, familiar)
 end
 
 local function MC_PRE_FAMILIAR_COLLISION(_, familiar, entity)
-	local data = familiar:GetData()
+	local data = DukeHelpers.GetDukeData(familiar)
 	local sprite = familiar:GetSprite()
 	local player = familiar.Player
 
-	if DukeHelpers.IsActualEnemy(entity) and not entity:HasEntityFlags(EntityFlag.FLAG_FRIENDLY) then
+	if DukeHelpers.IsActualEnemy(entity) and not entity:HasEntityFlags(EntityFlag.FLAG_FRIENDLY) and
+		data.State ~= STATE.POSSESS then
 		data.State = STATE.POSSESS
-		data.possessedEntity = entity
+		chooseEnemy(entity, data)
 		familiar.SpriteScale = Vector.Zero
 		familiar.EntityCollisionClass = EntityCollisionClass.ENTCOLL_NONE
 
@@ -114,13 +140,13 @@ local function MC_PRE_FAMILIAR_COLLISION(_, familiar, entity)
 
 		sprite:Play("Possess", false)
 		entity:AddCharmed(EntityRef(player), -1)
-		data.possessedEntityPointer = entity.InitSeed
+
 		if player and (player:HasCollectible(CollectibleType.COLLECTIBLE_HIVE_MIND)
-		or player:HasCollectible(CollectibleType.COLLECTIBLE_BFFS)) then
+			or player:HasCollectible(CollectibleType.COLLECTIBLE_BFFS)) then
 			entity.MaxHitPoints = entity.MaxHitPoints * 2
 			entity.HitPoints = entity.HitPoints * 2
 		end
-		if Sewn_API and Sewn_API:IsSuper(data) then
+		if Sewn_API and Sewn_API:IsSuper(familiar:GetData()) then
 			entity:ToNPC():MakeChampion(DukeHelpers.rng:Next())
 		end
 	end
@@ -128,7 +154,7 @@ end
 
 local function MC_POST_NEW_ROOM()
 	DukeHelpers.ForEachEntityInRoom(function(familiar)
-		local data = familiar:GetData()
+		local data = DukeHelpers.GetDukeData(familiar)
 		if data.State ~= STATE.POSSESS then
 			familiar.Velocity = Vector.Zero
 			data.State = STATE.IDLE
@@ -138,6 +164,14 @@ end
 
 if Sewn_API then
 	Sewn_API:MakeFamiliarAvailable(Id, DukeHelpers.Items.theInvader.Id)
+end
+
+local function MC_PRE_GAME_EXIT(_, shouldSave)
+	if shouldSave then
+		DukeHelpers.ForEachEntityInRoom(function(familiar)
+			DukeHelpers.GetDukeData(familiar).possessedEntity = nil
+		end, EntityType.ENTITY_FAMILIAR, Id, 0)
+	end
 end
 
 return {
@@ -158,6 +192,10 @@ return {
 		{
 			ModCallbacks.MC_POST_NEW_ROOM,
 			MC_POST_NEW_ROOM
+		},
+		{
+			ModCallbacks.MC_PRE_GAME_EXIT,
+			MC_PRE_GAME_EXIT
 		}
 	}
 }
