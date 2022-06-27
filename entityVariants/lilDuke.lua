@@ -14,7 +14,7 @@ local function MC_FAMILIAR_INIT(_, f)
 end
 
 local function MC_FAMILIAR_UPDATE(_, f)
-	local data = f:GetData()
+	local data = DukeHelpers.GetDukeData(f)
 	local sprite = f:GetSprite()
 	if f.FrameCount == 6 then
 		sprite:Play("Float", true)
@@ -28,18 +28,19 @@ local function MC_FAMILIAR_UPDATE(_, f)
 			effect.Color = Color(0, 0, 0, 1)
 			effect.SpriteScale = Vector(0.5, 0.5)
 			local fliesToSpawn = DukeHelpers.rng:RandomInt(2) + 1
-			if Sewn_API and Sewn_API:IsSuper(data) then
+			if Sewn_API and Sewn_API:IsSuper(f:GetData()) then
 				fliesToSpawn = fliesToSpawn * 2
 			end
 			for _ = 1, fliesToSpawn do
 				local flyToSpawn = DukeHelpers.GetWeightedFly(DukeHelpers.rng)
 				local attackFly = DukeHelpers.SpawnAttackFlyBySubType(flyToSpawn.heartFlySubType, f.Position, f.Player)
-				if f.Player and f.Player:HasCollectible(CollectibleType.COLLECTIBLE_BFFS) and not f.Player:HasCollectible(CollectibleType.COLLECTIBLE_HIVE_MIND) then
-					attackFly:GetData().bffs = true
+				if f.Player and f.Player:HasCollectible(CollectibleType.COLLECTIBLE_BFFS) and
+					not f.Player:HasCollectible(CollectibleType.COLLECTIBLE_HIVE_MIND) then
+					DukeHelpers.GetDukeData(attackFly).bffs = true
 					attackFly.CollisionDamage = attackFly.CollisionDamage * 2
 				end
 			end
-			if Sewn_API and Sewn_API:IsUltra(data) then
+			if Sewn_API and Sewn_API:IsUltra(f:GetData()) then
 				for _ = 1, DukeHelpers.rng:RandomInt(2) + 1 do
 					DukeHelpers.AddHeartFly(f.Player, DukeHelpers.GetWeightedFly(DukeHelpers.rng, false), 1)
 				end
@@ -56,7 +57,7 @@ local function MC_PRE_FAMILIAR_COLLISION(_, f, e)
 	if e.Type == EntityType.ENTITY_PROJECTILE and not e:ToProjectile():HasProjectileFlags(ProjectileFlags.CANT_HIT_PLAYER) then
 		e:Die()
 
-		local data = f:GetData()
+		local data = DukeHelpers.GetDukeData(f)
 		local sprite = f:GetSprite()
 
 		if data.State ~= STATE.ATTACK then

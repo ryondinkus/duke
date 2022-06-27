@@ -18,7 +18,7 @@ end
 local function HEART_FLY_MC_FAMILIAR_UPDATE_ATTACK(_, f)
     if f.SubType == subType then
         if f.FrameCount == 6 then
-            local data = f:GetData()
+            local data = DukeHelpers.GetDukeData(f)
             if data.hitPoints == nil then
                 data.hitPoints = 2
             end

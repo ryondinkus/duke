@@ -11,26 +11,6 @@ local Descriptions = {
 }
 local WikiDescription = DukeHelpers.GenerateEncyclopediaPage("Poops and shits everywhere.")
 
-local function GetSpriteSheetDirection(tear)
-    local spriteSheetDirection
-    local sprite = tear:GetSprite()
-    if math.abs(tear.Velocity.X) > math.abs(tear.Velocity.Y) then
-        spriteSheetDirection = "side"
-        if tear.Velocity.X < 0 then
-            sprite.FlipX = true
-        else
-            sprite.FlipX = false
-        end
-    elseif math.abs(tear.Velocity.Y) > math.abs(tear.Velocity.X) then
-        if tear.Velocity.Y < 0 then
-            spriteSheetDirection = "back"
-        else
-            spriteSheetDirection = "front"
-        end
-    end
-    return spriteSheetDirection
-end
-
 local function MC_POST_FIRE_TEAR(_, tear)
     local player = tear:GetLastParent():ToPlayer()
 
@@ -39,7 +19,6 @@ local function MC_POST_FIRE_TEAR(_, tear)
             tear:GetData()[Tag] = true
 
             local sprite = tear:GetSprite()
-            local spriteSheetDirection = GetSpriteSheetDirection(tear)
 
             if not tear:HasTearFlags(DukeHelpers.ConvertBitSet64ToBitSet128(77)) then
                 local animationToPlay = sprite:GetAnimation()
@@ -54,10 +33,11 @@ end
 local function MC_PRE_TEAR_COLLISION(_, tear, collider)
     local player = tear:GetLastParent():ToPlayer()
 
-    if DukeHelpers.IsActualEnemy(collider) and tear:GetData()[Tag] then
+    if DukeHelpers.IsActualEnemy(collider, true) and tear:GetData()[Tag] then
         local amount = DukeHelpers.PercentageChance(50) and 1 or 2
         if DukeHelpers.PercentageChance(50) then
-            DukeHelpers.SpawnAttackFlyBySubType(DukeHelpers.GetWeightedFly(DukeHelpers.rng).heartFlySubType, player.Position, player)
+            DukeHelpers.SpawnAttackFlyBySubType(DukeHelpers.GetWeightedFly(DukeHelpers.rng).heartFlySubType,
+                player.Position, player)
         else
             DukeHelpers.SpawnSpidersFromPickupSubType(DukeHelpers.GetWeightedSpider(DukeHelpers.rng).pickupSubType,
                 player.Position, player, amount, true)

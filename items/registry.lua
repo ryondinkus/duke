@@ -12,5 +12,6 @@ DukeHelpers.Items = {
     rottenGullet = include("items/rottenGullet"),
     othersRottenGullet = include("items/othersRottenGullet"),
     dukeOfEyes = include("items/dukeOfEyes"),
-	lilHusk = include("items/lilHusk")
+	lilHusk = include("items/lilHusk"),
+    theInvader = include("items/theInvader")
 }

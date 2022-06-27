@@ -1,6 +1,6 @@
 -- Handles fly orbiting
 dukeMod:AddCallback(ModCallbacks.MC_FAMILIAR_UPDATE, function(_, f)
-	local data = f:GetData()
+	local data = DukeHelpers.GetDukeData(f)
 	local sprite = f:GetSprite()
 	if f.FrameCount == 6 then
 		sprite:ReplaceSpritesheet(0, DukeHelpers.GetFlySpritesheet(f.SubType))
@@ -41,11 +41,11 @@ dukeMod:AddCallback(ModCallbacks.MC_PRE_FAMILIAR_COLLISION, function(_, f, e)
 		if f.SubType ~= DukeHelpers.Flies.BROKEN.heartFlySubType then
 			e:Die()
 		end
-		local data = f:GetData()
+		local data = DukeHelpers.GetDukeData(f)
 		if DukeHelpers.CanBecomeAttackFly(f) then
 			if not data.hitPoints or data.hitPoints <= 1 then
 				local fly = DukeHelpers.SpawnAttackFly(f)
-				local flyData = fly:GetData()
+				local flyData = DukeHelpers.GetDukeData(fly)
 				flyData.attacker = e.SpawnerEntity
 				flyData.hitPoints = nil
 				DukeHelpers.RemoveHeartFly(f)
@@ -58,15 +58,16 @@ end, DukeHelpers.FLY_VARIANT)
 
 -- Handles attacking an enemy when attack fly
 dukeMod:AddCallback(ModCallbacks.MC_FAMILIAR_UPDATE, function(_, f)
-	if f:GetData().attacker then
-		if not f:GetData().attacker:IsDead() then
-			f.Target = f:GetData().attacker
+	local flyData = DukeHelpers.GetDukeData(f)
+	if flyData.attacker then
+		if not flyData.attacker:IsDead() then
+			f.Target = flyData.attacker
 		else
 			f.Target = nil
-			f:GetData().attacker = nil
+			flyData.attacker = nil
 		end
 	end
-	if f:GetData().bffs then
+	if flyData.bffs then
 		f.SpriteScale = Vector(1.2, 1.2)
 	end
 end, FamiliarVariant.BLUE_FLY)
