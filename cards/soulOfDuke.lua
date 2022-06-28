@@ -17,12 +17,12 @@ local function MC_USE_CARD(_, card, player, flags)
         DukeHelpers.SpawnSpidersFromPickupSubType(DukeHelpers.GetWeightedSpider(DukeHelpers.rng).pickupSubType,
             player.Position, player, 1)
     end
-	DukeHelpers.sfx:Play(SoundEffect.SOUND_WHEEZY_COUGH, 1, 0)
+    DukeHelpers.sfx:Play(SoundEffect.SOUND_WHEEZY_COUGH, 1, 0)
     DukeHelpers.sfx:Play(SoundEffect.SOUND_DEATH_BURST_LARGE, 1, 0)
-	Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.POOF02, 4, player.Position, Vector.Zero, player)
-	local effect = Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.POOF01, 3, player.Position, Vector.Zero, player)
-	effect.Color = Color(0, 0, 0, 1)
-	Game():ShakeScreen(10)
+    Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.POOF02, 4, player.Position, Vector.Zero, player)
+    local effect = Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.POOF01, 3, player.Position, Vector.Zero, player)
+    effect.Color = Color(0, 0, 0, 1)
+    Game():ShakeScreen(10)
 end
 
 return {
@@ -38,5 +38,9 @@ return {
             MC_USE_CARD,
             Id
         }
-    }
+    },
+    unlock = DukeHelpers.GetUnlock({
+        DukeHelpers.Unlocks.BOSS_RUSH,
+        DukeHelpers.Unlocks.HUSH
+    }, Tag, DukeHelpers.HUSK_ID)
 }

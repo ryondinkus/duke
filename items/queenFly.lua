@@ -53,7 +53,10 @@ local flyEnemies = {
 }
 
 local function MC_POST_NPC_DEATH(_, entity)
-    if not DukeHelpers.Find(flyEnemies, function(enemy) return enemy.entityType == entity.Type and (not enemy.variant or enemy.variant == entity.Variant) end) then
+    if not
+        DukeHelpers.Find(flyEnemies,
+            function(enemy) return enemy.entityType == entity.Type and
+                (not enemy.variant or enemy.variant == entity.Variant) end) then
         return
     end
     local closestPlayer = DukeHelpers.GetClosestPlayer(entity.Position, function(p) return p:HasCollectible(Id) end)
@@ -96,5 +99,6 @@ return {
             MC_FAMILIAR_UPDATE,
             FamiliarVariant.BLUE_FLY
         }
-    }
+    },
+    unlock = DukeHelpers.GetUnlock(DukeHelpers.Unlocks.BEAST, Tag, DukeHelpers.DUKE_ID)
 }

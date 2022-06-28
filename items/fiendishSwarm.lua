@@ -212,5 +212,6 @@ return {
             MC_FAMILIAR_INIT,
             FamiliarVariant.WISP
         }
-    }
+    },
+    unlock = DukeHelpers.GetUnlock(DukeHelpers.Unlocks.MOTHER, Tag, DukeHelpers.DUKE_ID)
 }

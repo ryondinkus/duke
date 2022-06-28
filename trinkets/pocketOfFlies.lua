@@ -15,9 +15,8 @@ return {
     Name = Name,
     Names = Names,
     Tag = Tag,
-	Id = Id,
+    Id = Id,
     Descriptions = Descriptions,
     WikiDescription = WikiDescription,
-    callbacks = {
-    }
+    unlock = DukeHelpers.GetUnlock(DukeHelpers.Unlocks.BLUE_BABY, Tag, DukeHelpers.DUKE_ID)
 }

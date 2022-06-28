@@ -15,7 +15,8 @@ local function MC_POST_NEW_ROOM()
     if DukeHelpers.AreEnemiesInRoom() then
         DukeHelpers.ForEachPlayer(function(player)
             if player:HasTrinket(Id) then
-                DukeHelpers.SpawnAttackFlyBySubType(DukeHelpers.GetWeightedFly(DukeHelpers.rng, true).heartFlySubType, player.Position, player)
+                DukeHelpers.SpawnAttackFlyBySubType(DukeHelpers.GetWeightedFly(DukeHelpers.rng, true).heartFlySubType,
+                    player.Position, player)
             end
         end)
     end
@@ -25,7 +26,7 @@ return {
     Name = Name,
     Names = Names,
     Tag = Tag,
-	Id = Id,
+    Id = Id,
     Descriptions = Descriptions,
     WikiDescription = WikiDescription,
     callbacks = {
@@ -33,5 +34,6 @@ return {
             ModCallbacks.MC_POST_NEW_ROOM,
             MC_POST_NEW_ROOM
         }
-    }
+    },
+    unlock = DukeHelpers.GetUnlock(DukeHelpers.Unlocks.ISAAC, Tag, DukeHelpers.DUKE_ID)
 }
