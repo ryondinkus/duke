@@ -28,38 +28,28 @@ local flies = {
 
 -- Registers the flies
 for _, fly in pairs(flies) do
-    local newFly = {
-        key = fly.key,
-        spritesheet = fly.spritesheet,
-        canAttack = fly.canAttack,
-        pickupSubType = fly.subType,
-        heartFlySubType = fly.subType,
-        attackFlySubType = DukeHelpers.GetAttackFlySubTypeBySubType(fly.subType),
-        count = fly.count,
-        weight = fly.weight,
-        sfx = fly.sfx,
-        poofColor = fly.poofColor,
-        sacAltarQuality = fly.sacAltarQuality,
-        baseFly = true
-    }
+    fly.pickupSubType = fly.subType
+    fly.heartFlySubType = fly.subType
+    fly.attackFlySubType = DukeHelpers.GetAttackFlySubTypeBySubType(fly.subType)
+    fly.isBase = true
 
     if fly.useFly then
         local existingFly = DukeHelpers.Flies[fly.useFly]
-        newFly.spritesheet = existingFly.spritesheet
-        newFly.canAttack = existingFly.canAttack
-        newFly.heartFlySubType = existingFly.heartFlySubType
-        newFly.attackFlySubType = existingFly.attackFlySubType
-        newFly.poofColor = existingFly.poofColor
-        newFly.sacAltarQuality = existingFly.sacAltarQuality
-        newFly.baseFly = false
+        fly.spritesheet = existingFly.spritesheet
+        fly.canAttack = existingFly.canAttack
+        fly.heartFlySubType = existingFly.heartFlySubType
+        fly.attackFlySubType = existingFly.attackFlySubType
+        fly.poofColor = existingFly.poofColor
+        fly.sacAltarQuality = existingFly.sacAltarQuality
+        fly.isBase = false
     end
 
-    if fly.spritesheet then
-        newFly.spritesheet = "gfx/familiars/flies/" .. fly.spritesheet
+    if fly.spritesheet and not fly.useFly then
+        fly.spritesheet = "gfx/familiars/flies/" .. fly.spritesheet
     end
 
-    if fly.useFlies then
-        newFly.heartFlySubType = fly.useFlies
+    if fly.uses then
+        fly.heartFlySubType = fly.uses
     end
 
     if fly.callbacks then
@@ -68,7 +58,23 @@ for _, fly in pairs(flies) do
         end
     end
 
-    DukeHelpers.Flies[fly.key] = newFly
+    if fly.heartFlyDamageMultiplier then
+        dukeMod:AddCallback(ModCallbacks.MC_FAMILIAR_UPDATE, function(_, f)
+            if f.SubType == fly.heartFlySubType then
+                f.CollisionDamage = f.CollisionDamage * fly.heartFlyDamageMultiplier
+            end
+        end, DukeHelpers.FLY_VARIANT)
+    end
+
+    if fly.attackFlyDamageMultiplier then
+        dukeMod:AddCallback(ModCallbacks.MC_FAMILIAR_UPDATE, function(_, f)
+            if f.SubType == fly.attackFlySubType and f.FrameCount == 6 then
+                f.CollisionDamage = f.CollisionDamage * fly.attackFlyDamageMultiplier
+            end
+        end, FamiliarVariant.BLUE_FLY)
+    end
+
+    DukeHelpers.Flies[fly.key] = fly
 
     if not DukeHelpers.HeartKeys[fly.key] then
         DukeHelpers.HeartKeys[fly.key] = fly.key

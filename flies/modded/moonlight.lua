@@ -2,20 +2,6 @@ local key = "MOONLIGHT" -- From Moonlight Hearts Mod
 local subType = 901
 local attackFlySubType = DukeHelpers.GetAttackFlySubTypeBySubType(subType)
 
-local function ATTACK_FLY_MC_FAMILIAR_UPDATE_ATTACK(_, f)
-	if f.SubType == attackFlySubType then
-		if f.FrameCount == 6 then
-			f.CollisionDamage = f.CollisionDamage * 1.3
-		end
-	end
-end
-
-local function HEART_FLY_MC_FAMILIAR_UPDATE_ATTACK(_, f)
-	if f.SubType == subType then
-		f.CollisionDamage = f.CollisionDamage * 1.3
-	end
-end
-
 local function MC_PRE_FAMILIAR_COLLISION(_, f, e)
 	if f.SubType == subType then
 		if e.Type == EntityType.ENTITY_PROJECTILE and not e:ToProjectile():HasProjectileFlags(ProjectileFlags.CANT_HIT_PLAYER) then
@@ -29,7 +15,8 @@ local function MC_PRE_FAMILIAR_COLLISION(_, f, e)
 			elseif effect == 2 then
 				Game():GetLevel():ApplyMapEffect()
 			elseif effect == 3 then
-				Game():GetLevel():RemoveCurses(LevelCurse.CURSE_OF_DARKNESS | LevelCurse.CURSE_OF_BLIND | LevelCurse.CURSE_OF_THE_LOST | LevelCurse.CURSE_OF_THE_UNKNOWN | LevelCurse.CURSE_OF_MAZE)
+				Game():GetLevel():RemoveCurses(LevelCurse.CURSE_OF_DARKNESS | LevelCurse.CURSE_OF_BLIND |
+					LevelCurse.CURSE_OF_THE_LOST | LevelCurse.CURSE_OF_THE_UNKNOWN | LevelCurse.CURSE_OF_MAZE)
 			elseif effect == 4 then
 				p:UseCard(Card.CARD_SOUL_CAIN, (UseFlag.USE_NOANNOUNCER | UseFlag.USE_NOANIM))
 			elseif effect == 5 then
@@ -53,19 +40,11 @@ return {
 	sfx = SoundEffect.SOUND_SOUL_PICKUP,
 	callbacks = {
 		{
-			ModCallbacks.MC_FAMILIAR_UPDATE,
-			ATTACK_FLY_MC_FAMILIAR_UPDATE_ATTACK,
-			FamiliarVariant.BLUE_FLY
-		},
-		{
-			ModCallbacks.MC_FAMILIAR_UPDATE,
-			HEART_FLY_MC_FAMILIAR_UPDATE_ATTACK,
-			DukeHelpers.FLY_VARIANT
-		},
-		{
 			ModCallbacks.MC_PRE_FAMILIAR_COLLISION,
 			MC_PRE_FAMILIAR_COLLISION,
 			DukeHelpers.FLY_VARIANT
 		}
-	}
+	},
+	heartFlyDamageMultiplier = 1.3,
+	attackFlyDamageMultiplier = 1.3
 }

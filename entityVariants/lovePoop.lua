@@ -7,8 +7,8 @@ local function MC_NPC_UPDATE(_, entity)
         local sprite = entity:GetSprite()
         local data = entity:GetData()
 
-        if entity.FrameCount <= 1 then
-            entity.EntityCollisionClass = EntityCollisionClass.ENTCOLL_NONE
+        if entity.FrameCount == 0 then
+            entity.EntityCollisionClass = EntityCollisionClass.EntityCollisionClass.ENTCOLL_NONE
         end
 
         if not entity:HasEntityFlags(EntityFlag.FLAG_NO_PHYSICS_KNOCKBACK) then
@@ -18,7 +18,7 @@ local function MC_NPC_UPDATE(_, entity)
             sprite:LoadGraphics()
         end
 
-        if sprite:IsFinished("Appear") then
+        if sprite:IsFinished("Appear") or sprite:IsEventTriggered("Primed") then
             entity.EntityCollisionClass = EntityCollisionClass.ENTCOLL_ALL
             data.state = 1
         end
@@ -46,7 +46,8 @@ local function MC_NPC_UPDATE(_, entity)
             end
 
             if data.state >= 5 then
-                local explosion = Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.FART, 0, entity.Position, Vector.Zero, entity)
+                local explosion = Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.FART, 0, entity.Position,
+                    Vector.Zero, entity)
                 explosion.Color = Color(1, 1, 1, 1, 0.59, 0, 0.39)
                 local damage = 40
                 local player = entity.SpawnerEntity:ToFamiliar().Player:ToPlayer()
@@ -55,7 +56,7 @@ local function MC_NPC_UPDATE(_, entity)
                     damage = damage * 2
                 end
                 local radius = 75
-                if Sewn_API:IsSuper(entity.SpawnerEntity:GetData()) then
+                if Sewn_API and Sewn_API:IsSuper(entity.SpawnerEntity:GetData()) then
                     radius = radius * 2
                     explosion.SpriteScale = explosion.SpriteScale * 2
                 end

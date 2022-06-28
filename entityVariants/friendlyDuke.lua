@@ -19,7 +19,7 @@ local CONSTANTS = {
 }
 
 local function MC_FAMILIAR_UPDATE(_, f)
-	local data = f:GetData()
+	local data = DukeHelpers.GetDukeData(f)
 	local sprite = f:GetSprite()
 	if f.FrameCount == 6 then
 		data.State = STATE.DESCEND
@@ -87,7 +87,7 @@ local function MC_FAMILIAR_UPDATE(_, f)
 	if data.State == STATE.ATTACK_BIG then
 		if sprite:IsEventTriggered("Barf") then
 			if f.Player:HasCollectible(CollectibleType.COLLECTIBLE_BOOK_OF_VIRTUES) then
-				for _=1,2 do
+				for _ = 1, 2 do
 					DukeHelpers.SpawnAttackFlyWispBySubType(1, f.Position, f.Player, false)
 				end
 			else
@@ -103,7 +103,7 @@ local function MC_FAMILIAR_UPDATE(_, f)
 					local fly = Isaac.Spawn(EntityType.ENTITY_ATTACKFLY, 0, 0, f.Position + CONSTANTS.FLY_SPAWN_OFFSET, Vector.Zero, f)
 					fly:AddCharmed(EntityRef(f.Player), -1)
 					fly:ClearEntityFlags(EntityFlag.FLAG_APPEAR)
-					fly:GetData().bigFly = true
+					DukeHelpers.GetDukeData(fly).bigFly = true
 					fly.MaxHitPoints = fly.MaxHitPoints * 1.5
 					fly.HitPoints = fly.HitPoints * 1.5
 				end
@@ -131,7 +131,8 @@ local function MC_FAMILIAR_UPDATE(_, f)
 			Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.LARGE_BLOOD_EXPLOSION, 0, f.Position, Vector.Zero, f)
 			DukeHelpers.sfx:Play(SoundEffect.SOUND_ROCKET_BLAST_DEATH)
 			for _ = 1, 6 do
-				local fly = Isaac.Spawn(EntityType.ENTITY_ATTACKFLY, 0, 0, f.Position, Vector.FromAngle(DukeHelpers.rng:RandomInt(360)) * 5, f)
+				local fly = Isaac.Spawn(EntityType.ENTITY_ATTACKFLY, 0, 0, f.Position,
+					Vector.FromAngle(DukeHelpers.rng:RandomInt(360)) * 5, f)
 				fly:AddCharmed(EntityRef(f.Player), -1)
 				fly:ClearEntityFlags(EntityFlag.FLAG_APPEAR)
 			end
@@ -153,7 +154,7 @@ end
 
 local function MC_POST_UPDATE(_, e)
 	DukeHelpers.ForEachEntityInRoom(function(entity)
-		if entity:GetData().bigFly then
+		if DukeHelpers.GetDukeData(entity).bigFly then
 			entity.SpriteScale = entity.SpriteScale * 1.2
 		end
 	end, EntityType.ENTITY_ATTACKFLY)

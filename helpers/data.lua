@@ -73,7 +73,7 @@ function DukeHelpers.SaveGame()
     end)
 
     DukeHelpers.ForEachEntityInRoom(function(familiar)
-        data.familiars[tostring(familiar.InitSeed)] = familiar:GetData()
+        data.familiars[tostring(familiar.InitSeed)] = DukeHelpers.GetDukeData(familiar)
     end, EntityType.ENTITY_FAMILIAR)
 
     DukeHelpers.SaveData(DukeHelpers.FlattenEntityData(data))

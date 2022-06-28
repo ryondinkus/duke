@@ -71,15 +71,15 @@ include("helpers/spiders")
 include("helpers/data")
 include("helpers/husk")
 
-include("flies/registry")
-include("spiders/registry")
-
 -- Initialize player and flies
 include("flies")
 include("duke")
 include("wisps")
 include("husk")
 include("flyHearts")
+
+include("flies/registry")
+include("spiders/registry")
 
 include("items/registry")
 
@@ -177,18 +177,22 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_GAME_STARTED, function(_, isContinued)
             DukeHelpers.ForEachEntityInRoom(function(familiar)
                 local savedFamiliarData = data.familiars[tostring(familiar.InitSeed)]
                 if savedFamiliarData then
-                    local familiarData = familiar:GetData()
+                    local familiarData = DukeHelpers.GetDukeData(familiar)
                     for key, value in pairs(DukeHelpers.RehydrateEntityData(savedFamiliarData)) do
                         familiarData[key] = value
                     end
                 end
 
                 if familiar.Variant == DukeHelpers.FLY_VARIANT then
-                    DukeHelpers.PositionHeartFly(familiar, familiar:GetData().layer)
+                    DukeHelpers.PositionHeartFly(familiar, DukeHelpers.GetDukeData(familiar).layer)
                 end
 
                 if DukeHelpers.IsAttackFly(familiar) then
                     DukeHelpers.InitializeAttackFly(familiar)
+                end
+
+                if DukeHelpers.IsHeartSpider(familiar) then
+                    DukeHelpers.InitializeHeartSpider(familiar)
                 end
             end, EntityType.ENTITY_FAMILIAR)
         end

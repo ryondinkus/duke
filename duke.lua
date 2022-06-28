@@ -99,9 +99,11 @@ end, DukeHelpers.DUKE_ID)
 function DukeHelpers.GetDukeData(p)
 	local data = p:GetData()
 	if not data.duke then
-		data.duke = {
-			heartFlies = {}
-		}
+		data.duke = {}
+
+		if p.Type == EntityType.ENTITY_PLAYER then
+			data.duke.heartFlies = {}
+		end
 	end
 
 	return data.duke
@@ -145,7 +147,7 @@ dukeMod:AddCallback(ModCallbacks.MC_EVALUATE_CACHE, function(_, player, flags)
 			for i = #heartFlies, 1, -1 do
 				local fly = heartFlies[i]
 				local f = DukeHelpers.GetEntityByInitSeed(fly.initSeed)
-				if f:GetData().layer == DukeHelpers.BIRTHRIGHT then
+				if DukeHelpers.GetDukeData(f).layer == DukeHelpers.BIRTHRIGHT then
 					DukeHelpers.RemoveHeartFly(f)
 					DukeHelpers.SpawnAttackFly(f)
 				end

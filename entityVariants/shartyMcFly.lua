@@ -13,7 +13,7 @@ local function MC_FAMILIAR_INIT(_, f)
 end
 
 local function MC_FAMILIAR_UPDATE(_, f)
-	local data = f:GetData()
+	local data = DukeHelpers.GetDukeData(f)
 	local sprite = f:GetSprite()
 	if f.FrameCount == 6 then
 		sprite:Play("Float", true)
@@ -37,7 +37,7 @@ local function MC_FAMILIAR_UPDATE(_, f)
 			Isaac.Spawn(EntityType.ENTITY_POOP, DukeHelpers.EntityVariants.lovePoop.Id, 0, f.Position, Vector.Zero, f)
 		end
 		if sprite:IsFinished("Attack") then
-			if Sewn_API:IsUltra(data) then
+			if Sewn_API and Sewn_API:IsUltra(f:GetData()) then
 				data.poopCount = data.poopCount - 0.5
 			else
 				data.poopCount = data.poopCount - 1
@@ -56,9 +56,10 @@ end
 
 local function MC_POST_NEW_ROOM()
 	DukeHelpers.ForEachEntityInRoom(function(entity)
+		local entityData = DukeHelpers.GetDukeData(entity)
 		entity:GetSprite():Play("Float", true)
-		entity:GetData().State = STATE.IDLE
-		entity:GetData().poopCount = 1
+		entityData.State = STATE.IDLE
+		entityData.poopCount = 1
 	end, EntityType.ENTITY_FAMILIAR, DukeHelpers.EntityVariants.shartyMcFly.Id)
 end
 

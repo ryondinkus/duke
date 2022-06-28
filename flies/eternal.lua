@@ -6,7 +6,8 @@ local function MC_FAMILIAR_UPDATE(_, f)
 	if f.SubType == subType then
 		if f.FrameCount == 6 then
 			DukeHelpers.ForEachEntityInRoom(function(entity)
-				DukeGiantBookAPI.playDukeGiantBook("Appear", nil, "gfx/ui/giantbook/giantbook_eternalfly.anm2", Color(1, 1, 1, 1), Color(1, 1, 1, 1), Color(1, 1, 1, 1))
+				DukeGiantBookAPI.playDukeGiantBook("Appear", nil, "gfx/ui/giantbook/giantbook_eternalfly.anm2", Color(1, 1, 1, 1),
+					Color(1, 1, 1, 1), Color(1, 1, 1, 1))
 				for i = 1, 2 do
 					DukeHelpers.AddHeartFly(f.SpawnerEntity:ToPlayer(), DukeHelpers.Flies.RED)
 					DukeHelpers.RemoveHeartFly(entity)
@@ -17,7 +18,6 @@ local function MC_FAMILIAR_UPDATE(_, f)
 					return entity.SpawnerEntity.InitSeed == f.SpawnerEntity.InitSeed and entity.InitSeed ~= f.InitSeed
 				end)
 		end
-		f.CollisionDamage = f.CollisionDamage * 1.5
 	end
 end
 
@@ -36,5 +36,6 @@ return {
 			MC_FAMILIAR_UPDATE,
 			DukeHelpers.FLY_VARIANT
 		}
-	}
+	},
+	heartFlyDamageMultiplier = 1.5
 }

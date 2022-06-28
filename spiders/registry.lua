@@ -57,7 +57,7 @@ for _, spider in pairs(spiders) do
             spider.onRelease = existingSpider.onRelease
         end
 
-        existingSpider.isBase = false
+        spider.isBase = false
     end
 
     if spider.spritesheet then
