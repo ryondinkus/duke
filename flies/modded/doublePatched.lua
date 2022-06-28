@@ -1,10 +1,10 @@
 local key = "DOUBLE_PATCHED" -- from patched hearts mod
-local useFly = include("flies/red").key
+local use = include("flies/red").key
 local subType = 3321
 
 return {
     key = key,
-    useFly = useFly,
+    use = use,
     subType = subType,
     count = 4
 }

@@ -16,26 +16,8 @@ local function ShouldSpawnExtraFly(player)
 end
 
 local function RandomlySpawnHeartFlyFromPickup(player, pickup)
-    if player and player:HasTrinket(Id) then
-        local canPickup = pickup.Variant == PickupVariant.PICKUP_HEART
-        if pickup.SubType > HeartSubType.HEART_ROTTEN then
-            return
-        end
-        if pickup.SubType == HeartSubType.HEART_FULL or pickup.SubType == HeartSubType.HEART_HALF or pickup.SubType == HeartSubType.HEART_DOUBLEPACK or pickup.SubType == HeartSubType.HEART_SCARED then
-            canPickup = player:CanPickRedHearts()
-        elseif pickup.SubType == HeartSubType.HEART_SOUL or pickup.SubType == HeartSubType.HEART_HALF_SOUL then
-            canPickup = player:CanPickSoulHearts()
-        elseif pickup.SubType == HeartSubType.HEART_BLACK then
-            canPickup = player:CanPickBlackHearts()
-        elseif pickup.SubType == HeartSubType.HEART_BONE then
-            canPickup = player:CanPickBoneHearts()
-        elseif pickup.SubType == HeartSubType.HEART_ROTTEN then
-            canPickup = player:CanPickRottenHearts()
-        elseif pickup.SubType == HeartSubType.HEART_GOLDEN then
-            canPickup = player:CanPickGoldenHearts()
-        elseif pickup.SubType == HeartSubType.HEART_BLENDED then
-            canPickup = player:CanPickRedHearts() or player:CanPickSoulHearts()
-        end
+    if player and player:HasTrinket(Id) and pickup.Variant == PickupVariant.PICKUP_HEART then
+        local canPickup = DukeHelpers.CanPickUpHeart(player, pickup)
 
         if (DukeHelpers.IsDuke(player) or canPickup) and ShouldSpawnExtraFly(player) then
             if DukeHelpers.IsDuke(player) then

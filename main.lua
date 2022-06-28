@@ -13,7 +13,8 @@ end
 
 local defaultGlobal = {
     isInitialized = false,
-    isGameStarted = false
+    isGameStarted = false,
+    flyHearts = {}
 }
 
 dukeMod.global = table.deepCopy(defaultGlobal)
@@ -75,6 +76,7 @@ include("flies")
 include("duke")
 include("wisps")
 include("husk")
+include("flyHearts")
 
 include("flies/registry")
 include("spiders/registry")

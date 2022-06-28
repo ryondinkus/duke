@@ -585,6 +585,110 @@ function DukeHelpers.CountOccurencesInTable(table, value)
     return found
 end
 
+function DukeHelpers.IsMoonlightHeart(pickup)
+    return pickup.Type == EntityType.ENTITY_PICKUP and pickup.Variant == 901
+end
+
+function DukeHelpers.CanPickMoonlightHearts(player)
+    local data = player:GetData()
+
+    if not data.moons then
+        data = Isaac.GetPlayer(0):GetData()
+    end
+
+    return data.moons and data.moons < 12
+end
+
+function DukeHelpers.IsImmortalHeart(pickup)
+    return pickup.Type == EntityType.ENTITY_PICKUP and pickup.Variant == PickupVariant.PICKUP_HEART and
+        pickup.SubType == HeartSubType.HEART_IMMORTAL
+end
+
+function DukeHelpers.CanPickImmortalHearts(player)
+    local hearts = DukeHelpers.GetTrueImmortalHearts(player)
+
+    return hearts and hearts < (player:GetHeartLimit() - player:GetEffectiveMaxHearts())
+end
+
+function DukeHelpers.IsPatchedHeart(pickup)
+    return pickup.Type == EntityType.ENTITY_PICKUP and pickup.Variant == PickupVariant.PICKUP_HEART and
+        (pickup.SubType == 3320 or pickup.SubType == 3321)
+end
+
+function DukeHelpers.CanPickPatchedHearts(player)
+    return PATCH_GLOBAL and (player:CanPickRedHearts() or player:GetBrokenHearts() > 0)
+end
+
+function DukeHelpers.IsWebHeart(pickup)
+    return pickup.Type == EntityType.ENTITY_PICKUP and pickup.Variant == DukeHelpers.Flies.WEB.pickupSubType
+end
+
+function DukeHelpers.IsDoubleWebHeart(pickup)
+    return pickup.Type == EntityType.ENTITY_PICKUP and pickup.Variant == DukeHelpers.Flies.DOUBLE_WEB.pickupSubType
+end
+
+function DukeHelpers.CanPickWebHeart(player, double)
+    if not ARACHNAMOD or DukeHelpers.GetPlayerControllerIndex(player) ~= 0 then
+        return false
+    end
+
+    local playerType = player:GetPlayerType()
+    if (
+        playerType == PlayerType.PLAYER_KEEPER or playerType == PlayerType.PLAYER_KEEPER_B or
+            playerType == PlayerType.PLAYER_LOST or playerType == PlayerType.PLAYER_LOST_B)
+        or (not player:CanPickSoulHearts()) then
+        return false
+    end
+
+    player = playerType == PlayerType.PLAYER_THESOUL_B and player:GetMainTwin() or player
+    player = playerType == PlayerType.PLAYER_THEFORGOTTEN and player:GetSubPlayer() or player
+
+    local webHeartAmount = ARACHNAMOD:GetData(player).webHearts
+
+    local maxHP = player:GetHeartLimit()
+    local healthAmount = maxHP
+    if webHeartAmount then
+        healthAmount = player:GetSoulHearts() + getRedContainers(player)
+    end
+    if healthAmount < maxHP and (not double or healthAmount < maxHP - 2) then
+        return true
+    end
+    return false
+end
+
+function DukeHelpers.CanPickUpHeart(player, pickup)
+    if pickup.Variant == PickupVariant.PICKUP_HEART then
+        if pickup.SubType == HeartSubType.HEART_FULL or pickup.SubType == HeartSubType.HEART_HALF or
+            pickup.SubType == HeartSubType.HEART_DOUBLEPACK or pickup.SubType == HeartSubType.HEART_SCARED then
+            return player:CanPickRedHearts()
+        elseif pickup.SubType == HeartSubType.HEART_SOUL or pickup.SubType == HeartSubType.HEART_HALF_SOUL then
+            return player:CanPickSoulHearts()
+        elseif pickup.SubType == HeartSubType.HEART_BLACK then
+            return player:CanPickBlackHearts()
+        elseif pickup.SubType == HeartSubType.HEART_BONE then
+            return player:CanPickBoneHearts()
+        elseif pickup.SubType == HeartSubType.HEART_ROTTEN then
+            return player:CanPickRottenHearts()
+        elseif pickup.SubType == HeartSubType.HEART_GOLDEN then
+            return player:CanPickGoldenHearts()
+        elseif pickup.SubType == HeartSubType.HEART_BLENDED then
+            return player:CanPickRedHearts() or player:CanPickSoulHearts()
+        elseif DukeHelpers.IsImmortalHeart(pickup) then
+            return DukeHelpers.CanPickImmortalHearts(player)
+        elseif DukeHelpers.IsPatchedHeart(pickup) then
+            return DukeHelpers.CanPickPatchedHearts(player)
+        end
+    elseif DukeHelpers.IsMoonlightHeart(pickup) then
+        return DukeHelpers.CanPickMoonlightHearts(player)
+    elseif DukeHelpers.IsWebHeart(pickup) then
+        return DukeHelpers.CanPickWebHeart(player)
+    elseif DukeHelpers.IsDoubleWebHeart(pickup) then
+        return DukeHelpers.CanPickWebHeart(player, true)
+    end
+
+    return false
+end
+
 -- referenced abortionbirth for this function, never forget your roots ✌️
 function DukeHelpers.GetNearestEnemy(pos, includeBosses, includeInvulnerable, filters)
     local dist

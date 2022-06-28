@@ -89,10 +89,6 @@ end)
 dukeMod:AddCallback(ModCallbacks.MC_POST_PEFFECT_UPDATE, function(_, p)
 	local removedHearts = DukeHelpers.RemoveUnallowedHearts(p)
 
-	-- if DukeHelpers.LengthOfTable(removedHearts) > 0 then
-	-- 	DukeHelpers.PrintJson(removedHearts)
-	-- end
-
 	for heartKey, removedAmount in pairs(removedHearts) do
 		DukeHelpers.AddHeartFly(p, DukeHelpers.Flies[heartKey], removedAmount)
 	end
