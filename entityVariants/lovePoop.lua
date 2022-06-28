@@ -63,7 +63,7 @@ local function MC_NPC_UPDATE(_, entity)
                     radius = radius * 2
                     explosion.SpriteScale = explosion.SpriteScale * 2
                 end
-                for i, enemy in ipairs(Isaac.FindInRadius(entity.Position, radius, EntityPartition.ENEMY)) do
+                for _, enemy in ipairs(Isaac.FindInRadius(entity.Position, radius, EntityPartition.ENEMY)) do
                     enemy:TakeDamage(damage, DamageFlag.DAMAGE_EXPLOSION, EntityRef(player), 0)
                 end
                 entity.EntityCollisionClass = EntityCollisionClass.ENTCOLL_NONE
