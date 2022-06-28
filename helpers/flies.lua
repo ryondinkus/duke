@@ -113,8 +113,6 @@ function DukeHelpers.GetFlySpritesheet(subType)
 	local foundFly = DukeHelpers.GetFlyByHeartSubType(subType) or DukeHelpers.GetFlyByAttackSubType(subType)
 
 	if foundFly then
-		print(foundFly.key)
-		print(foundFly.spritesheet)
 		return foundFly.spritesheet
 	end
 

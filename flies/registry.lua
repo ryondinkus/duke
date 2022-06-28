@@ -15,15 +15,15 @@ local flies = {
     include("flies/modded/immortal"),
     include("flies/modded/moonlight"),
     include("flies/modded/web"),
+    include("flies/modded/doubleWeb"),
+    include("flies/modded/patched"),
+    include("flies/modded/doublePatched"),
     -- Make sure any fly types that are used by other heart types are registered first
     include("flies/halfRed"),
     include("flies/doubleRed"),
     include("flies/halfSoul"),
     include("flies/scared"),
-    include("flies/blended"),
-    --modded
-    include("flies/modded/patched"),
-    include("flies/modded/doublePatched")
+    include("flies/blended")
 }
 
 -- Registers the flies
@@ -33,8 +33,8 @@ for _, fly in pairs(flies) do
     fly.attackFlySubType = DukeHelpers.GetAttackFlySubTypeBySubType(fly.subType)
     fly.isBase = true
 
-    if fly.useFly then
-        local existingFly = DukeHelpers.Flies[fly.useFly]
+    if fly.use then
+        local existingFly = DukeHelpers.Flies[fly.use]
         fly.spritesheet = existingFly.spritesheet
         fly.canAttack = existingFly.canAttack
         fly.heartFlySubType = existingFly.heartFlySubType
@@ -44,7 +44,7 @@ for _, fly in pairs(flies) do
         fly.isBase = false
     end
 
-    if fly.spritesheet and not fly.useFly then
+    if fly.spritesheet and not fly.use then
         fly.spritesheet = "gfx/familiars/flies/" .. fly.spritesheet
     end
 

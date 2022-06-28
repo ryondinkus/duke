@@ -38,7 +38,7 @@ end)
 local function flyHeartPickupUpdate(_, pickup)
     if pickup.FrameCount <= 1 then
         if pickup:GetSprite():GetAnimation() == "Appear" then
-            if DukeHelpers.PercentageChance(100) then
+            if DukeHelpers.PercentageChance(5) then
                 StoreFlyHeart(pickup)
             end
         else
@@ -69,7 +69,7 @@ local function flyHeartPickupRender(_, pickup)
         if pickupData.flyHeartSpritesheet:IsFinished("FlyHeartAppear") then
             pickupData.flyHeartSpritesheet:Play("FlyHeart")
         end
-        pickupData.flyHeartSpritesheet:Render(Isaac.WorldToRenderPosition(pickup.Position) - Vector(1, 5), Vector.Zero,
+        pickupData.flyHeartSpritesheet:Render(Isaac.WorldToScreen(pickup.Position) - Vector(1, 5), Vector.Zero,
             Vector.Zero)
     end
 end
@@ -88,11 +88,9 @@ local function flyHeartPickupCollide(_, pickup)
         local player = DukeHelpers.GetClosestPlayer(pickup.Position)
 
         if player and pickup:GetData().isFlyHeart then
-            if DukeHelpers.CanPickUpHeart(player, pickup) then
-                DukeHelpers.AddHeartFly(player,
-                    DukeHelpers.GetFlyByPickupSubType(pickup.SubType == 0 and pickup.Variant or pickup.SubType))
-                pickup:GetData().isCollected = true
-            end
+            DukeHelpers.AddHeartFly(player,
+                DukeHelpers.GetFlyByPickupSubType(pickup.SubType == 0 and pickup.Variant or pickup.SubType))
+            pickup:GetData().isCollected = true
         end
     end
 end

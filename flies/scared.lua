@@ -1,10 +1,10 @@
 local key = "SCARED"
-local useFly = include("flies/red").key
+local use = include("flies/red").key
 local subType = HeartSubType.HEART_SCARED
 
 return {
     key = key,
-    useFly = useFly,
+    use = use,
     subType = subType,
     count = 2
 }
