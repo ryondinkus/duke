@@ -3,21 +3,16 @@ local Tag = "loveDip"
 local Id = 332
 
 local function MC_FAMILIAR_UPDATE(_, familiar)
-    print("callback runs")
     if familiar.SubType == Id then
-        print(":)")
-    	local data = DukeHelpers.GetDukeData(familiar)
-    	local sprite = familiar:GetSprite()
-    	local player = familiar.Player
+        local data = DukeHelpers.GetDukeData(familiar)
+        local player = familiar.Player
 
-    	if data and not data.timer then
-            print("chat time")
+        if data and not data.timer then
             data.timer = 300
         end
 
         if data.timer then
             if data.timer % 30 == 0 then
-                print("yunk")
                 familiar:TakeDamage(1, 0, EntityRef(familiar), 0)
             end
             data.timer = data.timer - 1
@@ -28,25 +23,23 @@ local function MC_FAMILIAR_UPDATE(_, familiar)
                 explosion.SpriteScale = Vector(0.5, 0.5)
                 local damage = 20
                 local radius = 40
-                for i, enemy in ipairs(Isaac.FindInRadius(familiar.Position, radius, EntityPartition.ENEMY)) do
+                for _, enemy in ipairs(Isaac.FindInRadius(familiar.Position, radius, EntityPartition.ENEMY)) do
                     enemy:TakeDamage(damage, DamageFlag.DAMAGE_EXPLOSION, EntityRef(player), 0)
                 end
-                entity.EntityCollisionClass = EntityCollisionClass.ENTCOLL_NONE
-                data.state = -1
             end
         end
     end
 end
 
 return {
-	Name = Name,
-	Tag = Tag,
-	Id = Id,
-	callbacks = {
-		{
-			ModCallbacks.MC_FAMILIAR_UPDATE,
-			MC_FAMILIAR_UPDATE,
+    Name = Name,
+    Tag = Tag,
+    Id = Id,
+    callbacks = {
+        {
+            ModCallbacks.MC_FAMILIAR_UPDATE,
+            MC_FAMILIAR_UPDATE,
             FamiliarVariant.DIP
-		}
-	}
+        }
+    }
 }
