@@ -113,3 +113,8 @@ function DukeHelpers.SpawnPickupPoof(player, pickupSubType)
 
     return poof
 end
+
+function DukeHelpers.PlayDukeDeath(e)
+    Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.LARGE_BLOOD_EXPLOSION, 0, e.Position, Vector.Zero, e)
+    DukeHelpers.sfx:Play(SoundEffect.SOUND_ROCKET_BLAST_DEATH)
+end

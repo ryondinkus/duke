@@ -141,8 +141,16 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_UPDATE, function()
 	DukeHelpers.ForEachHusk(function(p)
 		local sprite = p:GetSprite()
 		if sprite:IsPlaying("Death") and sprite:GetFrame() == 19 then
-			Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.LARGE_BLOOD_EXPLOSION, 0, p.Position, Vector.Zero, p)
-			DukeHelpers.sfx:Play(SoundEffect.SOUND_ROCKET_BLAST_DEATH)
+			DukeHelpers.PlayDukeDeath(p)
 		end
 	end)
+
+	local foundEntities = Isaac.FindByType(EntityType.ENTITY_EFFECT, EffectVariant.DEVIL, -1)
+
+	for _, entity in pairs(foundEntities) do
+		local sprite = entity:GetSprite()
+		if sprite:GetFilename() == "gfx/characters/duke_b.anm2" and sprite:IsPlaying("Death") and sprite:GetFrame() == 19 then
+			DukeHelpers.PlayDukeDeath(entity)
+		end
+	end
 end)

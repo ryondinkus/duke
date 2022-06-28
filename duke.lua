@@ -123,7 +123,8 @@ end
 dukeMod:AddCallback(ModCallbacks.MC_POST_UPDATE, function()
 	DukeHelpers.ForEachDuke(function(p)
 		local sprite = p:GetSprite()
-		if sprite:IsPlaying("Death") and sprite:GetFrame() == 19 then
+		if (sprite:IsPlaying("Death") and sprite:GetFrame() == 19) or
+			(sprite:IsPlaying("LostDeath") and sprite:GetFrame() == 1) then
 			local fliesData = DukeHelpers.GetDukeData(p).heartFlies
 			if fliesData then
 				for i = #fliesData, 1, -1 do
@@ -133,10 +134,20 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_UPDATE, function()
 					DukeHelpers.RemoveHeartFly(f)
 				end
 			end
-			Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.LARGE_BLOOD_EXPLOSION, 0, p.Position, Vector.Zero, p)
-			DukeHelpers.sfx:Play(SoundEffect.SOUND_ROCKET_BLAST_DEATH)
+			if sprite:IsPlaying("Death") then
+				DukeHelpers.PlayDukeDeath(p)
+			end
 		end
 	end)
+
+	local foundEntities = Isaac.FindByType(EntityType.ENTITY_EFFECT, EffectVariant.DEVIL, -1)
+
+	for _, entity in pairs(foundEntities) do
+		local sprite = entity:GetSprite()
+		if sprite:GetFilename() == "gfx/characters/duke.anm2" and sprite:IsPlaying("Death") and sprite:GetFrame() == 19 then
+			DukeHelpers.PlayDukeDeath(entity)
+		end
+	end
 end)
 
 dukeMod:AddCallback(ModCallbacks.MC_EVALUATE_CACHE, function(_, player, flags)
