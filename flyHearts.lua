@@ -2,7 +2,7 @@ local function SetFlyHeart(pickup)
     local pickupData = pickup:GetData()
     pickupData.isFlyHeart = true
 
-    local fly = DukeHelpers.GetFlyByPickupSubType(pickup.SubType)
+    local fly = DukeHelpers.GetFlyByPickupSubType(pickup.SubType == 0 and pickup.Variant or pickup.SubType)
 
     local spritesheet
 
@@ -80,17 +80,22 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_PICKUP_RENDER, flyHeartPickupRender, 90
 dukeMod:AddCallback(ModCallbacks.MC_POST_PICKUP_RENDER, flyHeartPickupRender, 2000)
 dukeMod:AddCallback(ModCallbacks.MC_POST_PICKUP_RENDER, flyHeartPickupRender, 2002)
 
--- Spawn flies on fly heart pickup
-dukeMod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, function(_, pickup, collider)
-    local player
+local function flyHeartPickupCollide(_, pickup)
+    pickup = pickup:ToPickup()
+    if pickup:GetSprite():IsPlaying("Collect") and (not pickup:GetData().isCollected) and
+        (pickup.Variant == PickupVariant.PICKUP_HEART or pickup.Variant == 901 or pickup.Variant == 2000 or
+            pickup.Variant == 2002) then
+        local player = DukeHelpers.GetClosestPlayer(pickup.Position)
 
-    if collider then
-        player = collider:ToPlayer()
-    end
-
-    if player and pickup:GetData().isFlyHeart then
-        if DukeHelpers.CanPickUpHeart(player, pickup) then
-            DukeHelpers.AddHeartFly(player, DukeHelpers.GetFlyByPickupSubType(pickup.SubType))
+        if player and pickup:GetData().isFlyHeart then
+            if DukeHelpers.CanPickUpHeart(player, pickup) then
+                DukeHelpers.AddHeartFly(player,
+                    DukeHelpers.GetFlyByPickupSubType(pickup.SubType == 0 and pickup.Variant or pickup.SubType))
+                pickup:GetData().isCollected = true
+            end
         end
     end
-end, PickupVariant.PICKUP_HEART)
+end
+
+-- Spawn flies on fly heart pickup
+dukeMod:AddCallback(ModCallbacks.MC_POST_PICKUP_UPDATE, flyHeartPickupCollide)

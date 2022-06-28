@@ -600,7 +600,7 @@ end
 
 function DukeHelpers.IsImmortalHeart(pickup)
     return pickup.Type == EntityType.ENTITY_PICKUP and pickup.Variant == PickupVariant.PICKUP_HEART and
-        HeartSubType.HEART_IMMORTAL
+        pickup.SubType == HeartSubType.HEART_IMMORTAL
 end
 
 function DukeHelpers.CanPickImmortalHearts(player)
@@ -609,12 +609,21 @@ function DukeHelpers.CanPickImmortalHearts(player)
     return hearts and hearts < (player:GetHeartLimit() - player:GetEffectiveMaxHearts())
 end
 
+function DukeHelpers.IsPatchedHeart(pickup)
+    return pickup.Type == EntityType.ENTITY_PICKUP and pickup.Variant == PickupVariant.PICKUP_HEART and
+        (pickup.SubType == 3320 or pickup.SubType == 3321)
+end
+
+function DukeHelpers.CanPickPatchedHearts(player)
+    return PATCH_GLOBAL and (player:CanPickRedHearts() or player:GetBrokenHearts() > 0)
+end
+
 function DukeHelpers.IsWebHeart(pickup)
-    return pickup.Type == EntityType.ENTITY_PICKUP and pickup.Variant == 2000
+    return pickup.Type == EntityType.ENTITY_PICKUP and pickup.Variant == DukeHelpers.Flies.WEB.pickupSubType
 end
 
 function DukeHelpers.IsDoubleWebHeart(pickup)
-    return pickup.Type == EntityType.ENTITY_PICKUP and pickup.Variant == 2002
+    return pickup.Type == EntityType.ENTITY_PICKUP and pickup.Variant == DukeHelpers.Flies.DOUBLE_WEB.pickupSubType
 end
 
 function DukeHelpers.CanPickWebHeart(player, double)
@@ -633,14 +642,14 @@ function DukeHelpers.CanPickWebHeart(player, double)
     player = playerType == PlayerType.PLAYER_THESOUL_B and player:GetMainTwin() or player
     player = playerType == PlayerType.PLAYER_THEFORGOTTEN and player:GetSubPlayer() or player
 
-    local webHeartAmount = DukeHelpers.GetTrueWebHearts(player)
+    local webHeartAmount = ARACHNAMOD:GetData(player).webHearts
 
     local maxHP = player:GetHeartLimit()
     local healthAmount = maxHP
     if webHeartAmount then
         healthAmount = player:GetSoulHearts() + getRedContainers(player)
     end
-    if healthAmount < maxHP then
+    if healthAmount < maxHP and (not double or healthAmount < maxHP - 2) then
         return true
     end
     return false
@@ -665,12 +674,16 @@ function DukeHelpers.CanPickUpHeart(player, pickup)
             return player:CanPickRedHearts() or player:CanPickSoulHearts()
         elseif DukeHelpers.IsImmortalHeart(pickup) then
             return DukeHelpers.CanPickImmortalHearts(player)
+        elseif DukeHelpers.IsPatchedHeart(pickup) then
+            return DukeHelpers.CanPickPatchedHearts(player)
         end
     elseif DukeHelpers.IsMoonlightHeart(pickup) then
         return DukeHelpers.CanPickMoonlightHearts(player)
     elseif DukeHelpers.IsWebHeart(pickup) then
         return DukeHelpers.CanPickWebHeart(player)
-    end -- TODO add double web hearts
+    elseif DukeHelpers.IsDoubleWebHeart(pickup) then
+        return DukeHelpers.CanPickWebHeart(player, true)
+    end
 
     return false
 end
