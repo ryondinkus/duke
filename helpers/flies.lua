@@ -186,12 +186,12 @@ function DukeHelpers.RemoveOutermostHeartFlies(player, amount, removeBroken)
 
 	local removedFlies = {}
 
-	for i = 1, amount do
+	for _ = 1, amount do
 		local foundFly
 
 		while not foundFly do
 			foundFly = DukeHelpers.Find(fliesData, function(fly)
-				return (removeBroken or fly.heartFlySubType ~= DukeHelpers.Flies.BROKEN.heartFlySubType) and fly.layer == layer
+				return (removeBroken or fly.subType ~= DukeHelpers.Flies.BROKEN.heartFlySubType) and fly.layer == layer
 			end)
 
 			if not foundFly then
@@ -342,12 +342,7 @@ function DukeHelpers.SpawnPickupHeartFly(player, pickup, overriddenSubType, amou
 		end
 
 		DukeHelpers.sfx:Play(sfx)
-		pickup:Remove()
-
-		if pickup.Price > 0 then
-			player:AnimatePickup(pickup:GetSprite())
-			player:AddCoins(-pickup.Price)
-		end
+		DukeHelpers.AnimateHeartPickup(pickup, player)
 	end
 
 	return spawnedFlies

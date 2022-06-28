@@ -118,3 +118,18 @@ function DukeHelpers.PlayDukeDeath(e)
     Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.LARGE_BLOOD_EXPLOSION, 0, e.Position, Vector.Zero, e)
     DukeHelpers.sfx:Play(SoundEffect.SOUND_ROCKET_BLAST_DEATH)
 end
+
+function DukeHelpers.RemoveRottenGulletSlots(player, amount, force)
+    local playerSlots = DukeHelpers.GetFilledRottenGulletSlots(player)
+    local playerSlotCount = DukeHelpers.LengthOfTable(playerSlots)
+
+    if not playerSlotCount or (not force and playerSlotCount < amount) then
+        return 0
+    end
+
+    for _ = 1, math.min(amount, playerSlotCount) do
+        table.remove(playerSlots, 1)
+    end
+
+    return math.min(amount, playerSlotCount)
+end

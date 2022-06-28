@@ -709,3 +709,25 @@ function DukeHelpers.GetNearestEnemy(pos, includeBosses, includeInvulnerable, fi
 
     return near
 end
+
+function DukeHelpers.AnimateHeartPickup(pickup, p)
+    if pickup.Price == 0 then
+        pickup:GetSprite():Play("Collect")
+        local function removePickupCallback()
+            pickup.EntityCollisionClass = EntityCollisionClass.ENTCOLL_NONE
+            if pickup:GetSprite():IsFinished("Collect") then
+                pickup:Remove()
+                dukeMod:RemoveCallback(ModCallbacks.MC_POST_PICKUP_UPDATE, removePickupCallback)
+            end
+        end
+
+        dukeMod:AddCallback(ModCallbacks.MC_POST_PICKUP_UPDATE, removePickupCallback)
+    else
+        pickup:Remove()
+    end
+
+    if pickup.Price > 0 then
+        p:AnimatePickup(pickup:GetSprite())
+        p:AddCoins(-pickup.Price)
+    end
+end

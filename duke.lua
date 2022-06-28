@@ -63,7 +63,8 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_PICKUP_RENDER, function(_, pickup)
 end)
 
 dukeMod:AddCallback(ModCallbacks.MC_POST_PICKUP_UPDATE, function(_, pickup)
-	if (DukeHelpers.HasDuke() or DukeHelpers.HasPocketOfFlies()) and pickup.Price < 0 then
+	if (DukeHelpers.HasDuke() or DukeHelpers.HasPocketOfFlies()) and pickup.Price < 0 and pickup.Price > -5 and
+		pickup.Price < DukeHelpers.PRICE_OFFSET and pickup.Price > DukeHelpers.PRICE_OFFSET - 5 then
 		local closestPlayer = DukeHelpers.GetClosestPlayer(pickup.Position)
 
 		if closestPlayer and
@@ -163,6 +164,32 @@ dukeMod:AddCallback(ModCallbacks.MC_EVALUATE_CACHE, function(_, player, flags)
 					DukeHelpers.SpawnAttackFly(f)
 				end
 			end
+		end
+	end
+end)
+
+dukeMod:AddCallback(ModCallbacks.MC_ENTITY_TAKE_DMG, function(_, entity, _, flags, source)
+	local player = entity:ToPlayer()
+	local game = Game()
+	local levelStage = game:GetLevel():GetStage()
+
+	if player and game:GetRoom():GetType() == RoomType.ROOM_BOSS and
+		(levelStage == LevelStage.STAGE2_2 or levelStage == LevelStage.STAGE3_1) and flags == 301998208 and
+		(not source or not source.Entity) then
+
+		if DukeHelpers.IsDuke(player) or DukeHelpers.IsHusk(player) then
+			local numRemoved = 0
+
+			if DukeHelpers.IsDuke(player) then
+				numRemoved = numRemoved +
+					DukeHelpers.LengthOfTable(DukeHelpers.RemoveOutermostHeartFlies(player, 2 - numRemoved, false))
+			end
+
+			if numRemoved < 2 and DukeHelpers.IsHusk(player) then
+				numRemoved = numRemoved + DukeHelpers.RemoveRottenGulletSlots(player, 2 - numRemoved, true)
+			end
+
+			player:AddSoulHearts(numRemoved)
 		end
 	end
 end)

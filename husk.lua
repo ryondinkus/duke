@@ -58,12 +58,8 @@ dukeMod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, function(_, pickup, co
 			end
 
 			DukeHelpers.sfx:Play(sfx)
-			pickup:Remove()
+			DukeHelpers.AnimateHeartPickup(pickup, p)
 
-			if pickup.Price > 0 then
-				p:AnimatePickup(pickup:GetSprite())
-				p:AddCoins(-pickup.Price)
-			end
 		end
 
 		return true
@@ -76,15 +72,10 @@ dukeMod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, function(_, pickup, co
 	if p and DukeHelpers.IsHusk(p) and DukeHelpers.IsFlyPrice(pickup.Price) then
 		local heartPrice = DukeHelpers.GetDukeDevilDealPrice(pickup)
 
-		local playerSlots = DukeHelpers.GetFilledRottenGulletSlots(p)
-		local playerSlotCount = DukeHelpers.LengthOfTable(DukeHelpers.GetFilledRottenGulletSlots(p))
+		local removedSlots = DukeHelpers.RemoveRottenGulletSlots(p, heartPrice)
 
-		if not playerSlotCount or playerSlotCount < heartPrice then
+		if removedSlots == 0 then
 			return true
-		end
-
-		for _ = 1, heartPrice do
-			table.remove(playerSlots, 1)
 		end
 	end
 end)
