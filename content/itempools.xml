@@ -30,6 +30,16 @@
         RemoveOn="0.1"
         DecreaseBy="1"
   />
+  <Item Name="Duke of Eyes"
+        Weight="1"
+        RemoveOn="0.1"
+        DecreaseBy="1"
+  />
+  <Item Name="The Invader"
+        Weight="1"
+        RemoveOn="0.1"
+        DecreaseBy="1"
+  />
 </Pool>
 <Pool Name="curse">
   <Item Name="Fiendish Swarm"
@@ -37,9 +47,29 @@
         RemoveOn="0.1"
         DecreaseBy="1"
   />
+  <Item Name="ROTTEN GULLET"
+        Weight="1"
+        RemoveOn="0.1"
+        DecreaseBy="1"
+  />
+  <Item Name="Lil Husk"
+        Weight="1"
+        RemoveOn="0.1"
+        DecreaseBy="1"
+  />
 </Pool>
 <Pool Name="secret">
   <Item Name="Duke Flute"
+        Weight="1"
+        RemoveOn="0.1"
+        DecreaseBy="1"
+  />
+  <Item Name="Ultra Heart Fly"
+        Weight="1"
+        RemoveOn="0.1"
+        DecreaseBy="1"
+  />
+  <Item Name="Duke of Eyes"
         Weight="1"
         RemoveOn="0.1"
         DecreaseBy="1"
@@ -56,9 +86,36 @@
         RemoveOn="0.1"
         DecreaseBy="1"
   />
+  <Item Name="ROTTEN GULLET"
+        Weight="1"
+        RemoveOn="0.1"
+        DecreaseBy="1"
+  />
+  <Item Name="Lil Husk"
+        Weight="1"
+        RemoveOn="0.1"
+        DecreaseBy="1"
+  />
+  <Item Name="The Invader"
+        Weight="1"
+        RemoveOn="0.1"
+        DecreaseBy="1"
+  />
+</Pool>
+<Pool Name="redChest">
+	<Item Name="Lil Husk"
+          Weight="1"
+          RemoveOn="0.1"
+          DecreaseBy="1"
+    />
 </Pool>
 <Pool Name="demonBeggar">
   <Item Name="Fiendish Swarm"
+        Weight="1"
+        RemoveOn="0.1"
+        DecreaseBy="1"
+  />
+  <Item Name="ROTTEN GULLET"
         Weight="1"
         RemoveOn="0.1"
         DecreaseBy="1"
@@ -85,6 +142,11 @@
         RemoveOn="0.1"
         DecreaseBy="1"
   />
+  <Item Name="Ultra Heart Fly"
+        Weight="1"
+        RemoveOn="0.1"
+        DecreaseBy="1"
+  />
 </Pool>
 <Pool Name="ultraSecret">
   <Item Name="The Princes"
@@ -97,14 +159,14 @@
         RemoveOn="0.1"
         DecreaseBy="1"
   />
-</Pool>
-<Pool Name="craneGame">
-  <Item Name="DUKE'S GULLET"
+  <Item Name="The Invader"
         Weight="1"
         RemoveOn="0.1"
         DecreaseBy="1"
   />
-  <Item Name="The Princes"
+</Pool>
+<Pool Name="craneGame">
+  <Item Name="DUKE'S GULLET"
         Weight="1"
         RemoveOn="0.1"
         DecreaseBy="1"
@@ -119,6 +181,16 @@
         RemoveOn="0.1"
         DecreaseBy="1"
   />
+  <Item Name="Ultra Heart Fly"
+        Weight="1"
+        RemoveOn="0.1"
+        DecreaseBy="1"
+  />
+  <Item Name="ROTTEN GULLET"
+        Weight="1"
+        RemoveOn="0.1"
+        DecreaseBy="1"
+  />
 </Pool>
 <Pool Name="babyShop">
   <Item Name="Lil Duke"
@@ -127,6 +199,16 @@
         DecreaseBy="1"
   />
   <Item Name="Sharty McFly"
+        Weight="1"
+        RemoveOn="0.1"
+        DecreaseBy="1"
+  />
+  <Item Name="Lil Husk"
+        Weight="1"
+        RemoveOn="0.1"
+        DecreaseBy="1"
+  />
+  <Item Name="The Invader"
         Weight="1"
         RemoveOn="0.1"
         DecreaseBy="1"
@@ -163,6 +245,16 @@
         RemoveOn="0.1"
         DecreaseBy="1"
   />
+  <Item Name="Duke of Eyes"
+        Weight="1"
+        RemoveOn="0.1"
+        DecreaseBy="1"
+  />
+  <Item Name="The Invader"
+        Weight="1"
+        RemoveOn="0.1"
+        DecreaseBy="1"
+  />
 </Pool>
 <Pool Name="greedShop">
 	<Item Name="DUKE'S GULLET"
@@ -187,9 +279,29 @@
         RemoveOn="0.1"
         DecreaseBy="1"
   />
+  <Item Name="ROTTEN GULLET"
+        Weight="1"
+        RemoveOn="0.1"
+        DecreaseBy="1"
+  />
+  <Item Name="Lil Husk"
+        Weight="1"
+        RemoveOn="0.1"
+        DecreaseBy="1"
+  />
 </Pool>
 <Pool Name="greedSecret">
   <Item Name="Duke Flute"
+        Weight="1"
+        RemoveOn="0.1"
+        DecreaseBy="1"
+  />
+  <Item Name="Ultra Heart Fly"
+        Weight="1"
+        RemoveOn="0.1"
+        DecreaseBy="1"
+  />
+  <Item Name="Duke of Eyes"
         Weight="1"
         RemoveOn="0.1"
         DecreaseBy="1"
@@ -202,6 +314,21 @@
         DecreaseBy="1"
   />
   <Item Name="Lil Duke"
+        Weight="1"
+        RemoveOn="0.1"
+        DecreaseBy="1"
+  />
+  <Item Name="ROTTEN GULLET"
+        Weight="1"
+        RemoveOn="0.1"
+        DecreaseBy="1"
+  />
+  <Item Name="Lil Husk"
+        Weight="1"
+        RemoveOn="0.1"
+        DecreaseBy="1"
+  />
+  <Item Name="The Invader"
         Weight="1"
         RemoveOn="0.1"
         DecreaseBy="1"
