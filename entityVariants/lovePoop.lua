@@ -32,6 +32,9 @@ local function MC_NPC_UPDATE(_, entity)
 
             if data.timer % 30 == 0 then
                 data.state = data.state + 1
+                DukeHelpers.ForEachPlayer(function(player)
+                    player:ThrowFriendlyDip(332, entity.Position, Vector.Zero)
+                end, CollectibleType.COLLECTIBLE_DIRTY_MIND)
             end
 
             sprite:Play("State" .. data.state)
@@ -60,7 +63,7 @@ local function MC_NPC_UPDATE(_, entity)
                     radius = radius * 2
                     explosion.SpriteScale = explosion.SpriteScale * 2
                 end
-                for i, enemy in ipairs(Isaac.FindInRadius(entity.Position, 75, EntityPartition.ENEMY)) do
+                for i, enemy in ipairs(Isaac.FindInRadius(entity.Position, radius, EntityPartition.ENEMY)) do
                     enemy:TakeDamage(damage, DamageFlag.DAMAGE_EXPLOSION, EntityRef(player), 0)
                 end
                 entity.EntityCollisionClass = EntityCollisionClass.ENTCOLL_NONE
@@ -73,6 +76,12 @@ local function MC_NPC_UPDATE(_, entity)
     end
 end
 
+local function MC_PRE_TEAR_COLLISION(_, tear, collider)
+    if collider.Type == EntityType.ENTITY_POOP and collider.Variant == Id then
+        return false
+    end
+end
+
 return {
     Name = Name,
     Tag = Tag,
@@ -82,6 +91,10 @@ return {
             ModCallbacks.MC_NPC_UPDATE,
             MC_NPC_UPDATE,
             EntityType.ENTITY_POOP
+        },
+        {
+            ModCallbacks.MC_PRE_TEAR_COLLISION,
+            MC_PRE_TEAR_COLLISION
         }
     }
 }
