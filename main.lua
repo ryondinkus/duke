@@ -162,6 +162,16 @@ for _, entityVariant in pairs(DukeHelpers.EntityVariants) do
     end
 end
 
+include("entitySubTypes/registry")
+
+for _, entitySubType in pairs(DukeHelpers.EntitySubTypes) do
+    if entitySubType.callbacks then
+        for _, callback in pairs(entitySubType.callbacks) do
+            dukeMod:AddCallback(table.unpack(callback))
+        end
+    end
+end
+
 include("sounds/registry")
 include("costumes/registry")
 include("wisps/registry")
