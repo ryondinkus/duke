@@ -203,6 +203,7 @@ local function MC_POST_RENDER()
             local playerHudPositions = playerHUDPositions[controllerIndex]
             local hudPosition = type(playerHudPositions) == "table" and playerHudPositions[hudOffset] or
                 playerHudPositions
+            local screenShakeOffset = Game().ScreenShakeOffset
 
             local isSmall = controllerIndex ~= 0
 
@@ -220,6 +221,9 @@ local function MC_POST_RENDER()
                 x = x + Isaac.GetScreenWidth()
                 y = y + Isaac.GetScreenHeight()
             end
+
+            x = x + screenShakeOffset.X
+            y = y + screenShakeOffset.Y
 
             local scale = isSmall and 0.5 or 1
 
@@ -253,6 +257,9 @@ local function MC_POST_RENDER()
                 KColor(0.5, blueAndGreenValues, blueAndGreenValues, 1), 1, false)
 
             local amountToRender = math.min(numberOfFilledSlots, shownHearts)
+
+            x = x - screenShakeOffset.X
+            y = y - screenShakeOffset.Y
 
             local startingY = y + ((isSmall and smallY or largeY) / 2)
 
@@ -307,7 +314,8 @@ local function MC_POST_RENDER()
                     startingY)
 
                 if renderAbove then
-                    renderAboveSprite:Render(position + (renderAbove.spriteOffset or Vector.Zero), Vector.Zero,
+                    renderAboveSprite:Render(position + (renderAbove.spriteOffset or Vector.Zero),
+                        Vector.Zero,
                         Vector.Zero)
                 end
                 sprite:Render(position + spriteOffset, Vector.Zero, Vector.Zero)
