@@ -147,14 +147,16 @@ function DukeHelpers.AreOnceUnlockedUnlocked(unlock)
     return true
 end
 
+function DukeHelpers.AreUnlocksEqual(unlock, savedUnlock)
+    return unlock.tag == savedUnlock.tag and unlock.key == savedUnlock.key and
+        savedUnlock.difficulty >= (unlock.difficulty or 0)
+end
+
 function DukeHelpers.IsUnlocked(unlocks)
     for _, unlock in pairs(DukeHelpers.IsArray(unlocks) and unlocks or { unlocks }) do
         if DukeHelpers.AreOnceUnlockedUnlocked(unlock)
             and DukeHelpers.Find(DukeHelpers.GetPlayerUnlocks(unlock.playerName),
-                function(unlocked) return (
-                        unlock.onceUnlocked and unlocked.tag == unlock.tag or unlocked.key == unlock.key)
-                        and
-                        unlocked.difficulty >= (unlock.difficulty or 0)
+                function(u) return DukeHelpers.AreUnlocksEqual(unlock, u)
                 end) then
             return true
         end
@@ -175,24 +177,29 @@ function DukeHelpers.GetPlayerUnlocks(playerName)
 end
 
 local function saveUnlock(unlock)
-    DukeGiantBookAPI.ShowAchievement("achievement_" .. unlock.tag .. ".png")
+    local existingUnlock
 
-    local existingUnlock = DukeHelpers.Find(DukeHelpers.GetPlayerUnlocks(unlock.playerName),
-        function(u) return (unlock.onceUnlocked and u.tag == unlock.tag or u.key == unlock.key) and
-                (not unlock.difficulty or u.difficulty < unlock.difficulty)
-        end)
+    DukeHelpers.ForEach(DukeHelpers.GetPlayerUnlocks(unlock.playerName), function(u)
+        if u.key == unlock.key then
+            u.difficulty = math.max((u.difficulty or 0), Game().Difficulty)
 
-    if existingUnlock then
-        existingUnlock.difficulty = Game().Difficulty
-    else
-        local savedUnlock = { key = unlock.key, difficulty = Game().Difficulty }
-
-        if unlock.onceUnlocked then
-            savedUnlock.tag = unlock.tag
+            if DukeHelpers.AreUnlocksEqual(unlock, u) then
+                existingUnlock = u
+            end
         end
+    end)
+
+    if not existingUnlock then
+        local savedUnlock = { key = unlock.key, difficulty = Game().Difficulty, tag = unlock.tag }
         table.insert(DukeHelpers.GetPlayerUnlocks(unlock.playerName), savedUnlock)
     end
+
     DukeHelpers.SaveGame()
+end
+
+local function unlockUnlock(unlock)
+    DukeGiantBookAPI.ShowAchievement("achievement_" .. unlock.tag .. ".png")
+    saveUnlock(unlock)
 end
 
 local function handleUnlock(unlock, entity, forceUnlock)
@@ -230,22 +237,6 @@ local function handleUnlock(unlock, entity, forceUnlock)
     local isVictoryLap = game:GetVictoryLap() > 0
     local isSeededRun = game:GetSeeds():IsCustomRun()
 
-    if unlock.key == "BOSS_RUSH" and unlock.playerName == "DukeB" then
-        print("isSeededRun: " .. tostring(isSeededRun))
-        print("isVictoryLap: " .. tostring(isVictoryLap))
-        print("isUnlocked: " .. tostring(isUnlocked))
-        print("unlock.onceUnlocked: " .. tostring(unlock.onceUnlocked))
-        print("forceUnlock: " .. tostring(forceUnlock))
-        print("hasPlayer: " .. tostring(hasPlayer))
-        print("isStage: " .. tostring(isStage))
-        print("isRoom: " .. tostring(isRoom))
-        print("isStageType: " .. tostring(isStageType))
-        print("isRoomShape: " .. tostring(isRoomShape))
-        print("isDifficulty: " .. tostring(isDifficulty))
-        print("isCorrectBossRoom: " .. tostring(isCorrectBossRoom))
-        print("isEntity: " .. tostring(isEntity))
-    end
-
     if not isSeededRun and not isVictoryLap and (not isUnlocked or unlock.onceUnlocked) and (forceUnlock or
         (
         hasPlayer and isStage and isRoom and isStageType and isRoomShape and isDifficulty and isCorrectBossRoom and
@@ -253,19 +244,18 @@ local function handleUnlock(unlock, entity, forceUnlock)
         )
         ) then
 
-        DukeHelpers.DebugJson(unlock)
-
-        if not DukeHelpers.AreOnceUnlockedUnlocked(unlock) then -- TODO there will be a bug here when greedier is completed
+        if unlock.onceUnlocked and not DukeHelpers.AreOnceUnlockedUnlocked(unlock) then -- TODO there will be a bug here when greedier is completed
+            saveUnlock(unlock)
             return
         end
-
-        saveUnlock(unlock)
 
         if unlock.alsoUnlock then
             for _, alsoUnlock in pairs(unlock.alsoUnlock) do
                 handleUnlock(alsoUnlock, nil, true)
             end
         end
+
+        unlockUnlock(unlock)
     end
 end
 
