@@ -222,9 +222,6 @@ local function MC_POST_RENDER()
                 y = y + Isaac.GetScreenHeight()
             end
 
-            x = x + screenShakeOffset.X
-            y = y + screenShakeOffset.Y
-
             local scale = isSmall and 0.5 or 1
 
             local maxSlotTextXOffset = isSmall and smallMaxSlotTextXOffset or largeMaxSlotTextXOffset
@@ -244,7 +241,9 @@ local function MC_POST_RENDER()
                 data[Tag .. "Error"] = nil
             end
 
-            font:DrawStringScaled("x" .. numberOfFilledSlots, x, y, scale, scale, currentCountColor, 1, false)
+            font:DrawStringScaled("x" .. numberOfFilledSlots, x + screenShakeOffset.X, y + screenShakeOffset.Y, scale,
+                scale, currentCountColor
+                , 1, false)
 
             local percentBrokenSlots = (
                 DukeHelpers.MAX_ROTTEN_GULLET_COUNT - DukeHelpers.GetMaxRottenGulletSlots(player)) /
@@ -252,14 +251,12 @@ local function MC_POST_RENDER()
 
             local blueAndGreenValues = 0.5 - (0.5 * percentBrokenSlots)
 
-            font:DrawStringScaled("/" .. tostring(DukeHelpers.GetMaxRottenGulletSlots(player)), x + maxSlotTextXOffset,
-                y + maxSlotTextYOffset, scale * maxSlotTextScale, scale * maxSlotTextScale,
+            font:DrawStringScaled("/" .. tostring(DukeHelpers.GetMaxRottenGulletSlots(player)),
+                x + maxSlotTextXOffset + screenShakeOffset.X,
+                y + maxSlotTextYOffset + screenShakeOffset.Y, scale * maxSlotTextScale, scale * maxSlotTextScale,
                 KColor(0.5, blueAndGreenValues, blueAndGreenValues, 1), 1, false)
 
             local amountToRender = math.min(numberOfFilledSlots, shownHearts)
-
-            x = x - screenShakeOffset.X
-            y = y - screenShakeOffset.Y
 
             local startingY = y + ((isSmall and smallY or largeY) / 2)
 
