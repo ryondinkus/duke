@@ -1,39 +1,40 @@
 DukeHelpers.Unlocks = {
     MOMS_HEART = {
-        entityType = EntityType.ENTITY_MOMS_HEART,
         stage = LevelStage.STAGE4_2,
         stageTypes = { StageType.STAGETYPE_ORIGINAL, StageType.STAGETYPE_WOTL, StageType.STAGETYPE_AFTERBIRTH },
         roomType = RoomType.ROOM_BOSS,
-        onClear = true
+        difficulty = Difficulty.DIFFICULTY_HARD,
+        onClear = true,
+        bossId = { 8, 25 }
     },
     ISAAC = {
-        entityType = EntityType.ENTITY_ISAAC,
         stage = LevelStage.STAGE5,
         roomType = RoomType.ROOM_BOSS,
         stageTypes = { StageType.STAGETYPE_WOTL },
-        onClear = true
+        onClear = true,
+        bossId = 39
     },
     BLUE_BABY = {
-        entityType = EntityType.ENTITY_ISAAC,
         entityVariant = 1,
         stage = LevelStage.STAGE6,
         stageTypes = { StageType.STAGETYPE_WOTL },
         roomType = RoomType.ROOM_BOSS,
-        onClear = true
+        onClear = true,
+        bossId = 40
     },
     SATAN = {
-        entityType = EntityType.ENTITY_SATAN,
         stage = LevelStage.STAGE5,
         roomType = RoomType.ROOM_BOSS,
         stageTypes = { StageType.STAGETYPE_ORIGINAL },
-        onClear = true
+        onClear = true,
+        bossId = 24
     },
     THE_LAMB = {
-        entityType = EntityType.ENTITY_THE_LAMB,
         stage = LevelStage.STAGE6,
         roomType = RoomType.ROOM_BOSS,
         stageTypes = { StageType.STAGETYPE_ORIGINAL },
-        onClear = true
+        onClear = true,
+        bossId = 54
     },
     MEGA_SATAN = {
         entityType = EntityType.ENTITY_MEGA_SATAN_2,
@@ -46,24 +47,24 @@ DukeHelpers.Unlocks = {
         onClear = true
     },
     HUSH = {
-        entityType = EntityType.ENTITY_HUSH,
         stage = LevelStage.STAGE4_3,
         roomType = RoomType.ROOM_BOSS,
-        onClear = true
+        onClear = true,
+        bossId = 63
     },
     DELIRIUM = {
-        entityType = EntityType.ENTITY_DELIRIUM,
         stage = LevelStage.STAGE7,
         roomShape = RoomShape.ROOMSHAPE_2x2,
         roomType = RoomType.ROOM_BOSS,
-        onClear = true
+        onClear = true,
+        bossId = 70
     },
     MOTHER = {
-        entityType = EntityType.ENTITY_MOTHER,
         stage = LevelStage.STAGE4_2,
         stageTypes = { StageType.STAGETYPE_REPENTANCE, StageType.STAGETYPE_REPENTANCE_B },
         roomType = RoomType.ROOM_BOSS,
-        onClear = true
+        onClear = true,
+        bossId = 88
     },
     BEAST = {
         entityType = EntityType.ENTITY_BEAST,
@@ -72,18 +73,18 @@ DukeHelpers.Unlocks = {
         roomType = RoomType.ROOM_DUNGEON
     },
     GREED = {
-        entityType = EntityType.ENTITY_ULTRA_GREED,
         stage = LevelStage.STAGE7_GREED,
         roomType = RoomType.ROOM_BOSS,
         difficulty = Difficulty.DIFFICULTY_GREED,
-        onClear = true
+        onClear = true,
+        bossId = 62
     },
     GREEDIER = {
-        entityType = EntityType.ENTITY_ULTRA_GREED,
         stage = LevelStage.STAGE7_GREED,
         roomType = RoomType.ROOM_BOSS,
         difficulty = Difficulty.DIFFICULTY_GREEDIER,
-        onClear = true
+        onClear = true,
+        bossId = { 62, 71 }
     }
 }
 
@@ -91,32 +92,43 @@ for key, unlock in pairs(DukeHelpers.Unlocks) do
     unlock.key = key
 end
 
-function DukeHelpers.GetUnlock(unlock, tag, playerType, alsoUnlock)
+function DukeHelpers.GetUnlock(unlock, tag, playerName, alsoUnlock, isHardMode)
     local dupedUnlock = table.deepCopy(unlock)
     if DukeHelpers.IsArray(dupedUnlock) then
-        for _, onceUnlocked in pairs(dupedUnlock) do
-            onceUnlocked = DukeHelpers.GetUnlock(onceUnlocked, tag, playerType, alsoUnlock)
+        for key, onceUnlocked in pairs(dupedUnlock) do
+            dupedUnlock[key] = DukeHelpers.GetUnlock(onceUnlocked, tag, playerName, alsoUnlock, isHardMode)
         end
 
+        local onceUnlockedUnlock = {}
+
         for i, onceUnlocked in pairs(dupedUnlock) do
-            onceUnlocked.onceUnlocked = {}
+            local dupedOnceUnlocked = table.deepCopy(onceUnlocked)
+            dupedOnceUnlocked.onceUnlocked = {}
 
             for j, ru in pairs(dupedUnlock) do
                 if i ~= j then
-                    table.insert(onceUnlocked.onceUnlocked, ru)
+                    table.insert(dupedOnceUnlocked.onceUnlocked, ru)
                 end
             end
+
+            table.insert(onceUnlockedUnlock, dupedOnceUnlocked)
         end
 
-        return dupedUnlock
+        return onceUnlockedUnlock
     else
-        dupedUnlock.playerType = playerType
+        dupedUnlock.playerName = playerName
         dupedUnlock.tag = tag
 
-        if DukeHelpers.IsArray(alsoUnlock) then
-            dupedUnlock.alsoUnlock = alsoUnlock
-        else
-            dupedUnlock.alsoUnlock = { alsoUnlock }
+        if isHardMode and not dupedUnlock.difficulty then
+            dupedUnlock.difficulty = Difficulty.DIFFICULTY_HARD
+        end
+
+        if alsoUnlock then
+            if DukeHelpers.IsArray(alsoUnlock) then
+                dupedUnlock.alsoUnlock = alsoUnlock
+            else
+                dupedUnlock.alsoUnlock = { alsoUnlock }
+            end
         end
 
         return dupedUnlock
@@ -135,19 +147,51 @@ function DukeHelpers.AreOnceUnlockedUnlocked(unlock)
     return true
 end
 
-function DukeHelpers.IsUnlocked(unlock)
-    return DukeHelpers.AreOnceUnlockedUnlocked(unlock)
-        and DukeHelpers.Find(dukeMod.unlocks[unlock.playerType] or {},
-            function(unlocked) return unlocked.key == unlock.key end)
+function DukeHelpers.IsUnlocked(unlocks)
+    for _, unlock in pairs(DukeHelpers.IsArray(unlocks) and unlocks or { unlocks }) do
+        if DukeHelpers.AreOnceUnlockedUnlocked(unlock)
+            and DukeHelpers.Find(DukeHelpers.GetPlayerUnlocks(unlock.playerName),
+                function(unlocked) return (
+                        unlock.onceUnlocked and unlocked.tag == unlock.tag or unlocked.key == unlock.key)
+                        and
+                        unlocked.difficulty >= (unlock.difficulty or 0)
+                end) then
+            return true
+        end
+    end
+
+    return false
+end
+
+function DukeHelpers.GetPlayerUnlocks(playerName)
+    if not dukeMod.unlocks then
+        dukeMod.unlocks = {}
+    end
+    if not dukeMod.unlocks[tostring(playerName)] then
+        dukeMod.unlocks[tostring(playerName)] = {}
+    end
+
+    return dukeMod.unlocks[tostring(playerName)]
 end
 
 local function saveUnlock(unlock)
     DukeGiantBookAPI.ShowAchievement("achievement_" .. unlock.tag .. ".png")
-    local playerUnlocks = dukeMod.unlocks[unlock.playerType]
-    if not playerUnlocks then
-        playerUnlocks = {}
+
+    local existingUnlock = DukeHelpers.Find(DukeHelpers.GetPlayerUnlocks(unlock.playerName),
+        function(u) return (unlock.onceUnlocked and u.tag == unlock.tag or u.key == unlock.key) and
+                (not unlock.difficulty or u.difficulty < unlock.difficulty)
+        end)
+
+    if existingUnlock then
+        existingUnlock.difficulty = Game().Difficulty
+    else
+        local savedUnlock = { key = unlock.key, difficulty = Game().Difficulty }
+
+        if unlock.onceUnlocked then
+            savedUnlock.tag = unlock.tag
+        end
+        table.insert(DukeHelpers.GetPlayerUnlocks(unlock.playerName), savedUnlock)
     end
-    table.insert(playerUnlocks, { key = unlock.key, tag = unlock.tag })
     DukeHelpers.SaveGame()
 end
 
@@ -159,7 +203,10 @@ local function handleUnlock(unlock, entity, forceUnlock)
     local hasPlayer = false
 
     DukeHelpers.ForEachPlayer(function(player)
-        if not hasPlayer and player:GetPlayerType() == unlock.playerType then
+        if not hasPlayer and
+            (
+            Isaac.GetPlayerTypeByName(unlock.playerName) == player:GetPlayerType() or
+                Isaac.GetPlayerTypeByName(unlock.playerName, true) == player:GetPlayerType()) then
             hasPlayer = true
         end
     end)
@@ -170,17 +217,43 @@ local function handleUnlock(unlock, entity, forceUnlock)
         DukeHelpers.Find(unlock.stageTypes, function(t) return t == level:GetStageType() end)
     local isRoomShape = not unlock.roomShape or room:GetRoomShape() == unlock.roomShape
     local isDifficulty = not unlock.difficulty or game.Difficulty == unlock.difficulty
+    local isCorrectBossRoom = not unlock.bossId or
+        (
+        type(unlock.bossId) == "table" and
+            DukeHelpers.Find(unlock.bossId, function(bossId) return bossId == room:GetBossID() end) or
+            room:GetBossID() == unlock.bossId)
     local isEntity = not entity or
         (
         (not unlock.entityVariant or entity.Variant == unlock.entityVariant) and
             (not unlock.entitySubType or entity.SubType == unlock.entitySubType))
     local isUnlocked = DukeHelpers.IsUnlocked(unlock)
+    local isVictoryLap = game:GetVictoryLap() > 0
+    local isSeededRun = game:GetSeeds():IsCustomRun()
 
-    if not isUnlocked and (forceUnlock or
+    if unlock.key == "BOSS_RUSH" and unlock.playerName == "DukeB" then
+        print("isSeededRun: " .. tostring(isSeededRun))
+        print("isVictoryLap: " .. tostring(isVictoryLap))
+        print("isUnlocked: " .. tostring(isUnlocked))
+        print("unlock.onceUnlocked: " .. tostring(unlock.onceUnlocked))
+        print("forceUnlock: " .. tostring(forceUnlock))
+        print("hasPlayer: " .. tostring(hasPlayer))
+        print("isStage: " .. tostring(isStage))
+        print("isRoom: " .. tostring(isRoom))
+        print("isStageType: " .. tostring(isStageType))
+        print("isRoomShape: " .. tostring(isRoomShape))
+        print("isDifficulty: " .. tostring(isDifficulty))
+        print("isCorrectBossRoom: " .. tostring(isCorrectBossRoom))
+        print("isEntity: " .. tostring(isEntity))
+    end
+
+    if not isSeededRun and not isVictoryLap and (not isUnlocked or unlock.onceUnlocked) and (forceUnlock or
         (
-        hasPlayer and isStage and isRoom and isStageType and isRoomShape and isDifficulty and isEntity and not isUnlocked
+        hasPlayer and isStage and isRoom and isStageType and isRoomShape and isDifficulty and isCorrectBossRoom and
+            isEntity
         )
         ) then
+
+        DukeHelpers.DebugJson(unlock)
 
         if not DukeHelpers.AreOnceUnlockedUnlocked(unlock) then -- TODO there will be a bug here when greedier is completed
             return
@@ -197,16 +270,18 @@ local function handleUnlock(unlock, entity, forceUnlock)
 end
 
 function DukeHelpers.RegisterUnlock(unlock)
-    if DukeHelpers.IsArray(unlock) then
-        for _, onceUnlocked in pairs(unlock) do
-            DukeHelpers.RegisterUnlock(onceUnlocked)
-        end
-    else
-        if unlock.onClear then
-            dukeMod:AddCallback(ModCallbacks.MC_PRE_SPAWN_CLEAN_AWARD, function() handleUnlock(unlock) end)
+    if unlock then
+        if DukeHelpers.IsArray(unlock) then
+            for _, onceUnlocked in pairs(unlock) do
+                DukeHelpers.RegisterUnlock(onceUnlocked)
+            end
         else
-            dukeMod:AddCallback(ModCallbacks.MC_POST_ENTITY_KILL, function(_, entity) handleUnlock(unlock, entity) end,
-                unlock.entityType)
+            if unlock.onClear then
+                dukeMod:AddCallback(ModCallbacks.MC_PRE_SPAWN_CLEAN_AWARD, function() handleUnlock(unlock) end)
+            else
+                dukeMod:AddCallback(ModCallbacks.MC_POST_ENTITY_KILL,
+                    function(_, entity) handleUnlock(unlock, entity) end, unlock.entityType)
+            end
         end
     end
 end

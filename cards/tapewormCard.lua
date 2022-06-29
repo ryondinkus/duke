@@ -38,5 +38,5 @@ return {
             Id
         }
     },
-    unlock = DukeHelpers.GetUnlock(DukeHelpers.Unlocks.GREED, Tag, DukeHelpers.DUKE_ID)
+    unlock = DukeHelpers.GetUnlock(DukeHelpers.Unlocks.GREED, Tag, DukeHelpers.DUKE_NAME)
 }

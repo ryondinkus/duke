@@ -90,5 +90,5 @@ return {
             MC_POST_PLAYER_UPDATE
         }
     },
-    unlock = DukeHelpers.GetUnlock(DukeHelpers.Unlocks.HUSH, Tag, DukeHelpers.DUKE_ID)
+    unlock = DukeHelpers.GetUnlock(DukeHelpers.Unlocks.HUSH, Tag, DukeHelpers.DUKE_NAME)
 }

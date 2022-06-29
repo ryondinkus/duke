@@ -36,5 +36,5 @@ return {
             MC_EVALUATE_CACHE
         }
     },
-    unlock = DukeHelpers.GetUnlock(DukeHelpers.Unlocks.MOTHER, Tag, DukeHelpers.HUSK_ID)
+    unlock = DukeHelpers.GetUnlock(DukeHelpers.Unlocks.MOTHER, Tag, DukeHelpers.HUSK_NAME)
 }

@@ -50,5 +50,5 @@ return {
             MC_POST_PEFFECT_UPDATE
         }
     },
-    unlock = DukeHelpers.GetUnlock(DukeHelpers.Unlocks.MEGA_SATAN, Tag, DukeHelpers.DUKE_ID)
+    unlock = DukeHelpers.GetUnlock(DukeHelpers.Unlocks.MEGA_SATAN, Tag, DukeHelpers.DUKE_NAME)
 }

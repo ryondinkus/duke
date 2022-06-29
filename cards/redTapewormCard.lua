@@ -43,5 +43,5 @@ return {
             MC_POST_PEFFECT_UPDATE
         }
     },
-    unlock = DukeHelpers.GetUnlock(DukeHelpers.Unlocks.GREEDIER, Tag, DukeHelpers.HUSK_ID)
+    unlock = DukeHelpers.GetUnlock(DukeHelpers.Unlocks.GREEDIER, Tag, DukeHelpers.HUSK_NAME)
 }

@@ -108,5 +108,5 @@ return {
         DukeHelpers.Unlocks.BLUE_BABY,
         DukeHelpers.Unlocks.SATAN,
         DukeHelpers.Unlocks.THE_LAMB
-    }, Tag, DukeHelpers.HUSK_ID)
+    }, Tag, DukeHelpers.HUSK_NAME)
 }

@@ -44,5 +44,5 @@ return {
             FamiliarVariant.WISP
         }
     },
-    unlock = DukeHelpers.GetUnlock(DukeHelpers.Unlocks.DELIRIUM, Tag, DukeHelpers.DUKE_ID)
+    unlock = DukeHelpers.GetUnlock(DukeHelpers.Unlocks.DELIRIUM, Tag, DukeHelpers.DUKE_NAME)
 }

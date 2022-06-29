@@ -54,5 +54,5 @@ return {
         RandomlySpawnHeartFlyFromPickup = RandomlySpawnHeartFlyFromPickup,
         ShouldSpawnExtraFly = ShouldSpawnExtraFly
     },
-    unlock = DukeHelpers.GetUnlock(DukeHelpers.Unlocks.SATAN, Tag, DukeHelpers.DUKE_ID)
+    unlock = DukeHelpers.GetUnlock(DukeHelpers.Unlocks.SATAN, Tag, DukeHelpers.DUKE_NAME)
 }

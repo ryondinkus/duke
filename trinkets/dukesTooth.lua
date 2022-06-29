@@ -35,5 +35,5 @@ return {
             MC_POST_NEW_ROOM
         }
     },
-    unlock = DukeHelpers.GetUnlock(DukeHelpers.Unlocks.ISAAC, Tag, DukeHelpers.DUKE_ID)
+    unlock = DukeHelpers.GetUnlock(DukeHelpers.Unlocks.ISAAC, Tag, DukeHelpers.DUKE_NAME)
 }

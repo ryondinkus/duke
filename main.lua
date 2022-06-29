@@ -20,14 +20,17 @@ local defaultGlobal = {
 dukeMod.global = table.deepCopy(defaultGlobal)
 
 DukeHelpers = {
-    DUKE_ID = Isaac.GetPlayerTypeByName("Duke"),
-    HUSK_ID = Isaac.GetPlayerTypeByName("DukeB", true),
+    DUKE_NAME = "Duke",
+    HUSK_NAME = "DukeB",
     rng = RNG(),
     sfx = SFXManager(),
     PRICE_OFFSET = -50,
     MAX_HEALTH = 4,
     HeartKeys = {}
 }
+
+DukeHelpers.DUKE_ID = Isaac.GetPlayerTypeByName(DukeHelpers.DUKE_NAME)
+DukeHelpers.HUSK_ID = Isaac.GetPlayerTypeByName(DukeHelpers.HUSK_NAME, true)
 
 -- Sets the RNG seed for the run
 dukeMod:AddCallback(ModCallbacks.MC_POST_GAME_STARTED, function()
@@ -82,95 +85,87 @@ include("flyHearts")
 include("flies/registry")
 include("spiders/registry")
 
+include("cards/registry")
 include("items/registry")
+include("trinkets/registry")
+include("entityVariants/registry")
+include("entitySubTypes/registry")
 
-for _, item in pairs(DukeHelpers.Items) do
-    if item.callbacks then
-        for _, callback in pairs(item.callbacks) do
+local function registerCallbacks(callbacks)
+    if callbacks then
+        for _, callback in pairs(callbacks) do
             dukeMod:AddCallback(table.unpack(callback))
         end
     end
+end
+
+local function registerEncyclopediaDescription(object, registerFunction, extraOptions)
+    if Encyclopedia and object and object.WikiDescription then
+        local options = {
+            Class = "Duke",
+            ID = object.Id,
+            WikiDesc = object.WikiDescription,
+            ModName = "Duke",
+            Hide = object.isWikiHidden
+        }
+
+        if extraOptions then
+            for key, value in pairs(extraOptions) do
+                options[key] = value
+            end
+        end
+
+        registerFunction(options)
+    end
+end
+
+for _, item in pairs(DukeHelpers.Items) do
+    registerCallbacks(item.callbacks)
 
     DukeHelpers.AddExternalItemDescriptionItem(item)
 
-    if Encyclopedia and item.WikiDescription then
-        Encyclopedia.AddItem({
-            Class = "Duke",
-            ID = item.Id,
-            WikiDesc = item.WikiDescription,
-            ModName = "Duke",
-            Hide = item.Hide
-        })
+    if Encyclopedia then
+        registerEncyclopediaDescription(item, Encyclopedia.AddItem)
     end
+
+    DukeHelpers.RegisterUnlock(item.unlock)
 
     -- if AnimatedItemsAPI then
     -- 	AnimatedItemsAPI:SetAnimationForCollectible(item.Id, "items/collectibles/animated/".. item.Tag .. "Animated.anm2")
     -- end
 end
 
-include("trinkets/registry")
-
 for _, trinket in pairs(DukeHelpers.Trinkets) do
-    if trinket.callbacks then
-        for _, callback in pairs(trinket.callbacks) do
-            dukeMod:AddCallback(table.unpack(callback))
-        end
-    end
+    registerCallbacks(trinket.callbacks)
 
     DukeHelpers.AddExternalItemDescriptionTrinket(trinket)
 
-    if Encyclopedia and trinket.WikiDescription then
-        Encyclopedia.AddTrinket({
-            Class = "Duke",
-            ID = trinket.Id,
-            WikiDesc = trinket.WikiDescription,
-            ModName = "Duke",
-            Hide = trinket.Hide
-        })
+    if Encyclopedia then
+        registerEncyclopediaDescription(trinket, Encyclopedia.AddTrinket)
     end
+
+    DukeHelpers.RegisterUnlock(trinket.unlock)
 end
 
-include("cards/registry")
-
 for _, card in pairs(DukeHelpers.Cards) do
-    if card.callbacks then
-        for _, callback in pairs(card.callbacks) do
-            dukeMod:AddCallback(table.unpack(callback))
-        end
-    end
+    registerCallbacks(card.callbacks)
 
     DukeHelpers.AddExternalItemDescriptionCard(card)
 
-    if Encyclopedia and card.WikiDescription then
-        Encyclopedia.AddCard({
-            Class = "Duke",
-            ID = card.Id,
-            WikiDesc = card.WikiDescription,
-            ModName = "Duke",
-            Spr = Encyclopedia.RegisterSprite(dukeMod.path .. "content/gfx/ui_cardfronts.anm2", card.Name),
-            Hide = card.Hide
-        })
+    if Encyclopedia then
+        registerEncyclopediaDescription(card, Encyclopedia.AddTrinket,
+            { Spr = Encyclopedia.RegisterSprite(dukeMod.path .. "content/gfx/ui_cardfronts.anm2", card.Name) })
     end
-end
 
-include("entityVariants/registry")
+    DukeHelpers.RegisterUnlock(card.unlock)
+end
 
 for _, entityVariant in pairs(DukeHelpers.EntityVariants) do
-    if entityVariant.callbacks then
-        for _, callback in pairs(entityVariant.callbacks) do
-            dukeMod:AddCallback(table.unpack(callback))
-        end
-    end
+    registerCallbacks(entityVariant.callbacks)
 end
 
-include("entitySubTypes/registry")
-
 for _, entitySubType in pairs(DukeHelpers.EntitySubTypes) do
-    if entitySubType.callbacks then
-        for _, callback in pairs(entitySubType.callbacks) do
-            dukeMod:AddCallback(table.unpack(callback))
-        end
-    end
+    registerCallbacks(entitySubType.callbacks)
 end
 
 include("sounds/registry")

@@ -36,6 +36,6 @@ return {
             MC_EVALUATE_CACHE
         }
     },
-    unlock = DukeHelpers.GetUnlock(DukeHelpers.Unlocks.GREEDIER, Tag, DukeHelpers.DUKE_ID,
+    unlock = DukeHelpers.GetUnlock(DukeHelpers.Unlocks.GREEDIER, Tag, DukeHelpers.DUKE_NAME,
         DukeHelpers.Cards.tapewormCard.unlock)
 }

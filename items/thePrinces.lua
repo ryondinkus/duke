@@ -55,5 +55,5 @@ return {
             MC_POST_PEFFECT_UPDATE
         }
     },
-    unlock = DukeHelpers.GetUnlock(DukeHelpers.Unlocks.THE_LAMB, Tag, DukeHelpers.DUKE_ID)
+    unlock = DukeHelpers.GetUnlock(DukeHelpers.Unlocks.THE_LAMB, Tag, DukeHelpers.DUKE_NAME)
 }

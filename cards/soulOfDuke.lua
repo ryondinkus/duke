@@ -42,5 +42,5 @@ return {
     unlock = DukeHelpers.GetUnlock({
         DukeHelpers.Unlocks.BOSS_RUSH,
         DukeHelpers.Unlocks.HUSH
-    }, Tag, DukeHelpers.HUSK_ID)
+    }, Tag, DukeHelpers.HUSK_NAME)
 }

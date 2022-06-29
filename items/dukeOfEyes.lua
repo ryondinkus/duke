@@ -76,5 +76,5 @@ return {
         DukeHelpers.Unlocks.BEAST,
         DukeHelpers.Unlocks.GREED,
         DukeHelpers.Unlocks.GREEDIER
-    }, Tag, DukeHelpers.DUKE_ID)
+    }, Tag, DukeHelpers.DUKE_NAME, nil, true)
 }
