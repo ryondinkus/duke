@@ -8,7 +8,7 @@
     <passive name="Super Infestation" description="Royal parasite" gfx="super_infestation.png" id="6" tags="fly nolostbr summonable" quality="4" />
     <passive name="Ultra Heart Fly" description="He does it all!" gfx="ultra_heart_fly.png" id="9" tags="fly offensive summonable" quality="2" />
     <familiar name="Lil Duke" description="Humble beginnings" gfx="lil_duke.png" id="7" tags="monstermanual offensive summonable" quality="2" />
-    <familiar name="Sharty McFly" description="What's he eating?" gfx="sharty_mcfly.png" id="8" tags="fly monstermanual poop summonable" quality="2" />
+    <familiar name="Sharty McFly" description="What's he eating?" gfx="sharty_mcfly.png" id="8" tags="fly monstermanual poop offensive summonable" quality="2" />
     <trinket name="Duke's Tooth" description="Attracts flies" gfx="dukes_tooth.png" />
     <trinket name="Infested Heart" description="It's buzzing..." gfx="infested_heart.png" />
     <trinket name="Pocket of Flies" description="Beelzebub's currency" gfx="pocket_of_flies.png" />
