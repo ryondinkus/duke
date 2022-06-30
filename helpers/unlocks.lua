@@ -211,9 +211,7 @@ local function handleUnlock(unlock, entity, forceUnlock)
 
     DukeHelpers.ForEachPlayer(function(player)
         if not hasPlayer and
-            (
-            Isaac.GetPlayerTypeByName(unlock.playerName) == player:GetPlayerType() or
-                Isaac.GetPlayerTypeByName(unlock.playerName, true) == player:GetPlayerType()) then
+            unlock.playerName == player:GetName() then
             hasPlayer = true
         end
     end)
