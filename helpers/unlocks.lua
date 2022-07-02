@@ -96,7 +96,18 @@ function DukeHelpers.GetUnlock(unlock, tag, playerName, alsoUnlock, isHardMode)
     local dupedUnlock = table.deepCopy(unlock)
     if DukeHelpers.IsArray(dupedUnlock) then
         for key, onceUnlocked in pairs(dupedUnlock) do
-            dupedUnlock[key] = DukeHelpers.GetUnlock(onceUnlocked, tag, playerName, alsoUnlock, isHardMode)
+            if onceUnlocked.playerName then
+                onceUnlocked.tag = tag
+
+                if onceUnlocked.alsoUnlock then
+                    for i, au in pairs(onceUnlocked.alsoUnlock) do
+                        onceUnlocked.alsoUnlock[i] = DukeHelpers.GetUnlock(au, tag, playerName, nil, isHardMode)
+                        onceUnlocked.alsoUnlock[i].hideUnlock = true
+                    end
+                end
+            else
+                dupedUnlock[key] = DukeHelpers.GetUnlock(onceUnlocked, tag, playerName, alsoUnlock, isHardMode)
+            end
         end
 
         local onceUnlockedUnlock = {}
@@ -242,9 +253,36 @@ local function handleUnlock(unlock, entity, forceUnlock)
         )
         ) then
 
-        if unlock.onceUnlocked and not DukeHelpers.AreOnceUnlockedUnlocked(unlock) then -- TODO there will be a bug here when greedier is completed
-            saveUnlock(unlock)
-            return
+        if unlock.onceUnlocked and not DukeHelpers.AreOnceUnlockedUnlocked(unlock) then
+            local tempOnceUnlocked = table.deepCopy(unlock.onceUnlocked)
+            local canBeUnlocked = true
+
+            if unlock.alsoUnlock then
+                for _, onceUnlocked in pairs(tempOnceUnlocked) do
+                    if not DukeHelpers.IsUnlocked(onceUnlocked) then
+                        local anyWillAlsoUnlock = false
+                        for _, alsoUnlock in pairs(unlock.alsoUnlock) do
+                            if (alsoUnlock.difficulty or 0) >= (onceUnlocked.difficulty or 0) and
+                                onceUnlocked.key == alsoUnlock.key then
+                                anyWillAlsoUnlock = true
+                                break
+                            end
+                        end
+
+                        if not anyWillAlsoUnlock then
+                            canBeUnlocked = false
+                            break
+                        end
+                    end
+                end
+            else
+                canBeUnlocked = false
+            end
+
+            if not canBeUnlocked then
+                saveUnlock(unlock)
+                return
+            end
         end
 
         if unlock.alsoUnlock then
@@ -253,7 +291,11 @@ local function handleUnlock(unlock, entity, forceUnlock)
             end
         end
 
-        unlockUnlock(unlock)
+        if unlock.hideUnlock then
+            saveUnlock(unlock)
+        else
+            unlockUnlock(unlock)
+        end
     end
 end
 

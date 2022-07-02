@@ -119,6 +119,14 @@ local function registerEncyclopediaDescription(object, registerFunction, extraOp
     end
 end
 
+local unlocks = {}
+
+local function addUnlock(item)
+    if item.unlock then
+        table.insert(unlocks, item.unlock)
+    end
+end
+
 for _, item in pairs(DukeHelpers.Items) do
     registerCallbacks(item.callbacks)
 
@@ -128,7 +136,7 @@ for _, item in pairs(DukeHelpers.Items) do
         registerEncyclopediaDescription(item, Encyclopedia.AddItem)
     end
 
-    DukeHelpers.RegisterUnlock(item.unlock)
+    addUnlock(item)
 
     -- if AnimatedItemsAPI then
     -- 	AnimatedItemsAPI:SetAnimationForCollectible(item.Id, "items/collectibles/animated/".. item.Tag .. "Animated.anm2")
@@ -144,7 +152,7 @@ for _, trinket in pairs(DukeHelpers.Trinkets) do
         registerEncyclopediaDescription(trinket, Encyclopedia.AddTrinket)
     end
 
-    DukeHelpers.RegisterUnlock(trinket.unlock)
+    addUnlock(trinket)
 end
 
 for _, card in pairs(DukeHelpers.Cards) do
@@ -157,7 +165,7 @@ for _, card in pairs(DukeHelpers.Cards) do
             { Spr = Encyclopedia.RegisterSprite(dukeMod.path .. "content/gfx/ui_cardfronts.anm2", card.Name) })
     end
 
-    DukeHelpers.RegisterUnlock(card.unlock)
+    addUnlock(card)
 end
 
 for _, entityVariant in pairs(DukeHelpers.EntityVariants) do
@@ -166,6 +174,28 @@ end
 
 for _, entitySubType in pairs(DukeHelpers.EntitySubTypes) do
     registerCallbacks(entitySubType.callbacks)
+end
+
+table.sort(unlocks, function(x, y)
+    if x.onceUnlocked and x.alsoUnlock then
+        return false
+    end
+
+    if y.onceUnlocked and y.alsoUnlock then
+        return true
+    end
+
+    if x.onceUnlocked then
+        return y.onceUnlocked and not y.alsoUnlock
+    end
+
+    if y.onceUnlocked then
+        return true
+    end
+end)
+
+for _, unlock in ipairs(unlocks) do
+    DukeHelpers.RegisterUnlock(unlock)
 end
 
 include("sounds/registry")

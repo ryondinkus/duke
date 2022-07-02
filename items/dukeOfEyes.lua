@@ -75,6 +75,6 @@ return {
         DukeHelpers.Unlocks.MOTHER,
         DukeHelpers.Unlocks.BEAST,
         DukeHelpers.Unlocks.GREED,
-        DukeHelpers.Unlocks.GREEDIER
+        DukeHelpers.GetUnlock(DukeHelpers.Unlocks.GREEDIER, Tag, DukeHelpers.DUKE_NAME, DukeHelpers.Unlocks.GREED)
     }, Tag, DukeHelpers.DUKE_NAME, nil, true)
 }
