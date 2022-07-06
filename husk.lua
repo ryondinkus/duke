@@ -89,9 +89,11 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_PICKUP_RENDER, function(_, pickup)
 end)
 
 dukeMod:AddCallback(ModCallbacks.MC_POST_PICKUP_UPDATE, function(_, pickup)
-	if DukeHelpers.HasHusk() and ((pickup.Price < 0 and
-		pickup.Price > PickupPrice.PRICE_SPIKES) or
-		(pickup.Price < DukeHelpers.PRICE_OFFSET and pickup.Price > DukeHelpers.PRICE_OFFSET + PickupPrice.PRICE_SPIKES)) then
+	if not DukeHelpers.AnyPlayerHasTrinket(TrinketType.TRINKET_YOUR_SOUL) and
+		DukeHelpers.HasHusk() and
+		((pickup.Price < 0 and
+			pickup.Price > PickupPrice.PRICE_SPIKES) or
+			(pickup.Price < DukeHelpers.PRICE_OFFSET and pickup.Price > DukeHelpers.PRICE_OFFSET + PickupPrice.PRICE_SPIKES)) then
 		local closestPlayer = DukeHelpers.GetClosestPlayer(pickup.Position)
 
 		if closestPlayer and DukeHelpers.IsHusk(closestPlayer) then
