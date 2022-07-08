@@ -161,7 +161,7 @@ for _, card in pairs(DukeHelpers.Cards) do
     DukeHelpers.AddExternalItemDescriptionCard(card)
 
     if Encyclopedia then
-        registerEncyclopediaDescription(card, Encyclopedia.AddTrinket,
+        registerEncyclopediaDescription(card, Encyclopedia.AddCard,
             { Spr = Encyclopedia.RegisterSprite(dukeMod.path .. "content/gfx/ui_cardfronts.anm2", card.Name) })
     end
 
