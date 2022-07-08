@@ -12,7 +12,8 @@ local Descriptions = {
 local WikiDescription = DukeHelpers.GenerateEncyclopediaPage("Yummy in YOUR tummy.")
 
 local function MC_USE_CARD(_, card, player, flags)
-    local enemies = DukeHelpers.ListEnemiesInRoom(true, function(entity) return not EntityRef(entity).IsCharmed and not entity:IsBoss() end)
+    local enemies = DukeHelpers.ListEnemiesInRoom(true,
+        function(entity) return not EntityRef(entity).IsCharmed and not entity:IsBoss() end)
 
     for _, enemy in pairs(enemies) do
         local randomFly = DukeHelpers.GetWeightedFly()
@@ -27,7 +28,7 @@ return {
     Name = Name,
     Names = Names,
     Tag = Tag,
-	Id = Id,
+    Id = Id,
     Descriptions = Descriptions,
     WikiDescription = WikiDescription,
     callbacks = {
@@ -36,5 +37,6 @@ return {
             MC_USE_CARD,
             Id
         }
-    }
+    },
+    unlock = DukeHelpers.GetUnlock(DukeHelpers.Unlocks.GREED, Tag, DukeHelpers.DUKE_NAME)
 }

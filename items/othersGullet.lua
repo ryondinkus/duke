@@ -14,8 +14,8 @@ local WikiDescription = DukeHelpers.GenerateEncyclopediaPage("Poops and shits ev
 local function MC_USE_ITEM(_, type, rng, p)
     DukeHelpers.sfx:Play(SoundEffect.SOUND_WHEEZY_COUGH, 1, 0)
     local effect = Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.POOF01, 0, p.Position, Vector.Zero, nil)
-    effect.Color = Color(0,0,0,1)
-    for _= 1, 2 do
+    effect.Color = Color(0, 0, 0, 1)
+    for _ = 1, 2 do
         local flyToSpawn = DukeHelpers.GetWeightedFly(rng)
         if p:HasCollectible(CollectibleType.COLLECTIBLE_BOOK_OF_VIRTUES) then
             DukeHelpers.SpawnAttackFlyWispBySubType(flyToSpawn.heartFlySubType, p.Position, p, true)
@@ -36,7 +36,7 @@ return {
     Name = Name,
     Names = Names,
     Tag = Tag,
-	Id = Id,
+    Id = Id,
     Descriptions = Descriptions,
     WikiDescription = WikiDescription,
     callbacks = {
@@ -50,5 +50,6 @@ return {
             MC_FAMILIAR_INIT,
             FamiliarVariant.WISP
         }
-    }
+    },
+    unlock = DukeHelpers.GetUnlock(DukeHelpers.Unlocks.MOMS_HEART, Tag, DukeHelpers.DUKE_NAME)
 }
