@@ -102,7 +102,7 @@ local function fireRottenGulletShot(player, pickupSubType, rng)
                     DukeHelpers.SpawnSpidersFromPickupSubType(pickupSubType, t.Position, t, 1)
                     local player = t.SpawnerEntity:ToPlayer()
                     if player and player:HasCollectible(CollectibleType.COLLECTIBLE_BOOK_OF_VIRTUES) then
-                        DukeHelpers.SpawnSpiderWispBySubType(pickupSubType, t.Position, player, false)
+                        DukeHelpers.SpawnSpiderWisp(DukeHelpers.Wisps[foundSpider.key], t.Position, player, false)
                     end
                 end
                 dukeMod:RemoveCallback(ModCallbacks.MC_POST_ENTITY_REMOVE, tearCollision, EntityType.ENTITY_TEAR)

@@ -192,8 +192,7 @@ function DukeHelpers.GetFlyCount(player, includeBroken)
         local flyCount = DukeHelpers.LengthOfTable(playerData.heartFlies)
         if not includeBroken then
             flyCount = flyCount -
-                DukeHelpers.CountByProperties(playerData.heartFlies,
-                    { subType = DukeHelpers.Flies.BROKEN.heartFlySubType })
+                DukeHelpers.CountByProperties(playerData.heartFlies, { key = DukeHelpers.Flies.BROKEN.key })
         end
         return flyCount
     end

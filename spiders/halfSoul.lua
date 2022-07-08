@@ -1,10 +1,5 @@
-local key = "HALF_SOUL"
-local use = include("spiders/soul").key
-local pickupSubType = HeartSubType.HEART_HALF_SOUL
-
 return {
-    key = key,
-    use = use,
-    pickupSubType = pickupSubType,
+    use = include("spiders/soul"),
+    heart = DukeHelpers.Hearts.HALF_SOUL,
     count = 1
 }

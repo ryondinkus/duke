@@ -35,7 +35,12 @@ for _, fly in pairs(flies) do
 
         fly.pickupVariant = fly.heart.variant
         fly.pickupSubType = fly.heart.subType
-        fly.heartFlySubType = fly.pickupSubType
+
+        if fly.pickupSubType == 0 then
+            fly.heartFlySubType = fly.pickupVariant
+        else
+            fly.heartFlySubType = fly.pickupSubType
+        end
 
         if fly.canAttack then
             fly.attackFlySubType = DukeHelpers.CalculateAttackFlySubType(fly.heart)
@@ -47,6 +52,7 @@ for _, fly in pairs(flies) do
             fly.attackFlySubType = DukeHelpers.CalculateAttackFlySubType({ subType = fly.subType })
         end
     end
+
     fly.isBase = true
 
     if fly.use then

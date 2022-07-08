@@ -1,9 +1,3 @@
-function DukeHelpers.GetSpiderSubTypeByPickupSubType(subType)
-    if subType then
-        return DukeHelpers.SUBTYPE_OFFSET + subType
-    end
-end
-
 function DukeHelpers.GetSpiderByPickupSubType(pickupSubType)
     return DukeHelpers.Find(DukeHelpers.Spiders, function(spider) return spider.pickupSubType == pickupSubType end)
 end
@@ -63,6 +57,6 @@ function DukeHelpers.GetWeightedSpider(rng)
     return DukeHelpers.GetWeightedIndex(DukeHelpers.Spiders, "weight", nil, rng)
 end
 
-function DukeHelpers.SpawnSpiderWispBySubType(flySubType, pos, spawner, spawnSpiderOnDeath, lifeTime)
-    return DukeHelpers.SpawnAttackFlyWispBySubType(flySubType, pos, spawner, spawnSpiderOnDeath, lifeTime, true)
+function DukeHelpers.SpawnSpiderWisp(wisp, pos, spawner, spawnSpiderOnDeath, lifeTime)
+    return DukeHelpers.SpawnAttackFlyWisp(wisp, pos, spawner, spawnSpiderOnDeath, lifeTime, true)
 end

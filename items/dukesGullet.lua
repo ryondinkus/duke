@@ -14,15 +14,17 @@ local WikiDescription = DukeHelpers.GenerateEncyclopediaPage("Poops and shits ev
 local function MC_USE_ITEM(_, type, rng, p, flags)
     if DukeHelpers.IsDuke(p) then
         local fliesData = DukeHelpers.GetDukeData(p).heartFlies
-        if fliesData and DukeHelpers.Find(fliesData, function(f) return DukeHelpers.GetFlyByHeartSubType(f.subType).canAttack end) then
+        if fliesData and
+            DukeHelpers.Find(fliesData,
+                function(f) return DukeHelpers.Flies[f.key].canAttack end) then
             for i = #fliesData, 1, -1 do
                 local fly = fliesData[i]
                 local f = DukeHelpers.GetEntityByInitSeed(fly.initSeed)
-                if DukeHelpers.GetFlyByHeartSubType(fly.subType).canAttack then
-                    DukeHelpers.SpawnAttackFly(f)
-                    DukeHelpers.RemoveHeartFly(f)
+                if DukeHelpers.Flies[fly.key].canAttack then
+                    DukeHelpers.SpawnAttackFlyFromHeartFlyEntity(f)
+                    DukeHelpers.RemoveHeartFlyEntity(f)
                     if p:HasCollectible(CollectibleType.COLLECTIBLE_BOOK_OF_VIRTUES) then
-                        DukeHelpers.SpawnAttackFlyWispBySubType(fly.subType, p.Position, p, false, 60)
+                        DukeHelpers.SpawnAttackFlyWisp(DukeHelpers.Wisps[fly.key], p.Position, p, false, 60)
                     end
                 end
             end
@@ -37,8 +39,9 @@ local function MC_USE_ITEM(_, type, rng, p, flags)
                     outerLayer = DukeHelpers.BIRTHRIGHT
                     outerLayerCount = 18
                 end
-                if DukeHelpers.IsFlyOfPlayer(entity, p) and DukeHelpers.CountByProperties(fliesData, { layer = outerLayer }) < outerLayerCount then
-                    DukeHelpers.AddHeartFly(p, DukeHelpers.GetFlyByAttackSubType(entity.SubType), 1)
+                if DukeHelpers.IsFlyOfPlayer(entity, p) and
+                    DukeHelpers.CountByProperties(fliesData, { layer = outerLayer }) < outerLayerCount then
+                    DukeHelpers.AddHeartFly(p, DukeHelpers.GetHeartFlyByAttackFlySubType(entity.SubType), 1)
                     entity:Remove()
                 end
             end, EntityType.ENTITY_FAMILIAR, FamiliarVariant.BLUE_FLY)

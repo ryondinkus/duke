@@ -8,8 +8,8 @@ local function MC_FAMILIAR_UPDATE(_, f)
 					Color(1, 1, 1, 1), Color(1, 1, 1, 1))
 				for i = 1, 2 do
 					DukeHelpers.AddHeartFly(f.SpawnerEntity:ToPlayer(), DukeHelpers.Flies.RED)
-					DukeHelpers.RemoveHeartFly(entity)
-					DukeHelpers.RemoveHeartFly(f)
+					DukeHelpers.RemoveHeartFlyEntity(entity)
+					DukeHelpers.RemoveHeartFlyEntity(f)
 				end
 			end, EntityType.ENTITY_FAMILIAR, DukeHelpers.FLY_VARIANT, heart.subType,
 				function(entity)

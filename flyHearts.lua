@@ -4,12 +4,12 @@ local function SetFlyHeart(pickup)
     local pickupData = pickup:GetData()
     pickupData.isFlyHeart = true
 
-    local fly = DukeHelpers.GetFlyByPickupSubType(pickup.SubType == 0 and pickup.Variant or pickup.SubType)
+    local flyToSpawn = DukeHelpers.Flies[DukeHelpers.GetKeyFromPickup(pickup)]
 
     local spritesheet
 
-    if fly and fly.spritesheet then
-        spritesheet = fly.spritesheet
+    if flyToSpawn and flyToSpawn.spritesheet then
+        spritesheet = flyToSpawn.spritesheet
     else
         spritesheet = DukeHelpers.Flies.RED.spritesheet
     end
@@ -85,13 +85,11 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_PICKUP_RENDER, flyHeartPickupRender, 20
 local function flyHeartPickupCollide(_, pickup)
     pickup = pickup:ToPickup()
     if pickup:GetSprite():IsPlaying("Collect") and (not pickup:GetData().isCollected) and
-        (pickup.Variant == PickupVariant.PICKUP_HEART or pickup.Variant == 901 or pickup.Variant == 2000 or
-            pickup.Variant == 2002) then
+        DukeHelpers.IsSupportedHeart(pickup) then
         local player = DukeHelpers.GetClosestPlayer(pickup.Position)
 
         if player and pickup:GetData().isFlyHeart then
-            DukeHelpers.AddHeartFly(player,
-                DukeHelpers.GetFlyByPickupSubType(pickup.SubType == 0 and pickup.Variant or pickup.SubType))
+            DukeHelpers.AddHeartFly(player, DukeHelpers.Flies[DukeHelpers.GetKeyFromPickup(pickup)])
             pickup:GetData().isCollected = true
         end
     end

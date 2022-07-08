@@ -67,7 +67,7 @@ local function MC_FAMILIAR_UPDATE(_, f)
 	if data.State == STATE.ATTACK_SMALL then
 		if sprite:IsEventTriggered("Barf") then
 			if f.Player:HasCollectible(CollectibleType.COLLECTIBLE_BOOK_OF_VIRTUES) then
-				DukeHelpers.SpawnAttackFlyWispBySubType(1, f.Position, f.Player, false)
+				DukeHelpers.SpawnAttackFlyWisp(DukeHelpers.Wisps.RED, f.Position, f.Player, false)
 			else
 				for _ = 1, 3 do
 					local fly = Isaac.Spawn(EntityType.ENTITY_ATTACKFLY, 0, 0, f.Position + CONSTANTS.FLY_SPAWN_OFFSET, Vector.Zero, f)
@@ -88,7 +88,7 @@ local function MC_FAMILIAR_UPDATE(_, f)
 		if sprite:IsEventTriggered("Barf") then
 			if f.Player:HasCollectible(CollectibleType.COLLECTIBLE_BOOK_OF_VIRTUES) then
 				for _ = 1, 2 do
-					DukeHelpers.SpawnAttackFlyWispBySubType(1, f.Position, f.Player, false)
+					DukeHelpers.SpawnAttackFlyWisp(DukeHelpers.Wisps.RED, f.Position, f.Player, false)
 				end
 			else
 				if data.Champion == "Green" then

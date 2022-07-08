@@ -18,9 +18,9 @@ local function MC_USE_ITEM(_, type, rng, p)
     for _ = 1, 2 do
         local flyToSpawn = DukeHelpers.GetWeightedFly(rng)
         if p:HasCollectible(CollectibleType.COLLECTIBLE_BOOK_OF_VIRTUES) then
-            DukeHelpers.SpawnAttackFlyWispBySubType(flyToSpawn.heartFlySubType, p.Position, p, true)
+            DukeHelpers.SpawnAttackFlyWisp(DukeHelpers.Wisps[flyToSpawn.key], p.Position, p, true)
         else
-            DukeHelpers.SpawnAttackFlyBySubType(flyToSpawn.heartFlySubType, p.Position, p)
+            DukeHelpers.SpawnAttackFlyFromHeartFly(flyToSpawn, p.Position, p)
         end
     end
     return true

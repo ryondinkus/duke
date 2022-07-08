@@ -26,12 +26,24 @@ local spiders = {
 
 -- Registers the flies
 for _, spider in pairs(spiders) do
-    spider.subType = DukeHelpers.GetSpiderSubTypeByPickupSubType(spider.pickupSubType)
+    if not spider.key then
+        spider.key = spider.heart.key
+    end
+
+    spider.pickupVariant = spider.heart.variant
+    spider.pickupSubType = spider.heart.subType
+
+    if spider.pickupSubType == 0 then
+        spider.subType = spider.pickupVariant
+    else
+        spider.subType = spider.pickupSubType
+    end
+
+    spider.subType = DukeHelpers.CalculateAttackFlySubType(spider.subType)
     spider.isBase = true
 
     if spider.use then
-        local existingSpider = DukeHelpers.Spiders[spider.use]
-
+        local existingSpider = DukeHelpers.Spiders[spider.use.key]
         spider.spritesheet = existingSpider.spritesheet
         spider.subType = existingSpider.subType
         spider.poofColor = existingSpider.poofColor

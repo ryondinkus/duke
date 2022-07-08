@@ -19,13 +19,13 @@ dukeMod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, function(_, pickup, co
 	local p = collider:ToPlayer()
 	if p and DukeHelpers.IsDuke(p) and (pickup.Price <= 0 or p:GetNumCoins() >= pickup.Price) then
 		local playerData = DukeHelpers.GetDukeData(p)
-		if (pickup.SubType == 3320 or pickup.SubType == 3321) then
-			local patchedFly = DukeHelpers.GetFlyByPickupSubType(pickup.SubType)
+		if DukeHelpers.IsPatchedHeart(pickup) then
+			local patchedFly = DukeHelpers.GetFlyByPickup(pickup)
 			for i = 1, patchedFly.count do
-				if DukeHelpers.CountByProperties(playerData.heartFlies, { subType = DukeHelpers.Flies.BROKEN.heartFlySubType }) > 0 then
-					local removedFlies = DukeHelpers.RemoveHeartFlyBySubType(p, DukeHelpers.Flies.BROKEN.heartFlySubType, 1)
+				if DukeHelpers.CountByProperties(playerData.heartFlies, { key = DukeHelpers.Flies.BROKEN.key }) > 0 then
+					local removedFlies = DukeHelpers.RemoveHeartFly(p, DukeHelpers.Flies.BROKEN, 1)
 
-					DukeHelpers.SpawnHeartFlyPoof(DukeHelpers.Flies.BROKEN.heartFlySubType, removedFlies[1].Position, p)
+					DukeHelpers.SpawnHeartFlyPoof(DukeHelpers.Flies.BROKEN, removedFlies[1].Position, p)
 				else
 					DukeHelpers.AddHeartFly(p, patchedFly, patchedFly.count - i + 1)
 					break
@@ -140,8 +140,8 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_UPDATE, function()
 				for i = #fliesData, 1, -1 do
 					local fly = fliesData[i]
 					local f = DukeHelpers.GetEntityByInitSeed(fly.initSeed)
-					DukeHelpers.SpawnAttackFly(f)
-					DukeHelpers.RemoveHeartFly(f)
+					DukeHelpers.SpawnAttackFlyFromHeartFlyEntity(f)
+					DukeHelpers.RemoveHeartFlyEntity(f)
 				end
 			end
 			if sprite:IsPlaying("Death") then
@@ -169,8 +169,8 @@ dukeMod:AddCallback(ModCallbacks.MC_EVALUATE_CACHE, function(_, player, flags)
 				local fly = heartFlies[i]
 				local f = DukeHelpers.GetEntityByInitSeed(fly.initSeed)
 				if DukeHelpers.GetDukeData(f).layer == DukeHelpers.BIRTHRIGHT then
-					DukeHelpers.RemoveHeartFly(f)
-					DukeHelpers.SpawnAttackFly(f)
+					DukeHelpers.RemoveHeartFlyEntity(f)
+					DukeHelpers.SpawnAttackFlyFromHeartFlyEntity(f)
 				end
 			end
 		end
