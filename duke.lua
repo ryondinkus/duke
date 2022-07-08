@@ -87,7 +87,7 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_PICKUP_UPDATE, function(_, pickup)
 				pickup.AutoUpdatePrice = true
 			end
 		end
-	elseif pickup:GetData().showFliesPrice == true then
+	elseif pickup:GetData().showFliesPrice then
 		pickup:GetData().showFliesPrice = nil
 		if not pickup.AutoUpdatePrice then
 			pickup.AutoUpdatePrice = true

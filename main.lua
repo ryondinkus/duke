@@ -78,6 +78,21 @@ include("wisps")
 include("husk")
 include("flyHearts")
 
+-- Callbacks to handle pound of flesh not working with custom prices
+dukeMod:AddCallback(ModCallbacks.MC_POST_PICKUP_UPDATE, function(_, pickup)
+    local hasPoundOfFlesh = DukeHelpers.AnyPlayerHasItem(CollectibleType.COLLECTIBLE_POUND_OF_FLESH)
+
+    if hasPoundOfFlesh ~= dukeMod.global.hasPoundOfFlesh then
+        if pickup:GetData().showFliesPrice or pickup:GetData().showSlotsPrice then
+            pickup.AutoUpdatePrice = true
+        end
+    end
+end)
+
+dukeMod:AddCallback(ModCallbacks.MC_POST_UPDATE, function()
+    dukeMod.global.hasPoundOfFlesh = DukeHelpers.AnyPlayerHasItem(CollectibleType.COLLECTIBLE_POUND_OF_FLESH)
+end)
+
 include("flies/registry")
 include("spiders/registry")
 
