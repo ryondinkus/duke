@@ -122,13 +122,7 @@ function DukeHelpers.HasHusk()
 end
 
 function DukeHelpers.HasPocketOfFlies()
-    local found = false
-    DukeHelpers.ForEachPlayer(function(p)
-        if p:HasTrinket(DukeHelpers.Trinkets.pocketOfFlies.Id) then
-            found = true
-        end
-    end)
-    return found
+    return DukeHelpers.AnyPlayerHasTrinket(DukeHelpers.Trinkets.pocketOfFlies.Id)
 end
 
 function DukeHelpers.ForEach(t, func)
@@ -737,4 +731,24 @@ function DukeHelpers.AnimateHeartPickup(pickup, p)
         p:AnimatePickup(pickup:GetSprite())
         p:AddCoins(-pickup.Price)
     end
+end
+
+function DukeHelpers.AnyPlayerHasTrinket(trinketId)
+    local hasTrinket = false
+    DukeHelpers.ForEachPlayer(function(player)
+        if not hasTrinket then
+            hasTrinket = player:HasTrinket(trinketId)
+        end
+    end)
+
+    return hasTrinket
+end
+
+function DukeHelpers.AnyPlayerHasItem(collectibleId)
+    local hasItem = false
+    DukeHelpers.ForEachPlayer(function()
+        hasItem = true
+    end, collectibleId)
+
+    return hasItem
 end

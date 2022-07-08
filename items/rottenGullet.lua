@@ -203,6 +203,7 @@ local function MC_POST_RENDER()
             local playerHudPositions = playerHUDPositions[controllerIndex]
             local hudPosition = type(playerHudPositions) == "table" and playerHudPositions[hudOffset] or
                 playerHudPositions
+            local screenShakeOffset = Game().ScreenShakeOffset
 
             local isSmall = controllerIndex ~= 0
 
@@ -240,7 +241,9 @@ local function MC_POST_RENDER()
                 data[Tag .. "Error"] = nil
             end
 
-            font:DrawStringScaled("x" .. numberOfFilledSlots, x, y, scale, scale, currentCountColor, 1, false)
+            font:DrawStringScaled("x" .. numberOfFilledSlots, x + screenShakeOffset.X, y + screenShakeOffset.Y, scale,
+                scale, currentCountColor
+                , 1, false)
 
             local percentBrokenSlots = (
                 DukeHelpers.MAX_ROTTEN_GULLET_COUNT - DukeHelpers.GetMaxRottenGulletSlots(player)) /
@@ -248,8 +251,9 @@ local function MC_POST_RENDER()
 
             local blueAndGreenValues = 0.5 - (0.5 * percentBrokenSlots)
 
-            font:DrawStringScaled("/" .. tostring(DukeHelpers.GetMaxRottenGulletSlots(player)), x + maxSlotTextXOffset,
-                y + maxSlotTextYOffset, scale * maxSlotTextScale, scale * maxSlotTextScale,
+            font:DrawStringScaled("/" .. tostring(DukeHelpers.GetMaxRottenGulletSlots(player)),
+                x + maxSlotTextXOffset + screenShakeOffset.X,
+                y + maxSlotTextYOffset + screenShakeOffset.Y, scale * maxSlotTextScale, scale * maxSlotTextScale,
                 KColor(0.5, blueAndGreenValues, blueAndGreenValues, 1), 1, false)
 
             local amountToRender = math.min(numberOfFilledSlots, shownHearts)
@@ -307,7 +311,8 @@ local function MC_POST_RENDER()
                     startingY)
 
                 if renderAbove then
-                    renderAboveSprite:Render(position + (renderAbove.spriteOffset or Vector.Zero), Vector.Zero,
+                    renderAboveSprite:Render(position + (renderAbove.spriteOffset or Vector.Zero),
+                        Vector.Zero,
                         Vector.Zero)
                 end
                 sprite:Render(position + spriteOffset, Vector.Zero, Vector.Zero)
