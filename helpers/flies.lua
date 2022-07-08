@@ -40,7 +40,7 @@ function DukeHelpers.AddHeartFly(player, fly, specificAmount, applyInfestedHeart
 				end
 			end
 		end)
-		return
+		return {}
 	end
 
 	local playerData = DukeHelpers.GetDukeData(player)
@@ -261,6 +261,16 @@ function DukeHelpers.RemoveHeartFlyBySubType(player, subType, amount)
 	end
 
 	return removedFlies
+end
+
+function DukeHelpers.CalculateAttackFlySubType(heart)
+	local identifier = heart.subType
+
+	if identifier == 0 then
+		identifier = heart.variant
+	end
+
+	return DukeHelpers.SUBTYPE_OFFSET + identifier
 end
 
 function DukeHelpers.GetAttackFlySubTypeBySubType(subType)

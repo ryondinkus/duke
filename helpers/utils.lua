@@ -421,14 +421,14 @@ function DukeHelpers.RemoveUnallowedHearts(player)
 
     local immortalHearts = DukeHelpers.GetTrueImmortalHearts(player)
     if immortalHearts > 0 then
-        removedHearts[DukeHelpers.HeartKeys.IMMORTAL] = immortalHearts
+        removedHearts[DukeHelpers.Hearts.IMMORTAL.key] = immortalHearts
         ComplianceImmortal.AddImmortalHearts(player, -immortalHearts)
         blackHearts = blackHearts - immortalHearts
     end
 
     local webHearts = DukeHelpers.GetTrueWebHearts(player)
     if webHearts and webHearts > 0 then
-        removedHearts[DukeHelpers.HeartKeys.WEB] = webHearts / 2
+        removedHearts[DukeHelpers.Hearts.WEB.key] = webHearts / 2
 
         local totalSoulHearts = DukeHelpers.GetTrueSoulHearts(player)
         addWebHearts(-webHearts / 2, player)
@@ -442,7 +442,7 @@ function DukeHelpers.RemoveUnallowedHearts(player)
     end
 
     if blackHearts > 0 then
-        removedHearts[DukeHelpers.HeartKeys.BLACK] = blackHearts
+        removedHearts[DukeHelpers.Hearts.BLACK.key] = blackHearts
     end
 
     if blackHearts > 0 or skippedBlackHearts > 0 then
@@ -453,13 +453,13 @@ function DukeHelpers.RemoveUnallowedHearts(player)
 
     local boneHearts = player:GetBoneHearts()
     if boneHearts > 0 then
-        removedHearts[DukeHelpers.HeartKeys.BONE] = boneHearts
+        removedHearts[DukeHelpers.Hearts.BONE.key] = boneHearts
         player:AddBoneHearts(-boneHearts)
     end
 
     local brokenHearts = player:GetBrokenHearts()
     if brokenHearts > 0 then
-        removedHearts[DukeHelpers.HeartKeys.BROKEN] = brokenHearts * 2
+        removedHearts[DukeHelpers.Hearts.BROKEN.key] = brokenHearts * 2
         player:AddBrokenHearts(-brokenHearts)
 
         if DukeHelpers.GetTrueSoulHearts(player) < DukeHelpers.MAX_HEALTH then
@@ -469,25 +469,25 @@ function DukeHelpers.RemoveUnallowedHearts(player)
 
     local eternalHearts = player:GetEternalHearts()
     if eternalHearts > 0 then
-        removedHearts[DukeHelpers.HeartKeys.ETERNAL] = eternalHearts
+        removedHearts[DukeHelpers.Hearts.ETERNAL.key] = eternalHearts
         player:AddEternalHearts(-eternalHearts)
     end
 
     local goldenHearts = player:GetGoldenHearts()
     if goldenHearts > 0 then
-        removedHearts[DukeHelpers.HeartKeys.GOLDEN] = goldenHearts
+        removedHearts[DukeHelpers.Hearts.GOLDEN.key] = goldenHearts
         player:AddGoldenHearts(-goldenHearts)
     end
 
     local rottenHearts = player:GetRottenHearts()
     if rottenHearts > 0 then
-        removedHearts[DukeHelpers.HeartKeys.ROTTEN] = rottenHearts
+        removedHearts[DukeHelpers.Hearts.ROTTEN.key] = rottenHearts
         player:AddRottenHearts(-rottenHearts * 2)
     end
 
     local redHearts = player:GetHearts() + player:GetMaxHearts()
     if redHearts > 0 then
-        removedHearts[DukeHelpers.HeartKeys.RED] = redHearts
+        removedHearts[DukeHelpers.Hearts.RED] = redHearts
         player:AddHearts(-player:GetHearts())
         player:AddMaxHearts(-player:GetMaxHearts())
     end
@@ -495,13 +495,13 @@ function DukeHelpers.RemoveUnallowedHearts(player)
     local soulHearts = DukeHelpers.GetTrueSoulHearts(player)
     if soulHearts > DukeHelpers.MAX_HEALTH then
         local removedAmount = soulHearts - DukeHelpers.MAX_HEALTH
-        removedHearts[DukeHelpers.HeartKeys.SOUL] = removedAmount
+        removedHearts[DukeHelpers.Hearts.SOUL.key] = removedAmount
         player:AddSoulHearts(-removedAmount)
     end
 
     local moonHearts = player:GetData().moons
     if moonHearts and moonHearts > 0 then
-        removedHearts[DukeHelpers.HeartKeys.MOONLIGHT] = moonHearts
+        removedHearts[DukeHelpers.Hearts.MOONLIGHT.key] = moonHearts
         player:GetData().moons = 0
     end
 

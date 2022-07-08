@@ -85,8 +85,4 @@ for _, spider in pairs(spiders) do
     end
 
     DukeHelpers.Spiders[spider.key] = spider
-
-    if not DukeHelpers.HeartKeys[spider.key] then
-        DukeHelpers.HeartKeys[spider.key] = spider.key
-    end
 end

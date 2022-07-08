@@ -1,6 +1,5 @@
-local key = "GOLDEN"
-local subType = HeartSubType.HEART_GOLDEN
-local attackFlySubType = DukeHelpers.GetAttackFlySubTypeBySubType(subType)
+local heart = DukeHelpers.Hearts.GOLDEN
+local attackFlySubType = DukeHelpers.CalculateAttackFlySubType(heart)
 
 local function ATTACK_FLY_MC_PRE_FAMILIAR_COLLISION(_, f, e)
 	if f.SubType == attackFlySubType then
@@ -11,7 +10,7 @@ local function ATTACK_FLY_MC_PRE_FAMILIAR_COLLISION(_, f, e)
 end
 
 local function HEART_FLY_MC_PRE_FAMILIAR_COLLISION(_, f, e)
-	if f.SubType == subType then
+	if f.SubType == heart.subType then
 		if e:ToNPC() and not e:HasEntityFlags(EntityFlag.FLAG_CHARM) and DukeHelpers.rng:RandomInt(3) == 0 then
 			e:AddMidasFreeze(EntityRef(f), 30)
 		end
@@ -19,10 +18,11 @@ local function HEART_FLY_MC_PRE_FAMILIAR_COLLISION(_, f, e)
 end
 
 local function MC_PRE_FAMILIAR_COLLISION(_, f, e)
-	if f.SubType == subType then
+	if f.SubType == heart.subType then
 		if e.Type == EntityType.ENTITY_PROJECTILE and not e:ToProjectile():HasProjectileFlags(ProjectileFlags.CANT_HIT_PLAYER) then
 			for _ = 0, DukeHelpers.rng:RandomInt(8) do
-				Isaac.Spawn(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_COIN, 0, f.Position, Vector.FromAngle(DukeHelpers.rng:RandomInt(360)), f)
+				Isaac.Spawn(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_COIN, 0, f.Position,
+					Vector.FromAngle(DukeHelpers.rng:RandomInt(360)), f)
 			end
 			Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.CRACKED_ORB_POOF, 0, f.Position, Vector.Zero, f)
 			local effect = Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.BOMB_CRATER, 0, f.Position, Vector.Zero, f)
@@ -34,10 +34,9 @@ local function MC_PRE_FAMILIAR_COLLISION(_, f, e)
 end
 
 return {
-	key = key,
 	spritesheet = "gold_heart_fly.png",
 	canAttack = true,
-	subType = subType,
+	heart = heart,
 	count = 1,
 	weight = 1,
 	poofColor = Color(0.62, 0.62, 0.62, 1, 0.78, 0.55, 0),

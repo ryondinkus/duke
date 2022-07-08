@@ -28,13 +28,29 @@ local flies = {
 
 -- Registers the flies
 for _, fly in pairs(flies) do
-    fly.pickupSubType = fly.subType
-    fly.heartFlySubType = fly.subType
-    fly.attackFlySubType = DukeHelpers.GetAttackFlySubTypeBySubType(fly.subType)
+    if fly.heart then
+        if not fly.key then
+            fly.key = fly.heart.key
+        end
+
+        fly.pickupVariant = fly.heart.variant
+        fly.pickupSubType = fly.heart.subType
+        fly.heartFlySubType = fly.pickupSubType
+
+        if fly.canAttack then
+            fly.attackFlySubType = DukeHelpers.CalculateAttackFlySubType(fly.heart)
+        end
+    else
+        fly.heartFlySubType = fly.subType
+
+        if fly.canAttack then
+            fly.attackFlySubType = DukeHelpers.CalculateAttackFlySubType({ subType = fly.subType })
+        end
+    end
     fly.isBase = true
 
     if fly.use then
-        local existingFly = DukeHelpers.Flies[fly.use]
+        local existingFly = DukeHelpers.Flies[fly.use.key]
         fly.spritesheet = existingFly.spritesheet
         fly.canAttack = existingFly.canAttack
         fly.heartFlySubType = existingFly.heartFlySubType
@@ -44,7 +60,7 @@ for _, fly in pairs(flies) do
         fly.isBase = false
     end
 
-    if fly.spritesheet and not fly.use then
+    if fly.spritesheet and fly.isBase then
         fly.spritesheet = "gfx/familiars/flies/" .. fly.spritesheet
     end
 
@@ -75,8 +91,4 @@ for _, fly in pairs(flies) do
     end
 
     DukeHelpers.Flies[fly.key] = fly
-
-    if not DukeHelpers.HeartKeys[fly.key] then
-        DukeHelpers.HeartKeys[fly.key] = fly.key
-    end
 end

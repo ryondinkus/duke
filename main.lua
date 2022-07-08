@@ -25,8 +25,7 @@ DukeHelpers = {
     rng = RNG(),
     sfx = SFXManager(),
     PRICE_OFFSET = -50,
-    MAX_HEALTH = 4,
-    HeartKeys = {}
+    MAX_HEALTH = 4
 }
 
 DukeHelpers.DUKE_ID = Isaac.GetPlayerTypeByName(DukeHelpers.DUKE_NAME)
@@ -76,6 +75,7 @@ include("helpers/husk")
 include("helpers/unlocks")
 
 -- Initialize player and flies
+include("hearts")
 include("flies")
 include("duke")
 include("wisps")

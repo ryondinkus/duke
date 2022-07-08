@@ -1,10 +1,5 @@
-local key = "DOUBLE_WEB"
-local subType = 2002
-local use = include("flies/modded/web").key
-
 return {
-	key = key,
-	use = use,
-	subType = subType,
+	use = include("flies/modded/web"),
+	heart = DukeHelpers.Hearts.DOUBLE_WEB,
 	count = 2
 }

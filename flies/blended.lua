@@ -1,4 +1,3 @@
-local key = "BLENDED"
 local uses = {
     {
         key = include("flies/red").key,
@@ -9,11 +8,9 @@ local uses = {
         count = 1
     }
 }
-local subType = HeartSubType.HEART_BLENDED
 
 return {
-    key = key,
     uses = uses,
-    subType = subType,
+    heart = DukeHelpers.Hearts.BLENDED,
     count = 1
 }

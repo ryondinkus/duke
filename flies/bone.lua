@@ -1,6 +1,5 @@
-local key = "BONE"
-local subType = HeartSubType.HEART_BONE
-local attackFlySubType = DukeHelpers.GetAttackFlySubTypeBySubType(subType)
+local heart = DukeHelpers.Hearts.BONE
+local attackFlySubType = DukeHelpers.CalculateAttackFlySubType(heart)
 
 local function ATTACK_FLY_MC_PRE_FAMILIAR_COLLISION(_, f, e)
     if f.SubType == attackFlySubType then
@@ -16,7 +15,7 @@ local function ATTACK_FLY_MC_PRE_FAMILIAR_COLLISION(_, f, e)
 end
 
 local function HEART_FLY_MC_FAMILIAR_UPDATE_ATTACK(_, f)
-    if f.SubType == subType then
+    if f.SubType == heart.subType then
         if f.FrameCount == 6 then
             local data = DukeHelpers.GetDukeData(f)
             if data.hitPoints == nil then
@@ -27,7 +26,7 @@ local function HEART_FLY_MC_FAMILIAR_UPDATE_ATTACK(_, f)
 end
 
 local function MC_PRE_FAMILIAR_COLLISION(_, f, e)
-    if f.SubType == subType then
+    if f.SubType == heart.subType then
         if e.Type == EntityType.ENTITY_PROJECTILE and
             not e:ToProjectile():HasProjectileFlags(ProjectileFlags.CANT_HIT_PLAYER) then
             DukeHelpers.sfx:Play(SoundEffect.SOUND_BONE_SNAP, 1, 0)
@@ -37,10 +36,9 @@ local function MC_PRE_FAMILIAR_COLLISION(_, f, e)
 end
 
 return {
-    key = key,
     spritesheet = "bone_heart_fly.png",
     canAttack = true,
-    subType = subType,
+    heart = heart,
     count = 1,
     weight = 1,
     poofColor = Color(0.62, 0.62, 0.62, 1, 0.59, 0.59, 0.59),
