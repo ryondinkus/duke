@@ -61,5 +61,19 @@ return {
             ModCallbacks.MC_POST_FIRE_TEAR,
             MC_POST_FIRE_TEAR
         }
-    }
+    },
+    unlock = DukeHelpers.GetUnlock({
+        DukeHelpers.Unlocks.MOMS_HEART,
+        DukeHelpers.Unlocks.ISAAC,
+        DukeHelpers.Unlocks.BLUE_BABY,
+        DukeHelpers.Unlocks.SATAN,
+        DukeHelpers.Unlocks.THE_LAMB,
+        DukeHelpers.Unlocks.MEGA_SATAN,
+        DukeHelpers.Unlocks.BOSS_RUSH,
+        DukeHelpers.Unlocks.HUSH,
+        DukeHelpers.Unlocks.DELIRIUM,
+        DukeHelpers.Unlocks.MOTHER,
+        DukeHelpers.Unlocks.BEAST,
+        DukeHelpers.Unlocks.GREEDIER
+    }, Tag, DukeHelpers.DUKE_NAME, nil, true)
 }

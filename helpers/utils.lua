@@ -209,6 +209,9 @@ function DukeHelpers.GetDukeDevilDealPrice(collectible)
 end
 
 function DukeHelpers.IsArray(t)
+    if t == nil then
+        return false
+    end
     local i = 0
     for _ in pairs(t) do
         i = i + 1
@@ -507,6 +510,10 @@ end
 
 function DukeHelpers.PrintJson(obj)
     print(json.encode(obj))
+end
+
+function DukeHelpers.DebugJson(obj)
+    Isaac.DebugString(json.encode(obj))
 end
 
 function DukeHelpers.RenderCustomDevilDealPrice(pickup, key, animationPath)
