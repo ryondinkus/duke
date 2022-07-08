@@ -20,9 +20,9 @@ local function MC_POST_NEW_LEVEL()
 end
 
 local function MC_POST_PEFFECT_UPDATE(_, p)
-	local data = DukeHelpers.GetDukeData(p)
-    
-	if data and data[Tag] then
+    local data = DukeHelpers.GetDukeData(p)
+
+    if data and data[Tag] then
         if p:IsExtraAnimationFinished() then
             data[Tag] = nil
             for i = 1, 3 do
@@ -42,7 +42,7 @@ return {
     Name = Name,
     Names = Names,
     Tag = Tag,
-	Id = Id,
+    Id = Id,
     Descriptions = Descriptions,
     WikiDescription = WikiDescription,
     callbacks = {
@@ -54,5 +54,6 @@ return {
             ModCallbacks.MC_POST_PEFFECT_UPDATE,
             MC_POST_PEFFECT_UPDATE
         }
-    }
+    },
+    unlock = DukeHelpers.GetUnlock(DukeHelpers.Unlocks.THE_LAMB, Tag, DukeHelpers.DUKE_NAME)
 }

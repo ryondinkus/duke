@@ -35,5 +35,6 @@ return {
             ModCallbacks.MC_EVALUATE_CACHE,
             MC_EVALUATE_CACHE
         }
-    }
+    },
+    unlock = DukeHelpers.GetUnlock(DukeHelpers.Unlocks.MOTHER, Tag, DukeHelpers.HUSK_NAME)
 }

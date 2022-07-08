@@ -60,6 +60,9 @@ dukeMod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, function(_, pickup, co
 			DukeHelpers.sfx:Play(sfx)
 			DukeHelpers.AnimateHeartPickup(pickup, p)
 
+			if pickup.Price == PickupPrice.PRICE_SPIKES then
+				p:TakeDamage(2, DamageFlag.DAMAGE_SPIKES | DamageFlag.DAMAGE_NO_PENALTIES, EntityRef(nil), 0)
+			end
 		end
 
 		return true
@@ -86,7 +89,11 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_PICKUP_RENDER, function(_, pickup)
 end)
 
 dukeMod:AddCallback(ModCallbacks.MC_POST_PICKUP_UPDATE, function(_, pickup)
-	if DukeHelpers.HasHusk() and pickup.Price < 0 then
+	if not DukeHelpers.AnyPlayerHasTrinket(TrinketType.TRINKET_YOUR_SOUL) and
+		DukeHelpers.HasHusk() and
+		((pickup.Price < 0 and
+			pickup.Price > PickupPrice.PRICE_SPIKES) or
+			(pickup.Price < DukeHelpers.PRICE_OFFSET and pickup.Price > DukeHelpers.PRICE_OFFSET + PickupPrice.PRICE_SPIKES)) then
 		local closestPlayer = DukeHelpers.GetClosestPlayer(pickup.Position)
 
 		if closestPlayer and DukeHelpers.IsHusk(closestPlayer) then

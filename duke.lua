@@ -35,6 +35,13 @@ dukeMod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, function(_, pickup, co
 		else
 			DukeHelpers.SpawnPickupHeartFly(p, pickup)
 		end
+
+		if pickup then
+			if pickup.Price == PickupPrice.PRICE_SPIKES then
+				p:TakeDamage(2, DamageFlag.DAMAGE_SPIKES | DamageFlag.DAMAGE_NO_PENALTIES, EntityRef(nil), 0)
+			end
+		end
+
 		return true
 	end
 end, PickupVariant.PICKUP_HEART)
@@ -63,8 +70,10 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_PICKUP_RENDER, function(_, pickup)
 end)
 
 dukeMod:AddCallback(ModCallbacks.MC_POST_PICKUP_UPDATE, function(_, pickup)
-	if (DukeHelpers.HasDuke() or DukeHelpers.HasPocketOfFlies()) and pickup.Price < 0 and pickup.Price > -5 and
-		pickup.Price < DukeHelpers.PRICE_OFFSET and pickup.Price > DukeHelpers.PRICE_OFFSET - 5 then
+	if not DukeHelpers.AnyPlayerHasTrinket(TrinketType.TRINKET_YOUR_SOUL) and
+		(DukeHelpers.HasDuke() or DukeHelpers.HasPocketOfFlies()) and ((pickup.Price < 0 and
+			pickup.Price > PickupPrice.PRICE_SPIKES) or
+			(pickup.Price < DukeHelpers.PRICE_OFFSET and pickup.Price > DukeHelpers.PRICE_OFFSET + PickupPrice.PRICE_SPIKES)) then
 		local closestPlayer = DukeHelpers.GetClosestPlayer(pickup.Position)
 
 		if closestPlayer and
@@ -78,7 +87,7 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_PICKUP_UPDATE, function(_, pickup)
 				pickup.AutoUpdatePrice = true
 			end
 		end
-	elseif pickup:GetData().showFliesPrice == true then
+	elseif pickup:GetData().showFliesPrice then
 		pickup:GetData().showFliesPrice = nil
 		if not pickup.AutoUpdatePrice then
 			pickup.AutoUpdatePrice = true

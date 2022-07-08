@@ -50,5 +50,6 @@ return {
             MC_FAMILIAR_INIT,
             FamiliarVariant.WISP
         }
-    }
+    },
+    unlock = DukeHelpers.GetUnlock(DukeHelpers.Unlocks.DELIRIUM, Tag, DukeHelpers.HUSK_NAME)
 }

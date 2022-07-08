@@ -20,7 +20,7 @@ local function MC_POST_PEFFECT_UPDATE(_, player)
         DukeHelpers.Stagger(Tag, player, 15, 10, function()
             DukeHelpers.Items.rottenGullet.helpers.fireRottenGulletShot(player,
                 DukeHelpers.GetWeightedSpider(player:GetCardRNG(Id)).pickupSubType, player:GetCardRNG(Id))
-			player:AnimateCard(Id)
+            player:AnimateCard(Id)
         end)
     end
 end
@@ -42,5 +42,6 @@ return {
             ModCallbacks.MC_POST_PEFFECT_UPDATE,
             MC_POST_PEFFECT_UPDATE
         }
-    }
+    },
+    unlock = DukeHelpers.GetUnlock(DukeHelpers.Unlocks.GREEDIER, Tag, DukeHelpers.HUSK_NAME)
 }
