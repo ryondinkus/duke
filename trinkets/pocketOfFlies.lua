@@ -6,7 +6,7 @@ local Name = Names.en_us
 local Tag = "pocketOfFlies"
 local Id = Isaac.GetTrinketIdByName(Name)
 local Descriptions = {
-    en_us = "Nom Nom Nom",
+    en_us = "Devil Deal prices will now cost Heart Orbital Flies instead of HP, with 4 flies per heart cost#As Duke, all Devil Deals now only cost 4 Heart Orbital Flies, similar to {{Trinket[56]}}Judas' Tongue",
     spa = "Nom Nom Nom"
 }
 local WikiDescription = DukeHelpers.GenerateEncyclopediaPage("Nom Nom Nom")

@@ -6,7 +6,7 @@ local Name = Names.en_us
 local Tag = "rottenGullet"
 local Id = Isaac.GetItemIdByName(Name)
 local Descriptions = {
-    en_us = "Poops and shits everywhere",
+    en_us = "On use, deals massive knockback and damage in a radius close to Tainted Duke, and fires 8 tears in all directions#Tears have a 50% chance of spawning Heart Spiders on collision#Tears and Heart Spiders have different properties based on the Heart Type consumed",
     spa = "Caca y mierda por todos lados"
 }
 local WikiDescription = DukeHelpers.GenerateEncyclopediaPage("Poops and shits everywhere.")

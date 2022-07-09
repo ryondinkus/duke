@@ -6,7 +6,7 @@ local Name = Names.en_us
 local Tag = "queenFly"
 local Id = Isaac.GetItemIdByName(Name)
 local Descriptions = {
-    en_us = "Total bitch",
+    en_us = "Any blue flies spawned will convert into Heart Attack Flies of a random type#Any 'basic' fly enemies will spawn a random Heart Attack Fly on death",
     spa = "Perra total"
 }
 local WikiDescription = DukeHelpers.GenerateEncyclopediaPage("Total bitch.")

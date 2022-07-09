@@ -202,3 +202,7 @@ dukeMod:AddCallback(ModCallbacks.MC_ENTITY_TAKE_DMG, function(_, entity, _, flag
 		end
 	end
 end)
+
+if EID then
+	EID:addBirthright(DukeHelpers.DUKE_ID, "Allows Duke to have a fourth ring of Heart Orbital Flies, holding up to 18 additional flies#Heart Orbital Flies in the fourth ring deal 1 contact damage")
+end

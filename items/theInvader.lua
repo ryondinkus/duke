@@ -6,7 +6,7 @@ local Name = Names.en_us
 local Tag = "theInvader"
 local Id = Isaac.GetItemIdByName(Name)
 local Descriptions = {
-    en_us = "Poops and shits everywhere",
+    en_us = "Hops around in short bursts, targeting nearby enemies#On collision with an enemy, enters them and permacharms them#When the permacharmed enemy dies, The Invader will fall to the ground and target a new enemy",
     spa = "Caca y mierda por todos lados"
 }
 local WikiDescription = DukeHelpers.GenerateEncyclopediaPage("Poops and shits everywhere.")

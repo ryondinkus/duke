@@ -6,7 +6,7 @@ local Name = Names.en_us
 local Tag = "dukesTooth"
 local Id = Isaac.GetTrinketIdByName(Name)
 local Descriptions = {
-    en_us = "Nom Nom Nom",
+    en_us = "Spawns a Heart Attack Fly of a random type when entering an active room#Flies can be one of six random types: {{Heart}}Red, {{SoulHeart}}Soul, {{BlackHeart}}Black, {{GoldenHeart}}Gold, {{EmptyBoneHeart}}Bone, or {{RottenHeart}}Rotten",
     spa = "Nom Nom Nom"
 }
 local WikiDescription = DukeHelpers.GenerateEncyclopediaPage("Nom Nom Nom")

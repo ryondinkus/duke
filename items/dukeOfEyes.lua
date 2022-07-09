@@ -6,7 +6,7 @@ local Name = Names.en_us
 local Tag = "dukeOfEyes"
 local Id = Isaac.GetItemIdByName(Name)
 local Descriptions = {
-    en_us = "Poops and shits everywhere",
+    en_us = "Luck-based chance of firing Duke Tears, which spawn 1-2 Heart Attack Flies or Heart Spiders on collision#5% chance of triggering at 0 luck, capping at 50% at 10 luck",
     spa = "Caca y mierda por todos lados"
 }
 local WikiDescription = DukeHelpers.GenerateEncyclopediaPage("Poops and shits everywhere.")

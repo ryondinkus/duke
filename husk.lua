@@ -152,3 +152,7 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_UPDATE, function()
 		end
 	end
 end)
+
+if EID then
+	EID:addBirthright(DukeHelpers.HUSK_ID, "Tainted Duke's Rotten Gullet now fires 12 tears per charge", "Tainted Duke")
+end

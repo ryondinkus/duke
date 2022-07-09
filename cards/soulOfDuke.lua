@@ -6,7 +6,7 @@ local Name = Names.en_us
 local Tag = "soulOfDuke"
 local Id = Isaac.GetCardIdByName(Name)
 local Descriptions = {
-    en_us = "Ghosty",
+    en_us = "Spawns 10 Heart Orbital Flies and 10 Heart Spiders of random types#Flies can be one of six random types: {{Heart}}Red, {{SoulHeart}}Soul, {{BlackHeart}}Black, {{GoldenHeart}}Gold, {{EmptyBoneHeart}}Bone, or {{RottenHeart}}Rotten",
     spa = "Ghosty"
 }
 local WikiDescription = DukeHelpers.GenerateEncyclopediaPage("Ghosty")

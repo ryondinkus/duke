@@ -6,7 +6,7 @@ local Name = Names.en_us
 local Tag = "shartyMcFly"
 local Id = Isaac.GetItemIdByName(Name)
 local Descriptions = {
-    en_us = "Poops and shits everywhere",
+    en_us = "Follows behind the player#The first time you shoot in a new room, Sharty McFly spawns a Love Poop, which attracts enemies and explodes after 5 seconds",
     spa = "Caca y mierda por todos lados"
 }
 local WikiDescription = DukeHelpers.GenerateEncyclopediaPage("Poops and shits everywhere.")

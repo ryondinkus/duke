@@ -6,7 +6,7 @@ local Name = Names.en_us
 local Tag = "thePrinces"
 local Id = Isaac.GetItemIdByName(Name)
 local Descriptions = {
-    en_us = "Like a princess, but a man.",
+    en_us = "Spawns 3 Heart Orbital Flies on pickup and on every new floor#Flies can be one of six random types: {{Heart}}Red, {{SoulHeart}}Soul, {{BlackHeart}}Black, {{GoldenHeart}}Gold, {{EmptyBoneHeart}}Bone, or {{RottenHeart}}Rotten",
     spa = "I don't know spanish and I'm on a plane lmao"
 }
 local WikiDescription = DukeHelpers.GenerateEncyclopediaPage("Like a princess, but a man.")

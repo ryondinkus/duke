@@ -6,7 +6,7 @@ local Name = Names.en_us
 local Tag = "fiendishSwarm"
 local Id = Isaac.GetItemIdByName(Name)
 local Descriptions = {
-    en_us = "Ryan has infested my fucking life",
+    en_us = "Lowers your current HP to half a heart, then gives you a Heart Orbital Fly for every heart lost this way#Heart Orbital Flies turn back into HP when entering an new room#Also spawns a Fiendish Orbital Fly for the duration of the room",
     spa = "Ryan ha infestado mi puta vida"
 }
 local WikiDescription = DukeHelpers.GenerateEncyclopediaPage("Ryan has infested my fucking life.")

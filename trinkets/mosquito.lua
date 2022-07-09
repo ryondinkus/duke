@@ -6,7 +6,7 @@ local Name = Names.en_us
 local Tag = "mosquito"
 local Id = Isaac.GetTrinketIdByName(Name)
 local Descriptions = {
-    en_us = "Nom Nom Nom",
+    en_us = "Enemies tagged as 'fly' or 'spider' will spawn red creep beneath themselves on death",
     spa = "Nom Nom Nom"
 }
 local WikiDescription = DukeHelpers.GenerateEncyclopediaPage("Nom Nom Nom")

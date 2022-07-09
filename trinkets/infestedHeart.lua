@@ -6,7 +6,7 @@ local Name = Names.en_us
 local Tag = "infestedHeart"
 local Id = Isaac.GetTrinketIdByName(Name)
 local Descriptions = {
-    en_us = "It's buzzing...",
+    en_us = "Hearts picked up have a 50% chance of becoming Heart Orbital Flies#As Duke, hearts picked up have a 50% chance of granting an extra Heart Orbital Fly",
     spa = "Esta zumbando..."
 }
 local WikiDescription = "It's buzzing..." --helper.GenerateEncyclopediaPage("Poops and shits everywhere.")

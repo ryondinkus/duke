@@ -6,7 +6,7 @@ local Name = Names.en_us
 local Tag = "ultraHeartFly"
 local Id = Isaac.GetItemIdByName(Name)
 local Descriptions = {
-    en_us = "Big fucker",
+    en_us = "Spawns an Ultra Heart Orbital Fly on pickup and on every new floor#Ultra Heart Flies have the properties of all other Heart Flies",
     spa = "I don't know spanish and I'm in my room lmao"
 }
 local WikiDescription = DukeHelpers.GenerateEncyclopediaPage("Like a princess, but a man.")

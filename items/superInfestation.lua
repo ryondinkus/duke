@@ -6,7 +6,7 @@ local Name = Names.en_us
 local Tag = "superInfestation"
 local Id = Isaac.GetItemIdByName(Name)
 local Descriptions = {
-    en_us = "Ryan has infested my fucking life",
+    en_us = "When taking damage, any health lost will turn into Heart Orbital Flies",
     spa = "Ryan ha infestado mi puta vida"
 }
 local WikiDescription = DukeHelpers.GenerateEncyclopediaPage("Ryan has infested my fucking life.")

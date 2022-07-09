@@ -6,7 +6,7 @@ local Name = Names.en_us
 local Tag = "dukeFlute"
 local Id = Isaac.GetItemIdByName(Name)
 local Descriptions = {
-    en_us = "Poops and shits everywhere",
+    en_us = "Spawns a Friendly Duke of Flies, who flies around the room spitting out friendly Attack Flies for 15 seconds#Sometimes spawns a Champion Duke of Flies, who spits out different types of fly enemies",
     spa = "Caca y mierda por todos lados"
 }
 local WikiDescription = DukeHelpers.GenerateEncyclopediaPage("Poops and shits everywhere.")
