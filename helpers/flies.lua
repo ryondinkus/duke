@@ -24,7 +24,7 @@ function DukeHelpers.SpawnHeartFly(player, fly, layer)
 	DukeHelpers.SpawnHeartFlyPoof(fly, player.Position, player)
 	DukeHelpers.GetDukeData(heartFlyEntity).layer = layer
 	DukeHelpers.PositionHeartFly(heartFlyEntity, layer)
-	return fly
+	return heartFlyEntity
 end
 
 function DukeHelpers.AddHeartFly(player, fly, specificAmount, applyInfestedHeart)
@@ -261,7 +261,7 @@ function DukeHelpers.RemoveHeartFly(player, heartFlies, amount)
 	return removedFlies
 end
 
-function DukeHelpers.CalculateAttackFlySubType(heart)
+function DukeHelpers.OffsetIdentifier(heart)
 	local identifier = heart.subType
 
 	if identifier == 0 then

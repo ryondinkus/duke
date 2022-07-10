@@ -73,6 +73,7 @@ include("helpers/spiders")
 include("helpers/data")
 include("helpers/husk")
 include("helpers/unlocks")
+include("helpers/hearts")
 
 -- Initialize player and flies
 include("hearts")

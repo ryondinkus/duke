@@ -16,7 +16,7 @@ dukeMod:AddCallback(ModCallbacks.MC_FAMILIAR_UPDATE, function(_, familiar)
                     familiar.Player)
             end
             if familiarData.spawnSpiderOnDeath then
-                DukeHelpers.SpawnSpidersFromPickupSubType(DukeHelpers.Flies[familiarData.heartKey].pickupSubType,
+                DukeHelpers.SpawnSpidersFromKey(familiarData.heartKey,
                     familiar.Position,
                     familiar.Player, 1)
             end

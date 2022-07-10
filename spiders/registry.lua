@@ -39,11 +39,11 @@ for _, spider in pairs(spiders) do
         spider.subType = spider.pickupSubType
     end
 
-    spider.subType = DukeHelpers.CalculateAttackFlySubType(spider.subType)
+    spider.subType = DukeHelpers.OffsetIdentifier({ subType = spider.subType })
     spider.isBase = true
 
     if spider.use then
-        local existingSpider = DukeHelpers.Spiders[spider.use.key]
+        local existingSpider = DukeHelpers.Spiders[spider.use.ke or spider.use.heart.key]
         spider.spritesheet = existingSpider.spritesheet
         spider.subType = existingSpider.subType
         spider.poofColor = existingSpider.poofColor
@@ -72,7 +72,7 @@ for _, spider in pairs(spiders) do
         spider.isBase = false
     end
 
-    if spider.spritesheet then
+    if spider.spritesheet and spider.isBase then
         spider.spritesheet = "gfx/familiars/spiders/" .. spider.spritesheet
     end
 

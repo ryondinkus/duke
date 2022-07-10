@@ -1,6 +1,6 @@
 local key = "ULTRA"
 local subType = 101
-local attackFlySubType = DukeHelpers.CalculateAttackFlySubType({ subType })
+local attackFlySubType = DukeHelpers.OffsetIdentifier({ subType = subType })
 
 local function ATTACK_FLY_MC_FAMILIAR_UPDATE_ATTACK(_, f)
     if f.SubType == attackFlySubType then

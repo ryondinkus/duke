@@ -168,7 +168,7 @@ dukeMod:AddCallback(ModCallbacks.MC_EVALUATE_CACHE, function(_, player, flags)
 			for i = #heartFlies, 1, -1 do
 				local fly = heartFlies[i]
 				local f = DukeHelpers.GetEntityByInitSeed(fly.initSeed)
-				if DukeHelpers.GetDukeData(f).layer == DukeHelpers.BIRTHRIGHT then
+				if DukeHelpers.GetDukeData(player).layer == DukeHelpers.BIRTHRIGHT then
 					DukeHelpers.RemoveHeartFlyEntity(f)
 					DukeHelpers.SpawnAttackFlyFromHeartFlyEntity(f)
 				end

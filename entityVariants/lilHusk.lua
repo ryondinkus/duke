@@ -51,7 +51,7 @@ local function MC_FAMILIAR_UPDATE(_, familiar)
 		effect.SpriteScale = Vector(0.5, 0.5)
 
 		local spider = DukeHelpers.GetWeightedSpider(DukeHelpers.rng)
-		local spawnedSpiders = DukeHelpers.SpawnSpidersFromPickupSubType(spider.pickupSubType, familiar.Position, familiar, 1,
+		local spawnedSpiders = DukeHelpers.SpawnSpidersFromKey(spider.key, familiar.Position, familiar, 1,
 			true)
 		local spawnedFly = nil
 

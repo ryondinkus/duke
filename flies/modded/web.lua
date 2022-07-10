@@ -1,5 +1,5 @@
 local heart = DukeHelpers.Hearts.WEB
-local attackFlySubType = DukeHelpers.CalculateAttackFlySubType(heart)
+local attackFlySubType = DukeHelpers.OffsetIdentifier(heart)
 
 local function ATTACK_FLY_MC_PRE_FAMILIAR_COLLISION(_, f, e)
 	if f.SubType == attackFlySubType then

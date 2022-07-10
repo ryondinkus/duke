@@ -39,7 +39,7 @@ local function MC_PRE_TEAR_COLLISION(_, tear, collider)
             DukeHelpers.SpawnAttackFlyFromHeartFly(DukeHelpers.GetWeightedFly(DukeHelpers.rng),
                 player.Position, player)
         else
-            DukeHelpers.SpawnSpidersFromPickupSubType(DukeHelpers.GetWeightedSpider(DukeHelpers.rng).pickupSubType,
+            DukeHelpers.SpawnSpidersFromKey(DukeHelpers.GetWeightedSpider(DukeHelpers.rng).key,
                 player.Position, player, amount, true)
         end
     end

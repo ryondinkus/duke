@@ -19,7 +19,7 @@ local function MC_POST_PEFFECT_UPDATE(_, player)
     if DukeHelpers.GetDukeData(player)[Tag] then
         DukeHelpers.Stagger(Tag, player, 15, 10, function()
             DukeHelpers.Items.rottenGullet.helpers.fireRottenGulletShot(player,
-                DukeHelpers.GetWeightedSpider(player:GetCardRNG(Id)).pickupSubType, player:GetCardRNG(Id))
+                DukeHelpers.GetWeightedSpider(player:GetCardRNG(Id)).key, player:GetCardRNG(Id))
             player:AnimateCard(Id)
         end)
     end

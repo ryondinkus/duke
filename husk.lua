@@ -19,7 +19,7 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_PEFFECT_UPDATE, function(_, p)
 	local removedHearts = DukeHelpers.RemoveUnallowedHearts(p)
 
 	for heartKey, removedAmount in pairs(removedHearts) do
-		DukeHelpers.FillRottenGulletSlot(p, DukeHelpers.Spiders[heartKey].pickupSubType, removedAmount)
+		DukeHelpers.FillRottenGulletSlot(p, heartKey, removedAmount)
 	end
 end, DukeHelpers.HUSK_ID)
 
@@ -29,9 +29,10 @@ dukeMod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, function(_, pickup, co
 	if p and DukeHelpers.IsHusk(p) and (pickup.Price <= 0 or p:GetNumCoins() >= pickup.Price) then
 		local playerData = DukeHelpers.GetDukeData(p)
 
-		local spider = DukeHelpers.GetSpiderByPickupSubType(pickup.SubType)
+		local pickupKey = DukeHelpers.GetKeyFromPickup(pickup)
+		local spider = DukeHelpers.Spiders[pickupKey]
 
-		if (pickup.SubType == 3320 or pickup.SubType == 3321) then
+		if DukeHelpers.IsPatchedHeart(pickup) then
 			local leftoverSlots = spider.count
 			if playerData.stuckSlots and playerData.stuckSlots > 0 then
 				leftoverSlots = math.max(0, leftoverSlots - playerData.stuckSlots)
@@ -42,12 +43,12 @@ dukeMod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, function(_, pickup, co
 				end
 			end
 
-			DukeHelpers.FillRottenGulletSlot(p, spider.pickupSubType, leftoverSlots)
+			DukeHelpers.FillRottenGulletSlot(p, pickupKey, leftoverSlots)
 		else
 			if DukeHelpers.LengthOfTable(DukeHelpers.GetFilledRottenGulletSlots(p)) >= DukeHelpers.GetMaxRottenGulletSlots(p) then
 				return nil
 			end
-			DukeHelpers.FillRottenGulletSlot(p, pickup.SubType)
+			DukeHelpers.FillRottenGulletSlot(p, pickupKey)
 		end
 
 		local sfx = SoundEffect.SOUND_BOSS2_BUBBLES
@@ -131,8 +132,8 @@ function DukeHelpers.InitializeHusk(p, continued)
 end
 
 function DukeHelpers.AddStartupSpiders(player)
-	DukeHelpers.FillRottenGulletSlot(player, DukeHelpers.Spiders.RED.pickupSubType, 1)
-	DukeHelpers.SpawnSpidersFromPickupSubType(HeartSubType.HEART_FULL, player.Position, player, 2)
+	DukeHelpers.FillRottenGulletSlot(player, DukeHelpers.Spiders.RED.key, 1)
+	DukeHelpers.SpawnSpidersFromKey(DukeHelpers.Hearts.RED.key, player.Position, player, 2)
 end
 
 dukeMod:AddCallback(ModCallbacks.MC_POST_UPDATE, function()

@@ -5,7 +5,7 @@ local function MC_PRE_SPAWN_CLEAN_AWARD()
 				local filledSlots = DukeHelpers.GetFilledRottenGulletSlots(player)
 				local immortalHearts = DukeHelpers.CountOccurencesInTable(filledSlots, DukeHelpers.Spiders.IMMORTAL.pickupSubType)
 				if immortalHearts % 2 == 1 then
-					DukeHelpers.FillRottenGulletSlot(player, DukeHelpers.Spiders.IMMORTAL.pickupSubType, 1)
+					DukeHelpers.FillRottenGulletSlot(player, DukeHelpers.Spiders.IMMORTAL.key, 1)
 				end
 			end
 		end)

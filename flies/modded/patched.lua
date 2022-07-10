@@ -1,5 +1,5 @@
 return {
     use = include("flies/red"),
-    subType = DukeHelpers.Hearts.PATCHED,
+    heart = DukeHelpers.Hearts.PATCHED,
     count = 2
 }

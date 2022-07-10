@@ -1,5 +1,5 @@
 local heart = DukeHelpers.Hearts.ETERNAL
-local subType = DukeHelpers.CalculateAttackFlySubType(heart)
+local subType = DukeHelpers.OffsetIdentifier(heart)
 
 local function MC_POST_ENTITY_REMOVE(_, e)
 	if e.Variant == FamiliarVariant.BLUE_SPIDER and e.SubType == subType then

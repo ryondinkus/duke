@@ -43,20 +43,20 @@ for _, fly in pairs(flies) do
         end
 
         if fly.canAttack then
-            fly.attackFlySubType = DukeHelpers.CalculateAttackFlySubType(fly.heart)
+            fly.attackFlySubType = DukeHelpers.OffsetIdentifier(fly.heart)
         end
     else
         fly.heartFlySubType = fly.subType
 
         if fly.canAttack then
-            fly.attackFlySubType = DukeHelpers.CalculateAttackFlySubType({ subType = fly.subType })
+            fly.attackFlySubType = DukeHelpers.OffsetIdentifier({ subType = fly.subType })
         end
     end
 
     fly.isBase = true
 
     if fly.use then
-        local existingFly = DukeHelpers.Flies[fly.use.key]
+        local existingFly = DukeHelpers.Flies[fly.use.key or fly.use.heart.key]
         fly.spritesheet = existingFly.spritesheet
         fly.canAttack = existingFly.canAttack
         fly.heartFlySubType = existingFly.heartFlySubType
