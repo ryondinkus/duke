@@ -24,7 +24,6 @@ local function MC_USE_ITEM(_, type, rng, p, flags)
                     DukeHelpers.SpawnAttackFlyFromHeartFlyEntity(f)
                     DukeHelpers.RemoveHeartFlyEntity(f)
                     if p:HasCollectible(CollectibleType.COLLECTIBLE_BOOK_OF_VIRTUES) then
-                        print(fly.key)
                         DukeHelpers.SpawnAttackFlyWisp(DukeHelpers.Wisps[fly.key], p.Position, p, false, 60)
                     end
                 end
