@@ -4,7 +4,13 @@ local function SetFlyHeart(pickup)
     local pickupData = pickup:GetData()
     pickupData.isFlyHeart = true
 
-    local flyToSpawn = DukeHelpers.Flies[DukeHelpers.GetKeyFromPickup(pickup)]
+    local pickupKey = DukeHelpers.GetKeyFromPickup(pickup)
+
+    if not pickupKey then
+        return
+    end
+
+    local flyToSpawn = DukeHelpers.Flies[pickupKey]
 
     local spritesheet
 
@@ -89,7 +95,13 @@ local function flyHeartPickupCollide(_, pickup)
         local player = DukeHelpers.GetClosestPlayer(pickup.Position)
 
         if player and pickup:GetData().isFlyHeart then
-            DukeHelpers.AddHeartFly(player, DukeHelpers.Flies[DukeHelpers.GetKeyFromPickup(pickup)])
+            local pickupKey = DukeHelpers.GetKeyFromPickup(pickup)
+
+            if not pickupKey then
+                return
+            end
+
+            DukeHelpers.AddHeartFly(player, DukeHelpers.Flies[pickupKey])
             pickup:GetData().isCollected = true
         end
     end

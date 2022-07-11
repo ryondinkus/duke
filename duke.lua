@@ -31,12 +31,13 @@ dukeMod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, function(_, pickup, co
 					break
 				end
 			end
-			pickup:Remove()
+
 		else
 			DukeHelpers.SpawnPickupHeartFly(p, pickup)
 		end
 
 		if pickup then
+			pickup:Remove()
 			if pickup.Price == PickupPrice.PRICE_SPIKES then
 				p:TakeDamage(2, DamageFlag.DAMAGE_SPIKES | DamageFlag.DAMAGE_NO_PENALTIES, EntityRef(nil), 0)
 			end
@@ -140,7 +141,7 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_UPDATE, function()
 				for i = #fliesData, 1, -1 do
 					local fly = fliesData[i]
 					local f = DukeHelpers.GetEntityByInitSeed(fly.initSeed)
-					DukeHelpers.SpawnAttackFlyFromHeartFlyEntity(f)
+					DukeHelpers.SpawnAttackFlyFromHeartFlyEntity(f, true)
 					DukeHelpers.RemoveHeartFlyEntity(f)
 				end
 			end

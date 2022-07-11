@@ -99,11 +99,11 @@ function DukeHelpers.PositionHeartFly(fly, layer)
 end
 
 function DukeHelpers.GetHeartFlyByHeartFlySubType(heartFlySubType)
-	return DukeHelpers.FindByProperties(DukeHelpers.Flies, { heartFlySubType = heartFlySubType })
+	return DukeHelpers.FindByProperties(DukeHelpers.Flies, { heartFlySubType = heartFlySubType, isBase = true })
 end
 
 function DukeHelpers.GetHeartFlyByAttackFlySubType(attackFlySubType)
-	return DukeHelpers.FindByProperties(DukeHelpers.Flies, { attackFlySubType = attackFlySubType })
+	return DukeHelpers.FindByProperties(DukeHelpers.Flies, { attackFlySubType = attackFlySubType, isBase = true })
 end
 
 function DukeHelpers.GetFlySpritesheetFromEntity(flyHeartEntity)
@@ -124,14 +124,17 @@ function DukeHelpers.GetFlyByPickup(pickup)
 end
 
 function DukeHelpers.GetHeartFlyFromFlyEntity(entity)
-	if entity and entity.Variant == DukeHelpers.FLY_VARIANT then
-		return DukeHelpers.FindByProperties(DukeHelpers.Flies, { heartFlySubType = entity.SubType }) or
-			DukeHelpers.FindByProperties(DukeHelpers.Flies, { attackFlySubType = entity.SubType, canAttack = true })
+	if entity then
+		if entity.Variant == DukeHelpers.FLY_VARIANT then
+			return DukeHelpers.FindByProperties(DukeHelpers.Flies, { heartFlySubType = entity.SubType })
+		elseif entity.Variant == FamiliarVariant.BLUE_FLY then
+			return DukeHelpers.FindByProperties(DukeHelpers.Flies, { attackFlySubType = entity.SubType })
+		end
 	end
 end
 
-function DukeHelpers.SpawnAttackFlyFromHeartFly(heartFly, position, spawnerEntity)
-	if heartFly and heartFly.canAttack then
+function DukeHelpers.SpawnAttackFlyFromHeartFly(heartFly, position, spawnerEntity, allowAny)
+	if heartFly and (allowAny or heartFly.canAttack) then
 		local attackFly = Isaac.Spawn(EntityType.ENTITY_FAMILIAR, FamiliarVariant.BLUE_FLY, heartFly.attackFlySubType, position
 			, Vector.Zero, spawnerEntity)
 		DukeHelpers.InitializeAttackFly(attackFly)
@@ -140,9 +143,9 @@ function DukeHelpers.SpawnAttackFlyFromHeartFly(heartFly, position, spawnerEntit
 	end
 end
 
-function DukeHelpers.SpawnAttackFlyFromHeartFlyEntity(heartFlyEntity)
+function DukeHelpers.SpawnAttackFlyFromHeartFlyEntity(heartFlyEntity, allowAny)
 	return DukeHelpers.SpawnAttackFlyFromHeartFly(DukeHelpers.GetHeartFlyFromFlyEntity(heartFlyEntity),
-		heartFlyEntity.Position, heartFlyEntity.SpawnerEntity)
+		heartFlyEntity.Position, heartFlyEntity.SpawnerEntity, allowAny)
 end
 
 function DukeHelpers.IsAttackFly(fly)
@@ -294,9 +297,10 @@ end
 
 function DukeHelpers.GetKeyFromPickup(pickup)
 	if pickup then
-		return DukeHelpers.Find(DukeHelpers.Hearts, function(heart)
-			return pickup.Variant == heart.variant and pickup.SubType == heart.subType
-		end).key
+		local foundHeart = DukeHelpers.Find(DukeHelpers.Hearts, function(heart)
+			return pickup.Variant == heart.variant and pickup.SubType == heart.subType and not heart.notCollectible
+		end)
+		return foundHeart and foundHeart.key
 	end
 end
 

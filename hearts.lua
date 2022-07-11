@@ -36,7 +36,8 @@ DukeHelpers.Hearts = {
         subType = HeartSubType.HEART_ROTTEN
     },
     BROKEN = {
-        subType = 13
+        subType = 13,
+        notCollectible = true
     },
     MOONLIGHT = {
         variant = 901

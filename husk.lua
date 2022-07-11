@@ -30,6 +30,11 @@ dukeMod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, function(_, pickup, co
 		local playerData = DukeHelpers.GetDukeData(p)
 
 		local pickupKey = DukeHelpers.GetKeyFromPickup(pickup)
+
+		if not pickupKey then
+			return
+		end
+
 		local spider = DukeHelpers.Spiders[pickupKey]
 
 		if DukeHelpers.IsPatchedHeart(pickup) then
@@ -46,7 +51,7 @@ dukeMod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, function(_, pickup, co
 			DukeHelpers.FillRottenGulletSlot(p, pickupKey, leftoverSlots)
 		else
 			if DukeHelpers.LengthOfTable(DukeHelpers.GetFilledRottenGulletSlots(p)) >= DukeHelpers.GetMaxRottenGulletSlots(p) then
-				return nil
+				return
 			end
 			DukeHelpers.FillRottenGulletSlot(p, pickupKey)
 		end
@@ -54,6 +59,7 @@ dukeMod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, function(_, pickup, co
 		local sfx = SoundEffect.SOUND_BOSS2_BUBBLES
 
 		if pickup then
+			pickup:Remove()
 			if spider.sfx then
 				sfx = spider.sfx
 			end

@@ -45,7 +45,6 @@ function DukeHelpers.SpawnSpidersFromKey(pickupKey, position, spawnerEntity, spe
                 table.insert(spawnedSpiders,
                     Isaac.Spawn(EntityType.ENTITY_FAMILIAR, FamiliarVariant.BLUE_SPIDER, foundSpider.subType, position,
                         Vector.Zero, spawnerEntity))
-                print(spawnedSpiders[i].SubType)
                 DukeHelpers.InitializeHeartSpider(spawnedSpiders[i])
                 if noPoof then
                     spawnedSpiders[i]:ClearEntityFlags(EntityFlag.FLAG_APPEAR)
