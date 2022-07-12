@@ -45,17 +45,14 @@ function DukeHelpers.AddHeartFly(player, fly, specificAmount, applyInfestedHeart
 	end
 
 	local playerData = DukeHelpers.GetDukeData(player)
-	if not playerData.heartFlies then
-		playerData.heartFlies = {}
-	end
 
 	local heartFlies = {}
 
-	local startingI = 1;
+	local startingI = 1
 
 	if (applyInfestedHeart or applyInfestedHeart == nil) and DukeHelpers.IsDuke(player) and
 		DukeHelpers.Trinkets.infestedHeart.helpers.ShouldSpawnExtraFly(player) then
-		startingI = startingI - 1;
+		startingI = startingI - 1
 	end
 
 	for _ = startingI, specificAmount or fly.count or 1 do

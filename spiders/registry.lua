@@ -33,7 +33,7 @@ for _, spider in pairs(spiders) do
     spider.pickupVariant = spider.heart.variant
     spider.pickupSubType = spider.heart.subType
 
-    if spider.pickupSubType == 0 then
+    if spider.pickupVariant ~= PickupVariant.PICKUP_HEART then
         spider.subType = spider.pickupVariant
     else
         spider.subType = spider.pickupSubType

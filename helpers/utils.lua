@@ -580,7 +580,6 @@ end
 function DukeHelpers.CountOccurencesInTable(table, value)
     local found = 0
     for _, v in pairs(table) do
-        local notEquals = false
         if v == value then
             found = found + 1
         end
@@ -589,7 +588,7 @@ function DukeHelpers.CountOccurencesInTable(table, value)
 end
 
 function DukeHelpers.IsMoonlightHeart(pickup)
-    return pickup.Type == EntityType.ENTITY_PICKUP and pickup.Variant == 901
+    return DukeHelpers.IsHeart(pickup, DukeHelpers.Hearts.MOONLIGHT)
 end
 
 function DukeHelpers.CanPickMoonlightHearts(player)

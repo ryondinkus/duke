@@ -1,7 +1,7 @@
 local heart = DukeHelpers.Hearts.MOONLIGHT
 
 local function MC_PRE_FAMILIAR_COLLISION(_, f, e)
-	if f.SubType == heart.subType then
+	if f.SubType == heart.variant then
 		if e.Type == EntityType.ENTITY_PROJECTILE and not e:ToProjectile():HasProjectileFlags(ProjectileFlags.CANT_HIT_PLAYER) then
 			local p = f.SpawnerEntity:ToPlayer() or Isaac.GetPlayer(0)
 			local data = p:GetData()

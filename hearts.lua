@@ -63,7 +63,7 @@ for key, heart in pairs(DukeHelpers.Hearts) do
     if not heart.variant then
         heart.variant = PickupVariant.PICKUP_HEART
     elseif not heart.subType then
-        heart.subType = 0
+        heart.subType = 1
     end
 
     if not heart.key then

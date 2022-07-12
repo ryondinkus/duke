@@ -3,7 +3,7 @@ local function HEART_FLY_PRE_SPAWN_CLEAN_AWARD()
         DukeHelpers.ForEachPlayer(function(player)
             local playerData = DukeHelpers.GetDukeData(player)
             local immortalFlies = DukeHelpers.CountByProperties(playerData.heartFlies,
-                { subType = DukeHelpers.Flies.IMMORTAL.heartFlySubType })
+                { key = DukeHelpers.Flies.IMMORTAL.key })
             if immortalFlies % 2 == 1 then
                 DukeHelpers.AddHeartFly(player, DukeHelpers.Flies.IMMORTAL, 1)
             end

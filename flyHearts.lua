@@ -60,7 +60,7 @@ local function flyHeartPickupUpdate(_, pickup)
     end
 
     local pickupData = pickup:GetData()
-    if pickupData.isFlyHeart then
+    if pickupData.isFlyHeart and pickupData.flyHeartSpritesheet then
         pickupData.flyHeartSpritesheet:Update()
     end
 end
@@ -72,7 +72,7 @@ end)
 
 local function flyHeartPickupRender(_, pickup)
     local pickupData = pickup:GetData()
-    if pickupData.isFlyHeart then
+    if pickupData.isFlyHeart and pickupData.flyHeartSpritesheet then
         if pickupData.flyHeartSpritesheet:IsFinished("FlyHeartAppear") then
             pickupData.flyHeartSpritesheet:Play("FlyHeart")
         end

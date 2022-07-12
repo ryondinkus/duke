@@ -36,7 +36,7 @@ for _, fly in pairs(flies) do
         fly.pickupVariant = fly.heart.variant
         fly.pickupSubType = fly.heart.subType
 
-        if fly.pickupSubType == 0 then
+        if fly.pickupVariant ~= PickupVariant.PICKUP_HEART then
             fly.heartFlySubType = fly.pickupVariant
         else
             fly.heartFlySubType = fly.pickupSubType

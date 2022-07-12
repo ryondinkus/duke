@@ -10,7 +10,7 @@ local function ATTACK_FLY_MC_PRE_FAMILIAR_COLLISION(_, f, e)
 end
 
 local function HEART_FLY_MC_PRE_FAMILIAR_COLLISION(_, f, e)
-	if f.SubType == heart.subType then
+	if f.SubType == heart.variant then
 		if e:ToNPC() and not e:HasEntityFlags(EntityFlag.FLAG_CHARM) and DukeHelpers.rng:RandomInt(3) == 0 then
 			e:AddSlowing(EntityRef(f), 30, 0.5, Color(1, 1, 1, 1, 0.5, 0.5, 0.5))
 		end
@@ -18,7 +18,7 @@ local function HEART_FLY_MC_PRE_FAMILIAR_COLLISION(_, f, e)
 end
 
 local function MC_PRE_FAMILIAR_COLLISION(_, f, e)
-	if f.SubType == heart.subType then
+	if f.SubType == heart.variant then
 		if e.Type == EntityType.ENTITY_PROJECTILE and not e:ToProjectile():HasProjectileFlags(ProjectileFlags.CANT_HIT_PLAYER) then
 			local p = f.SpawnerEntity:ToPlayer() or Isaac.GetPlayer(0)
 			for _ = 0, DukeHelpers.rng:RandomInt(6) do
