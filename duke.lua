@@ -53,7 +53,7 @@ dukeMod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, function(_, pickup, co
 	local p = collider:ToPlayer()
 	if p and (DukeHelpers.IsDuke(p) or p:HasTrinket(DukeHelpers.Trinkets.pocketOfFlies.Id)) and
 		DukeHelpers.IsFlyPrice(pickup.Price) then
-		local heartPrice = DukeHelpers.GetDukeDevilDealPrice(pickup)
+		local heartPrice = DukeHelpers.GetDukeDevilDealPrice(pickup, p)
 
 		local playerFlyCount = DukeHelpers.GetFlyCount(p)
 

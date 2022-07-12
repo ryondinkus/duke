@@ -296,7 +296,7 @@ function DukeHelpers.AddStartupFlies(p)
 end
 
 function DukeHelpers.GetKeyFromPickup(pickup)
-	if pickup then
+	if pickup and pickup.Type == EntityType.ENTITY_PICKUP then
 		local foundHeart = DukeHelpers.Find(DukeHelpers.Hearts, function(heart)
 			return pickup.Variant == heart.variant and pickup.SubType == heart.subType and not heart.notCollectible
 		end)
@@ -393,19 +393,19 @@ function DukeHelpers.KillAtMaxBrokenFlies(player)
 	end
 end
 
-function DukeHelpers.SpawnAttackFlyWisp(wisp, pos, spawner, spawnFlyOnDeath, lifeTime, spider)
+function DukeHelpers.SpawnAttackFlyWisp(wisp, pos, spawner, spawnFlyOnDeath, lifeTime, customId)
 	local player = spawner:ToPlayer()
 	if player then
 		local id = DukeHelpers.Items.thePrinces.Id
-		if spider then
-			id = DukeHelpers.Items.dukeOfEyes.Id
+		if customId then
+			id = customId
 		end
 		local wispEntity = spawner:ToPlayer():AddWisp(id, pos)
+
 		if wispEntity then
 			local wispData = DukeHelpers.GetDukeData(wispEntity)
 			wispData.heartKey = wisp.key
-			wispData.spawnFlyOnDeath = spawnFlyOnDeath and not spider
-			wispData.spawnSpiderOnDeath = spawnFlyOnDeath and spider
+			wispData.spawnFlyOnDeath = spawnFlyOnDeath
 			wispData.lifeTime = lifeTime
 			return wispEntity
 		end

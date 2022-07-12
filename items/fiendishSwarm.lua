@@ -91,7 +91,7 @@ local function MC_USE_ITEM(_, type, rng, player, f)
             function(addedFly)
                 if player:HasCollectible(CollectibleType.COLLECTIBLE_BOOK_OF_VIRTUES) and DukeHelpers.Wisps[flyKey] then
                     local wisp = DukeHelpers.SpawnAttackFlyWisp(DukeHelpers.Wisps[flyKey], player.Position,
-                        player, true, nil, true)
+                        player, false)
                     table.insert(addedWisps, wisp.InitSeed)
                 end
                 table.insert(addedFlies, addedFly.InitSeed)
@@ -127,46 +127,45 @@ local function MC_POST_NEW_ROOM()
                 local foundFly = DukeHelpers.GetEntityByInitSeed(flyInitSeed)
 
                 if foundFly then
-                    local heartFly = DukeHelpers.FindByProperties(DukeHelpers.Flies,
-                        { heartFlySubType = foundFly.SubType, isBase = true })
-                    if heartFly.pickupSubType ~= 102 then
-                        if heartsToAdd[heartFly.pickupSubType] then
-                            heartsToAdd[heartFly.pickupSubType] = heartsToAdd[heartFly.pickupSubType] + 1
+                    local heartFly = DukeHelpers.GetHeartFlyByHeartFlySubType(foundFly.SubType)
+                    if heartFly.key ~= DukeHelpers.Flies.FIENDISH.key then
+                        if heartsToAdd[heartFly.key] then
+                            heartsToAdd[heartFly.key] = heartsToAdd[heartFly.key] + 1
                         else
-                            heartsToAdd[heartFly.pickupSubType] = 1
+                            heartsToAdd[heartFly.key] = 1
                         end
                     end
                     DukeHelpers.RemoveHeartFlyEntity(foundFly)
                 end
             end)
 
-            if heartsToAdd[HeartSubType.HEART_BONE] then
-                player:AddBoneHearts(heartsToAdd[HeartSubType.HEART_BONE])
-                heartsToAdd[HeartSubType.HEART_BONE] = nil
+            if heartsToAdd[DukeHelpers.Hearts.BONE.key] then
+                player:AddBoneHearts(heartsToAdd[DukeHelpers.Hearts.BONE.key])
+                heartsToAdd[DukeHelpers.Hearts.BONE.key] = nil
             end
 
-            if heartsToAdd[HeartSubType.HEART_ROTTEN] then
-                player:AddRottenHearts(heartsToAdd[HeartSubType.HEART_ROTTEN] * 2)
-                heartsToAdd[HeartSubType.HEART_ROTTEN] = nil
+            if heartsToAdd[DukeHelpers.Hearts.ROTTEN.key] then
+                player:AddRottenHearts(heartsToAdd[DukeHelpers.Hearts.ROTTEN.key] * 2)
+                heartsToAdd[DukeHelpers.Hearts.ROTTEN.key] = nil
             end
 
-            DukeHelpers.ForEach(heartsToAdd, function(numHearts, pickupSubType)
-                if pickupSubType == HeartSubType.HEART_FULL then
+            DukeHelpers.ForEach(heartsToAdd, function(numHearts, pickupKey)
+                if pickupKey == DukeHelpers.Hearts.RED.key then
                     player:AddHearts(numHearts)
-                elseif pickupSubType == HeartSubType.HEART_SOUL then
+                elseif pickupKey == DukeHelpers.Hearts.SOUL.key then
                     player:AddSoulHearts(numHearts)
-                elseif pickupSubType == HeartSubType.HEART_ETERNAL then
+                elseif pickupKey == DukeHelpers.Hearts.ETERNAL.key then
                     player:AddEternalHearts(numHearts)
-                elseif pickupSubType == HeartSubType.HEART_BLACK then
+                elseif pickupKey == DukeHelpers.Hearts.BLACK.key then
                     player:AddBlackHearts(numHearts)
-                elseif pickupSubType == HeartSubType.HEART_GOLDEN then
+                elseif pickupKey == DukeHelpers.Hearts.GOLDEN.key then
                     if player:GetPlayerType() == PlayerType.PLAYER_KEEPER or
                         player:GetPlayerType() == PlayerType.PLAYER_KEEPER_B then
                         player:AddHearts(numHearts * 2)
                     else
                         player:AddGoldenHearts(numHearts)
                     end
-                elseif pickupSubType == 13 then
+                elseif pickupKey == DukeHelpers.Hearts.BROKEN.key then
                     player:AddBrokenHearts(numHearts / 2)
                 end
 

@@ -1,10 +1,10 @@
 local uses = {
     {
-        key = include("spiders/red").key,
+        key = DukeHelpers.Hearts.RED.key,
         count = 1
     },
     {
-        key = include("spiders/soul").key,
+        key = DukeHelpers.Hearts.SOUL.key,
         count = 1
     }
 }

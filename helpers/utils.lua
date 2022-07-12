@@ -203,7 +203,10 @@ function DukeHelpers.IsFlyPrice(x)
         x >= PickupPrice.PRICE_ONE_HEART_AND_TWO_SOULHEARTS + DukeHelpers.PRICE_OFFSET
 end
 
-function DukeHelpers.GetDukeDevilDealPrice(collectible)
+function DukeHelpers.GetDukeDevilDealPrice(collectible, player)
+    if player and DukeHelpers.IsDuke(player) and player:HasTrinket(DukeHelpers.Trinkets.pocketOfFlies.Id) then
+        return 4
+    end
     return Isaac.GetItemConfig():GetCollectible(collectible.SubType).DevilPrice * 4
 end
 
@@ -519,7 +522,7 @@ function DukeHelpers.RenderCustomDevilDealPrice(pickup, key, animationPath)
     local pos = Isaac.WorldToScreen(pickup.Position)
 
     if pickup:GetData()[key] then
-        local devilPrice = DukeHelpers.GetDukeDevilDealPrice(pickup)
+        local devilPrice = DukeHelpers.GetDukeDevilDealPrice(pickup, DukeHelpers.GetClosestPlayer(pickup.Position))
 
         local priceSprite = Sprite()
         priceSprite:Load(animationPath)

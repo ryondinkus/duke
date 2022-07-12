@@ -66,10 +66,9 @@ local function flyHeartPickupUpdate(_, pickup)
 end
 
 -- Choose which hearts to be fly hearts and restore them if they already existed
-dukeMod:AddCallback(ModCallbacks.MC_POST_PICKUP_UPDATE, flyHeartPickupUpdate, PickupVariant.PICKUP_HEART)
-dukeMod:AddCallback(ModCallbacks.MC_POST_PICKUP_UPDATE, flyHeartPickupUpdate, 901)
-dukeMod:AddCallback(ModCallbacks.MC_POST_PICKUP_UPDATE, flyHeartPickupUpdate, 2000)
-dukeMod:AddCallback(ModCallbacks.MC_POST_PICKUP_UPDATE, flyHeartPickupUpdate, 2002)
+DukeHelpers.ForEachHeartVariant(function(variant)
+    dukeMod:AddCallback(ModCallbacks.MC_POST_PICKUP_UPDATE, flyHeartPickupUpdate, variant)
+end)
 
 local function flyHeartPickupRender(_, pickup)
     local pickupData = pickup:GetData()
@@ -83,10 +82,9 @@ local function flyHeartPickupRender(_, pickup)
 end
 
 -- Replace with the fly heart spritesheet
-dukeMod:AddCallback(ModCallbacks.MC_POST_PICKUP_RENDER, flyHeartPickupRender, PickupVariant.PICKUP_HEART)
-dukeMod:AddCallback(ModCallbacks.MC_POST_PICKUP_RENDER, flyHeartPickupRender, 901)
-dukeMod:AddCallback(ModCallbacks.MC_POST_PICKUP_RENDER, flyHeartPickupRender, 2000)
-dukeMod:AddCallback(ModCallbacks.MC_POST_PICKUP_RENDER, flyHeartPickupRender, 2002)
+DukeHelpers.ForEachHeartVariant(function(variant)
+    dukeMod:AddCallback(ModCallbacks.MC_POST_PICKUP_RENDER, flyHeartPickupRender, variant)
+end)
 
 local function flyHeartPickupCollide(_, pickup)
     pickup = pickup:ToPickup()
