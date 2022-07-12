@@ -4,6 +4,7 @@ local subType = DukeHelpers.OffsetIdentifier(heart)
 local function MC_POST_ENTITY_REMOVE(_, e)
     if e.Variant == FamiliarVariant.BLUE_SPIDER and e.SubType == subType then
         Isaac.Spawn(EntityType.ENTITY_FAMILIAR, FamiliarVariant.BONE_SPUR, 0, e.Position, Vector.Zero, e)
+        DukeHelpers.sfx:Play(SoundEffect.SOUND_BONE_SNAP, 1, 0)
     end
 end
 

@@ -24,6 +24,10 @@ local function MC_POST_FIRE_TEAR(_, tear)
                 local animationToPlay = sprite:GetAnimation()
 
                 sprite:Load("gfx/tears/dukeOfEyesTear.anm2", true)
+                if player:GetPlayerType() == DukeHelpers.HUSK_ID then
+                    sprite:ReplaceSpritesheet(0, "gfx/tears/dukeOfEyes_husk.png")
+                    sprite:LoadGraphics()
+                end
                 sprite:Play(animationToPlay, true)
             end
         end
@@ -36,12 +40,15 @@ local function MC_PRE_TEAR_COLLISION(_, tear, collider)
     if DukeHelpers.IsActualEnemy(collider, true) and tear:GetData()[Tag] then
         local amount = DukeHelpers.PercentageChance(50) and 1 or 2
         if DukeHelpers.PercentageChance(50) then
-            DukeHelpers.SpawnAttackFlyFromHeartFly(DukeHelpers.GetWeightedFly(DukeHelpers.rng),
-                player.Position, player)
+            local selectedFly = DukeHelpers.GetWeightedFly(DukeHelpers.rng)
+            DukeHelpers.SpawnAttackFlyFromHeartFly(selectedFly, player.Position, player)
+            DukeHelpers.SpawnHeartFlyPoof(selectedFly, player.Position, player)
         else
-            DukeHelpers.SpawnSpidersFromKey(DukeHelpers.GetWeightedSpider(DukeHelpers.rng).key,
-                player.Position, player, amount, true)
+            local selectedSpider = DukeHelpers.GetWeightedSpider(DukeHelpers.rng)
+            DukeHelpers.SpawnSpidersFromKey(selectedSpider.key, player.Position, player, amount, true)
+            DukeHelpers.SpawnHeartFlyPoof(selectedSpider, player.Position, player)
         end
+        DukeHelpers.sfx:Play(SoundEffect.SOUND_BOIL_HATCH, 1, 0, false, 1)
     end
 end
 
