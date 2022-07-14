@@ -44,7 +44,7 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_NEW_LEVEL, function()
 end)
 
 local function flyHeartPickupUpdate(_, pickup)
-    if pickup.FrameCount <= 1 then
+    if pickup.FrameCount <= 1 and DukeHelpers.IsSupportedHeart(pickup) then
         if pickup:GetSprite():GetAnimation() == "Appear" then
             if DukeHelpers.PercentageChance(5) then
                 StoreFlyHeart(pickup)
