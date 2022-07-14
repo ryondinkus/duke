@@ -638,6 +638,9 @@ end
 
 function DukeHelpers.CanPickUpHeart(player, pickup)
     if pickup.Variant == PickupVariant.PICKUP_HEART then
+        if pickup.SubType == HeartSubType.HEART_ETERNAL then
+            return true
+        end
         if pickup.SubType == HeartSubType.HEART_FULL or pickup.SubType == HeartSubType.HEART_HALF or
             pickup.SubType == HeartSubType.HEART_DOUBLEPACK or pickup.SubType == HeartSubType.HEART_SCARED then
             return player:CanPickRedHearts()
