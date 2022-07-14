@@ -79,7 +79,8 @@ end, PickupVariant.PICKUP_HEART)
 -- Handles slot devil deals for Husk
 dukeMod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, function(_, pickup, collider)
 	local p = collider:ToPlayer()
-	if p and DukeHelpers.IsHusk(p) and DukeHelpers.IsFlyPrice(pickup.Price) then
+	if p and DukeHelpers.IsHusk(p) and DukeHelpers.IsFlyPrice(pickup.Price) and
+		not p:HasTrinket(DukeHelpers.Trinkets.pocketOfFlies.Id) then
 		local heartPrice = DukeHelpers.GetDukeDevilDealPrice(pickup)
 
 		local removedSlots = DukeHelpers.RemoveRottenGulletSlots(p, heartPrice)
@@ -103,7 +104,8 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_PICKUP_UPDATE, function(_, pickup)
 			(pickup.Price < DukeHelpers.PRICE_OFFSET and pickup.Price > DukeHelpers.PRICE_OFFSET + PickupPrice.PRICE_SPIKES)) then
 		local closestPlayer = DukeHelpers.GetClosestPlayer(pickup.Position)
 
-		if closestPlayer and DukeHelpers.IsHusk(closestPlayer) then
+		if closestPlayer and DukeHelpers.IsHusk(closestPlayer) and
+			not closestPlayer:HasTrinket(DukeHelpers.Trinkets.pocketOfFlies.Id) then
 			pickup:GetData().showSlotsPrice = true
 			pickup.AutoUpdatePrice = false
 			pickup.Price = (pickup.Price % DukeHelpers.PRICE_OFFSET) + DukeHelpers.PRICE_OFFSET
