@@ -292,19 +292,6 @@ function DukeHelpers.AddStartupFlies(p)
 	DukeHelpers.AddHeartFly(p, DukeHelpers.Flies.RED, 3)
 end
 
-function DukeHelpers.GetKeyFromPickup(pickup)
-	if pickup and pickup.Type == EntityType.ENTITY_PICKUP then
-		local foundHeart = DukeHelpers.Find(DukeHelpers.Hearts, function(heart)
-			return pickup.Variant == heart.variant and pickup.SubType == heart.subType and not heart.notCollectible
-		end)
-		return foundHeart and foundHeart.key
-	end
-end
-
-function DukeHelpers.IsSupportedHeart(pickup)
-	return not not DukeHelpers.GetKeyFromPickup(pickup)
-end
-
 function DukeHelpers.SpawnPickupHeartFly(player, pickup, overriddenKey, amount, applyInfestedHeart)
 	local sfx = SoundEffect.SOUND_BOSS2_BUBBLES
 

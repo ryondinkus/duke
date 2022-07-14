@@ -587,10 +587,6 @@ function DukeHelpers.CountOccurencesInTable(table, value)
     return found
 end
 
-function DukeHelpers.IsMoonlightHeart(pickup)
-    return DukeHelpers.IsHeart(pickup, DukeHelpers.Hearts.MOONLIGHT)
-end
-
 function DukeHelpers.CanPickMoonlightHearts(player)
     local data = player:GetData()
 
@@ -601,32 +597,14 @@ function DukeHelpers.CanPickMoonlightHearts(player)
     return data.moons and data.moons < 12
 end
 
-function DukeHelpers.IsImmortalHeart(pickup)
-    return pickup.Type == EntityType.ENTITY_PICKUP and pickup.Variant == PickupVariant.PICKUP_HEART and
-        pickup.SubType == HeartSubType.HEART_IMMORTAL
-end
-
 function DukeHelpers.CanPickImmortalHearts(player)
     local hearts = DukeHelpers.GetTrueImmortalHearts(player)
 
     return hearts and hearts < (player:GetHeartLimit() - player:GetEffectiveMaxHearts())
 end
 
-function DukeHelpers.IsPatchedHeart(pickup)
-    return pickup.Type == EntityType.ENTITY_PICKUP and pickup.Variant == PickupVariant.PICKUP_HEART and
-        (pickup.SubType == 3320 or pickup.SubType == 3321)
-end
-
 function DukeHelpers.CanPickPatchedHearts(player)
     return PATCH_GLOBAL and (player:CanPickRedHearts() or player:GetBrokenHearts() > 0)
-end
-
-function DukeHelpers.IsWebHeart(pickup)
-    return pickup.Type == EntityType.ENTITY_PICKUP and pickup.Variant == DukeHelpers.Flies.WEB.pickupSubType
-end
-
-function DukeHelpers.IsDoubleWebHeart(pickup)
-    return pickup.Type == EntityType.ENTITY_PICKUP and pickup.Variant == DukeHelpers.Flies.DOUBLE_WEB.pickupSubType
 end
 
 function DukeHelpers.CanPickWebHeart(player, double)
