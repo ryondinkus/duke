@@ -418,5 +418,5 @@ for i = 1, 127 do
 end
 
 function DukeHelpers.IsInPartition(entityType, entityPartition)
-    return not not DukeHelpers.Find(entityPartition, function(p) return p == entityType end)
+    return not not DukeHelpers.Find(PartitionedEntities[entityPartition], function(p) return p == entityType end)
 end
