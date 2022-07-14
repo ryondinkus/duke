@@ -86,10 +86,9 @@ DukeHelpers.ForEachHeartVariant(function(variant)
     dukeMod:AddCallback(ModCallbacks.MC_POST_PICKUP_RENDER, flyHeartPickupRender, variant)
 end)
 
-local function flyHeartPickupCollide(_, pickup)
+function DukeHelpers.PickupFlyHeart(pickup)
     pickup = pickup:ToPickup()
-    if pickup:GetSprite():IsPlaying("Collect") and (not pickup:GetData().isCollected) and
-        DukeHelpers.IsSupportedHeart(pickup) then
+    if not pickup:GetData().isCollected and DukeHelpers.IsSupportedHeart(pickup) then
         local player = DukeHelpers.GetClosestPlayer(pickup.Position)
 
         if player and pickup:GetData().isFlyHeart then
@@ -106,4 +105,9 @@ local function flyHeartPickupCollide(_, pickup)
 end
 
 -- Spawn flies on fly heart pickup
-dukeMod:AddCallback(ModCallbacks.MC_POST_PICKUP_UPDATE, flyHeartPickupCollide)
+dukeMod:AddCallback(ModCallbacks.MC_POST_PICKUP_UPDATE, function(_, pickup)
+    pickup = pickup:ToPickup()
+    if pickup:GetSprite():IsPlaying("Collect") then
+        return DukeHelpers.PickupFlyHeart(pickup)
+    end
+end)

@@ -59,7 +59,9 @@ dukeMod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, function(_, pickup, co
 		local sfx = SoundEffect.SOUND_BOSS2_BUBBLES
 
 		if pickup then
+			DukeHelpers.PickupFlyHeart(pickup)
 			pickup:Remove()
+
 			if spider.sfx then
 				sfx = spider.sfx
 			end
