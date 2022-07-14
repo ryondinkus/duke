@@ -39,7 +39,7 @@ for _, spider in pairs(spiders) do
         spider.subType = spider.pickupSubType
     end
 
-    spider.subType = DukeHelpers.OffsetIdentifier({ subType = spider.subType })
+    spider.subType = DukeHelpers.OffsetIdentifier(spider.heart)
     spider.isBase = true
 
     if spider.use then

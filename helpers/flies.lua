@@ -123,9 +123,9 @@ end
 function DukeHelpers.GetHeartFlyFromFlyEntity(entity)
 	if entity then
 		if entity.Variant == DukeHelpers.FLY_VARIANT then
-			return DukeHelpers.FindByProperties(DukeHelpers.Flies, { heartFlySubType = entity.SubType })
+			return DukeHelpers.GetHeartFlyByHeartFlySubType(entity.SubType)
 		elseif entity.Variant == FamiliarVariant.BLUE_FLY then
-			return DukeHelpers.FindByProperties(DukeHelpers.Flies, { attackFlySubType = entity.SubType })
+			return DukeHelpers.GetHeartFlyByAttackFlySubType(entity.SubType)
 		end
 	end
 end
@@ -264,7 +264,7 @@ end
 function DukeHelpers.OffsetIdentifier(heart)
 	local identifier = heart.subType
 
-	if identifier == 0 then
+	if heart.variant and heart.variant ~= PickupVariant.PICKUP_HEART then
 		identifier = heart.variant
 	end
 
@@ -390,23 +390,9 @@ function DukeHelpers.KillAtMaxBrokenFlies(player)
 	end
 end
 
-function DukeHelpers.SpawnAttackFlyWisp(wisp, pos, spawner, spawnFlyOnDeath, lifeTime, customId)
-	local player = spawner:ToPlayer()
-	if player then
-		local id = DukeHelpers.Items.thePrinces.Id
-		if customId then
-			id = customId
-		end
-		local wispEntity = spawner:ToPlayer():AddWisp(id, pos)
-
-		if wispEntity then
-			local wispData = DukeHelpers.GetDukeData(wispEntity)
-			wispData.heartKey = wisp.key
-			wispData.spawnFlyOnDeath = spawnFlyOnDeath
-			wispData.lifeTime = lifeTime
-			return wispEntity
-		end
-	end
+function DukeHelpers.SpawnAttackFlyWisp(wisp, pos, spawner, lifeTime, spawnOnDeath)
+	return DukeHelpers.SpawnWisp(wisp, pos, spawner, spawnOnDeath and "spawnFlyOnDeath" or nil, lifeTime,
+		DukeHelpers.Items.thePrinces.Id)
 end
 
 function DukeHelpers.IsValidCustomWisp(familiar)

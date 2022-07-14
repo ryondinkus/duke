@@ -48,7 +48,7 @@ for _, fly in pairs(flies) do
         fly.attackFlySubType = DukeHelpers.OffsetIdentifier({ subType = fly.subType })
     end
 
-    fly.isBase = true
+    fly.isBase = not fly.use and not fly.uses
 
     if fly.use then
         local existingFly = DukeHelpers.Flies[fly.use.key or fly.use.heart.key]
@@ -58,7 +58,6 @@ for _, fly in pairs(flies) do
         fly.attackFlySubType = existingFly.attackFlySubType
         fly.poofColor = existingFly.poofColor
         fly.sacAltarQuality = existingFly.sacAltarQuality
-        fly.isBase = false
     end
 
     if fly.spritesheet and fly.isBase then

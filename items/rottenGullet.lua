@@ -104,6 +104,7 @@ local function fireRottenGulletShot(player, pickupKey, rng)
                     if spawnerEntityPlayer and
                         spawnerEntityPlayer:HasCollectible(CollectibleType.COLLECTIBLE_BOOK_OF_VIRTUES) then
                         DukeHelpers.SpawnSpiderWisp(DukeHelpers.Wisps[foundSpider.key], t.Position, spawnerEntityPlayer,
+                            nil,
                             false)
                     end
                 end

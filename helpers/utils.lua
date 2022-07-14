@@ -753,3 +753,20 @@ function DukeHelpers.AnyPlayerHasItem(collectibleId)
 
     return hasItem
 end
+
+function DukeHelpers.SpawnWisp(wisp, pos, spawner, spawnTag, lifeTime, customId)
+    local player = spawner:ToPlayer()
+    if player then
+        local wispEntity = spawner:ToPlayer():AddWisp(customId, pos)
+
+        if wispEntity then
+            local wispData = DukeHelpers.GetDukeData(wispEntity)
+            wispData.heartKey = wisp.key
+            if spawnTag then
+                wispData[spawnTag] = true
+            end
+            wispData.lifeTime = lifeTime
+            return wispEntity
+        end
+    end
+end

@@ -91,7 +91,7 @@ local function MC_USE_ITEM(_, type, rng, player, f)
             function(addedFly)
                 if player:HasCollectible(CollectibleType.COLLECTIBLE_BOOK_OF_VIRTUES) and DukeHelpers.Wisps[flyKey] then
                     local wisp = DukeHelpers.SpawnAttackFlyWisp(DukeHelpers.Wisps[flyKey], player.Position,
-                        player, false)
+                        player)
                     table.insert(addedWisps, wisp.InitSeed)
                 end
                 table.insert(addedFlies, addedFly.InitSeed)

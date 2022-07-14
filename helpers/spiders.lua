@@ -60,14 +60,7 @@ function DukeHelpers.GetWeightedSpider(rng)
     return DukeHelpers.GetWeightedIndex(DukeHelpers.Spiders, "weight", nil, rng)
 end
 
-function DukeHelpers.SpawnSpiderWisp(wisp, pos, spawner, spawnSpiderOnDeath, lifeTime)
-    local wispEntity = DukeHelpers.SpawnAttackFlyWisp(wisp, pos, spawner, spawnSpiderOnDeath, lifeTime,
+function DukeHelpers.SpawnSpiderWisp(wisp, pos, spawner, lifeTime, spawnOnDeath)
+    return DukeHelpers.SpawnWisp(wisp, pos, spawner, spawnOnDeath and "spawnSpiderOnDeath" or nil, lifeTime,
         DukeHelpers.Items.dukeOfEyes.Id)
-    if wispEntity then
-        local wispData = wispEntity:GetData()
-
-        wispData.spawnFlyOnDeath = nil
-        wispData.spawnSpiderOnDeath = spawnSpiderOnDeath
-        return wispEntity
-    end
 end
