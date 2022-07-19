@@ -80,7 +80,7 @@ function DukeHelpers.FindInRadius(position, radius, filter)
 end
 
 function DukeHelpers.IsActualEnemy(entity, includeBosses, includeInvulnerable)
-    return DukeHelpers.IsInPartition(entity.Type, EntityPartition.ENEMY) and
+    return DukeHelpers.IsEntityTypeInPartition(entity.Type, EntityPartition.ENEMY) and
         not DukeHelpers.Find(notEnemies, function(t) return t == entity.Type end) and
         (includeBosses or not entity:IsBoss()) and (includeInvulnerable or entity:IsVulnerableEnemy())
 end
