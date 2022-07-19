@@ -12,7 +12,7 @@ local Descriptions = {
 local WikiDescription = "It's buzzing..." --helper.GenerateEncyclopediaPage("Poops and shits everywhere.")
 
 local function ShouldSpawnExtraFly(player)
-    return player:HasTrinket(Id) and DukeHelpers.PercentageChance(100)
+    return player:HasTrinket(Id) and DukeHelpers.PercentageChance(50)
 end
 
 local function RandomlySpawnHeartFlyFromPickup(player, pickup)
@@ -33,7 +33,7 @@ end
 
 local function MC_PRE_PICKUP_COLLISION(_, pickup, collider)
     if not DukeHelpers.IsDuke(collider:ToPlayer()) then
-        RandomlySpawnHeartFlyFromPickup(collider:ToPlayer(), pickup)
+        return RandomlySpawnHeartFlyFromPickup(collider:ToPlayer(), pickup)
     end
 end
 

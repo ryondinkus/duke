@@ -37,6 +37,10 @@ dukeMod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, function(_, pickup, co
 
 		local spider = DukeHelpers.Spiders[pickupKey]
 
+		if DukeHelpers.Trinkets.infestedHeart.helpers.RandomlySpawnHeartFlyFromPickup(p, pickup) then
+			goto final
+		end
+
 		if DukeHelpers.IsPatchedHeart(pickup) then
 			local leftoverSlots = spider.count
 			if playerData.stuckSlots and playerData.stuckSlots > 0 then
@@ -56,6 +60,7 @@ dukeMod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, function(_, pickup, co
 			DukeHelpers.FillRottenGulletSlot(p, pickupKey)
 		end
 
+		::final::
 		local sfx = SoundEffect.SOUND_BOSS2_BUBBLES
 
 		if pickup then
