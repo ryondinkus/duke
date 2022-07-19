@@ -103,8 +103,8 @@ end)
 dukeMod:AddCallback(ModCallbacks.MC_POST_PEFFECT_UPDATE, function(_, p)
 	local removedHearts = DukeHelpers.RemoveUnallowedHearts(p)
 
-	for heart, removedAmount in pairs(removedHearts) do
-		DukeHelpers.AddHeartFly(p, DukeHelpers.Flies[heart.key], removedAmount)
+	for heartKey, removedAmount in pairs(removedHearts) do
+		DukeHelpers.AddHeartFly(p, DukeHelpers.Flies[heartKey], removedAmount)
 	end
 
 	DukeHelpers.KillAtMaxBrokenFlies(p)

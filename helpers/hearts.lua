@@ -167,7 +167,7 @@ function DukeHelpers.RemoveUnallowedHearts(player)
 
     local redHearts = player:GetHearts() + player:GetMaxHearts()
     if redHearts > 0 then
-        removedHearts[DukeHelpers.Hearts.RED] = redHearts
+        removedHearts[DukeHelpers.Hearts.RED.key] = redHearts
         player:AddHearts(-player:GetHearts())
         player:AddMaxHearts(-player:GetMaxHearts())
     end
