@@ -54,8 +54,8 @@ end, PickupVariant.PICKUP_HEART)
 dukeMod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, function(_, pickup, collider)
 	local p = collider:ToPlayer()
 	if p and (DukeHelpers.IsDuke(p) or p:HasTrinket(DukeHelpers.Trinkets.pocketOfFlies.Id)) and
-		DukeHelpers.IsFlyPrice(pickup.Price) then
-		local heartPrice = DukeHelpers.GetDukeDevilDealPrice(pickup, p)
+		DukeHelpers.IsCustomPrice(pickup.Price) then
+		local heartPrice = DukeHelpers.GetCustomDevilDealPrice(pickup, p)
 
 		local playerFlyCount = DukeHelpers.GetFlyCount(p)
 
@@ -74,7 +74,8 @@ end)
 
 dukeMod:AddCallback(ModCallbacks.MC_POST_PICKUP_UPDATE, function(_, pickup)
 	if not DukeHelpers.AnyPlayerHasTrinket(TrinketType.TRINKET_YOUR_SOUL) and
-		(DukeHelpers.HasDuke() or DukeHelpers.HasPocketOfFlies()) and ((pickup.Price < 0 and
+		(DukeHelpers.HasDuke() or DukeHelpers.AnyPlayerHasTrinket(DukeHelpers.Trinkets.pocketOfFlies.Id)) and
+		((pickup.Price < 0 and
 			pickup.Price > PickupPrice.PRICE_SPIKES) or
 			(pickup.Price < DukeHelpers.PRICE_OFFSET and pickup.Price > DukeHelpers.PRICE_OFFSET + PickupPrice.PRICE_SPIKES)) then
 		local closestPlayer = DukeHelpers.GetClosestPlayer(pickup.Position)
@@ -148,7 +149,7 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_UPDATE, function()
 				end
 			end
 			if sprite:IsPlaying("Death") then
-				DukeHelpers.PlayDukeDeath(p)
+				DukeHelpers.PlayCustomDeath(p)
 			end
 		end
 	end)
@@ -158,7 +159,7 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_UPDATE, function()
 	for _, entity in pairs(foundEntities) do
 		local sprite = entity:GetSprite()
 		if sprite:GetFilename() == "gfx/characters/duke.anm2" and sprite:IsPlaying("Death") and sprite:GetFrame() == 19 then
-			DukeHelpers.PlayDukeDeath(entity)
+			DukeHelpers.PlayCustomDeath(entity)
 		end
 	end
 end)

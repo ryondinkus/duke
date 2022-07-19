@@ -25,7 +25,8 @@ DukeHelpers = {
     rng = RNG(),
     sfx = SFXManager(),
     PRICE_OFFSET = -50,
-    MAX_HEALTH = 4
+    MAX_HEALTH = 4,
+    SUBTYPE_OFFSET = 903
 }
 
 DukeHelpers.DUKE_ID = Isaac.GetPlayerTypeByName(DukeHelpers.DUKE_NAME)
@@ -57,23 +58,23 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_RENDER, function()
     end
 end)
 
--- dukeMod:AddCallback(ModCallbacks.MC_POST_TEAR_INIT, function(_, cmd, args)
---     --Isaac.GetPlayer(0):AddBlackHearts(2)
---     --addWebHearts(2, Isaac.GetPlayer(0))
---     ComplianceImmortal.AddImmortalHearts(Isaac.GetPlayer(0), 2)
--- end)
-
 -- Helpers
-include("helpers/docs")
-include("helpers/giantbook")
-include("helpers/partitions")
 include("helpers/utils")
-include("helpers/flies")
-include("helpers/spiders")
 include("helpers/data")
-include("helpers/husk")
-include("helpers/unlocks")
+include("helpers/docs")
+include("helpers/duke")
+include("helpers/entities")
+include("helpers/flies")
+include("helpers/giantbook")
 include("helpers/hearts")
+include("helpers/husk")
+include("helpers/partitions")
+include("helpers/players")
+include("helpers/prices")
+include("helpers/spiders")
+include("helpers/unlocks")
+include("helpers/wisps")
+
 
 -- Initialize player and flies
 include("hearts")

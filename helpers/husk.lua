@@ -1,5 +1,23 @@
 DukeHelpers.MAX_ROTTEN_GULLET_COUNT = 24
 
+function DukeHelpers.IsHusk(player)
+    return DukeHelpers.IsDuke(player, true)
+end
+
+function DukeHelpers.ForEachHusk(callback, collectibleId)
+    DukeHelpers.ForEachPlayer(function(player)
+        if DukeHelpers.IsHusk(player) then
+            callback(player, DukeHelpers.GetDukeData(player))
+        end
+    end, collectibleId)
+end
+
+function DukeHelpers.HasHusk()
+    local found = false
+    DukeHelpers.ForEachHusk(function() found = true end)
+    return found
+end
+
 function DukeHelpers.GetFilledRottenGulletSlots(player)
     local data = DukeHelpers.GetDukeData(player)
     if data then
@@ -113,11 +131,6 @@ function DukeHelpers.SpawnPickupPoof(player, pickupKey)
     end
 
     return poof
-end
-
-function DukeHelpers.PlayDukeDeath(e)
-    Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.LARGE_BLOOD_EXPLOSION, 0, e.Position, Vector.Zero, e)
-    DukeHelpers.sfx:Play(SoundEffect.SOUND_ROCKET_BLAST_DEATH)
 end
 
 function DukeHelpers.RemoveRottenGulletSlots(player, amount, force)

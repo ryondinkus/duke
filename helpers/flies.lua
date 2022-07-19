@@ -2,8 +2,6 @@
 
 DukeHelpers.FLY_VARIANT = Isaac.GetEntityVariantByName("Red Heart Fly")
 
-DukeHelpers.SUBTYPE_OFFSET = 903
-
 DukeHelpers.INNER = 1
 DukeHelpers.MIDDLE = 2
 DukeHelpers.OUTER = 3
@@ -261,16 +259,6 @@ function DukeHelpers.RemoveHeartFly(player, heartFlies, amount)
 	return removedFlies
 end
 
-function DukeHelpers.OffsetIdentifier(heart)
-	local identifier = heart.subType
-
-	if heart.variant and heart.variant ~= PickupVariant.PICKUP_HEART then
-		identifier = heart.variant
-	end
-
-	return DukeHelpers.SUBTYPE_OFFSET + identifier
-end
-
 function DukeHelpers.GetWeightedFly(rng, attack)
 	return DukeHelpers.GetWeightedIndex(DukeHelpers.Flies, "weight",
 		function(fly) return not attack or fly.canAttack end, rng)
@@ -286,10 +274,6 @@ function DukeHelpers.IsFlyOfPlayer(fly, player)
 	end
 
 	return false
-end
-
-function DukeHelpers.AddStartupFlies(p)
-	DukeHelpers.AddHeartFly(p, DukeHelpers.Flies.RED, 3)
 end
 
 function DukeHelpers.SpawnPickupHeartFly(player, pickup, overriddenKey, amount, applyInfestedHeart)
@@ -380,13 +364,4 @@ end
 function DukeHelpers.SpawnAttackFlyWisp(wisp, pos, spawner, lifeTime, spawnOnDeath)
 	return DukeHelpers.SpawnWisp(wisp, pos, spawner, spawnOnDeath and "spawnFlyOnDeath" or nil, lifeTime,
 		DukeHelpers.Items.thePrinces.Id)
-end
-
-function DukeHelpers.IsValidCustomWisp(familiar)
-	if (familiar.Variant == FamiliarVariant.WISP) then
-		if (familiar.SubType == DukeHelpers.Items.dukeOfEyes.Id) or (familiar.SubType == DukeHelpers.Items.thePrinces.Id) then
-			return true
-		end
-	end
-	return false
 end

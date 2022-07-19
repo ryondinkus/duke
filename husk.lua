@@ -81,9 +81,9 @@ end, PickupVariant.PICKUP_HEART)
 -- Handles slot devil deals for Husk
 dukeMod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, function(_, pickup, collider)
 	local p = collider:ToPlayer()
-	if p and DukeHelpers.IsHusk(p) and DukeHelpers.IsFlyPrice(pickup.Price) and
+	if p and DukeHelpers.IsHusk(p) and DukeHelpers.IsCustomPrice(pickup.Price) and
 		not p:HasTrinket(DukeHelpers.Trinkets.pocketOfFlies.Id) then
-		local heartPrice = DukeHelpers.GetDukeDevilDealPrice(pickup)
+		local heartPrice = DukeHelpers.GetCustomDevilDealPrice(pickup)
 
 		local removedSlots = DukeHelpers.RemoveRottenGulletSlots(p, heartPrice)
 
@@ -150,7 +150,7 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_UPDATE, function()
 	DukeHelpers.ForEachHusk(function(p)
 		local sprite = p:GetSprite()
 		if sprite:IsPlaying("Death") and sprite:GetFrame() == 19 then
-			DukeHelpers.PlayDukeDeath(p)
+			DukeHelpers.PlayCustomDeath(p)
 		end
 	end)
 
@@ -159,7 +159,7 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_UPDATE, function()
 	for _, entity in pairs(foundEntities) do
 		local sprite = entity:GetSprite()
 		if sprite:GetFilename() == "gfx/characters/duke_b.anm2" and sprite:IsPlaying("Death") and sprite:GetFrame() == 19 then
-			DukeHelpers.PlayDukeDeath(entity)
+			DukeHelpers.PlayCustomDeath(entity)
 		end
 	end
 end)
