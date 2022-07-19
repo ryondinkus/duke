@@ -19,7 +19,11 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_PEFFECT_UPDATE, function(_, p)
 	local removedHearts = DukeHelpers.RemoveUnallowedHearts(p)
 
 	for heart, removedAmount in pairs(removedHearts) do
-		DukeHelpers.FillRottenGulletSlot(p, heart.key, removedAmount)
+		if not
+			DukeHelpers.Trinkets.infestedHeart.helpers.RandomlySpawnHeartFlyFromPickup(p,
+				{ Type = EntityType.ENTITY_PICKUP, Variant = heart.variant, SubType = heart.subType, Price = 0 }) then
+			DukeHelpers.FillRottenGulletSlot(p, heart.key, removedAmount)
+		end
 	end
 end, DukeHelpers.HUSK_ID)
 
