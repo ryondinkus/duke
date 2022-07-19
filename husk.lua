@@ -18,8 +18,8 @@ end, CacheFlag.CACHE_FLYING)
 dukeMod:AddCallback(ModCallbacks.MC_POST_PEFFECT_UPDATE, function(_, p)
 	local removedHearts = DukeHelpers.RemoveUnallowedHearts(p)
 
-	for heartKey, removedAmount in pairs(removedHearts) do
-		DukeHelpers.FillRottenGulletSlot(p, heartKey, removedAmount)
+	for heart, removedAmount in pairs(removedHearts) do
+		DukeHelpers.FillRottenGulletSlot(p, heart.key, removedAmount)
 	end
 end, DukeHelpers.HUSK_ID)
 
