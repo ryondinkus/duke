@@ -90,6 +90,10 @@ function DukeHelpers.GetTrueRedHearts(player)
     return player:GetHearts() - (player:GetRottenHearts() * 2)
 end
 
+function DukeHelpers.GetTrueMoonlightHearts(player)
+    return player:GetData().moons or Isaac.GetPlayer(0):GetData().moons or 0
+end
+
 function DukeHelpers.RemoveUnallowedHearts(player)
     local playerData = DukeHelpers.GetDukeData(player)
     local removedHearts = {}
@@ -179,7 +183,7 @@ function DukeHelpers.RemoveUnallowedHearts(player)
         player:AddSoulHearts(-removedAmount)
     end
 
-    local moonHearts = player:GetData().moons
+    local moonHearts = DukeHelpers.GetTrueMoonlightHearts(player)
     if moonHearts and moonHearts > 0 then
         removedHearts[DukeHelpers.Hearts.MOONLIGHT.key] = moonHearts
         player:GetData().moons = 0
@@ -189,13 +193,7 @@ function DukeHelpers.RemoveUnallowedHearts(player)
 end
 
 function DukeHelpers.CanPickMoonlightHearts(player)
-    local data = player:GetData()
-
-    if not data.moons then
-        data = Isaac.GetPlayer(0):GetData()
-    end
-
-    return data.moons and data.moons < 12
+    return DukeHelpers.GetTrueMoonlightHearts(player) < 12
 end
 
 function DukeHelpers.CanPickImmortalHearts(player)
