@@ -19,7 +19,7 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_PEFFECT_UPDATE, function(_, p)
 	local removedHearts = DukeHelpers.RemoveUnallowedHearts(p)
 
 	for heartKey, removedAmount in pairs(removedHearts) do
-		local heart = DukeHelpers.Hearts[heartKey].variant
+		local heart = DukeHelpers.Hearts[heartKey]
 		if not
 			DukeHelpers.Trinkets.infestedHeart.helpers.RandomlySpawnHeartFlyFromPickup(p,
 				{ Type = EntityType.ENTITY_PICKUP, Variant = heart.variant, SubType = heart.subType, Price = 0 }) then
