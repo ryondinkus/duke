@@ -37,8 +37,6 @@ local function MC_USE_ITEM(_, type, rng, player, f)
         player:AddHearts(1)
     end
 
-    DukeHelpers.PrintJson(fliesToSpawn)
-
     ::keeper::
     fliesToSpawn[DukeHelpers.Flies.FIENDISH.key] = 1
 
