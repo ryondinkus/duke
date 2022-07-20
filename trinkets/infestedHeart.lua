@@ -31,21 +31,22 @@ local function RandomlySpawnHeartFlyFromPickup(player, pickup)
     end
 end
 
-local function MC_PRE_PICKUP_COLLISION(_, pickup, collider)
-    if not DukeHelpers.IsDuke(collider:ToPlayer()) then
-        return RandomlySpawnHeartFlyFromPickup(collider:ToPlayer(), pickup)
+local function MC_POST_PLAYER_UPDATE(_, player)
+    local dukeData = DukeHelpers.GetDukeData(player)
+
+    local updatedHearts = dukeData.health
+
+    if not dukeData.previousHealth then
+        return
+    end
+
+    for heartKey, amount in pairs(updatedHearts) do
+        local heart = DukeHelpers.hearts[heartKey]
+        RandomlySpawnHeartFlyFromPickup(player,
+            { Type = EntityType.ENTITY_PICKUP, Variant = heart.variant, SubType = heart.subType, Price = 0 })
+        -- TODO remove amount
     end
 end
-
-local callbacks = {}
-
-DukeHelpers.ForEachHeartVariant(function(variant)
-    table.insert(callbacks, {
-        ModCallbacks.MC_PRE_PICKUP_COLLISION,
-        MC_PRE_PICKUP_COLLISION,
-        variant
-    })
-end)
 
 return {
     Name = Name,
@@ -54,7 +55,12 @@ return {
     Id = Id,
     Descriptions = Descriptions,
     WikiDescription = WikiDescription,
-    callbacks = callbacks,
+    callbacks = {
+        {
+            ModCallbacks.MC_POST_PLAYER_UPDATE,
+            MC_POST_PLAYER_UPDATE
+        }
+    },
     helpers = {
         RandomlySpawnHeartFlyFromPickup = RandomlySpawnHeartFlyFromPickup,
         ShouldSpawnExtraFly = ShouldSpawnExtraFly

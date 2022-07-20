@@ -24,28 +24,17 @@ local function MC_POST_PLAYER_UPDATE(_, player)
     if player:HasCollectible(Id) then
         local dukeData = DukeHelpers.GetDukeData(player)
 
-        local updatedHearts = {
-            RED = DukeHelpers.GetTrueRedHearts(player),
-            BLACK = DukeHelpers.GetTrueBlackHearts(player),
-            SOUL = DukeHelpers.GetTrueSoulHearts(player),
-            BONE = player:GetBoneHearts(),
-            ETERNAL = player:GetEternalHearts(),
-            GOLDEN = player:GetGoldenHearts(),
-            ROTTEN = player:GetRottenHearts(),
-            WEB = DukeHelpers.GetTrueWebHearts(player) / 2,
-            IMMORTAL = DukeHelpers.GetTrueImmortalHearts(player),
-            MOONLIGHT = DukeHelpers.GetTrueMoonlightHearts(player)
-        }
+        local updatedHearts = dukeData.health
 
-        if not dukeData[Tag] then
-            goto skip
+        if not dukeData.previousHealth then
+            return
         end
 
         if playersTakenDamage[tostring(player.InitSeed)] then
             if player:GetPlayerType() == PlayerType.PLAYER_KEEPER or player:GetPlayerType() == PlayerType.PLAYER_KEEPER_B then
                 local totalFliesToSpawn = 0
 
-                DukeHelpers.ForEach(dukeData[Tag], function(value, key)
+                DukeHelpers.ForEach(dukeData.previousHealth, function(value, key)
                     totalFliesToSpawn = totalFliesToSpawn + (value - updatedHearts[key])
                 end)
 
@@ -55,15 +44,12 @@ local function MC_POST_PLAYER_UPDATE(_, player)
             else
                 for heartKey, amount in pairs(updatedHearts) do
                     DukeHelpers.AddHeartFly(player, DukeHelpers.Flies[heartKey],
-                        dukeData[Tag][heartKey] - amount)
+                        dukeData.previousHealth[heartKey] - amount)
                 end
             end
 
             playersTakenDamage[tostring(player.InitSeed)] = nil
         end
-
-        ::skip::
-        dukeData[Tag] = updatedHearts
     end
 end
 

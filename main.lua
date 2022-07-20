@@ -58,6 +58,25 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_RENDER, function()
     end
 end)
 
+dukeMod:AddCallback(ModCallbacks.MC_POST_PLAYER_UPDATE, function(_, player)
+    local data = DukeHelpers.GetDukeData(player)
+
+    data.previousHealth = data.health
+
+    data.health = {
+        RED = DukeHelpers.GetTrueRedHearts(player),
+        BLACK = DukeHelpers.GetTrueBlackHearts(player),
+        SOUL = DukeHelpers.GetTrueSoulHearts(player),
+        BONE = player:GetBoneHearts(),
+        ETERNAL = player:GetEternalHearts(),
+        GOLDEN = player:GetGoldenHearts(),
+        ROTTEN = player:GetRottenHearts(),
+        WEB = DukeHelpers.GetTrueWebHearts(player) / 2,
+        IMMORTAL = DukeHelpers.GetTrueImmortalHearts(player),
+        MOONLIGHT = DukeHelpers.GetTrueMoonlightHearts(player)
+    }
+end)
+
 -- Helpers
 include("helpers/utils")
 include("helpers/data")
