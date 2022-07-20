@@ -25,59 +25,19 @@ local function MC_USE_ITEM(_, type, rng, player, f)
         goto keeper
     end
 
-    fliesToSpawn[DukeHelpers.Flies.ROTTEN.key] = player:GetRottenHearts()
-    player:AddRottenHearts(-player:GetRottenHearts() * 2)
-
     if player:GetMaxHearts() >= 1 and (player:GetHearts() >= 1) then --or tempRottenHearts > 0) then
-        fliesToSpawn[DukeHelpers.Flies.RED.key] = player:GetHearts() - (player:GetRottenHearts() * 2) - 1
-
-        player:AddHearts(-(player:GetHearts() - 1))
-
-        fliesToSpawn[DukeHelpers.Flies.SOUL.key] = DukeHelpers.GetTrueSoulHearts(player)
-        fliesToSpawn[DukeHelpers.Flies.BLACK.key] = DukeHelpers.GetTrueBlackHearts(player)
-        fliesToSpawn[DukeHelpers.Flies.BONE.key] = player:GetBoneHearts()
-
-        player:AddSoulHearts(-player:GetSoulHearts())
-        player:AddBoneHearts(-player:GetBoneHearts())
+        fliesToSpawn = DukeHelpers.RemoveUnallowedHearts(player, { RED = 1 }, true)
     elseif player:GetSoulHearts() >= 1 then
-        fliesToSpawn[DukeHelpers.Flies.SOUL.key] = DukeHelpers.GetTrueSoulHearts(player)
-        if DukeHelpers.GetTrueBlackHearts(player) > 0 then
-            fliesToSpawn[DukeHelpers.Flies.BLACK.key] = DukeHelpers.GetTrueBlackHearts(player) - 1
-        else
-            fliesToSpawn[DukeHelpers.Flies.SOUL.key] = fliesToSpawn[DukeHelpers.Flies.SOUL.key] -
-                1
-        end
-
-        player:AddSoulHearts(-(player:GetSoulHearts() - 1))
-
-        fliesToSpawn[DukeHelpers.Flies.RED.key] = player:GetHearts() - (player:GetRottenHearts() * 2)
-        fliesToSpawn[DukeHelpers.Flies.BONE.key] = player:GetBoneHearts()
-
-        player:AddBoneHearts(-player:GetBoneHearts())
+        fliesToSpawn = DukeHelpers.RemoveUnallowedHearts(player, { SOUL = 1 }, true)
     elseif player:GetBoneHearts() >= 1 then
-        fliesToSpawn[DukeHelpers.Flies.SOUL.key] = DukeHelpers.GetTrueSoulHearts(player)
-        fliesToSpawn[DukeHelpers.Flies.BLACK.key] = DukeHelpers.GetTrueBlackHearts(player)
-        fliesToSpawn[DukeHelpers.Flies.RED.key] = player:GetHearts() - (player:GetRottenHearts() * 2)
-
-        fliesToSpawn[DukeHelpers.Flies.BONE.key] = player:GetBoneHearts() - 1
-
-        player:AddBoneHearts(-(player:GetBoneHearts() - 1))
-        player:AddSoulHearts(-player:GetSoulHearts())
-        player:AddHearts(-player:GetHearts())
+        fliesToSpawn = DukeHelpers.RemoveUnallowedHearts(player, { BONE = 1 }, true)
     end
-
-    fliesToSpawn[DukeHelpers.Flies.BROKEN.key] = player:GetBrokenHearts() * 2
-    player:AddBrokenHearts(-player:GetBrokenHearts())
-
-    fliesToSpawn[DukeHelpers.Flies.ETERNAL.key] = player:GetEternalHearts()
-    player:AddEternalHearts(-player:GetEternalHearts())
-
-    fliesToSpawn[DukeHelpers.Flies.GOLDEN.key] = player:GetGoldenHearts()
-    player:AddGoldenHearts(-player:GetGoldenHearts())
 
     if player:GetMaxHearts() >= 1 and player:GetHearts() <= 0 then
         player:AddHearts(1)
     end
+
+    DukeHelpers.PrintJson(fliesToSpawn)
 
     ::keeper::
     fliesToSpawn[DukeHelpers.Flies.FIENDISH.key] = 1
@@ -167,6 +127,12 @@ local function MC_POST_NEW_ROOM()
                     end
                 elseif pickupKey == DukeHelpers.Hearts.BROKEN.key then
                     player:AddBrokenHearts(numHearts / 2)
+                elseif pickupKey == DukeHelpers.Hearts.MOONLIGHT.key then
+                    DukeHelpers.AddMoonlightHearts(player, numHearts)
+                elseif pickupKey == DukeHelpers.Hearts.IMMORTAL.key then
+                    ComplianceImmortal.AddImmortalHearts(player, numHearts)
+                elseif pickupKey == DukeHelpers.Hearts.WEB.key then
+                    addWebHearts(numHearts, player)
                 end
 
             end)
