@@ -114,6 +114,14 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_UPDATE, function()
     dukeMod.global.hasPoundOfFlesh = DukeHelpers.AnyPlayerHasItem(CollectibleType.COLLECTIBLE_POUND_OF_FLESH)
 end)
 
+dukeMod:AddCallback(ModCallbacks.MC_USE_ITEM, function(_, _, _, player)
+    local data = DukeHelpers.GetDukeData(player)
+    if DukeHelpers.IsDuke(player) or DukeHelpers.IsHusk(player) then
+        DukeHelpers.Hearts.SOUL.Add(player,
+            DukeHelpers.Clamp(data.health.SOUL - DukeHelpers.Hearts.SOUL.GetCount(player), 0))
+    end
+end, CollectibleType.COLLECTIBLE_MAGIC_SKIN)
+
 include("flies/registry")
 include("spiders/registry")
 
