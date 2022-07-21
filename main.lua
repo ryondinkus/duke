@@ -61,10 +61,11 @@ end)
 dukeMod:AddCallback(ModCallbacks.MC_POST_PLAYER_UPDATE, function(_, player)
     local data = DukeHelpers.GetDukeData(player)
 
-    data.previousHealth = data.health
-
     if not data.health then
+        data.previousHealth = nil
         data.health = {}
+    else
+        data.previousHealth = table.deepCopy(data.health)
     end
 
     for _, heart in pairs(DukeHelpers.GetBaseHearts()) do

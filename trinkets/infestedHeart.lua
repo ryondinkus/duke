@@ -19,12 +19,6 @@ local function RandomlySpawnHeartFlyFromPickup(player, pickup)
     if player and DukeHelpers.IsSupportedHeart(pickup) and ShouldSpawnExtraFly(player) then
         if (DukeHelpers.CanPickUpHeart(player, pickup) or DukeHelpers.IsDuke(player) or DukeHelpers.IsHusk(player)) then
             DukeHelpers.SpawnPickupHeartFly(player, pickup)
-
-            if DukeHelpers.Hearts.WEB.IsHeart(pickup) then
-                DukeHelpers.Hearts.WEB.Remove(player, 2)
-            elseif DukeHelpers.Hearts.DOUBLE_WEB.IsHeart(pickup) then
-                DukeHelpers.Hearts.WEB.Remove(player, 4)
-            end
         end
 
         return true
@@ -43,9 +37,10 @@ local function MC_POST_PLAYER_UPDATE(_, player)
     for heartKey, amount in pairs(updatedHearts) do
         if amount > dukeData.previousHealth[heartKey] then
             local heart = DukeHelpers.Hearts[heartKey]
-            RandomlySpawnHeartFlyFromPickup(player,
-                { Type = EntityType.ENTITY_PICKUP, Variant = heart.variant, SubType = heart.subType, Price = 0 })
-            heart.Remove(player, amount - dukeData.previousHealth[heartKey])
+            if RandomlySpawnHeartFlyFromPickup(player,
+                { Type = EntityType.ENTITY_PICKUP, Variant = heart.variant, SubType = heart.subType, Price = 0 }) then
+                heart.Remove(player, amount - dukeData.previousHealth[heartKey])
+            end
         end
     end
 end
