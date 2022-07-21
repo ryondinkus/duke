@@ -30,7 +30,6 @@ function DukeHelpers.GetFilledRottenGulletSlots(player)
 end
 
 function DukeHelpers.FillRottenGulletSlot(player, pickupKey, amount)
-    local heart = DukeHelpers.Hearts[pickupKey]
     local slotSpider = DukeHelpers.Spiders[pickupKey]
 
     if not slotSpider then
@@ -69,11 +68,11 @@ function DukeHelpers.FillRottenGulletSlot(player, pickupKey, amount)
         local filledSlots = DukeHelpers.GetFilledRottenGulletSlots(player)
         local numberOfFilledSlots = DukeHelpers.LengthOfTable(filledSlots)
 
-        if DukeHelpers.GetTrueSoulHearts(player) < DukeHelpers.MAX_HEALTH and
+        if DukeHelpers.Hearts.SOUL.GetCount(player) < DukeHelpers.MAX_HEALTH and
             (
             slotPickupKey == DukeHelpers.Hearts.SOUL.key or slotPickupKey == DukeHelpers.Hearts.HALF_SOUL.key or
                 slotPickupKey == DukeHelpers.Hearts.BLACK.key) then
-            player:AddSoulHearts(1)
+            DukeHelpers.Hearts.SOUL.Add(player, 1)
             return
         end
 

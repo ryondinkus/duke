@@ -16,7 +16,7 @@ local function MC_USE_ITEM(_, type, rng, player, f)
 
     local fliesToSpawn = {}
 
-    if player:GetPlayerType() == PlayerType.PLAYER_KEEPER or player:GetPlayerType() == PlayerType.PLAYER_KEEPER_B then
+    if DukeHelpers.IsKeeper(player) then
         if player:GetHearts() >= 1 then
             fliesToSpawn[DukeHelpers.Flies.GOLDEN.key] = (player:GetHearts() / 2) - 1
             player:AddHearts(-(player:GetHearts() - 2))
@@ -25,16 +25,18 @@ local function MC_USE_ITEM(_, type, rng, player, f)
         goto keeper
     end
 
-    if player:GetMaxHearts() >= 1 and (player:GetHearts() >= 1) then --or tempRottenHearts > 0) then
+    if player:GetMaxHearts() >= 1 and (player:GetHearts() >= 1) then
         fliesToSpawn = DukeHelpers.RemoveUnallowedHearts(player, { RED = 1 }, true)
-    elseif player:GetSoulHearts() >= 1 then
+    elseif DukeHelpers.Hearts.SOUL.GetCount(player) >= 1 then
         fliesToSpawn = DukeHelpers.RemoveUnallowedHearts(player, { SOUL = 1 }, true)
-    elseif player:GetBoneHearts() >= 1 then
+    elseif DukeHelpers.Hearts.BLACK.GetCount(player) >= 1 then
+        fliesToSpawn = DukeHelpers.RemoveUnallowedHearts(player, { BLACK = 1 }, true)
+    elseif DukeHelpers.Hearts.BONE.GetCount(player) >= 1 then
         fliesToSpawn = DukeHelpers.RemoveUnallowedHearts(player, { BONE = 1 }, true)
-    end
-
-    if player:GetMaxHearts() >= 1 and player:GetHearts() <= 0 then
-        player:AddHearts(1)
+    elseif DukeHelpers.Hearts.IMMORTAL.GetCount(player) >= 1 then
+        fliesToSpawn = DukeHelpers.RemoveUnallowedHearts(player, { IMMORTAL = 1 }, true)
+    elseif DukeHelpers.Hearts.WEB.GetCount(player) >= 1 then
+        fliesToSpawn = DukeHelpers.RemoveUnallowedHearts(player, { WEB = 1 }, true)
     end
 
     ::keeper::
@@ -98,40 +100,24 @@ local function MC_POST_NEW_ROOM()
             end)
 
             if heartsToAdd[DukeHelpers.Hearts.BONE.key] then
-                player:AddBoneHearts(heartsToAdd[DukeHelpers.Hearts.BONE.key])
+                DukeHelpers.Hearts.BONE.Add(player, heartsToAdd[DukeHelpers.Hearts.BONE.key])
                 heartsToAdd[DukeHelpers.Hearts.BONE.key] = nil
             end
 
             if heartsToAdd[DukeHelpers.Hearts.ROTTEN.key] then
-                player:AddRottenHearts(heartsToAdd[DukeHelpers.Hearts.ROTTEN.key] * 2)
+                DukeHelpers.Hearts.ROTTEN.Add(player, heartsToAdd[DukeHelpers.Hearts.ROTTEN.key] * 2)
                 heartsToAdd[DukeHelpers.Hearts.ROTTEN.key] = nil
             end
 
             DukeHelpers.ForEach(heartsToAdd, function(numHearts, pickupKey)
-                if pickupKey == DukeHelpers.Hearts.RED.key then
-                    player:AddHearts(numHearts)
-                elseif pickupKey == DukeHelpers.Hearts.SOUL.key then
-                    player:AddSoulHearts(numHearts)
-                elseif pickupKey == DukeHelpers.Hearts.ETERNAL.key then
-                    player:AddEternalHearts(numHearts)
-                elseif pickupKey == DukeHelpers.Hearts.BLACK.key then
-                    player:AddBlackHearts(numHearts)
-                elseif pickupKey == DukeHelpers.Hearts.GOLDEN.key then
-                    if player:GetPlayerType() == PlayerType.PLAYER_KEEPER or
-                        player:GetPlayerType() == PlayerType.PLAYER_KEEPER_B then
-                        player:AddHearts(numHearts * 2)
-                    else
-                        player:AddGoldenHearts(numHearts)
-                    end
-                elseif pickupKey == DukeHelpers.Hearts.BROKEN.key then
-                    player:AddBrokenHearts(numHearts / 2)
-                elseif pickupKey == DukeHelpers.Hearts.MOONLIGHT.key then
-                    DukeHelpers.AddMoonlightHearts(player, numHearts)
-                elseif pickupKey == DukeHelpers.Hearts.IMMORTAL.key then
-                    ComplianceImmortal.AddImmortalHearts(player, numHearts)
-                elseif pickupKey == DukeHelpers.Hearts.WEB.key then
-                    addWebHearts(numHearts, player)
+                local heart = DukeHelpers.Hearts[pickupKey]
+
+                if pickupKey == DukeHelpers.Hearts.GOLDEN.key and DukeHelpers.IsKeeper(player) then
+                    DukeHelpers.Hearts.RED.Add(player, numHearts * 2)
+                    return
                 end
+
+                heart.Add(player, numHearts)
 
             end)
             data[Tag] = nil

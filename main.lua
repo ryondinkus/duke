@@ -63,18 +63,13 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_PLAYER_UPDATE, function(_, player)
 
     data.previousHealth = data.health
 
-    data.health = {
-        RED = DukeHelpers.GetTrueRedHearts(player),
-        BLACK = DukeHelpers.GetTrueBlackHearts(player),
-        SOUL = DukeHelpers.GetTrueSoulHearts(player),
-        BONE = player:GetBoneHearts(),
-        ETERNAL = player:GetEternalHearts(),
-        GOLDEN = player:GetGoldenHearts(),
-        ROTTEN = player:GetRottenHearts(),
-        WEB = DukeHelpers.GetTrueWebHearts(player) / 2,
-        IMMORTAL = DukeHelpers.GetTrueImmortalHearts(player),
-        MOONLIGHT = DukeHelpers.GetTrueMoonlightHearts(player)
-    }
+    if not data.health then
+        data.health = {}
+    end
+
+    for _, heart in pairs(DukeHelpers.GetBaseHearts()) do
+        data.health[heart.key] = heart.GetCount(player)
+    end
 end)
 
 -- Helpers

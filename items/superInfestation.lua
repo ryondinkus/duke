@@ -31,7 +31,7 @@ local function MC_POST_PLAYER_UPDATE(_, player)
         end
 
         if playersTakenDamage[tostring(player.InitSeed)] then
-            if player:GetPlayerType() == PlayerType.PLAYER_KEEPER or player:GetPlayerType() == PlayerType.PLAYER_KEEPER_B then
+            if DukeHelpers.IsKeeper(player) then
                 local totalFliesToSpawn = 0
 
                 DukeHelpers.ForEach(dukeData.previousHealth, function(value, key)

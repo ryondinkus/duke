@@ -46,7 +46,7 @@ dukeMod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, function(_, pickup, co
 			goto final
 		end
 
-		if DukeHelpers.IsPatchedHeart(pickup) then
+		if DukeHelpers.Hearts.PATCHED.IsHeart(pickup) or DukeHelpers.Hearts.DOUBLE_PATCHED.IsHeart(pickup) then
 			local leftoverSlots = spider.count
 			if playerData.stuckSlots and playerData.stuckSlots > 0 then
 				leftoverSlots = math.max(0, leftoverSlots - playerData.stuckSlots)

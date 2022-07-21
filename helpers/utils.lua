@@ -228,3 +228,29 @@ function DukeHelpers.OffsetIdentifier(heart)
 
     return DukeHelpers.SUBTYPE_OFFSET + identifier
 end
+
+function DukeHelpers.Clamp(num, min, max)
+    local output = num
+
+    if min then
+        output = math.max(min, output)
+    end
+
+    if max then
+        output = math.min(max, output)
+    end
+
+    return output
+end
+
+function DukeHelpers.PrintIfSomething(value, target)
+    if target then
+        if value == target then
+            print(value)
+        end
+    else
+        if value ~= nil and value ~= 0 and value ~= "" then
+            print(value)
+        end
+    end
+end
