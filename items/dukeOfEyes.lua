@@ -9,7 +9,20 @@ local Descriptions = {
     en_us = "Luck-based chance of firing Duke Tears, which spawn 1-2 Heart Attack Flies or Heart Spiders on collision#5% chance of triggering at 0 luck, capping at 50% at 10 luck",
     spa = "Caca y mierda por todos lados"
 }
-local WikiDescription = DukeHelpers.GenerateEncyclopediaPage("Poops and shits everywhere.")
+local WikiDescription = DukeHelpers.GenerateEncyclopediaPage({
+    {
+        "Effects",
+        "Tears have a luck-based chance of spawning 1-2 Heart Attack Flies or Heart Spiders of random types.",
+        "- The random types can be: Red, Soul, Black, Gold, Bone, or Rotten. Red and Soul are more likely to spawn.",
+        "- Duke of Eyes tears have a 5% chance of appearing at 0 luck, capping at 50% at 10 luck."
+    },
+    {
+        "Trivia",
+        "Duke of Eyes was originally unlocked by beating The Beast as Tainted Duke, but was later moved to an all-completion marks reward after scrapping co-op babies.",
+        "- The scrapped baby would’ve been Swarm Baby, a big mass of Heart Flies, and would’ve fired tears with effects based on the different heart fly types.",
+        "This is the weirdest fucking item idea."
+    }
+})
 
 local function MC_POST_FIRE_TEAR(_, tear)
     local player = tear:GetLastParent():ToPlayer()

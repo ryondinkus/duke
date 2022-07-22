@@ -9,7 +9,36 @@ local Descriptions = {
     en_us = "Any blue flies spawned will convert into Heart Attack Flies of a random type#Any 'basic' fly enemies will spawn a random Heart Attack Fly on death",
     spa = "Perra total"
 }
-local WikiDescription = DukeHelpers.GenerateEncyclopediaPage("Total bitch.")
+local WikiDescription = DukeHelpers.GenerateEncyclopediaPage({
+    {
+        "Effects",
+        "Any friendly Blue Flies spawned by the player will convert into Heart Attack Flies of a random type.",
+        "- These types include: Red, Soul, Black, Gold, Bone and Rotten. Red and Soul are twice as likely to spawn.",
+        "Any ''basic'' fly enemies will spawn a random Heart Attack Fly on death.",
+        "- The same rules for random fly generation apply",
+        "- ''Basic'' fly enemies include:"
+        "-- Fly"
+        "-- Attack Fly"
+        "-- Ring Fly"
+        "-- Moter"
+        "-- Eternal Fly"
+        "-- Dart Fly"
+        "-- Swarm Fly"
+        "-- Hush Fly"
+        "-- Army Fly"
+        "-- Willo"
+        "-- Ultra Famine Fly"
+        "-- Ultra Pestilence Fly"
+    },
+    {
+        "Synergies",
+        "Guppy’s Head: Spawns 2-4 random Heart Attack Flies, basically making it a stronger Duke’s Gullet."
+    },
+    {
+        "Trivia",
+        "No one knows what Queen Fly is the queen of. Awareness of an absence of knowledge counts as trivia.",
+    }
+})
 
 local flyEnemies = {
     {

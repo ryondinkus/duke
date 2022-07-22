@@ -21,6 +21,11 @@ local WikiDescription = DukeHelpers.GenerateEncyclopediaPage({
         "Synergies",
         "Book of Virtues: Spawns 2 Heart Fly wisps of a random type. Heart Fly wisps will have tear effects based on whatever type they are. When a Heart Fly wisp dies, it will spawn a corresponding Heart Attack Fly of the same type.",
         "Car Battery: Spawns 4 Heart Attack Flies"
+    },
+    {
+        "Trivia",
+        "Duke’s Gullet was originally unlocked by defeating ???, but was moved to Mom’s Heart after co-op babies were scrapped.",
+        "- The scrapped co-op baby for Mom’s Heart would’ve been called Duke Baby, and would’ve fired Heart Attack Flies instead of tears."
     }
 })
 

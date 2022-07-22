@@ -329,6 +329,7 @@ return {
     Id = Id,
     Descriptions = Descriptions,
     WikiDescription = WikiDescription,
+    IsWikiHidden = true,
     callbacks = {
         {
             ModCallbacks.MC_USE_ITEM,
