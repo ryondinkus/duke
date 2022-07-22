@@ -16,13 +16,13 @@ local WikiDescription = DukeHelpers.GenerateEncyclopediaPage({
         "- Heart Orbital Flies are converted back into HP after entering a new room.",
         "-- Heart Orbital Flies that are lost before entering a new room will not be converted back to HP.",
         "-- Heart Orbital Flies gained after activating the item will not be converted into HP upon entering a new room.",
-        "Also grants a Fiendish Heart Orbital Fly for the room. Fiendish Heart Orbital Flies are functionally identical to Eternal Heart Orbital Flies, except that having multiple of them won’t convert them into Red Heart Orbital Flies."
+        "Also grants a Fiendish Heart Orbital Fly for the room. Fiendish Heart Orbital Flies are functionally identical to Eternal Heart Orbital Flies, except that having multiple of them won't convert them into Red Heart Orbital Flies."
     },
     {
         "Interactions",
         "Keeper and Tainted Keeper will gain a Gold Heart Fly for each coin heart taken.",
         "The Forgotten will only lose HP on whichever subplayer is currently active.",
-        "The Lost and Tainted Lost won’t gain any Heart Flies since they have no health, but will still gain the Fiendish Heart Fly.",
+        "The Lost and Tainted Lost won't gain any Heart Flies since they have no health, but will still gain the Fiendish Heart Fly.",
     },
     {
         "Synergies",
@@ -31,7 +31,7 @@ local WikiDescription = DukeHelpers.GenerateEncyclopediaPage({
     },
     {
         "Trivia",
-        "Fiendish Swarm’s name and appearance is a reference to Fiend, a popular modded character from Fiend Folio and Devil’s Harvest.",
+        "Fiendish Swarm's name and appearance is a reference to Fiend, a popular modded character from Fiend Folio and Devil's Harvest.",
         "- When Fiend takes damage, all of his HP turns into familiars that attack enemies. His HP replenishes at the end of the room."
     }
 })

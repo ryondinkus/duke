@@ -15,7 +15,7 @@ local WikiDescription = DukeHelpers.GenerateEncyclopediaPage({
         "Devil Deal prices will now cost Heart Orbital Flies instead of HP.",
         "- 1 heart deals cost 4 flies, 2 heart deals cost 8 flies.",
         "- The type of Heart Orbital Fly does not matter to the cost.",
-        "As Duke, all Devil Deals will now only cost 4 Heart Orbital Flies no matter what, similar to the effect of Judas’ Tongue."
+        "As Duke, all Devil Deals will now only cost 4 Heart Orbital Flies no matter what, similar to the effect of Judas' Tongue."
     },
     {
         "Trivia",

@@ -16,7 +16,7 @@ local WikiDescription = DukeHelpers.GenerateEncyclopediaPage({
         "- The Duke of Flies will fly diagonally around the room, dealing contact damage and occasionally spawning flies.",
         "-- He will either spawn three permacharmed Attack Flies or one larger Attack Fly with 1.5x HP.",
         "- After 15 seconds or when exiting the room, the Duke of Flies will die, spawning 6 more permacharmed Attack Flies.",
-        "- There’s a 10% chance of either the Orange or Green Champion versions of Duke of Flies spawning.",
+        "- There's a 10% chance of either the Orange or Green Champion versions of Duke of Flies spawning.",
         "-- The Orange Champion will be 1.15x larger and spawn a permacharmed Sucker instead of the larger Attack Fly.",
         "-- The Green Champion will spawn a permacharmed Moter instead of the larger Attack Fly."
     },

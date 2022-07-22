@@ -24,7 +24,7 @@ local WikiDescription = DukeHelpers.GenerateEncyclopediaPage({
     },
     {
         "Trivia",
-        "Rotten Gullet is meant to be the rotted version of Duke’s Gullet.",
+        "Rotten Gullet is meant to be the rotted version of Duke's Gullet.",
     }
 })
 

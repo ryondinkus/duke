@@ -1,3 +1,24 @@
+if Encyclopedia then
+	if Encyclopedia.characters_bTable and
+		Encyclopedia.characters_bTable.modded and DukeHelpers.FindByProperties(Encyclopedia.characters_bTable.modded,
+			{ CharacterId = DukeHelpers.HUSK_ID }) then
+		Encyclopedia.UpdateCharacterTainted(DukeHelpers.HUSK_ID, {
+			ModName = "Duke",
+			Name = "Tainted Duke",
+			ID = DukeHelpers.HUSK_ID,
+			Sprite = Encyclopedia.RegisterSprite(dukeMod.path .. "content/gfx/characterportraitsalt.anm2", "DukeB", 0)
+		})
+	else
+		Encyclopedia.AddCharacterTainted({
+			ModName = "Duke",
+			Name = "Tainted Duke",
+			ID = DukeHelpers.HUSK_ID,
+			Sprite = Encyclopedia.RegisterSprite(dukeMod.path .. "content/gfx/characterportraitsalt.anm2", "DukeB", 0)
+		})
+	end
+end
+
+
 -- Add flies on player startup
 dukeMod:AddCallback(ModCallbacks.MC_POST_PLAYER_UPDATE, function(_, player)
 	if dukeMod.global.isInitialized and DukeHelpers.IsHusk(player) and

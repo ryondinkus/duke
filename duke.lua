@@ -1,3 +1,22 @@
+if Encyclopedia then
+	if Encyclopedia.characters_aTable and Encyclopedia.characters_aTable.modded and
+		DukeHelpers.FindByProperties(Encyclopedia.characters_aTable.modded, { CharacterId = DukeHelpers.HUSK_ID }) then
+		Encyclopedia.UpdateCharacter(DukeHelpers.DUKE_ID, {
+			ModName = "Duke",
+			Name = "Duke",
+			ID = DukeHelpers.DUKE_ID,
+			Sprite = Encyclopedia.RegisterSprite(dukeMod.path .. "content/gfx/characterportraits.anm2", "Duke", 0)
+		})
+	else
+		Encyclopedia.AddCharacter({
+			ModName = "Duke",
+			Name = "Duke",
+			ID = DukeHelpers.DUKE_ID,
+			Sprite = Encyclopedia.RegisterSprite(dukeMod.path .. "content/gfx/characterportraits.anm2", "Duke", 0)
+		})
+	end
+end
+
 -- Add flies on player startup
 dukeMod:AddCallback(ModCallbacks.MC_POST_PLAYER_UPDATE, function(_, player)
 	if dukeMod.global.isInitialized and DukeHelpers.IsDuke(player) and
@@ -208,5 +227,6 @@ dukeMod:AddCallback(ModCallbacks.MC_ENTITY_TAKE_DMG, function(_, entity, _, flag
 end)
 
 if EID then
-	EID:addBirthright(DukeHelpers.DUKE_ID, "Allows Duke to have a fourth ring of Heart Orbital Flies, holding up to 18 additional flies#Heart Orbital Flies in the fourth ring deal 1 contact damage")
+	EID:addBirthright(DukeHelpers.DUKE_ID,
+		"Allows Duke to have a fourth ring of Heart Orbital Flies, holding up to 18 additional flies#Heart Orbital Flies in the fourth ring deal 1 contact damage")
 end

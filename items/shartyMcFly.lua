@@ -32,8 +32,8 @@ local WikiDescription = DukeHelpers.GenerateEncyclopediaPage({
     {
         "Trivia",
         "Sharty McFly was a familiar idea that the mod creators had a long time ago to be included in some sort of familiar pack. After the familiar pack idea was scrapped, Sharty was brought over to the Duke mod due to his status as a fly.",
-        "During early development, Duke’s nickname was “sharty mcflies.” This nickname was soon repurposed to be used for Sharty.",
-        "Sharty McFly’s name is a reference to Marty McFly, protagonist of the Back to the Future films, very cleverly combined with the word ''shart,'' meaning to accidentally shit while farting."
+        "During early development, Duke's nickname was “sharty mcflies.” This nickname was soon repurposed to be used for Sharty.",
+        "Sharty McFly's name is a reference to Marty McFly, protagonist of the Back to the Future films, very cleverly combined with the word ''shart,'' meaning to accidentally shit while farting."
     }
 })
 

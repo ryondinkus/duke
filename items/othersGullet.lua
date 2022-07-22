@@ -24,8 +24,8 @@ local WikiDescription = DukeHelpers.GenerateEncyclopediaPage({
     },
     {
         "Trivia",
-        "Duke’s Gullet was originally unlocked by defeating ???, but was moved to Mom’s Heart after co-op babies were scrapped.",
-        "- The scrapped co-op baby for Mom’s Heart would’ve been called Duke Baby, and would’ve fired Heart Attack Flies instead of tears."
+        "Duke's Gullet was originally unlocked by defeating ???, but was moved to Mom's Heart after co-op babies were scrapped.",
+        "- The scrapped co-op baby for Mom's Heart would've been called Duke Baby, and would've fired Heart Attack Flies instead of tears."
     }
 })
 

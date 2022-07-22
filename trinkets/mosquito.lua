@@ -16,7 +16,7 @@ local WikiDescription = DukeHelpers.GenerateEncyclopediaPage({
     },
     {
         "Trivia",
-        "When Noah implemented this trinket he accidentally made them spawn creep that hurt the player and it was really funny hahaha he was coding on a Mac and couldn’t test it ahahaha",
+        "When Noah implemented this trinket he accidentally made them spawn creep that hurt the player and it was really funny hahaha he was coding on a Mac and couldn't test it ahahaha",
     }
 })
 

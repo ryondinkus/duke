@@ -16,23 +16,23 @@ local WikiDescription = DukeHelpers.GenerateEncyclopediaPage({
         "- These types include: Red, Soul, Black, Gold, Bone and Rotten. Red and Soul are twice as likely to spawn.",
         "Any ''basic'' fly enemies will spawn a random Heart Attack Fly on death.",
         "- The same rules for random fly generation apply",
-        "- ''Basic'' fly enemies include:"
-        "-- Fly"
-        "-- Attack Fly"
-        "-- Ring Fly"
-        "-- Moter"
-        "-- Eternal Fly"
-        "-- Dart Fly"
-        "-- Swarm Fly"
-        "-- Hush Fly"
-        "-- Army Fly"
-        "-- Willo"
-        "-- Ultra Famine Fly"
+        "- ''Basic'' fly enemies include:",
+        "-- Fly",
+        "-- Attack Fly",
+        "-- Ring Fly",
+        "-- Moter",
+        "-- Eternal Fly",
+        "-- Dart Fly",
+        "-- Swarm Fly",
+        "-- Hush Fly",
+        "-- Army Fly",
+        "-- Willo",
+        "-- Ultra Famine Fly",
         "-- Ultra Pestilence Fly"
     },
     {
         "Synergies",
-        "Guppy’s Head: Spawns 2-4 random Heart Attack Flies, basically making it a stronger Duke’s Gullet."
+        "Guppy's Head: Spawns 2-4 random Heart Attack Flies, basically making it a stronger Duke's Gullet."
     },
     {
         "Trivia",

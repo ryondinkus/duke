@@ -37,6 +37,7 @@ return {
     Id = Id,
     Descriptions = Descriptions,
     WikiDescription = WikiDescription,
+    IsRune = true,
     callbacks = {
         {
             ModCallbacks.MC_USE_CARD,

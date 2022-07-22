@@ -19,7 +19,7 @@ local WikiDescription = DukeHelpers.GenerateEncyclopediaPage({
     {
         "Trivia",
         "Duke of Eyes was originally unlocked by beating The Beast as Tainted Duke, but was later moved to an all-completion marks reward after scrapping co-op babies.",
-        "- The scrapped baby would’ve been Swarm Baby, a big mass of Heart Flies, and would’ve fired tears with effects based on the different heart fly types.",
+        "- The scrapped baby would've been Swarm Baby, a big mass of Heart Flies, and would've fired tears with effects based on the different heart fly types.",
         "This is the weirdest fucking item idea."
     }
 })
