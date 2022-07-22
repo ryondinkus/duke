@@ -121,7 +121,7 @@ local function registerEncyclopediaDescription(object, registerFunction, extraOp
             ID = object.Id,
             WikiDesc = object.WikiDescription,
             ModName = "Duke",
-            Hide = object.isWikiHidden
+            Hide = object.IsWikiHidden
         }
 
         if extraOptions then
