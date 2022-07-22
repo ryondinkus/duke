@@ -1,3 +1,55 @@
+local WikiDescription = DukeHelpers.GenerateEncyclopediaPage({
+	{
+		"Start Data",
+		"Items:",
+		"- Rotten Gullet",
+		"Stats:",
+		"- HP: 2 Soul Hearts",
+		"- Speed: 1.00",
+		"- Tear Rate: 2.73",
+		"- Damage: 3.50",
+		"- Range: 6.50",
+		"- Shot Speed: 1.00",
+		"- Luck: 0.00",
+		"- Flight"
+	},
+	{
+		"Traits",
+		"Any hearts Tainted Duke picks up or gains via items go into the Rotten Gullet as charges. Rotten Gullet has 24 slots for charges.",
+		"Using Rotten Gullet will consume the oldest charge, dealing damage and knockback in a small radius near Tainted Duke and firing 8 large tears in all directions.",
+		"When the tears land, they have a 50% chance of spawning Heart Spiders.",
+		"Charges and spiders that Tainted Duke gains have special attributes based on the heart type that Tainted Duke picks up. For more information on specific fly effects, see Heart Spiders.",
+	},
+	{
+		"Notes",
+		"If Tainted Duke is below 2 Soul Hearts, picking up Soul Hearts will replenish his health bar instead of turning into Rotten Gullet charges.",
+		"- Black Hearts picked up this way will turn into Soul Hearts.",
+		"Tainted Duke is able to pay for Devil Deals with his Rotten Gullet charges.",
+		"- 1 Heart deals cost 4 charges, and 2 Heart deals cost 8 charges.",
+		"- The charge type is irrelevant to the price.",
+		"Tainted Duke is able to open the Mausoleum door at a cost of 2 Rotten Gullet charges per hit.",
+		"- If he has no Rotten Gullet charges, the door will deal damage like normal.",
+		"If Tainted Duke has all 24 Rotten Gullet charges filled, he won't be able to pick up more hearts. Hearts gained directly via items when the Rotten Gullet is full will simply be ignored.",
+		"Broken Hearts decrease the capacity of Tainted Duke's Rotten Gullet by 2. If all 24 slots of Rotten Gullet get removed, he will die."
+	},
+	{
+		"Birthright",
+		"Tainted Duke's Rotten Gullet fires 12 tears in a circle instead of 8."
+	},
+	{
+		"Interactions",
+		"Book of Virtues: Gain a corresponding Heart Spider wisp for every Heart Spider spawned by Rotten Gullet. Heart Spider wisps have different tear effects depending on the type of Heart Spider spawned.",
+		"Hive Mind: Increases size and damage of Heart Spiders.",
+		"Sacrificial Altar: Heart Spiders will turn into pennies when sacrificed."
+	},
+	{
+		"Trivia",
+		"Tainted Duke is based on The Husk, the posthumous version of The Duke of Flies boss.",
+		"- Tainted Duke's focus on Heart Spiders and bullets instead of flies is a reference to The Husk's attacks using more spiders and bullets.",
+		"- Tainted Duke's alternate name ''The Husk'' is an obvious reference to this.",
+	}
+})
+
 if Encyclopedia then
 	if Encyclopedia.characters_bTable and
 		Encyclopedia.characters_bTable.modded and DukeHelpers.FindByProperties(Encyclopedia.characters_bTable.modded,
@@ -6,14 +58,16 @@ if Encyclopedia then
 			ModName = "Duke",
 			Name = "Tainted Duke",
 			ID = DukeHelpers.HUSK_ID,
-			Sprite = Encyclopedia.RegisterSprite(dukeMod.path .. "content/gfx/characterportraitsalt.anm2", "DukeB", 0)
+			Sprite = Encyclopedia.RegisterSprite(dukeMod.path .. "content/gfx/characterportraitsalt.anm2", "DukeB", 0),
+			WikiDesc = WikiDescription
 		})
 	else
 		Encyclopedia.AddCharacterTainted({
 			ModName = "Duke",
 			Name = "Tainted Duke",
 			ID = DukeHelpers.HUSK_ID,
-			Sprite = Encyclopedia.RegisterSprite(dukeMod.path .. "content/gfx/characterportraitsalt.anm2", "DukeB", 0)
+			Sprite = Encyclopedia.RegisterSprite(dukeMod.path .. "content/gfx/characterportraitsalt.anm2", "DukeB", 0),
+			WikiDesc = WikiDescription
 		})
 	end
 end
