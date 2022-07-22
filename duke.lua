@@ -19,24 +19,27 @@ dukeMod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, function(_, pickup, co
 	local p = collider:ToPlayer()
 	if p and DukeHelpers.IsDuke(p) and (pickup.Price <= 0 or p:GetNumCoins() >= pickup.Price) then
 		local playerData = DukeHelpers.GetDukeData(p)
-		if (pickup.SubType == 3320 or pickup.SubType == 3321) then
-			local patchedFly = DukeHelpers.GetFlyByPickupSubType(pickup.SubType)
+		if DukeHelpers.Hearts.PATCHED.IsHeart(pickup) or DukeHelpers.Hearts.DOUBLE_PATCHED.IsHeart(pickup) then
+			local patchedFly = DukeHelpers.GetFlyByPickup(pickup)
 			for i = 1, patchedFly.count do
-				if DukeHelpers.CountByProperties(playerData.heartFlies, { subType = DukeHelpers.Flies.BROKEN.heartFlySubType }) > 0 then
-					local removedFlies = DukeHelpers.RemoveHeartFlyBySubType(p, DukeHelpers.Flies.BROKEN.heartFlySubType, 1)
+				if DukeHelpers.CountByProperties(playerData.heartFlies, { key = DukeHelpers.Flies.BROKEN.key }) > 0 then
+					local removedFlies = DukeHelpers.RemoveHeartFly(p, DukeHelpers.Flies.BROKEN, 1)
 
-					DukeHelpers.SpawnHeartFlyPoof(DukeHelpers.Flies.BROKEN.heartFlySubType, removedFlies[1].Position, p)
+					DukeHelpers.SpawnHeartFlyPoof(DukeHelpers.Flies.BROKEN, removedFlies[1].Position, p)
 				else
 					DukeHelpers.AddHeartFly(p, patchedFly, patchedFly.count - i + 1)
 					break
 				end
 			end
-			pickup:Remove()
+
 		else
 			DukeHelpers.SpawnPickupHeartFly(p, pickup)
 		end
 
 		if pickup then
+			DukeHelpers.PickupFlyHeart(pickup)
+			pickup:Remove()
+
 			if pickup.Price == PickupPrice.PRICE_SPIKES then
 				p:TakeDamage(2, DamageFlag.DAMAGE_SPIKES | DamageFlag.DAMAGE_NO_PENALTIES, EntityRef(nil), 0)
 			end
@@ -51,8 +54,8 @@ end, PickupVariant.PICKUP_HEART)
 dukeMod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, function(_, pickup, collider)
 	local p = collider:ToPlayer()
 	if p and (DukeHelpers.IsDuke(p) or p:HasTrinket(DukeHelpers.Trinkets.pocketOfFlies.Id)) and
-		DukeHelpers.IsFlyPrice(pickup.Price) then
-		local heartPrice = DukeHelpers.GetDukeDevilDealPrice(pickup)
+		DukeHelpers.IsCustomPrice(pickup.Price) then
+		local heartPrice = DukeHelpers.GetCustomDevilDealPrice(pickup, p)
 
 		local playerFlyCount = DukeHelpers.GetFlyCount(p)
 
@@ -71,7 +74,8 @@ end)
 
 dukeMod:AddCallback(ModCallbacks.MC_POST_PICKUP_UPDATE, function(_, pickup)
 	if not DukeHelpers.AnyPlayerHasTrinket(TrinketType.TRINKET_YOUR_SOUL) and
-		(DukeHelpers.HasDuke() or DukeHelpers.HasPocketOfFlies()) and ((pickup.Price < 0 and
+		(DukeHelpers.HasDuke() or DukeHelpers.AnyPlayerHasTrinket(DukeHelpers.Trinkets.pocketOfFlies.Id)) and
+		((pickup.Price < 0 and
 			pickup.Price > PickupPrice.PRICE_SPIKES) or
 			(pickup.Price < DukeHelpers.PRICE_OFFSET and pickup.Price > DukeHelpers.PRICE_OFFSET + PickupPrice.PRICE_SPIKES)) then
 		local closestPlayer = DukeHelpers.GetClosestPlayer(pickup.Position)
@@ -140,12 +144,12 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_UPDATE, function()
 				for i = #fliesData, 1, -1 do
 					local fly = fliesData[i]
 					local f = DukeHelpers.GetEntityByInitSeed(fly.initSeed)
-					DukeHelpers.SpawnAttackFly(f)
-					DukeHelpers.RemoveHeartFly(f)
+					DukeHelpers.SpawnAttackFlyFromHeartFlyEntity(f, true)
+					DukeHelpers.RemoveHeartFlyEntity(f)
 				end
 			end
 			if sprite:IsPlaying("Death") then
-				DukeHelpers.PlayDukeDeath(p)
+				DukeHelpers.PlayCustomDeath(p)
 			end
 		end
 	end)
@@ -155,7 +159,7 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_UPDATE, function()
 	for _, entity in pairs(foundEntities) do
 		local sprite = entity:GetSprite()
 		if sprite:GetFilename() == "gfx/characters/duke.anm2" and sprite:IsPlaying("Death") and sprite:GetFrame() == 19 then
-			DukeHelpers.PlayDukeDeath(entity)
+			DukeHelpers.PlayCustomDeath(entity)
 		end
 	end
 end)
@@ -168,9 +172,9 @@ dukeMod:AddCallback(ModCallbacks.MC_EVALUATE_CACHE, function(_, player, flags)
 			for i = #heartFlies, 1, -1 do
 				local fly = heartFlies[i]
 				local f = DukeHelpers.GetEntityByInitSeed(fly.initSeed)
-				if DukeHelpers.GetDukeData(f).layer == DukeHelpers.BIRTHRIGHT then
-					DukeHelpers.RemoveHeartFly(f)
-					DukeHelpers.SpawnAttackFly(f)
+				if DukeHelpers.GetDukeData(player).layer == DukeHelpers.BIRTHRIGHT then
+					DukeHelpers.RemoveHeartFlyEntity(f)
+					DukeHelpers.SpawnAttackFlyFromHeartFlyEntity(f)
 				end
 			end
 		end
@@ -198,7 +202,7 @@ dukeMod:AddCallback(ModCallbacks.MC_ENTITY_TAKE_DMG, function(_, entity, _, flag
 				numRemoved = numRemoved + DukeHelpers.RemoveRottenGulletSlots(player, 2 - numRemoved, true)
 			end
 
-			player:AddSoulHearts(numRemoved)
+			DukeHelpers.Hearts.SOUL.Add(player, numRemoved)
 		end
 	end
 end)

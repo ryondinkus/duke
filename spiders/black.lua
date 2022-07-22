@@ -1,6 +1,5 @@
-local key = "BLACK"
-local pickupSubType = HeartSubType.HEART_BLACK
-local subType = DukeHelpers.GetSpiderSubTypeByPickupSubType(pickupSubType)
+local heart = DukeHelpers.Hearts.BLACK
+local subType = DukeHelpers.OffsetIdentifier(heart)
 
 local function MC_PRE_FAMILIAR_COLLISION(_, f, e)
 	if f.SubType == subType then
@@ -15,9 +14,8 @@ local function onRelease(player)
 end
 
 return {
-	key = key,
 	spritesheet = "black_heart_spider.png",
-	pickupSubType = pickupSubType,
+	heart = heart,
 	count = 2,
 	weight = 1,
 	poofColor = Color(0, 0, 0, 1, 0, 0, 0),

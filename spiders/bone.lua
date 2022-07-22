@@ -1,10 +1,10 @@
-local key = "BONE"
-local pickupSubType = HeartSubType.HEART_BONE
-local subType = DukeHelpers.GetSpiderSubTypeByPickupSubType(pickupSubType)
+local heart = DukeHelpers.Hearts.BONE
+local subType = DukeHelpers.OffsetIdentifier(heart)
 
 local function MC_POST_ENTITY_REMOVE(_, e)
     if e.Variant == FamiliarVariant.BLUE_SPIDER and e.SubType == subType then
         Isaac.Spawn(EntityType.ENTITY_FAMILIAR, FamiliarVariant.BONE_SPUR, 0, e.Position, Vector.Zero, e)
+        DukeHelpers.sfx:Play(SoundEffect.SOUND_BONE_SNAP, 1, 0)
     end
 end
 
@@ -14,9 +14,8 @@ local function applyTearEffects(tear)
 end
 
 return {
-    key = key,
     spritesheet = "bone_heart_spider.png",
-    pickupSubType = pickupSubType,
+    heart = heart,
     count = 1,
     weight = 1,
     poofColor = Color(0.62, 0.62, 0.62, 1, 0.59, 0.59, 0.59),

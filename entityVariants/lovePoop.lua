@@ -82,6 +82,12 @@ local function MC_PRE_TEAR_COLLISION(_, tear, collider)
     end
 end
 
+local function MC_PRE_PROJECTILE_COLLISION(_, projectile, collider)
+    if collider.Type == EntityType.ENTITY_POOP and collider.Variant == Id then
+        return false
+    end
+end
+
 return {
     Name = Name,
     Tag = Tag,
@@ -95,6 +101,10 @@ return {
         {
             ModCallbacks.MC_PRE_TEAR_COLLISION,
             MC_PRE_TEAR_COLLISION
+        },
+        {
+            ModCallbacks.MC_PRE_PROJECTILE_COLLISION,
+            MC_PRE_PROJECTILE_COLLISION
         }
     }
 }

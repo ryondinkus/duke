@@ -1,7 +1,3 @@
-local key = "IMMORTAL" -- From Team Compliance Immortal Heart Mod
-local pickupSubType = HeartSubType.HEART_IMMORTAL
-local subType = DukeHelpers.GetSpiderSubTypeByPickupSubType(pickupSubType)
-
 local function MC_PRE_SPAWN_CLEAN_AWARD()
 	if ComplianceImmortal then
 		DukeHelpers.ForEachPlayer(function(player)
@@ -9,7 +5,7 @@ local function MC_PRE_SPAWN_CLEAN_AWARD()
 				local filledSlots = DukeHelpers.GetFilledRottenGulletSlots(player)
 				local immortalHearts = DukeHelpers.CountOccurencesInTable(filledSlots, DukeHelpers.Spiders.IMMORTAL.pickupSubType)
 				if immortalHearts % 2 == 1 then
-					DukeHelpers.FillRottenGulletSlot(player, DukeHelpers.Spiders.IMMORTAL.pickupSubType, 1)
+					DukeHelpers.FillRottenGulletSlot(player, DukeHelpers.Spiders.IMMORTAL.key, 1)
 				end
 			end
 		end)
@@ -17,9 +13,8 @@ local function MC_PRE_SPAWN_CLEAN_AWARD()
 end
 
 return {
-	key = key,
 	spritesheet = "immortal_heart_spider.png",
-	pickupSubType = pickupSubType,
+	heart = DukeHelpers.Hearts.IMMORTAL,
 	count = 2,
 	weight = 0,
 	poofColor = Color(0.62, 0.62, 0.62, 1, 0.78, 0.78, 1),

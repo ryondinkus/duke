@@ -18,9 +18,9 @@ local function MC_USE_ITEM(_, type, rng, p)
     for _ = 1, 2 do
         local spiderToSpawn = DukeHelpers.GetWeightedSpider(rng)
         if p:HasCollectible(CollectibleType.COLLECTIBLE_BOOK_OF_VIRTUES) then
-            DukeHelpers.SpawnSpiderWispBySubType(spiderToSpawn.pickupSubType, p.Position, p, true)
+            DukeHelpers.SpawnSpiderWisp(DukeHelpers.Wisps[spiderToSpawn.key], p.Position, p, nil, true)
         else
-            DukeHelpers.SpawnSpidersFromPickupSubType(spiderToSpawn.pickupSubType, p.Position, p, 1)
+            DukeHelpers.SpawnSpidersFromKey(spiderToSpawn.key, p.Position, p, 1)
         end
     end
     return true

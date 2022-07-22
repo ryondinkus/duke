@@ -1,6 +1,5 @@
-local key = "BLACK"
-local subType = HeartSubType.HEART_BLACK
-local attackFlySubType = DukeHelpers.GetAttackFlySubTypeBySubType(subType)
+local heart = DukeHelpers.Hearts.BLACK
+local attackFlySubType = DukeHelpers.OffsetIdentifier(heart)
 
 local function ATTACK_FLY_MC_PRE_FAMILIAR_COLLISION(_, f, e)
 	if f.SubType == attackFlySubType then
@@ -11,7 +10,7 @@ local function ATTACK_FLY_MC_PRE_FAMILIAR_COLLISION(_, f, e)
 end
 
 local function MC_PRE_FAMILIAR_COLLISION(_, f, e)
-	if f.SubType == subType then
+	if f.SubType == heart.subType then
 		if e.Type == EntityType.ENTITY_PROJECTILE and not e:ToProjectile():HasProjectileFlags(ProjectileFlags.CANT_HIT_PLAYER) then
 			local p = f.SpawnerEntity or Isaac.GetPlayer(0)
 			p:ToPlayer():UseActiveItem(CollectibleType.COLLECTIBLE_NECRONOMICON, UseFlag.USE_NOANIM)
@@ -20,10 +19,9 @@ local function MC_PRE_FAMILIAR_COLLISION(_, f, e)
 end
 
 return {
-	key = key,
 	spritesheet = "black_heart_fly.png",
 	canAttack = true,
-	subType = subType,
+	heart = heart,
 	count = 2,
 	weight = 1,
 	poofColor = Color(0, 0, 0, 1, 0, 0, 0),

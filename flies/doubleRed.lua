@@ -1,10 +1,5 @@
-local key = "DOUBLE_RED"
-local use = include("flies/red").key
-local subType = HeartSubType.HEART_DOUBLEPACK
-
 return {
-    key = key,
-    use = use,
-    subType = subType,
+    use = include("flies/red"),
+    heart = DukeHelpers.Hearts.DOUBLE_RED,
     count = 4
 }

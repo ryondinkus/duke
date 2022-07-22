@@ -26,7 +26,7 @@ DukeHelpers = {
     sfx = SFXManager(),
     PRICE_OFFSET = -50,
     MAX_HEALTH = 4,
-    HeartKeys = {}
+    SUBTYPE_OFFSET = 903
 }
 
 DukeHelpers.DUKE_ID = Isaac.GetPlayerTypeByName(DukeHelpers.DUKE_NAME)
@@ -58,24 +58,41 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_RENDER, function()
     end
 end)
 
--- dukeMod:AddCallback(ModCallbacks.MC_POST_TEAR_INIT, function(_, cmd, args)
---     --Isaac.GetPlayer(0):AddBlackHearts(2)
---     --addWebHearts(2, Isaac.GetPlayer(0))
---     ComplianceImmortal.AddImmortalHearts(Isaac.GetPlayer(0), 2)
--- end)
+dukeMod:AddCallback(ModCallbacks.MC_POST_PLAYER_UPDATE, function(_, player)
+    local data = DukeHelpers.GetDukeData(player)
+
+    if not data.health then
+        data.previousHealth = nil
+        data.health = {}
+    else
+        data.previousHealth = table.deepCopy(data.health)
+    end
+
+    for _, heart in pairs(DukeHelpers.GetBaseHearts()) do
+        data.health[heart.key] = heart.GetCount(player)
+    end
+end)
 
 -- Helpers
-include("helpers/docs")
-include("helpers/giantbook")
-include("helpers/partitions")
 include("helpers/utils")
-include("helpers/flies")
-include("helpers/spiders")
 include("helpers/data")
+include("helpers/docs")
+include("helpers/duke")
+include("helpers/entities")
+include("helpers/flies")
+include("helpers/giantbook")
+include("helpers/hearts")
 include("helpers/husk")
+include("helpers/partitions")
+include("helpers/players")
+include("helpers/prices")
+include("helpers/spiders")
 include("helpers/unlocks")
+include("helpers/wisps")
+
 
 -- Initialize player and flies
+include("hearts")
 include("flies")
 include("duke")
 include("wisps")
@@ -96,6 +113,14 @@ end)
 dukeMod:AddCallback(ModCallbacks.MC_POST_UPDATE, function()
     dukeMod.global.hasPoundOfFlesh = DukeHelpers.AnyPlayerHasItem(CollectibleType.COLLECTIBLE_POUND_OF_FLESH)
 end)
+
+dukeMod:AddCallback(ModCallbacks.MC_USE_ITEM, function(_, _, _, player)
+    local data = DukeHelpers.GetDukeData(player)
+    if DukeHelpers.IsDuke(player) or DukeHelpers.IsHusk(player) then
+        DukeHelpers.Hearts.SOUL.Add(player,
+            DukeHelpers.Clamp(data.health.SOUL - DukeHelpers.Hearts.SOUL.GetCount(player), 0))
+    end
+end, CollectibleType.COLLECTIBLE_MAGIC_SKIN)
 
 include("flies/registry")
 include("spiders/registry")
