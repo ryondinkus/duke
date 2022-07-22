@@ -90,6 +90,16 @@ DukeHelpers.Hearts = {
                 count = count - 1
             end
 
+            if DukeHelpers.Clamp(count - DukeHelpers.Hearts.IMMORTAL.GetCount(player) -
+                DukeHelpers.Hearts.WEB.GetCount(player), 0) > 0 then
+                DukeHelpers.PrintJson({
+                    black = count,
+                    imm = DukeHelpers.Hearts.IMMORTAL.GetCount(player),
+                    web = DukeHelpers.Hearts.WEB.GetCount(player),
+                    bin = binary
+                })
+            end
+
             return DukeHelpers.Clamp(count - DukeHelpers.Hearts.IMMORTAL.GetCount(player) -
                 DukeHelpers.Hearts.WEB.GetCount(player), 0)
         end,

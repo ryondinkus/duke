@@ -15,10 +15,10 @@ local function ShouldSpawnExtraFly(player)
     return player:HasTrinket(Id) and DukeHelpers.PercentageChance(50)
 end
 
-local function RandomlySpawnHeartFlyFromPickup(player, pickup)
+local function RandomlySpawnHeartFlyFromPickup(player, pickup, customAmount)
     if player and DukeHelpers.IsSupportedHeart(pickup) and ShouldSpawnExtraFly(player) then
         if (DukeHelpers.CanPickUpHeart(player, pickup) or DukeHelpers.IsDuke(player) or DukeHelpers.IsHusk(player)) then
-            DukeHelpers.SpawnPickupHeartFly(player, pickup)
+            DukeHelpers.SpawnPickupHeartFly(player, pickup, nil, customAmount)
         end
 
         return true
@@ -30,16 +30,24 @@ local function MC_POST_PLAYER_UPDATE(_, player)
 
     local updatedHearts = dukeData.health
 
-    if not dukeData.previousHealth or not player:HasTrinket(Id) or DukeHelpers.IsDuke(player) then
+    if not dukeData.previousHealth or not player:HasTrinket(Id) or DukeHelpers.IsDuke(player) or
+        DukeHelpers.IsHusk(player) then
         return
     end
 
     for heartKey, amount in pairs(updatedHearts) do
         if amount > dukeData.previousHealth[heartKey] then
             local heart = DukeHelpers.Hearts[heartKey]
-            if RandomlySpawnHeartFlyFromPickup(player,
-                { Type = EntityType.ENTITY_PICKUP, Variant = heart.variant, SubType = heart.subType, Price = 0 }) then
-                heart.Remove(player, amount - dukeData.previousHealth[heartKey])
+            local fakePickup = { Type = EntityType.ENTITY_PICKUP, Variant = heart.variant, SubType = heart.subType,
+                Price = 0 }
+            local removableAmount = amount - dukeData.previousHealth[heartKey]
+            local customAmount
+
+            if DukeHelpers.Hearts.WEB.IsHeart(fakePickup) then
+                customAmount = removableAmount / 2
+            end
+            if RandomlySpawnHeartFlyFromPickup(player, fakePickup, customAmount) then
+                heart.Remove(player, removableAmount)
             end
         end
     end
