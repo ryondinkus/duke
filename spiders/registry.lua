@@ -26,12 +26,24 @@ local spiders = {
 
 -- Registers the flies
 for _, spider in pairs(spiders) do
-    spider.subType = DukeHelpers.GetSpiderSubTypeByPickupSubType(spider.pickupSubType)
+    if not spider.key then
+        spider.key = spider.heart.key
+    end
+
+    spider.pickupVariant = spider.heart.variant
+    spider.pickupSubType = spider.heart.subType
+
+    if spider.pickupVariant ~= PickupVariant.PICKUP_HEART then
+        spider.subType = spider.pickupVariant
+    else
+        spider.subType = spider.pickupSubType
+    end
+
+    spider.subType = DukeHelpers.OffsetIdentifier(spider.heart)
     spider.isBase = true
 
     if spider.use then
-        local existingSpider = DukeHelpers.Spiders[spider.use]
-
+        local existingSpider = DukeHelpers.Spiders[spider.use.ke or spider.use.heart.key]
         spider.spritesheet = existingSpider.spritesheet
         spider.subType = existingSpider.subType
         spider.poofColor = existingSpider.poofColor
@@ -60,7 +72,7 @@ for _, spider in pairs(spiders) do
         spider.isBase = false
     end
 
-    if spider.spritesheet then
+    if spider.spritesheet and spider.isBase then
         spider.spritesheet = "gfx/familiars/spiders/" .. spider.spritesheet
     end
 
@@ -85,8 +97,4 @@ for _, spider in pairs(spiders) do
     end
 
     DukeHelpers.Spiders[spider.key] = spider
-
-    if not DukeHelpers.HeartKeys[spider.key] then
-        DukeHelpers.HeartKeys[spider.key] = spider.key
-    end
 end

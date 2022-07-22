@@ -1,5 +1,23 @@
 DukeHelpers.MAX_ROTTEN_GULLET_COUNT = 24
 
+function DukeHelpers.IsHusk(player)
+    return DukeHelpers.IsDuke(player, true)
+end
+
+function DukeHelpers.ForEachHusk(callback, collectibleId)
+    DukeHelpers.ForEachPlayer(function(player)
+        if DukeHelpers.IsHusk(player) then
+            callback(player, DukeHelpers.GetDukeData(player))
+        end
+    end, collectibleId)
+end
+
+function DukeHelpers.HasHusk()
+    local found = false
+    DukeHelpers.ForEachHusk(function() found = true end)
+    return found
+end
+
 function DukeHelpers.GetFilledRottenGulletSlots(player)
     local data = DukeHelpers.GetDukeData(player)
     if data then
@@ -11,8 +29,8 @@ function DukeHelpers.GetFilledRottenGulletSlots(player)
     end
 end
 
-function DukeHelpers.FillRottenGulletSlot(player, pickupSubType, amount)
-    local slotSpider = DukeHelpers.GetSpiderByPickupSubType(pickupSubType)
+function DukeHelpers.FillRottenGulletSlot(player, pickupKey, amount)
+    local slotSpider = DukeHelpers.Spiders[pickupKey]
 
     if not slotSpider then
         return
@@ -23,7 +41,7 @@ function DukeHelpers.FillRottenGulletSlot(player, pickupSubType, amount)
 
         data.stuckSlots = (data.stuckSlots or 0) + math.floor((slotSpider.count * (amount) / 2))
 
-        DukeHelpers.SpawnPickupPoof(player, DukeHelpers.Spiders.BROKEN.pickupSubType)
+        DukeHelpers.SpawnPickupPoof(player, DukeHelpers.Spiders.BROKEN.key)
 
         if data.stuckSlots >= DukeHelpers.MAX_ROTTEN_GULLET_COUNT then
             player:Kill()
@@ -37,31 +55,31 @@ function DukeHelpers.FillRottenGulletSlot(player, pickupSubType, amount)
         DukeHelpers.ForEach(slotSpider.subType, function(used)
             local usedSpider = DukeHelpers.Spiders[used.key]
             for _ = 1, amount or used.count do
-                table.insert(slotsToFill, usedSpider.pickupSubType)
+                table.insert(slotsToFill, usedSpider.key)
             end
         end)
     else
         for _ = 1, amount or slotSpider.count do
-            table.insert(slotsToFill, pickupSubType)
+            table.insert(slotsToFill, pickupKey)
         end
     end
 
-    DukeHelpers.ForEach(slotsToFill, function(slotPickupSubType)
+    DukeHelpers.ForEach(slotsToFill, function(slotPickupKey)
         local filledSlots = DukeHelpers.GetFilledRottenGulletSlots(player)
         local numberOfFilledSlots = DukeHelpers.LengthOfTable(filledSlots)
 
-        if DukeHelpers.GetTrueSoulHearts(player) < DukeHelpers.MAX_HEALTH and
+        if DukeHelpers.Hearts.SOUL.GetCount(player) < DukeHelpers.MAX_HEALTH and
             (
-            slotPickupSubType == HeartSubType.HEART_SOUL or slotPickupSubType == HeartSubType.HEART_HALF_SOUL or
-                slotPickupSubType == HeartSubType.HEART_BLACK) then
-            player:AddSoulHearts(1)
+            slotPickupKey == DukeHelpers.Hearts.SOUL.key or slotPickupKey == DukeHelpers.Hearts.HALF_SOUL.key or
+                slotPickupKey == DukeHelpers.Hearts.BLACK.key) then
+            DukeHelpers.Hearts.SOUL.Add(player, 1)
             return
         end
 
         if numberOfFilledSlots + 1 <= DukeHelpers.GetMaxRottenGulletSlots(player) then
-            table.insert(filledSlots, slotPickupSubType)
+            table.insert(filledSlots, slotPickupKey)
 
-            DukeHelpers.SpawnPickupPoof(player, slotPickupSubType)
+            DukeHelpers.SpawnPickupPoof(player, slotPickupKey)
         end
     end)
 end
@@ -91,8 +109,8 @@ function DukeHelpers.ReleaseRottenGulletSlots(player, amount)
     return releasedSlots
 end
 
-function DukeHelpers.ReleaseRottenGulletSlot(player, pickupSubType)
-    local spider = DukeHelpers.GetSpiderByPickupSubType(pickupSubType)
+function DukeHelpers.ReleaseRottenGulletSlot(player, pickupKey)
+    local spider = DukeHelpers.Spiders[pickupKey]
     if spider and spider.onRelease then
         spider.onRelease(player)
     end
@@ -102,21 +120,16 @@ function DukeHelpers.GetMaxRottenGulletSlots(player)
     return DukeHelpers.MAX_ROTTEN_GULLET_COUNT - (DukeHelpers.GetDukeData(player).stuckSlots or 0)
 end
 
-function DukeHelpers.SpawnPickupPoof(player, pickupSubType)
+function DukeHelpers.SpawnPickupPoof(player, pickupKey)
     local poof = Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.POOF01, 0, player.Position, Vector.Zero, player)
 
-    local color = DukeHelpers.GetSpiderByPickupSubType(pickupSubType).poofColor
+    local color = DukeHelpers.Spiders[pickupKey].poofColor
 
     if color then
         poof.Color = color
     end
 
     return poof
-end
-
-function DukeHelpers.PlayDukeDeath(e)
-    Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.LARGE_BLOOD_EXPLOSION, 0, e.Position, Vector.Zero, e)
-    DukeHelpers.sfx:Play(SoundEffect.SOUND_ROCKET_BLAST_DEATH)
 end
 
 function DukeHelpers.RemoveRottenGulletSlots(player, amount, force)

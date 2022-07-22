@@ -1,8 +1,16 @@
-DukeHelpers.Wisps = {
-    [1] = include("wisps/red"),
-    [3] = include("wisps/soul"),
-    [6] = include("wisps/black"),
-    [7] = include("wisps/golden"),
-    [11] = include("wisps/bone"),
-    [12] = include("wisps/rotten")
+local wisps = {
+    include("wisps/red"),
+    include("wisps/soul"),
+    include("wisps/black"),
+    include("wisps/golden"),
+    include("wisps/bone"),
+    include("wisps/rotten")
 }
+
+DukeHelpers.Wisps = {}
+
+for _, wisp in pairs(wisps) do
+    wisp.key = wisp.heart.key
+
+    DukeHelpers.Wisps[wisp.key] = wisp
+end

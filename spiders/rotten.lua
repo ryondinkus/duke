@@ -1,6 +1,5 @@
-local key = "ROTTEN"
-local pickupSubType = HeartSubType.HEART_ROTTEN
-local subType = DukeHelpers.GetSpiderSubTypeByPickupSubType(pickupSubType)
+local heart = DukeHelpers.Hearts.ROTTEN
+local subType = DukeHelpers.OffsetIdentifier(heart)
 
 local function MC_PRE_FAMILIAR_COLLISION(_, f, e)
     if f.SubType == subType then
@@ -22,9 +21,8 @@ local function applyTearEffects(tear)
 end
 
 return {
-    key = key,
     spritesheet = "rotten_heart_spider.png",
-    pickupSubType = pickupSubType,
+    heart = heart,
     count = 1,
     weight = 1,
     poofColor = Color(0.62, 0.62, 0.62, 1, 0.78, 0.20, 0),

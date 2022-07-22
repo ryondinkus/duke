@@ -18,7 +18,7 @@ local function MC_USE_CARD(_, card, player, flags)
     for _, enemy in pairs(enemies) do
         local randomFly = DukeHelpers.GetWeightedFly()
         DukeHelpers.AddHeartFly(player, randomFly, 1)
-        DukeHelpers.SpawnHeartFlyPoof(randomFly.heartFlySubType, enemy.Position, player)
+        DukeHelpers.SpawnHeartFlyPoof(randomFly, enemy.Position, player)
         enemy:Remove()
     end
     DukeHelpers.sfx:Play(SoundEffect.SOUND_WORM_SPIT, 1, 0)

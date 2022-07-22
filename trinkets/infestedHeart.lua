@@ -15,24 +15,41 @@ local function ShouldSpawnExtraFly(player)
     return player:HasTrinket(Id) and DukeHelpers.PercentageChance(50)
 end
 
-local function RandomlySpawnHeartFlyFromPickup(player, pickup)
-    if player and player:HasTrinket(Id) and pickup.Variant == PickupVariant.PICKUP_HEART then
-        local canPickup = DukeHelpers.CanPickUpHeart(player, pickup)
-
-        if (DukeHelpers.IsDuke(player) or canPickup) and ShouldSpawnExtraFly(player) then
-            if DukeHelpers.IsDuke(player) then
-                return true
-            end
-            DukeHelpers.SpawnPickupHeartFly(player, pickup)
-
-            return true
+local function RandomlySpawnHeartFlyFromPickup(player, pickup, customAmount)
+    if player and DukeHelpers.IsSupportedHeart(pickup) and ShouldSpawnExtraFly(player) then
+        if (DukeHelpers.CanPickUpHeart(player, pickup) or DukeHelpers.IsDuke(player) or DukeHelpers.IsHusk(player)) then
+            DukeHelpers.SpawnPickupHeartFly(player, pickup, nil, customAmount)
         end
+
+        return true
     end
 end
 
-local function MC_PRE_PICKUP_COLLISION(_, pickup, collider)
-    if not DukeHelpers.IsDuke(collider:ToPlayer()) then
-        return RandomlySpawnHeartFlyFromPickup(collider:ToPlayer(), pickup)
+local function MC_POST_PLAYER_UPDATE(_, player)
+    local dukeData = DukeHelpers.GetDukeData(player)
+
+    local updatedHearts = dukeData.health
+
+    if not dukeData.previousHealth or not player:HasTrinket(Id) or DukeHelpers.IsDuke(player) or
+        DukeHelpers.IsHusk(player) then
+        return
+    end
+
+    for heartKey, amount in pairs(updatedHearts) do
+        if amount > dukeData.previousHealth[heartKey] then
+            local heart = DukeHelpers.Hearts[heartKey]
+            local fakePickup = { Type = EntityType.ENTITY_PICKUP, Variant = heart.variant, SubType = heart.subType,
+                Price = 0 }
+            local removableAmount = amount - dukeData.previousHealth[heartKey]
+            local customAmount
+
+            if DukeHelpers.Hearts.WEB.IsHeart(fakePickup) then
+                customAmount = removableAmount / 2
+            end
+            if RandomlySpawnHeartFlyFromPickup(player, fakePickup, customAmount) then
+                heart.Remove(player, removableAmount)
+            end
+        end
     end
 end
 
@@ -45,9 +62,8 @@ return {
     WikiDescription = WikiDescription,
     callbacks = {
         {
-            ModCallbacks.MC_PRE_PICKUP_COLLISION,
-            MC_PRE_PICKUP_COLLISION,
-            PickupVariant.PICKUP_HEART
+            ModCallbacks.MC_POST_PLAYER_UPDATE,
+            MC_POST_PLAYER_UPDATE
         }
     },
     helpers = {

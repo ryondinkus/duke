@@ -4,12 +4,18 @@ local function SetFlyHeart(pickup)
     local pickupData = pickup:GetData()
     pickupData.isFlyHeart = true
 
-    local fly = DukeHelpers.GetFlyByPickupSubType(pickup.SubType == 0 and pickup.Variant or pickup.SubType)
+    local pickupKey = DukeHelpers.GetKeyFromPickup(pickup)
+
+    if not pickupKey then
+        return
+    end
+
+    local flyToSpawn = DukeHelpers.Flies[pickupKey]
 
     local spritesheet
 
-    if fly and fly.spritesheet then
-        spritesheet = fly.spritesheet
+    if flyToSpawn and flyToSpawn.spritesheet then
+        spritesheet = flyToSpawn.spritesheet
     else
         spritesheet = DukeHelpers.Flies.RED.spritesheet
     end
@@ -38,7 +44,7 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_NEW_LEVEL, function()
 end)
 
 local function flyHeartPickupUpdate(_, pickup)
-    if pickup.FrameCount <= 1 then
+    if pickup.FrameCount <= 1 and DukeHelpers.IsSupportedHeart(pickup) then
         if pickup:GetSprite():GetAnimation() == "Appear" then
             if DukeHelpers.PercentageChance(5) then
                 StoreFlyHeart(pickup)
@@ -54,20 +60,19 @@ local function flyHeartPickupUpdate(_, pickup)
     end
 
     local pickupData = pickup:GetData()
-    if pickupData.isFlyHeart then
+    if pickupData.isFlyHeart and pickupData.flyHeartSpritesheet then
         pickupData.flyHeartSpritesheet:Update()
     end
 end
 
 -- Choose which hearts to be fly hearts and restore them if they already existed
-dukeMod:AddCallback(ModCallbacks.MC_POST_PICKUP_UPDATE, flyHeartPickupUpdate, PickupVariant.PICKUP_HEART)
-dukeMod:AddCallback(ModCallbacks.MC_POST_PICKUP_UPDATE, flyHeartPickupUpdate, 901)
-dukeMod:AddCallback(ModCallbacks.MC_POST_PICKUP_UPDATE, flyHeartPickupUpdate, 2000)
-dukeMod:AddCallback(ModCallbacks.MC_POST_PICKUP_UPDATE, flyHeartPickupUpdate, 2002)
+DukeHelpers.ForEachHeartVariant(function(variant)
+    dukeMod:AddCallback(ModCallbacks.MC_POST_PICKUP_UPDATE, flyHeartPickupUpdate, variant)
+end)
 
 local function flyHeartPickupRender(_, pickup)
     local pickupData = pickup:GetData()
-    if pickupData.isFlyHeart then
+    if pickupData.isFlyHeart and pickupData.flyHeartSpritesheet then
         if pickupData.flyHeartSpritesheet:IsFinished("FlyHeartAppear") then
             pickupData.flyHeartSpritesheet:Play("FlyHeart")
         end
@@ -77,25 +82,32 @@ local function flyHeartPickupRender(_, pickup)
 end
 
 -- Replace with the fly heart spritesheet
-dukeMod:AddCallback(ModCallbacks.MC_POST_PICKUP_RENDER, flyHeartPickupRender, PickupVariant.PICKUP_HEART)
-dukeMod:AddCallback(ModCallbacks.MC_POST_PICKUP_RENDER, flyHeartPickupRender, 901)
-dukeMod:AddCallback(ModCallbacks.MC_POST_PICKUP_RENDER, flyHeartPickupRender, 2000)
-dukeMod:AddCallback(ModCallbacks.MC_POST_PICKUP_RENDER, flyHeartPickupRender, 2002)
+DukeHelpers.ForEachHeartVariant(function(variant)
+    dukeMod:AddCallback(ModCallbacks.MC_POST_PICKUP_RENDER, flyHeartPickupRender, variant)
+end)
 
-local function flyHeartPickupCollide(_, pickup)
+function DukeHelpers.PickupFlyHeart(pickup)
     pickup = pickup:ToPickup()
-    if pickup:GetSprite():IsPlaying("Collect") and (not pickup:GetData().isCollected) and
-        (pickup.Variant == PickupVariant.PICKUP_HEART or pickup.Variant == 901 or pickup.Variant == 2000 or
-            pickup.Variant == 2002) then
+    if not pickup:GetData().isCollected and DukeHelpers.IsSupportedHeart(pickup) then
         local player = DukeHelpers.GetClosestPlayer(pickup.Position)
 
         if player and pickup:GetData().isFlyHeart then
-            DukeHelpers.AddHeartFly(player,
-                DukeHelpers.GetFlyByPickupSubType(pickup.SubType == 0 and pickup.Variant or pickup.SubType))
+            local pickupKey = DukeHelpers.GetKeyFromPickup(pickup)
+
+            if not pickupKey then
+                return
+            end
+
+            DukeHelpers.AddHeartFly(player, DukeHelpers.Flies[pickupKey])
             pickup:GetData().isCollected = true
         end
     end
 end
 
 -- Spawn flies on fly heart pickup
-dukeMod:AddCallback(ModCallbacks.MC_POST_PICKUP_UPDATE, flyHeartPickupCollide)
+dukeMod:AddCallback(ModCallbacks.MC_POST_PICKUP_UPDATE, function(_, pickup)
+    pickup = pickup:ToPickup()
+    if pickup:GetSprite():IsPlaying("Collect") then
+        return DukeHelpers.PickupFlyHeart(pickup)
+    end
+end)

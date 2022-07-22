@@ -14,7 +14,7 @@ local WikiDescription = DukeHelpers.GenerateEncyclopediaPage("Ghosty")
 local function MC_USE_CARD(_, card, player, flags)
     for _ = 1, 10 do
         DukeHelpers.AddHeartFly(player, DukeHelpers.GetWeightedFly(DukeHelpers.rng), 1)
-        DukeHelpers.SpawnSpidersFromPickupSubType(DukeHelpers.GetWeightedSpider(DukeHelpers.rng).pickupSubType,
+        DukeHelpers.SpawnSpidersFromKey(DukeHelpers.GetWeightedSpider(DukeHelpers.rng).key,
             player.Position, player, 1)
     end
     DukeHelpers.sfx:Play(SoundEffect.SOUND_WHEEZY_COUGH, 1, 0)

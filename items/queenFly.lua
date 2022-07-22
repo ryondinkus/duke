@@ -65,7 +65,7 @@ local function MC_POST_NPC_DEATH(_, entity)
     if closestPlayer then
         local flyToSpawn = DukeHelpers.GetWeightedFly(DukeHelpers.rng, true)
 
-        DukeHelpers.SpawnAttackFlyBySubType(flyToSpawn.heartFlySubType, entity.Position, closestPlayer)
+        DukeHelpers.SpawnAttackFlyFromHeartFly(flyToSpawn, entity.Position, closestPlayer)
         entity:Remove()
     end
 end
@@ -77,7 +77,7 @@ local function MC_FAMILIAR_UPDATE(_, entity)
         if player and player:ToPlayer() and player:ToPlayer():HasCollectible(Id) and entity.SubType == 0 then
             local flyToSpawn = DukeHelpers.GetWeightedFly(DukeHelpers.rng, true)
 
-            DukeHelpers.SpawnAttackFlyBySubType(flyToSpawn.heartFlySubType, entity.Position, player)
+            DukeHelpers.SpawnAttackFlyFromHeartFly(flyToSpawn, entity.Position, player)
             entity:Remove()
         end
     end
