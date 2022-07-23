@@ -26,15 +26,17 @@ local WikiDescription = DukeHelpers.GenerateEncyclopediaPage({
 })
 
 local function MC_POST_NEW_ROOM()
-    if DukeHelpers.AreEnemiesInRoom() then
-        DukeHelpers.ForEachPlayer(function(player)
-            if player:HasTrinket(Id) then
-                for i = 1, player:GetTrinketMultiplier(Id) do
-                    DukeHelpers.SpawnAttackFlyFromHeartFly(DukeHelpers.GetWeightedFly(DukeHelpers.rng, true)
-                        , player.Position, player)
+    if DukeHelpers.Trinkets.dukesTooth.IsUnlocked() then
+        if DukeHelpers.AreEnemiesInRoom() then
+            DukeHelpers.ForEachPlayer(function(player)
+                if player:HasTrinket(Id) then
+                    for i = 1, player:GetTrinketMultiplier(Id) do
+                        DukeHelpers.SpawnAttackFlyFromHeartFly(DukeHelpers.GetWeightedFly(DukeHelpers.rng, true),
+                            player.Position, player)
+                    end
                 end
-            end
-        end)
+            end)
+        end
     end
 end
 

@@ -37,28 +37,30 @@ local function RandomlySpawnHeartFlyFromPickup(player, pickup, customAmount)
 end
 
 local function MC_POST_PLAYER_UPDATE(_, player)
-    local dukeData = DukeHelpers.GetDukeData(player)
+    if DukeHelpers.Trinkets.infestedHeart.IsUnlocked() then
+        local dukeData = DukeHelpers.GetDukeData(player)
 
-    local updatedHearts = dukeData.health
+        local updatedHearts = dukeData.health
 
-    if not dukeData.previousHealth or not player:HasTrinket(Id) or DukeHelpers.IsDuke(player) or
-        DukeHelpers.IsHusk(player) then
-        return
-    end
+        if not dukeData.previousHealth or not player:HasTrinket(Id) or DukeHelpers.IsDuke(player) or
+            DukeHelpers.IsHusk(player) then
+            return
+        end
 
-    for heartKey, amount in pairs(updatedHearts) do
-        if amount > dukeData.previousHealth[heartKey] then
-            local heart = DukeHelpers.Hearts[heartKey]
-            local fakePickup = { Type = EntityType.ENTITY_PICKUP, Variant = heart.variant, SubType = heart.subType,
-                Price = 0 }
-            local removableAmount = amount - dukeData.previousHealth[heartKey]
-            local customAmount
+        for heartKey, amount in pairs(updatedHearts) do
+            if amount > dukeData.previousHealth[heartKey] then
+                local heart = DukeHelpers.Hearts[heartKey]
+                local fakePickup = { Type = EntityType.ENTITY_PICKUP, Variant = heart.variant, SubType = heart.subType,
+                    Price = 0 }
+                local removableAmount = amount - dukeData.previousHealth[heartKey]
+                local customAmount
 
-            if DukeHelpers.Hearts.WEB.IsHeart(fakePickup) then
-                customAmount = removableAmount / 2
-            end
-            if RandomlySpawnHeartFlyFromPickup(player, fakePickup, customAmount) then
-                heart.Remove(player, removableAmount)
+                if DukeHelpers.Hearts.WEB.IsHeart(fakePickup) then
+                    customAmount = removableAmount / 2
+                end
+                if RandomlySpawnHeartFlyFromPickup(player, fakePickup, customAmount) then
+                    heart.Remove(player, removableAmount)
+                end
             end
         end
     end

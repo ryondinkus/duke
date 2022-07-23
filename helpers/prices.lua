@@ -4,7 +4,7 @@ function DukeHelpers.IsCustomPrice(x)
 end
 
 function DukeHelpers.GetCustomDevilDealPrice(collectible, player)
-    if player and DukeHelpers.IsDuke(player) and player:HasTrinket(DukeHelpers.Trinkets.pocketOfFlies.Id) then
+    if player and DukeHelpers.IsDuke(player) and DukeHelpers.Trinkets.pocketOfFlies.helpers.HasPocketOfFlies(player) then
         return 4
     end
     return Isaac.GetItemConfig():GetCollectible(collectible.SubType).DevilPrice * 4

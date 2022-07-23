@@ -82,32 +82,36 @@ local flyEnemies = {
 }
 
 local function MC_POST_NPC_DEATH(_, entity)
-    if not
-        DukeHelpers.Find(flyEnemies,
-            function(enemy) return enemy.entityType == entity.Type and
-                    (not enemy.variant or enemy.variant == entity.Variant)
-            end) then
-        return
-    end
-    local closestPlayer = DukeHelpers.GetClosestPlayer(entity.Position, function(p) return p:HasCollectible(Id) end)
+    if DukeHelpers.Items.queenFly.IsUnlocked() then
+        if not
+            DukeHelpers.Find(flyEnemies,
+                function(enemy) return enemy.entityType == entity.Type and
+                        (not enemy.variant or enemy.variant == entity.Variant)
+                end) then
+            return
+        end
+        local closestPlayer = DukeHelpers.GetClosestPlayer(entity.Position, function(p) return p:HasCollectible(Id) end)
 
-    if closestPlayer then
-        local flyToSpawn = DukeHelpers.GetWeightedFly(DukeHelpers.rng, true)
+        if closestPlayer then
+            local flyToSpawn = DukeHelpers.GetWeightedFly(DukeHelpers.rng, true)
 
-        DukeHelpers.SpawnAttackFlyFromHeartFly(flyToSpawn, entity.Position, closestPlayer)
-        entity:Remove()
+            DukeHelpers.SpawnAttackFlyFromHeartFly(flyToSpawn, entity.Position, closestPlayer)
+            entity:Remove()
+        end
     end
 end
 
 local function MC_FAMILIAR_UPDATE(_, entity)
-    if entity.FrameCount == 1 then
-        local player = entity.SpawnerEntity
+    if DukeHelpers.Items.queenFly.IsUnlocked() then
+        if entity.FrameCount == 1 then
+            local player = entity.SpawnerEntity
 
-        if player and player:ToPlayer() and player:ToPlayer():HasCollectible(Id) and entity.SubType == 0 then
-            local flyToSpawn = DukeHelpers.GetWeightedFly(DukeHelpers.rng, true)
+            if player and player:ToPlayer() and player:ToPlayer():HasCollectible(Id) and entity.SubType == 0 then
+                local flyToSpawn = DukeHelpers.GetWeightedFly(DukeHelpers.rng, true)
 
-            DukeHelpers.SpawnAttackFlyFromHeartFly(flyToSpawn, entity.Position, player)
-            entity:Remove()
+                DukeHelpers.SpawnAttackFlyFromHeartFly(flyToSpawn, entity.Position, player)
+                entity:Remove()
+            end
         end
     end
 end

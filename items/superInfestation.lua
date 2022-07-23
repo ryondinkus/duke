@@ -27,9 +27,11 @@ local WikiDescription = DukeHelpers.GenerateEncyclopediaPage({
 local playersTakenDamage = {}
 
 local function MC_ENTITY_TAKE_DMG(_, entity, amount, f)
-    local player = entity:ToPlayer()
-    if f & DamageFlag.DAMAGE_FAKE == 0 and player and player:HasCollectible(Id) and amount >= 0 then
-        playersTakenDamage[tostring(player.InitSeed)] = true
+    if DukeHelpers.Items.superInfestation.IsUnlocked() then
+        local player = entity:ToPlayer()
+        if f & DamageFlag.DAMAGE_FAKE == 0 and player and player:HasCollectible(Id) and amount >= 0 then
+            playersTakenDamage[tostring(player.InitSeed)] = true
+        end
     end
 end
 

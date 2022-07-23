@@ -32,11 +32,13 @@ local WikiDescription = DukeHelpers.GenerateEncyclopediaPage({
 })
 
 local function MC_USE_ITEM(_, type, rng, player, flags)
-    local friendlyDuke = Isaac.Spawn(EntityType.ENTITY_FAMILIAR, DukeHelpers.EntityVariants.friendlyDuke.Id, 0,
-        Game():GetRoom():FindFreePickupSpawnPosition(player.Position, 0, true, true), Vector.Zero, player)
-    friendlyDuke:ClearEntityFlags(EntityFlag.FLAG_APPEAR)
-    DukeHelpers.sfx:Play(DukeHelpers.Sounds.dukeFlute, 1, 0)
-    return true
+    if DukeHelpers.Items.dukeFlute.IsUnlocked() then
+        local friendlyDuke = Isaac.Spawn(EntityType.ENTITY_FAMILIAR, DukeHelpers.EntityVariants.friendlyDuke.Id, 0,
+            Game():GetRoom():FindFreePickupSpawnPosition(player.Position, 0, true, true), Vector.Zero, player)
+        friendlyDuke:ClearEntityFlags(EntityFlag.FLAG_APPEAR)
+        DukeHelpers.sfx:Play(DukeHelpers.Sounds.dukeFlute, 1, 0)
+        return true
+    end
 end
 
 local function MC_FAMILIAR_INIT(_, familiar)

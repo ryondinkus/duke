@@ -23,6 +23,14 @@ local WikiDescription = DukeHelpers.GenerateEncyclopediaPage({
     }
 })
 
+local function AnyPlayerHasPocketOfFlies()
+    return DukeHelpers.Trinkets.pocketOfFlies.IsUnlocked() and DukeHelpers.AnyPlayerHasTrinket(Id)
+end
+
+local function HasPocketOfFlies(player)
+    return DukeHelpers.Trinkets.pocketOfFlies.IsUnlocked() and player:HasTrinket(Id)
+end
+
 return {
     Name = Name,
     Names = Names,
@@ -30,5 +38,9 @@ return {
     Id = Id,
     Descriptions = Descriptions,
     WikiDescription = WikiDescription,
-    unlock = DukeHelpers.GetUnlock(DukeHelpers.Unlocks.BLUE_BABY, Tag, DukeHelpers.DUKE_NAME)
+    unlock = DukeHelpers.GetUnlock(DukeHelpers.Unlocks.BLUE_BABY, Tag, DukeHelpers.DUKE_NAME),
+    helpers = {
+        AnyPlayerHasPocketOfFlies = AnyPlayerHasPocketOfFlies,
+        HasPocketOfFlies = HasPocketOfFlies
+    }
 }

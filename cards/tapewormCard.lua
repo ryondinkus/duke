@@ -17,16 +17,18 @@ local WikiDescription = DukeHelpers.GenerateEncyclopediaPage({
 })
 
 local function MC_USE_CARD(_, card, player, flags)
-    local enemies = DukeHelpers.ListEnemiesInRoom(true,
-        function(entity) return not EntityRef(entity).IsCharmed and not entity:IsBoss() end)
+    if DukeHelpers.Cards.tapewormCard.IsUnlocked() then
+        local enemies = DukeHelpers.ListEnemiesInRoom(true,
+            function(entity) return not EntityRef(entity).IsCharmed and not entity:IsBoss() end)
 
-    for _, enemy in pairs(enemies) do
-        local randomFly = DukeHelpers.GetWeightedFly()
-        DukeHelpers.AddHeartFly(player, randomFly, 1)
-        DukeHelpers.SpawnHeartFlyPoof(randomFly, enemy.Position, player)
-        enemy:Remove()
+        for _, enemy in pairs(enemies) do
+            local randomFly = DukeHelpers.GetWeightedFly()
+            DukeHelpers.AddHeartFly(player, randomFly, 1)
+            DukeHelpers.SpawnHeartFlyPoof(randomFly, enemy.Position, player)
+            enemy:Remove()
+        end
+        DukeHelpers.sfx:Play(SoundEffect.SOUND_WORM_SPIT, 1, 0)
     end
-    DukeHelpers.sfx:Play(SoundEffect.SOUND_WORM_SPIT, 1, 0)
 end
 
 return {

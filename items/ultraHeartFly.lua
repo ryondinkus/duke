@@ -29,24 +29,28 @@ local WikiDescription = DukeHelpers.GenerateEncyclopediaPage({
 })
 
 local function MC_POST_NEW_LEVEL()
-    DukeHelpers.ForEachPlayer(function(duke)
-        DukeHelpers.AddHeartFly(duke, DukeHelpers.Flies.ULTRA, 1)
-    end, Id)
+    if DukeHelpers.Items.ultraHeartFly.IsUnlocked() then
+        DukeHelpers.ForEachPlayer(function(duke)
+            DukeHelpers.AddHeartFly(duke, DukeHelpers.Flies.ULTRA, 1)
+        end, Id)
+    end
 end
 
 local function MC_POST_PEFFECT_UPDATE(_, p)
-    local data = DukeHelpers.GetDukeData(p)
-    if data and data[Tag] then
-        if p:IsExtraAnimationFinished() then
-            data[Tag] = nil
-            DukeHelpers.AddHeartFly(p, DukeHelpers.Flies.ULTRA, 1)
+    if DukeHelpers.Items.ultraHeartFly.IsUnlocked() then
+        local data = DukeHelpers.GetDukeData(p)
+        if data and data[Tag] then
+            if p:IsExtraAnimationFinished() then
+                data[Tag] = nil
+                DukeHelpers.AddHeartFly(p, DukeHelpers.Flies.ULTRA, 1)
+            end
+        else
+            local targetItem = p.QueuedItem.Item
+            if (not targetItem) or targetItem.ID ~= Id then
+                return
+            end
+            data[Tag] = true
         end
-    else
-        local targetItem = p.QueuedItem.Item
-        if (not targetItem) or targetItem.ID ~= Id then
-            return
-        end
-        data[Tag] = true
     end
 end
 

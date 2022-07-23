@@ -37,66 +37,68 @@ local WikiDescription = DukeHelpers.GenerateEncyclopediaPage({
 })
 
 local function MC_USE_ITEM(_, type, rng, player, f)
-    local dukeData = DukeHelpers.GetDukeData(player)
+    if DukeHelpers.Items.fiendishSwarm.IsUnlocked() then
+        local dukeData = DukeHelpers.GetDukeData(player)
 
-    local fliesToSpawn = {}
+        local fliesToSpawn = {}
 
-    if DukeHelpers.IsKeeper(player) then
-        if player:GetHearts() >= 1 then
-            fliesToSpawn[DukeHelpers.Flies.GOLDEN.key] = (player:GetHearts() / 2) - 1
-            player:AddHearts(-(player:GetHearts() - 2))
+        if DukeHelpers.IsKeeper(player) then
+            if player:GetHearts() >= 1 then
+                fliesToSpawn[DukeHelpers.Flies.GOLDEN.key] = (player:GetHearts() / 2) - 1
+                player:AddHearts(-(player:GetHearts() - 2))
+            end
+
+            goto keeper
         end
 
-        goto keeper
-    end
-
-    if player:GetMaxHearts() >= 1 and (player:GetHearts() >= 1) then
-        fliesToSpawn = DukeHelpers.RemoveUnallowedHearts(player, { RED = 1 }, true)
-    elseif DukeHelpers.Hearts.SOUL.GetCount(player) >= 1 then
-        fliesToSpawn = DukeHelpers.RemoveUnallowedHearts(player, { SOUL = 1 }, true)
-    elseif DukeHelpers.Hearts.BLACK.GetCount(player) >= 1 then
-        fliesToSpawn = DukeHelpers.RemoveUnallowedHearts(player, { BLACK = 1 }, true)
-    elseif DukeHelpers.Hearts.BONE.GetCount(player) >= 1 then
-        fliesToSpawn = DukeHelpers.RemoveUnallowedHearts(player, { BONE = 1 }, true)
-    elseif DukeHelpers.Hearts.IMMORTAL.GetCount(player) >= 1 then
-        fliesToSpawn = DukeHelpers.RemoveUnallowedHearts(player, { IMMORTAL = 1 }, true)
-    elseif DukeHelpers.Hearts.WEB.GetCount(player) >= 1 then
-        fliesToSpawn = DukeHelpers.RemoveUnallowedHearts(player, { WEB = 1 }, true)
-    end
-
-    ::keeper::
-    fliesToSpawn[DukeHelpers.Flies.FIENDISH.key] = 1
-
-    local addedFlies = {}
-    local addedWisps = {}
-
-    DukeHelpers.ForEach(fliesToSpawn, function(numFlies, flyKey)
-        DukeHelpers.ForEach(DukeHelpers.AddHeartFly(player,
-            DukeHelpers.Flies[flyKey], numFlies),
-            function(addedFly)
-                if player:HasCollectible(CollectibleType.COLLECTIBLE_BOOK_OF_VIRTUES) and DukeHelpers.Wisps[flyKey] then
-                    local wisp = DukeHelpers.SpawnAttackFlyWisp(DukeHelpers.Wisps[flyKey], player.Position,
-                        player)
-                    table.insert(addedWisps, wisp.InitSeed)
-                end
-                table.insert(addedFlies, addedFly.InitSeed)
-            end)
-    end)
-
-    if dukeData[Tag] then
-        for _, id in ipairs(addedFlies) do
-            table.insert(dukeData[Tag], id)
+        if player:GetMaxHearts() >= 1 and (player:GetHearts() >= 1) then
+            fliesToSpawn = DukeHelpers.RemoveUnallowedHearts(player, { RED = 1 }, true)
+        elseif DukeHelpers.Hearts.SOUL.GetCount(player) >= 1 then
+            fliesToSpawn = DukeHelpers.RemoveUnallowedHearts(player, { SOUL = 1 }, true)
+        elseif DukeHelpers.Hearts.BLACK.GetCount(player) >= 1 then
+            fliesToSpawn = DukeHelpers.RemoveUnallowedHearts(player, { BLACK = 1 }, true)
+        elseif DukeHelpers.Hearts.BONE.GetCount(player) >= 1 then
+            fliesToSpawn = DukeHelpers.RemoveUnallowedHearts(player, { BONE = 1 }, true)
+        elseif DukeHelpers.Hearts.IMMORTAL.GetCount(player) >= 1 then
+            fliesToSpawn = DukeHelpers.RemoveUnallowedHearts(player, { IMMORTAL = 1 }, true)
+        elseif DukeHelpers.Hearts.WEB.GetCount(player) >= 1 then
+            fliesToSpawn = DukeHelpers.RemoveUnallowedHearts(player, { WEB = 1 }, true)
         end
-    else
-        dukeData[Tag] = addedFlies
-    end
 
-    if dukeData[Tag .. "Wisps"] then
-        for _, id in ipairs(addedWisps) do
-            table.insert(dukeData[Tag .. "Wisps"], id)
+        ::keeper::
+        fliesToSpawn[DukeHelpers.Flies.FIENDISH.key] = 1
+
+        local addedFlies = {}
+        local addedWisps = {}
+
+        DukeHelpers.ForEach(fliesToSpawn, function(numFlies, flyKey)
+            DukeHelpers.ForEach(DukeHelpers.AddHeartFly(player,
+                DukeHelpers.Flies[flyKey], numFlies),
+                function(addedFly)
+                    if player:HasCollectible(CollectibleType.COLLECTIBLE_BOOK_OF_VIRTUES) and DukeHelpers.Wisps[flyKey] then
+                        local wisp = DukeHelpers.SpawnAttackFlyWisp(DukeHelpers.Wisps[flyKey], player.Position,
+                            player)
+                        table.insert(addedWisps, wisp.InitSeed)
+                    end
+                    table.insert(addedFlies, addedFly.InitSeed)
+                end)
+        end)
+
+        if dukeData[Tag] then
+            for _, id in ipairs(addedFlies) do
+                table.insert(dukeData[Tag], id)
+            end
+        else
+            dukeData[Tag] = addedFlies
         end
-    else
-        dukeData[Tag .. "Wisps"] = addedWisps
+
+        if dukeData[Tag .. "Wisps"] then
+            for _, id in ipairs(addedWisps) do
+                table.insert(dukeData[Tag .. "Wisps"], id)
+            end
+        else
+            dukeData[Tag .. "Wisps"] = addedWisps
+        end
     end
 end
 

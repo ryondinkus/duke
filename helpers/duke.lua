@@ -20,7 +20,7 @@ function DukeHelpers.HasDuke()
 end
 
 function DukeHelpers.GetFlyCount(player, includeBroken)
-    if not DukeHelpers.IsDuke(player) and not player:HasTrinket(DukeHelpers.Trinkets.pocketOfFlies.Id) then
+    if not DukeHelpers.IsDuke(player) and not DukeHelpers.Trinkets.pocketOfFlies.helpers.HasPocketOfFlies(player) then
         return
     end
 

@@ -17,7 +17,9 @@ local WikiDescription = DukeHelpers.GenerateEncyclopediaPage({
 })
 
 local function MC_USE_CARD(_, card, player, flags)
-    DukeHelpers.GetDukeData(player)[Tag] = 1
+    if DukeHelpers.Cards.redTapewormCard.IsUnlocked() then
+        DukeHelpers.GetDukeData(player)[Tag] = 1
+    end
 end
 
 local function MC_POST_PEFFECT_UPDATE(_, player)

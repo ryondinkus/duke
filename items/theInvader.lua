@@ -35,15 +35,17 @@ local WikiDescription = DukeHelpers.GenerateEncyclopediaPage({
 })
 
 local function MC_EVALUATE_CACHE(_, player, flag)
-    if flag == CacheFlag.CACHE_FAMILIARS then
-        local familiarAmount = player:GetCollectibleNum(Id) + player:GetEffects():GetCollectibleEffectNum(Id)
-        local itemConfig = Isaac.GetItemConfig():GetCollectible(Id)
+    if DukeHelpers.Items.theInvader.IsUnlocked() then
+        if flag == CacheFlag.CACHE_FAMILIARS then
+            local familiarAmount = player:GetCollectibleNum(Id) + player:GetEffects():GetCollectibleEffectNum(Id)
+            local itemConfig = Isaac.GetItemConfig():GetCollectible(Id)
 
-        local rng = RNG()
-        rng:SetSeed(Random(), 1)
+            local rng = RNG()
+            rng:SetSeed(Random(), 1)
 
-        player:CheckFamiliar(DukeHelpers.EntityVariants.theInvader.Id, familiarAmount, rng,
-            itemConfig)
+            player:CheckFamiliar(DukeHelpers.EntityVariants.theInvader.Id, familiarAmount, rng,
+                itemConfig)
+        end
     end
 end
 

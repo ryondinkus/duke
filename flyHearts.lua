@@ -1,4 +1,6 @@
-DukeHelpers.RegisterUnlock(DukeHelpers.GetUnlock(DukeHelpers.Unlocks.MEGA_SATAN, "flyHearts", DukeHelpers.HUSK_NAME))
+local flyHeartsUnlock = DukeHelpers.GetUnlock(DukeHelpers.Unlocks.MEGA_SATAN, "flyHearts", DukeHelpers.HUSK_NAME)
+
+DukeHelpers.RegisterUnlock(flyHeartsUnlock)
 
 local function SetFlyHeart(pickup)
     local pickupData = pickup:GetData()
@@ -44,7 +46,7 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_NEW_LEVEL, function()
 end)
 
 local function flyHeartPickupUpdate(_, pickup)
-    if pickup.FrameCount <= 1 and DukeHelpers.IsSupportedHeart(pickup) then
+    if pickup.FrameCount <= 1 and DukeHelpers.IsSupportedHeart(pickup) and DukeHelpers.IsUnlocked(flyHeartsUnlock) then
         if pickup:GetSprite():GetAnimation() == "Appear" then
             if DukeHelpers.PercentageChance(5) then
                 StoreFlyHeart(pickup)

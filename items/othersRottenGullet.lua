@@ -29,18 +29,20 @@ local WikiDescription = DukeHelpers.GenerateEncyclopediaPage({
 })
 
 local function MC_USE_ITEM(_, type, rng, p)
-    DukeHelpers.sfx:Play(SoundEffect.SOUND_WHEEZY_COUGH, 1, 0)
-    local effect = Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.POOF01, 0, p.Position, Vector.Zero, nil)
-    effect.Color = Color(0, 0, 0, 1)
-    for _ = 1, 2 do
-        local spiderToSpawn = DukeHelpers.GetWeightedSpider(rng)
-        if p:HasCollectible(CollectibleType.COLLECTIBLE_BOOK_OF_VIRTUES) then
-            DukeHelpers.SpawnSpiderWisp(DukeHelpers.Wisps[spiderToSpawn.key], p.Position, p, nil, true)
-        else
-            DukeHelpers.SpawnSpidersFromKey(spiderToSpawn.key, p.Position, p, 1)
+    if DukeHelpers.Items.othersRottenGullet.IsUnlocked() then
+        DukeHelpers.sfx:Play(SoundEffect.SOUND_WHEEZY_COUGH, 1, 0)
+        local effect = Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.POOF01, 0, p.Position, Vector.Zero, nil)
+        effect.Color = Color(0, 0, 0, 1)
+        for _ = 1, 2 do
+            local spiderToSpawn = DukeHelpers.GetWeightedSpider(rng)
+            if p:HasCollectible(CollectibleType.COLLECTIBLE_BOOK_OF_VIRTUES) then
+                DukeHelpers.SpawnSpiderWisp(DukeHelpers.Wisps[spiderToSpawn.key], p.Position, p, nil, true)
+            else
+                DukeHelpers.SpawnSpidersFromKey(spiderToSpawn.key, p.Position, p, 1)
+            end
         end
+        return true
     end
-    return true
 end
 
 local function MC_FAMILIAR_INIT(_, familiar)

@@ -100,13 +100,17 @@ local function fireRottenGulletShot(player, pickupKey, rng)
             if tear.InitSeed == t.InitSeed then
                 if DukeHelpers.PercentageChance(50, 100, rng) then
                     DukeHelpers.SpawnSpidersFromKey(pickupKey, t.Position, t, 1)
-                    local spawnerEntityPlayer = t.SpawnerEntity:ToPlayer()
-                    if spawnerEntityPlayer and
-                        spawnerEntityPlayer:HasCollectible(CollectibleType.COLLECTIBLE_BOOK_OF_VIRTUES) then
-                        DukeHelpers.SpawnSpiderWisp(DukeHelpers.Wisps[foundSpider.key], t.Position, spawnerEntityPlayer,
-                            nil,
-                            false)
+                    if t.SpawnerEntity then
+                        local spawnerEntityPlayer = t.SpawnerEntity:ToPlayer()
+                        if spawnerEntityPlayer and
+                            spawnerEntityPlayer:HasCollectible(CollectibleType.COLLECTIBLE_BOOK_OF_VIRTUES) then
+                            DukeHelpers.SpawnSpiderWisp(DukeHelpers.Wisps[foundSpider.key], t.Position,
+                                spawnerEntityPlayer,
+                                nil,
+                                false)
+                        end
                     end
+
                 end
                 dukeMod:RemoveCallback(ModCallbacks.MC_POST_ENTITY_REMOVE, tearCollision, EntityType.ENTITY_TEAR)
             end

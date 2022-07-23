@@ -135,7 +135,7 @@ end, PickupVariant.PICKUP_HEART)
 -- Handles fly devil deals for Duke
 dukeMod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, function(_, pickup, collider)
 	local p = collider:ToPlayer()
-	if p and (DukeHelpers.IsDuke(p) or p:HasTrinket(DukeHelpers.Trinkets.pocketOfFlies.Id)) and
+	if p and (DukeHelpers.IsDuke(p) or DukeHelpers.Trinkets.pocketOfFlies.helpers.HasPocketOfFlies(p)) and
 		DukeHelpers.IsCustomPrice(pickup.Price) then
 		local heartPrice = DukeHelpers.GetCustomDevilDealPrice(pickup, p)
 
@@ -156,14 +156,14 @@ end)
 
 dukeMod:AddCallback(ModCallbacks.MC_POST_PICKUP_UPDATE, function(_, pickup)
 	if not DukeHelpers.AnyPlayerHasTrinket(TrinketType.TRINKET_YOUR_SOUL) and
-		(DukeHelpers.HasDuke() or DukeHelpers.AnyPlayerHasTrinket(DukeHelpers.Trinkets.pocketOfFlies.Id)) and
+		(DukeHelpers.HasDuke() or DukeHelpers.Trinkets.pocketOfFlies.helpers.AnyPlayerHasPocketOfFlies()) and
 		((pickup.Price < 0 and
 			pickup.Price > PickupPrice.PRICE_SPIKES) or
 			(pickup.Price < DukeHelpers.PRICE_OFFSET and pickup.Price > DukeHelpers.PRICE_OFFSET + PickupPrice.PRICE_SPIKES)) then
 		local closestPlayer = DukeHelpers.GetClosestPlayer(pickup.Position)
 
 		if closestPlayer and
-			(DukeHelpers.IsDuke(closestPlayer) or closestPlayer:HasTrinket(DukeHelpers.Trinkets.pocketOfFlies.Id)) then
+			(DukeHelpers.IsDuke(closestPlayer) or DukeHelpers.Trinkets.pocketOfFlies.helpers.HasPocketOfFlies(closestPlayer)) then
 			pickup:GetData().showFliesPrice = true
 			pickup.AutoUpdatePrice = false
 			pickup.Price = (pickup.Price % DukeHelpers.PRICE_OFFSET) + DukeHelpers.PRICE_OFFSET

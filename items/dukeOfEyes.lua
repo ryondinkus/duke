@@ -25,23 +25,25 @@ local WikiDescription = DukeHelpers.GenerateEncyclopediaPage({
 })
 
 local function MC_POST_FIRE_TEAR(_, tear)
-    local player = tear:GetLastParent():ToPlayer()
+    if DukeHelpers.Items.dukeOfEyes.IsUnlocked() then
+        local player = tear:GetLastParent():ToPlayer()
 
-    if player:HasCollectible(Id) then
-        if DukeHelpers.PercentageChance(player.Luck * 5 + 5, 50) then
-            tear:GetData()[Tag] = true
+        if player:HasCollectible(Id) then
+            if DukeHelpers.PercentageChance(player.Luck * 5 + 5, 50) then
+                tear:GetData()[Tag] = true
 
-            local sprite = tear:GetSprite()
+                local sprite = tear:GetSprite()
 
-            if not tear:HasTearFlags(DukeHelpers.ConvertBitSet64ToBitSet128(77)) then
-                local animationToPlay = sprite:GetAnimation()
+                if not tear:HasTearFlags(DukeHelpers.ConvertBitSet64ToBitSet128(77)) then
+                    local animationToPlay = sprite:GetAnimation()
 
-                sprite:Load("gfx/tears/dukeOfEyesTear.anm2", true)
-                if player:GetPlayerType() == DukeHelpers.HUSK_ID then
-                    sprite:ReplaceSpritesheet(0, "gfx/tears/dukeOfEyes_husk.png")
-                    sprite:LoadGraphics()
+                    sprite:Load("gfx/tears/dukeOfEyesTear.anm2", true)
+                    if player:GetPlayerType() == DukeHelpers.HUSK_ID then
+                        sprite:ReplaceSpritesheet(0, "gfx/tears/dukeOfEyes_husk.png")
+                        sprite:LoadGraphics()
+                    end
+                    sprite:Play(animationToPlay, true)
                 end
-                sprite:Play(animationToPlay, true)
             end
         end
     end
