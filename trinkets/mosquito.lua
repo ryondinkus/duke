@@ -6,10 +6,19 @@ local Name = Names.en_us
 local Tag = "mosquito"
 local Id = Isaac.GetTrinketIdByName(Name)
 local Descriptions = {
-    en_us = "Nom Nom Nom",
+    en_us = "Enemies tagged as 'fly' or 'spider' will spawn red creep beneath themselves on death",
     spa = "Nom Nom Nom"
 }
-local WikiDescription = DukeHelpers.GenerateEncyclopediaPage("Nom Nom Nom")
+local WikiDescription = DukeHelpers.GenerateEncyclopediaPage({
+    {
+        "Effects",
+        "All enemies tagged with the “fly” or “spider” tags will spawn red creep beneath themselves on death."
+    },
+    {
+        "Trivia",
+        "When Noah implemented this trinket he accidentally made them spawn creep that hurt the player and it was really funny hahaha he was coding on a Mac and couldn't test it ahahaha",
+    }
+})
 
 local flyAndSpiderEnemies = {
     EntityType.ENTITY_FLY,

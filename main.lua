@@ -139,14 +139,14 @@ local function registerCallbacks(callbacks)
     end
 end
 
-local function registerEncyclopediaDescription(object, registerFunction, extraOptions)
+local function registerEncyclopediaDescription(object, getFunction, registerFunction, updateFunction, extraOptions)
     if Encyclopedia and object and object.WikiDescription then
         local options = {
-            Class = "Duke",
+            Class = "duke",
             ID = object.Id,
             WikiDesc = object.WikiDescription,
             ModName = "Duke",
-            Hide = object.isWikiHidden
+            Hide = object.IsWikiHidden
         }
 
         if extraOptions then
@@ -155,7 +155,11 @@ local function registerEncyclopediaDescription(object, registerFunction, extraOp
             end
         end
 
-        registerFunction(options)
+        if getFunction(options.ID) then
+            updateFunction(options.ID, options)
+        else
+            registerFunction(options)
+        end
     end
 end
 
@@ -173,7 +177,7 @@ for _, item in pairs(DukeHelpers.Items) do
     DukeHelpers.AddExternalItemDescriptionItem(item)
 
     if Encyclopedia then
-        registerEncyclopediaDescription(item, Encyclopedia.AddItem)
+        registerEncyclopediaDescription(item, Encyclopedia.GetItem, Encyclopedia.AddItem, Encyclopedia.UpdateItem)
     end
 
     addUnlock(item)
@@ -189,23 +193,43 @@ for _, trinket in pairs(DukeHelpers.Trinkets) do
     DukeHelpers.AddExternalItemDescriptionTrinket(trinket)
 
     if Encyclopedia then
-        registerEncyclopediaDescription(trinket, Encyclopedia.AddTrinket)
+        registerEncyclopediaDescription(trinket, Encyclopedia.GetTrinket, Encyclopedia.AddTrinket,
+            Encyclopedia.UpdateTrinket)
     end
 
     addUnlock(trinket)
 end
 
-for _, card in pairs(DukeHelpers.Cards) do
+for _, card in pairs(DukeHelpers.Filter(DukeHelpers.Cards, function(pi) return not pi.IsRune end)) do
     registerCallbacks(card.callbacks)
 
     DukeHelpers.AddExternalItemDescriptionCard(card)
 
     if Encyclopedia then
-        registerEncyclopediaDescription(card, Encyclopedia.AddCard,
+        registerEncyclopediaDescription(card,
+            Encyclopedia.GetCard,
+            Encyclopedia.AddCard,
+            Encyclopedia.UpdateCard,
             { Spr = Encyclopedia.RegisterSprite(dukeMod.path .. "content/gfx/ui_cardfronts.anm2", card.Name) })
     end
 
     addUnlock(card)
+end
+
+for _, rune in pairs(DukeHelpers.Filter(DukeHelpers.Cards, function(pi) return pi.IsRune end)) do
+    registerCallbacks(rune.callbacks)
+
+    DukeHelpers.AddExternalItemDescriptionCard(rune)
+
+    if Encyclopedia then
+        registerEncyclopediaDescription(rune,
+            Encyclopedia.GetRune,
+            Encyclopedia.AddRune,
+            Encyclopedia.UpdateRune,
+            { Spr = Encyclopedia.RegisterSprite(dukeMod.path .. "content/gfx/ui_cardfronts.anm2", rune.Name) })
+    end
+
+    addUnlock(rune)
 end
 
 for _, entityVariant in pairs(DukeHelpers.EntityVariants) do

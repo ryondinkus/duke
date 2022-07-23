@@ -6,10 +6,28 @@ local Name = Names.en_us
 local Tag = "othersGullet"
 local Id = Isaac.GetItemIdByName(Name)
 local Descriptions = {
-    en_us = "Poops and shits everywhere",
+    en_us = "Spawns 2 Heart Attack Flies on use#Flies can be one of six random types: {{Heart}}Red, {{SoulHeart}}Soul, {{BlackHeart}}Black, {{GoldenHeart}}Gold, {{EmptyBoneHeart}}Bone, or {{RottenHeart}}Rotten",
     spa = "Caca y mierda por todos lados"
 }
-local WikiDescription = DukeHelpers.GenerateEncyclopediaPage("Poops and shits everywhere.")
+local WikiDescription = DukeHelpers.GenerateEncyclopediaPage({
+    {
+        "Effects",
+        "On use, spawns 2 Heart Attack Flies of a random type.",
+        "- These can be one of six types: Red, Soul, Black, Gold, Bone, or Rotten",
+        "- Red and Soul flies are twice as likely to spawn than the other fly types",
+        "This item has a different effect as Duke's pocket active. See Duke/Mechanics for an explanation on the different functionality."
+    },
+    {
+        "Synergies",
+        "Book of Virtues: Spawns 2 Heart Fly wisps of a random type. Heart Fly wisps will have tear effects based on whatever type they are. When a Heart Fly wisp dies, it will spawn a corresponding Heart Attack Fly of the same type.",
+        "Car Battery: Spawns 4 Heart Attack Flies"
+    },
+    {
+        "Trivia",
+        "Duke's Gullet was originally unlocked by defeating ???, but was moved to Mom's Heart after co-op babies were scrapped.",
+        "- The scrapped co-op baby for Mom's Heart would've been called Duke Baby, and would've fired Heart Attack Flies instead of tears."
+    }
+})
 
 local function MC_USE_ITEM(_, type, rng, p)
     DukeHelpers.sfx:Play(SoundEffect.SOUND_WHEEZY_COUGH, 1, 0)

@@ -6,10 +6,15 @@ local Name = Names.en_us
 local Tag = "redTapewormCard"
 local Id = Isaac.GetCardIdByName(Name)
 local Descriptions = {
-    en_us = "Red go grrrr",
+    en_us = "Fires 10 consecutive Rotten Gullet shots of a random type, firing rings of eight tears that have a 50% chance of spawning Heart Spiders on collision",
     spa = "Red go grrrr"
 }
-local WikiDescription = DukeHelpers.GenerateEncyclopediaPage("Red go grrrr.")
+local WikiDescription = DukeHelpers.GenerateEncyclopediaPage({
+    {
+        "Effects",
+        "On use, fires 10 consecutive Rotten Gullet shots of a random type, firing rings of eight tears that have a 50% chance of spawning Heart Spiders on collision."
+    }
+})
 
 local function MC_USE_CARD(_, card, player, flags)
     DukeHelpers.GetDukeData(player)[Tag] = 1

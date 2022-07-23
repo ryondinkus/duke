@@ -6,10 +6,23 @@ local Name = Names.en_us
 local Tag = "superInfestation"
 local Id = Isaac.GetItemIdByName(Name)
 local Descriptions = {
-    en_us = "Ryan has infested my fucking life",
+    en_us = "When taking damage, any health lost will turn into Heart Orbital Flies",
     spa = "Ryan ha infestado mi puta vida"
 }
-local WikiDescription = DukeHelpers.GenerateEncyclopediaPage("Ryan has infested my fucking life.")
+local WikiDescription = DukeHelpers.GenerateEncyclopediaPage({
+    {
+        "Effects",
+        "When taking damage, any health lost will turn into Heart Orbital Flies.",
+    },
+    {
+        "Interactions",
+        "Keeper and Tainted Keeper will gain a Gold Heart Fly for each coin heart taken."
+    },
+    {
+        "Trivia",
+        "Super Infestation parallels the original Infestation, which spawns friendly Blue Flies when taking damage.",
+    }
+})
 
 local playersTakenDamage = {}
 

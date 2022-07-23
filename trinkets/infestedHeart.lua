@@ -6,10 +6,21 @@ local Name = Names.en_us
 local Tag = "infestedHeart"
 local Id = Isaac.GetTrinketIdByName(Name)
 local Descriptions = {
-    en_us = "It's buzzing...",
+    en_us = "Hearts picked up have a 50% chance of becoming Heart Orbital Flies#As Duke, hearts picked up have a 50% chance of granting an extra Heart Orbital Fly",
     spa = "Esta zumbando..."
 }
-local WikiDescription = "It's buzzing..." --helper.GenerateEncyclopediaPage("Poops and shits everywhere.")
+local WikiDescription = DukeHelpers.GenerateEncyclopediaPage({
+    {
+        "Effects",
+        "Hearts you pick up have a 50% chance of being converted into Heart Orbital Flies.",
+        "- The effect will not occur if the heart cannot be picked up.",
+        "As Duke, hearts picked up have a 50% chance of granting an extra Heart Orbital Fly of the same type."
+    },
+    {
+        "Trivia",
+        "This trinket was originally going to be called “Hollow Heart,” but then we remembered there was already a trinket in the game with that exact name.",
+    }
+})
 
 local function ShouldSpawnExtraFly(player)
     return player:HasTrinket(Id) and DukeHelpers.PercentageChance(50)

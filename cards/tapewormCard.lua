@@ -6,10 +6,15 @@ local Name = Names.en_us
 local Tag = "tapewormCard"
 local Id = Isaac.GetCardIdByName(Name)
 local Descriptions = {
-    en_us = "Yummy in YOUR tummy",
+    en_us = "Turns all enemies in the room into random Heart Orbital Flies#Flies can be one of six random types: {{Heart}}Red, {{SoulHeart}}Soul, {{BlackHeart}}Black, {{GoldenHeart}}Gold, {{EmptyBoneHeart}}Bone, or {{RottenHeart}}Rotten",
     spa = "Delicioso en TU barriga"
 }
-local WikiDescription = DukeHelpers.GenerateEncyclopediaPage("Yummy in YOUR tummy.")
+local WikiDescription = DukeHelpers.GenerateEncyclopediaPage({
+    {
+        "Effects",
+        "On use, turns all enemies in the room into random Heart Orbital Flies. These types can be Red, Soul, Black, Golden, Bone, and Rotten, with Red and Blue being twice as likely to spawn."
+    }
+})
 
 local function MC_USE_CARD(_, card, player, flags)
     local enemies = DukeHelpers.ListEnemiesInRoom(true,
