@@ -1,9 +1,7 @@
-local key = "MOONLIGHT" -- From Moonlight Hearts Mod
-local subType = 901
-local attackFlySubType = DukeHelpers.GetAttackFlySubTypeBySubType(subType)
+local heart = DukeHelpers.Hearts.MOONLIGHT
 
 local function MC_PRE_FAMILIAR_COLLISION(_, f, e)
-	if f.SubType == subType then
+	if f.SubType == heart.variant then
 		if e.Type == EntityType.ENTITY_PROJECTILE and not e:ToProjectile():HasProjectileFlags(ProjectileFlags.CANT_HIT_PLAYER) then
 			local p = f.SpawnerEntity:ToPlayer() or Isaac.GetPlayer(0)
 			local data = p:GetData()
@@ -29,10 +27,9 @@ local function MC_PRE_FAMILIAR_COLLISION(_, f, e)
 end
 
 return {
-	key = key,
 	spritesheet = "moonlight_heart_fly.png",
 	canAttack = true,
-	subType = subType,
+	heart = DukeHelpers.Hearts.MOONLIGHT,
 	count = 1,
 	weight = 0,
 	poofColor = Color(0.62, 0.62, 0.62, 1, 0.90, 0.78, 1),

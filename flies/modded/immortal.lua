@@ -1,13 +1,9 @@
-local key = "IMMORTAL" -- From Team Compliance Immortal Heart Mod
-local subType = HeartSubType.HEART_IMMORTAL
-local attackFlySubType = DukeHelpers.GetAttackFlySubTypeBySubType(subType)
-
 local function HEART_FLY_PRE_SPAWN_CLEAN_AWARD()
     if ComplianceImmortal then
         DukeHelpers.ForEachPlayer(function(player)
             local playerData = DukeHelpers.GetDukeData(player)
             local immortalFlies = DukeHelpers.CountByProperties(playerData.heartFlies,
-                { subType = DukeHelpers.Flies.IMMORTAL.heartFlySubType })
+                { key = DukeHelpers.Flies.IMMORTAL.key })
             if immortalFlies % 2 == 1 then
                 DukeHelpers.AddHeartFly(player, DukeHelpers.Flies.IMMORTAL, 1)
             end
@@ -16,10 +12,9 @@ local function HEART_FLY_PRE_SPAWN_CLEAN_AWARD()
 end
 
 return {
-    key = key,
     spritesheet = "immortal_heart_fly.png",
     canAttack = true,
-    subType = subType,
+    heart = DukeHelpers.Hearts.IMMORTAL,
     count = 2,
     weight = 0,
     poofColor = Color(0.62, 0.62, 0.62, 1, 0.78, 0.78, 1),

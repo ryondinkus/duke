@@ -1,13 +1,21 @@
-function DukeHelpers.GenerateEncyclopediaPage(...)
-    local output = {
-        { str = "Effect", fsize = 2, clr = 3, halign = 0 }
-    }
-
-    for _, description in pairs({ ... }) do
-        table.insert(output, { str = description })
+function DukeHelpers.GenerateEncyclopediaPage(wikiDescription)
+    if type(wikiDescription) == "string" then
+        return
+    end
+    local output = {}
+    for _, section in pairs(wikiDescription) do
+        local outputSection = {}
+        for _, part in pairs(section) do
+            if #outputSection <= 0 then
+                table.insert(outputSection, { str = part, fsize = 2, clr = 3, halign = 0 })
+            else
+                table.insert(outputSection, { str = part })
+            end
+        end
+        table.insert(output, outputSection)
     end
 
-    return { output }
+    return output
 end
 
 function DukeHelpers.AddExternalItemDescriptionCard(card)
@@ -28,7 +36,8 @@ end
 
 function DukeHelpers.AddExternalItemDescriptionTrinket(trinket)
     if EID and trinket.Descriptions then
-        DukeHelpers.RegisterExternalItemDescriptionLanguages(trinket.Id, trinket.Names, trinket.Descriptions, EID.addTrinket)
+        DukeHelpers.RegisterExternalItemDescriptionLanguages(trinket.Id, trinket.Names, trinket.Descriptions,
+            EID.addTrinket)
     end
 end
 

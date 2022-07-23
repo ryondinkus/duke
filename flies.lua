@@ -3,7 +3,7 @@ dukeMod:AddCallback(ModCallbacks.MC_FAMILIAR_UPDATE, function(_, f)
 	local data = DukeHelpers.GetDukeData(f)
 	local sprite = f:GetSprite()
 	if f.FrameCount == 6 then
-		sprite:ReplaceSpritesheet(0, DukeHelpers.GetFlySpritesheet(f.SubType))
+		sprite:ReplaceSpritesheet(0, DukeHelpers.GetFlySpritesheetFromEntity(f))
 		sprite:LoadGraphics()
 		sprite:Play("Idle", true)
 	end
@@ -41,14 +41,15 @@ dukeMod:AddCallback(ModCallbacks.MC_PRE_FAMILIAR_COLLISION, function(_, f, e)
 		if f.SubType ~= DukeHelpers.Flies.BROKEN.heartFlySubType then
 			e:Die()
 		end
+
 		local data = DukeHelpers.GetDukeData(f)
-		if DukeHelpers.CanBecomeAttackFly(f) then
+		if DukeHelpers.GetHeartFlyFromFlyEntity(f).canAttack then
 			if not data.hitPoints or data.hitPoints <= 1 then
-				local fly = DukeHelpers.SpawnAttackFly(f)
-				local flyData = DukeHelpers.GetDukeData(fly)
-				flyData.attacker = e.SpawnerEntity
-				flyData.hitPoints = nil
-				DukeHelpers.RemoveHeartFly(f)
+				local attackFlyEntity = DukeHelpers.SpawnAttackFlyFromHeartFlyEntity(f)
+				local attackFlyData = DukeHelpers.GetDukeData(attackFlyEntity)
+				attackFlyData.attacker = e.SpawnerEntity
+				attackFlyData.hitPoints = nil
+				DukeHelpers.RemoveHeartFlyEntity(f)
 			elseif data.hitPoints and data.hitPoints > 1 then
 				data.hitPoints = data.hitPoints - 1
 			end
@@ -58,16 +59,16 @@ end, DukeHelpers.FLY_VARIANT)
 
 -- Handles attacking an enemy when attack fly
 dukeMod:AddCallback(ModCallbacks.MC_FAMILIAR_UPDATE, function(_, f)
-	local flyData = DukeHelpers.GetDukeData(f)
-	if flyData.attacker then
-		if not flyData.attacker:IsDead() then
-			f.Target = flyData.attacker
+	local attackFlyData = DukeHelpers.GetDukeData(f)
+	if attackFlyData.attacker then
+		if not attackFlyData.attacker:IsDead() then
+			f.Target = attackFlyData.attacker
 		else
 			f.Target = nil
-			flyData.attacker = nil
+			attackFlyData.attacker = nil
 		end
 	end
-	if flyData.bffs then
+	if attackFlyData.bffs then
 		f.SpriteScale = Vector(1.2, 1.2)
 	end
 end, FamiliarVariant.BLUE_FLY)
@@ -80,10 +81,10 @@ dukeMod:AddCallback(ModCallbacks.MC_USE_ITEM, function(_, type, rng, player)
 		for i = #fliesData, 1, -1 do
 			local fly = fliesData[i]
 			local f = DukeHelpers.GetEntityByInitSeed(fly.initSeed)
-			local heartFly = DukeHelpers.GetFlyByHeartSubType(fly.subType)
+			local heartFly = DukeHelpers.Flies[fly.key]
 			flyScore = flyScore + heartFly.sacAltarQuality
-			DukeHelpers.SpawnHeartFlyPoof(fly.subType, f.Position, player)
-			DukeHelpers.RemoveHeartFly(f)
+			DukeHelpers.SpawnHeartFlyPoof(heartFly, f.Position, player)
+			DukeHelpers.RemoveHeartFlyEntity(f)
 		end
 
 		if flyScore > 24 then flyScore = 24 end

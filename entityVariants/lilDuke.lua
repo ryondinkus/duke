@@ -33,7 +33,7 @@ local function MC_FAMILIAR_UPDATE(_, f)
 			end
 			for _ = 1, fliesToSpawn do
 				local flyToSpawn = DukeHelpers.GetWeightedFly(DukeHelpers.rng)
-				local attackFly = DukeHelpers.SpawnAttackFlyBySubType(flyToSpawn.heartFlySubType, f.Position, f.Player)
+				local attackFly = DukeHelpers.SpawnAttackFlyFromHeartFly(flyToSpawn, f.Position, f.Player)
 				if f.Player and f.Player:HasCollectible(CollectibleType.COLLECTIBLE_BFFS) and
 					not f.Player:HasCollectible(CollectibleType.COLLECTIBLE_HIVE_MIND) then
 					DukeHelpers.GetDukeData(attackFly).bffs = true

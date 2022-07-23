@@ -1,7 +1,3 @@
-local key = "MOONLIGHT" -- From Moonlight Hearts Mod
-local pickupSubType = 901
-local subType = DukeHelpers.GetSpiderSubTypeByPickupSubType(pickupSubType)
-
 local function onRelease(player)
 	local data = player:GetData()
 	local effect = DukeHelpers.rng:RandomInt(6)
@@ -24,9 +20,8 @@ local function onRelease(player)
 end
 
 return {
-	key = key,
 	spritesheet = "moonlight_heart_spider.png",
-	pickupSubType = pickupSubType,
+	heart = DukeHelpers.Hearts.MOONLIGHT,
 	count = 1,
 	weight = 0,
 	poofColor = Color(0.62, 0.62, 0.62, 1, 0.90, 0.78, 1),

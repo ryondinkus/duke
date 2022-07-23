@@ -1,10 +1,5 @@
-local key = "DOUBLE_PATCHED" -- from patched hearts mod
-local use = include("flies/red").key
-local subType = 3321
-
 return {
-    key = key,
-    use = use,
-    subType = subType,
+    use = include("flies/red"),
+    heart = DukeHelpers.Hearts.DOUBLE_PATCHED,
     count = 4
 }

@@ -50,14 +50,15 @@ local function MC_FAMILIAR_UPDATE(_, familiar)
 		effect.Color = Color(0, 0, 0, 1)
 		effect.SpriteScale = Vector(0.5, 0.5)
 
-		local spiderType = DukeHelpers.GetWeightedSpider(DukeHelpers.rng).pickupSubType
-		local spawnedSpiders = DukeHelpers.SpawnSpidersFromPickupSubType(spiderType, familiar.Position, familiar, 1, true)
+		local spider = DukeHelpers.GetWeightedSpider(DukeHelpers.rng)
+		local spawnedSpiders = DukeHelpers.SpawnSpidersFromKey(spider.key, familiar.Position, familiar, 1,
+			true)
 		local spawnedFly = nil
 
 		spawnedSpiders[1]:GetData().spawnerEntityInitSeed = familiar.InitSeed
 
 		if Sewn_API and Sewn_API:IsUltra(familiar:GetData()) then
-			spawnedFly = DukeHelpers.SpawnAttackFlyBySubType(spiderType, familiar.Position, familiar.Player)
+			spawnedFly = DukeHelpers.SpawnAttackFlyFromHeartFly(DukeHelpers.Flies[spider.key], familiar.Position, familiar.Player)
 		end
 
 		if familiar.Player and familiar.Player:HasCollectible(CollectibleType.COLLECTIBLE_BFFS) and

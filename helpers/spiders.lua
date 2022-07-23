@@ -1,43 +1,40 @@
-function DukeHelpers.GetSpiderSubTypeByPickupSubType(subType)
-    if subType then
-        return DukeHelpers.SUBTYPE_OFFSET + subType
-    end
-end
-
 function DukeHelpers.GetSpiderByPickupSubType(pickupSubType)
     return DukeHelpers.Find(DukeHelpers.Spiders, function(spider) return spider.pickupSubType == pickupSubType end)
 end
 
-function DukeHelpers.GetSpiderSpritesheet(subType)
-    local foundSpider = DukeHelpers.GetSpiderByPickupSubType(subType - 903)
+function DukeHelpers.GetSpiderBySubType(subType)
+    return DukeHelpers.Find(DukeHelpers.Spiders, function(spider) return spider.subType == subType end)
+end
+
+function DukeHelpers.GetSpiderSpritesheetFromSubType(subType)
+    local foundSpider = DukeHelpers.GetSpiderBySubType(subType)
     if foundSpider then
         return foundSpider.spritesheet
     end
     return DukeHelpers.Spiders.RED.spritesheet
 end
 
-function DukeHelpers.IsHeartSpider(spider)
-    return spider.Variant == FamiliarVariant.BLUE_SPIDER and
-        not not DukeHelpers.Find(DukeHelpers.Spiders, function(f) return f.subType == spider.SubType end)
+function DukeHelpers.IsHeartSpider(spiderEntity)
+    return spiderEntity.Variant == FamiliarVariant.BLUE_SPIDER and
+        not not DukeHelpers.Find(DukeHelpers.Spiders, function(spider) return spider.subType == spiderEntity.SubType end)
 end
 
 function DukeHelpers.InitializeHeartSpider(spider)
     local sprite = spider:GetSprite()
-    sprite:ReplaceSpritesheet(0, DukeHelpers.GetSpiderSpritesheet(spider.SubType))
+    sprite:ReplaceSpritesheet(0, DukeHelpers.GetSpiderSpritesheetFromSubType(spider.SubType))
     sprite:LoadGraphics()
 end
 
-function DukeHelpers.SpawnSpidersFromPickupSubType(pickupSubType, position, spawnerEntity, specificAmount, noPoof)
-    local foundSpider = DukeHelpers.Find(DukeHelpers.Spiders,
-        function(spider) return spider.pickupSubType == pickupSubType end)
+function DukeHelpers.SpawnSpidersFromKey(pickupKey, position, spawnerEntity, specificAmount, noPoof)
+    local foundSpider = DukeHelpers.Spiders[pickupKey]
 
     local spawnedSpiders = {}
 
     if foundSpider then
         if type(foundSpider.subType) == "table" then
             DukeHelpers.ForEach(foundSpider.subType, function(usedSpider)
-                local addedSpiders = DukeHelpers.SpawnSpidersFromPickupSubType(DukeHelpers.Flies[usedSpider.key].subType
-                    , position, spawnerEntity, usedSpider.count)
+                local addedSpiders = DukeHelpers.SpawnSpidersFromKey(usedSpider.key, position,
+                    spawnerEntity, usedSpider.count)
 
                 for _, spider in pairs(addedSpiders) do
                     table.insert(spawnedSpiders, spider)
@@ -63,6 +60,7 @@ function DukeHelpers.GetWeightedSpider(rng)
     return DukeHelpers.GetWeightedIndex(DukeHelpers.Spiders, "weight", nil, rng)
 end
 
-function DukeHelpers.SpawnSpiderWispBySubType(flySubType, pos, spawner, spawnSpiderOnDeath, lifeTime)
-    return DukeHelpers.SpawnAttackFlyWispBySubType(flySubType, pos, spawner, spawnSpiderOnDeath, lifeTime, true)
+function DukeHelpers.SpawnSpiderWisp(wisp, pos, spawner, lifeTime, spawnOnDeath)
+    return DukeHelpers.SpawnWisp(wisp, pos, spawner, spawnOnDeath and "spawnSpiderOnDeath" or nil, lifeTime,
+        DukeHelpers.Items.dukeOfEyes.Id)
 end

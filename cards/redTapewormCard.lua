@@ -6,20 +6,27 @@ local Name = Names.en_us
 local Tag = "redTapewormCard"
 local Id = Isaac.GetCardIdByName(Name)
 local Descriptions = {
-    en_us = "Red go grrrr",
+    en_us = "Fires 10 consecutive Rotten Gullet shots of a random type, firing rings of eight tears that have a 50% chance of spawning Heart Spiders on collision",
     spa = "Red go grrrr"
 }
-local WikiDescription = DukeHelpers.GenerateEncyclopediaPage("Red go grrrr.")
+local WikiDescription = DukeHelpers.GenerateEncyclopediaPage({
+    {
+        "Effects",
+        "On use, fires 10 consecutive Rotten Gullet shots of a random type, firing rings of eight tears that have a 50% chance of spawning Heart Spiders on collision."
+    }
+})
 
 local function MC_USE_CARD(_, card, player, flags)
-    DukeHelpers.GetDukeData(player)[Tag] = 1
+    if DukeHelpers.Cards.redTapewormCard.IsUnlocked() then
+        DukeHelpers.GetDukeData(player)[Tag] = 1
+    end
 end
 
 local function MC_POST_PEFFECT_UPDATE(_, player)
     if DukeHelpers.GetDukeData(player)[Tag] then
         DukeHelpers.Stagger(Tag, player, 15, 10, function()
             DukeHelpers.Items.rottenGullet.helpers.fireRottenGulletShot(player,
-                DukeHelpers.GetWeightedSpider(player:GetCardRNG(Id)).pickupSubType, player:GetCardRNG(Id))
+                DukeHelpers.GetWeightedSpider(player:GetCardRNG(Id)).key, player:GetCardRNG(Id))
             player:AnimateCard(Id)
         end)
     end

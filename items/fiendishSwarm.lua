@@ -6,111 +6,99 @@ local Name = Names.en_us
 local Tag = "fiendishSwarm"
 local Id = Isaac.GetItemIdByName(Name)
 local Descriptions = {
-    en_us = "Ryan has infested my fucking life",
+    en_us = "Lowers your current HP to half a heart, then gives you a Heart Orbital Fly for every heart lost this way#Heart Orbital Flies turn back into HP when entering an new room#Also spawns a Fiendish Orbital Fly for the duration of the room",
     spa = "Ryan ha infestado mi puta vida"
 }
-local WikiDescription = DukeHelpers.GenerateEncyclopediaPage("Ryan has infested my fucking life.")
+local WikiDescription = DukeHelpers.GenerateEncyclopediaPage({
+    {
+        "Effects",
+        "On use, lowers your HP to ½ heart, then gives you a Heart Orbital Fly for every heart lost this way.",
+        "- Heart Orbital Flies are converted back into HP after entering a new room.",
+        "-- Heart Orbital Flies that are lost before entering a new room will not be converted back to HP.",
+        "-- Heart Orbital Flies gained after activating the item will not be converted into HP upon entering a new room.",
+        "Also grants a Fiendish Heart Orbital Fly for the room. Fiendish Heart Orbital Flies are functionally identical to Eternal Heart Orbital Flies, except that having multiple of them won't convert them into Red Heart Orbital Flies."
+    },
+    {
+        "Interactions",
+        "Keeper and Tainted Keeper will gain a Gold Heart Fly for each coin heart taken.",
+        "The Forgotten will only lose HP on whichever subplayer is currently active.",
+        "The Lost and Tainted Lost won't gain any Heart Flies since they have no health, but will still gain the Fiendish Heart Fly.",
+    },
+    {
+        "Synergies",
+        "Book of Virtues: Spawn a Heart Fly wisp for every Heart Orbital Fly spawned. Heart Fly wisps will have tear effects based on whatever type they are. Only Red, Soul, Black, Gold, Bone, and Rotten flies have a corresponding wisp.",
+        "Car Battery: Spawns 2 Fiendish Heart Orbital Flies"
+    },
+    {
+        "Trivia",
+        "Fiendish Swarm's name and appearance is a reference to Fiend, a popular modded character from Fiend Folio and Devil's Harvest.",
+        "- When Fiend takes damage, all of his HP turns into familiars that attack enemies. His HP replenishes at the end of the room."
+    }
+})
 
 local function MC_USE_ITEM(_, type, rng, player, f)
-    local dukeData = DukeHelpers.GetDukeData(player)
+    if DukeHelpers.Items.fiendishSwarm.IsUnlocked() then
+        local dukeData = DukeHelpers.GetDukeData(player)
 
-    local fliesToSpawn = {}
+        local fliesToSpawn = {}
 
-    if player:GetPlayerType() == PlayerType.PLAYER_KEEPER or player:GetPlayerType() == PlayerType.PLAYER_KEEPER_B then
-        if player:GetHearts() >= 1 then
-            fliesToSpawn[DukeHelpers.Flies.GOLDEN.heartFlySubType] = (player:GetHearts() / 2) - 1
-            player:AddHearts(-(player:GetHearts() - 2))
+        if DukeHelpers.IsKeeper(player) then
+            if player:GetHearts() >= 1 then
+                fliesToSpawn[DukeHelpers.Flies.GOLDEN.key] = (player:GetHearts() / 2) - 1
+                player:AddHearts(-(player:GetHearts() - 2))
+            end
+
+            goto keeper
         end
 
-        goto keeper
-    end
+        if player:GetMaxHearts() >= 1 and (player:GetHearts() >= 1) then
+            fliesToSpawn = DukeHelpers.RemoveUnallowedHearts(player, { RED = 1 }, true)
+        elseif DukeHelpers.Hearts.SOUL.GetCount(player) >= 1 then
+            fliesToSpawn = DukeHelpers.RemoveUnallowedHearts(player, { SOUL = 1 }, true)
+        elseif DukeHelpers.Hearts.BLACK.GetCount(player) >= 1 then
+            fliesToSpawn = DukeHelpers.RemoveUnallowedHearts(player, { BLACK = 1 }, true)
+        elseif DukeHelpers.Hearts.BONE.GetCount(player) >= 1 then
+            fliesToSpawn = DukeHelpers.RemoveUnallowedHearts(player, { BONE = 1 }, true)
+        elseif DukeHelpers.Hearts.IMMORTAL.GetCount(player) >= 1 then
+            fliesToSpawn = DukeHelpers.RemoveUnallowedHearts(player, { IMMORTAL = 1 }, true)
+        elseif DukeHelpers.Hearts.WEB.GetCount(player) >= 1 then
+            fliesToSpawn = DukeHelpers.RemoveUnallowedHearts(player, { WEB = 1 }, true)
+        end
 
-    fliesToSpawn[DukeHelpers.Flies.ROTTEN.heartFlySubType] = player:GetRottenHearts()
-    player:AddRottenHearts(-player:GetRottenHearts() * 2)
+        ::keeper::
+        fliesToSpawn[DukeHelpers.Flies.FIENDISH.key] = 1
 
-    if player:GetMaxHearts() >= 1 and (player:GetHearts() >= 1) then --or tempRottenHearts > 0) then
-        fliesToSpawn[DukeHelpers.Flies.RED.heartFlySubType] = player:GetHearts() - (player:GetRottenHearts() * 2) - 1
+        local addedFlies = {}
+        local addedWisps = {}
 
-        player:AddHearts(-(player:GetHearts() - 1))
+        DukeHelpers.ForEach(fliesToSpawn, function(numFlies, flyKey)
+            DukeHelpers.ForEach(DukeHelpers.AddHeartFly(player,
+                DukeHelpers.Flies[flyKey], numFlies),
+                function(addedFly)
+                    if player:HasCollectible(CollectibleType.COLLECTIBLE_BOOK_OF_VIRTUES) and DukeHelpers.Wisps[flyKey] then
+                        local wisp = DukeHelpers.SpawnAttackFlyWisp(DukeHelpers.Wisps[flyKey], player.Position,
+                            player)
+                        table.insert(addedWisps, wisp.InitSeed)
+                    end
+                    table.insert(addedFlies, addedFly.InitSeed)
+                end)
+        end)
 
-        fliesToSpawn[DukeHelpers.Flies.SOUL.heartFlySubType] = DukeHelpers.GetTrueSoulHearts(player)
-        fliesToSpawn[DukeHelpers.Flies.BLACK.heartFlySubType] = DukeHelpers.GetTrueBlackHearts(player)
-        fliesToSpawn[DukeHelpers.Flies.BONE.heartFlySubType] = player:GetBoneHearts()
-
-        player:AddSoulHearts(-player:GetSoulHearts())
-        player:AddBoneHearts(-player:GetBoneHearts())
-    elseif player:GetSoulHearts() >= 1 then
-        fliesToSpawn[DukeHelpers.Flies.SOUL.heartFlySubType] = DukeHelpers.GetTrueSoulHearts(player)
-        if DukeHelpers.GetTrueBlackHearts(player) > 0 then
-            fliesToSpawn[DukeHelpers.Flies.BLACK.heartFlySubType] = DukeHelpers.GetTrueBlackHearts(player) - 1
+        if dukeData[Tag] then
+            for _, id in ipairs(addedFlies) do
+                table.insert(dukeData[Tag], id)
+            end
         else
-            fliesToSpawn[DukeHelpers.Flies.SOUL.heartFlySubType] = fliesToSpawn[DukeHelpers.Flies.SOUL.heartFlySubType] -
-                1
+            dukeData[Tag] = addedFlies
         end
 
-        player:AddSoulHearts(-(player:GetSoulHearts() - 1))
-
-        fliesToSpawn[DukeHelpers.Flies.RED.heartFlySubType] = player:GetHearts() - (player:GetRottenHearts() * 2)
-        fliesToSpawn[DukeHelpers.Flies.BONE.heartFlySubType] = player:GetBoneHearts()
-
-        player:AddBoneHearts(-player:GetBoneHearts())
-    elseif player:GetBoneHearts() >= 1 then
-        fliesToSpawn[DukeHelpers.Flies.SOUL.heartFlySubType] = DukeHelpers.GetTrueSoulHearts(player)
-        fliesToSpawn[DukeHelpers.Flies.BLACK.heartFlySubType] = DukeHelpers.GetTrueBlackHearts(player)
-        fliesToSpawn[DukeHelpers.Flies.RED.heartFlySubType] = player:GetHearts() - (player:GetRottenHearts() * 2)
-
-        fliesToSpawn[DukeHelpers.Flies.BONE.heartFlySubType] = player:GetBoneHearts() - 1
-
-        player:AddBoneHearts(-(player:GetBoneHearts() - 1))
-        player:AddSoulHearts(-player:GetSoulHearts())
-        player:AddHearts(-player:GetHearts())
-    end
-
-    fliesToSpawn[DukeHelpers.Flies.BROKEN.heartFlySubType] = player:GetBrokenHearts() * 2
-    player:AddBrokenHearts(-player:GetBrokenHearts())
-
-    fliesToSpawn[DukeHelpers.Flies.ETERNAL.heartFlySubType] = player:GetEternalHearts()
-    player:AddEternalHearts(-player:GetEternalHearts())
-
-    fliesToSpawn[DukeHelpers.Flies.GOLDEN.heartFlySubType] = player:GetGoldenHearts()
-    player:AddGoldenHearts(-player:GetGoldenHearts())
-
-    if player:GetMaxHearts() >= 1 and player:GetHearts() <= 0 then
-        player:AddHearts(1)
-    end
-
-    ::keeper::
-    fliesToSpawn[DukeHelpers.Flies.FIENDISH.heartFlySubType] = 1
-
-    local addedFlies = {}
-    local addedWisps = {}
-
-    DukeHelpers.ForEach(fliesToSpawn, function(numFlies, flyId)
-        DukeHelpers.ForEach(DukeHelpers.AddHeartFly(player,
-            DukeHelpers.FindByProperties(DukeHelpers.Flies, { heartFlySubType = flyId }), numFlies),
-            function(addedFly)
-                if player:HasCollectible(CollectibleType.COLLECTIBLE_BOOK_OF_VIRTUES) and DukeHelpers.Wisps[flyId] then
-                    local wisp = DukeHelpers.SpawnAttackFlyWispBySubType(flyId, player.Position, player, true, nil, true)
-                    table.insert(addedWisps, wisp.InitSeed)
-                end
-                table.insert(addedFlies, addedFly.InitSeed)
-            end)
-    end)
-
-    if dukeData[Tag] then
-        for _, id in ipairs(addedFlies) do
-            table.insert(dukeData[Tag], id)
+        if dukeData[Tag .. "Wisps"] then
+            for _, id in ipairs(addedWisps) do
+                table.insert(dukeData[Tag .. "Wisps"], id)
+            end
+        else
+            dukeData[Tag .. "Wisps"] = addedWisps
         end
-    else
-        dukeData[Tag] = addedFlies
-    end
-
-    if dukeData[Tag .. "Wisps"] then
-        for _, id in ipairs(addedWisps) do
-            table.insert(dukeData[Tag .. "Wisps"], id)
-        end
-    else
-        dukeData[Tag .. "Wisps"] = addedWisps
     end
 end
 
@@ -126,48 +114,37 @@ local function MC_POST_NEW_ROOM()
                 local foundFly = DukeHelpers.GetEntityByInitSeed(flyInitSeed)
 
                 if foundFly then
-                    local heartFly = DukeHelpers.FindByProperties(DukeHelpers.Flies,
-                        { heartFlySubType = foundFly.SubType, isBase = true })
-                    if heartFly.pickupSubType ~= 102 then
-                        if heartsToAdd[heartFly.pickupSubType] then
-                            heartsToAdd[heartFly.pickupSubType] = heartsToAdd[heartFly.pickupSubType] + 1
+                    local heartFly = DukeHelpers.GetHeartFlyByHeartFlySubType(foundFly.SubType)
+                    if heartFly.key ~= DukeHelpers.Flies.FIENDISH.key then
+                        if heartsToAdd[heartFly.key] then
+                            heartsToAdd[heartFly.key] = heartsToAdd[heartFly.key] + 1
                         else
-                            heartsToAdd[heartFly.pickupSubType] = 1
+                            heartsToAdd[heartFly.key] = 1
                         end
                     end
-                    DukeHelpers.RemoveHeartFly(foundFly)
+                    DukeHelpers.RemoveHeartFlyEntity(foundFly)
                 end
             end)
 
-            if heartsToAdd[HeartSubType.HEART_BONE] then
-                player:AddBoneHearts(heartsToAdd[HeartSubType.HEART_BONE])
-                heartsToAdd[HeartSubType.HEART_BONE] = nil
+            if heartsToAdd[DukeHelpers.Hearts.BONE.key] then
+                DukeHelpers.Hearts.BONE.Add(player, heartsToAdd[DukeHelpers.Hearts.BONE.key])
+                heartsToAdd[DukeHelpers.Hearts.BONE.key] = nil
             end
 
-            if heartsToAdd[HeartSubType.HEART_ROTTEN] then
-                player:AddRottenHearts(heartsToAdd[HeartSubType.HEART_ROTTEN] * 2)
-                heartsToAdd[HeartSubType.HEART_ROTTEN] = nil
+            if heartsToAdd[DukeHelpers.Hearts.ROTTEN.key] then
+                DukeHelpers.Hearts.ROTTEN.Add(player, heartsToAdd[DukeHelpers.Hearts.ROTTEN.key] * 2)
+                heartsToAdd[DukeHelpers.Hearts.ROTTEN.key] = nil
             end
 
-            DukeHelpers.ForEach(heartsToAdd, function(numHearts, pickupSubType)
-                if pickupSubType == HeartSubType.HEART_FULL then
-                    player:AddHearts(numHearts)
-                elseif pickupSubType == HeartSubType.HEART_SOUL then
-                    player:AddSoulHearts(numHearts)
-                elseif pickupSubType == HeartSubType.HEART_ETERNAL then
-                    player:AddEternalHearts(numHearts)
-                elseif pickupSubType == HeartSubType.HEART_BLACK then
-                    player:AddBlackHearts(numHearts)
-                elseif pickupSubType == HeartSubType.HEART_GOLDEN then
-                    if player:GetPlayerType() == PlayerType.PLAYER_KEEPER or
-                        player:GetPlayerType() == PlayerType.PLAYER_KEEPER_B then
-                        player:AddHearts(numHearts * 2)
-                    else
-                        player:AddGoldenHearts(numHearts)
-                    end
-                elseif pickupSubType == 13 then
-                    player:AddBrokenHearts(numHearts / 2)
+            DukeHelpers.ForEach(heartsToAdd, function(numHearts, pickupKey)
+                local heart = DukeHelpers.Hearts[pickupKey]
+
+                if pickupKey == DukeHelpers.Hearts.GOLDEN.key and DukeHelpers.IsKeeper(player) then
+                    DukeHelpers.Hearts.RED.Add(player, numHearts * 2)
+                    return
                 end
+
+                heart.Add(player, numHearts)
 
             end)
             data[Tag] = nil

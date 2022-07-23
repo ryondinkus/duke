@@ -6,10 +6,19 @@ local Name = Names.en_us
 local Tag = "mosquito"
 local Id = Isaac.GetTrinketIdByName(Name)
 local Descriptions = {
-    en_us = "Nom Nom Nom",
+    en_us = "Enemies tagged as 'fly' or 'spider' will spawn red creep beneath themselves on death",
     spa = "Nom Nom Nom"
 }
-local WikiDescription = DukeHelpers.GenerateEncyclopediaPage("Nom Nom Nom")
+local WikiDescription = DukeHelpers.GenerateEncyclopediaPage({
+    {
+        "Effects",
+        "All enemies tagged with the “fly” or “spider” tags will spawn red creep beneath themselves on death."
+    },
+    {
+        "Trivia",
+        "When Noah implemented this trinket he accidentally made them spawn creep that hurt the player and it was really funny hahaha he was coding on a Mac and couldn't test it ahahaha",
+    }
+})
 
 local flyAndSpiderEnemies = {
     EntityType.ENTITY_FLY,
@@ -76,18 +85,21 @@ for _, enemy in pairs(flyAndSpiderEnemies) do
 end
 
 local function MC_POST_NPC_DEATH(_, entity)
-    DukeHelpers.ForEachPlayer(function(player)
-        if player:HasTrinket(Id) then
-            local foundEnemy = DukeHelpers.Find(validEnemies, function(enemy)
-                return entity.Type == enemy.Type and (not enemy.Variant or entity.Variant == enemy.Variant)
-            end)
+    if DukeHelpers.Trinkets.mosquito.IsUnlocked() then
+        DukeHelpers.ForEachPlayer(function(player)
+            if player:HasTrinket(Id) then
+                local foundEnemy = DukeHelpers.Find(validEnemies, function(enemy)
+                    return entity.Type == enemy.Type and (not enemy.Variant or entity.Variant == enemy.Variant)
+                end)
 
-            if foundEnemy then
-                Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.PLAYER_CREEP_RED, 0, entity.Position, Vector.Zero,
-                    entity)
+                if foundEnemy then
+                    Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.PLAYER_CREEP_RED, 0, entity.Position, Vector.Zero
+                        ,
+                        entity)
+                end
             end
-        end
-    end)
+        end)
+    end
 end
 
 return {

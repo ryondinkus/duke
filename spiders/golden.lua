@@ -1,6 +1,5 @@
-local key = "GOLDEN"
-local pickupSubType = HeartSubType.HEART_GOLDEN
-local subType = DukeHelpers.GetSpiderSubTypeByPickupSubType(pickupSubType)
+local heart = DukeHelpers.Hearts.GOLDEN
+local subType = DukeHelpers.OffsetIdentifier(heart)
 
 local function MC_PRE_FAMILIAR_COLLISION(_, f, e)
 	if f.SubType == subType then
@@ -12,7 +11,8 @@ end
 
 local function MC_POST_ENTITY_REMOVE(_, e)
 	if e.Variant == FamiliarVariant.BLUE_SPIDER and e.SubType == subType then
-		Isaac.Spawn(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_COIN, 0, e.Position, Vector.FromAngle(DukeHelpers.rng:RandomInt(0, 360)), e)
+		Isaac.Spawn(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_COIN, 0, e.Position,
+			Vector.FromAngle(DukeHelpers.rng:RandomInt(0, 360)), e)
 	end
 end
 
@@ -21,9 +21,8 @@ local function applyTearEffects(tear)
 end
 
 return {
-	key = key,
 	spritesheet = "gold_heart_spider.png",
-	pickupSubType = pickupSubType,
+	heart = heart,
 	count = 1,
 	weight = 1,
 	poofColor = Color(0.62, 0.62, 0.62, 1, 0.78, 0.55, 0),

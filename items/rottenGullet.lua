@@ -6,7 +6,7 @@ local Name = Names.en_us
 local Tag = "rottenGullet"
 local Id = Isaac.GetItemIdByName(Name)
 local Descriptions = {
-    en_us = "Poops and shits everywhere",
+    en_us = "On use, deals massive knockback and damage in a radius close to Tainted Duke, and fires 8 tears in all directions#Tears have a 50% chance of spawning Heart Spiders on collision#Tears and Heart Spiders have different properties based on the Heart Type consumed",
     spa = "Caca y mierda por todos lados"
 }
 local WikiDescription = DukeHelpers.GenerateEncyclopediaPage("Poops and shits everywhere.")
@@ -34,18 +34,18 @@ local smallMaxSlotTextScale = 1
 local defaultAnimationPath = "gfx/ui/ui_hearts.anm2"
 local defaultAnimationName = "RedHeartHalf"
 
-local function fireRottenGulletShot(player, pickupSubType, rng)
+local function fireRottenGulletShot(player, pickupKey, rng)
     local numberOfTears = 8
 
     if player:HasCollectible(CollectibleType.COLLECTIBLE_BIRTHRIGHT) then
         numberOfTears = 12
     end
 
-    local foundSpider = DukeHelpers.GetSpiderByPickupSubType(pickupSubType)
+    local foundSpider = DukeHelpers.Spiders[pickupKey]
 
     DukeHelpers.sfx:Play(SoundEffect.SOUND_WHEEZY_COUGH, 1, 0)
     DukeHelpers.sfx:Play(SoundEffect.SOUND_DEATH_BURST_LARGE, 1, 0)
-    DukeHelpers.SpawnPickupPoof(player, pickupSubType)
+    DukeHelpers.SpawnPickupPoof(player, pickupKey)
     local effect = Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.POOF02, 4, player.Position, Vector.Zero, player)
     effect.Color = foundSpider.poofColor
     Game():ShakeScreen(10)
@@ -99,11 +99,18 @@ local function fireRottenGulletShot(player, pickupSubType, rng)
         local function tearCollision(_, t)
             if tear.InitSeed == t.InitSeed then
                 if DukeHelpers.PercentageChance(50, 100, rng) then
-                    DukeHelpers.SpawnSpidersFromPickupSubType(pickupSubType, t.Position, t, 1)
-                    local player = t.SpawnerEntity:ToPlayer()
-                    if player and player:HasCollectible(CollectibleType.COLLECTIBLE_BOOK_OF_VIRTUES) then
-                        DukeHelpers.SpawnSpiderWispBySubType(pickupSubType, t.Position, player, false)
+                    DukeHelpers.SpawnSpidersFromKey(pickupKey, t.Position, t, 1)
+                    if t.SpawnerEntity then
+                        local spawnerEntityPlayer = t.SpawnerEntity:ToPlayer()
+                        if spawnerEntityPlayer and
+                            spawnerEntityPlayer:HasCollectible(CollectibleType.COLLECTIBLE_BOOK_OF_VIRTUES) then
+                            DukeHelpers.SpawnSpiderWisp(DukeHelpers.Wisps[foundSpider.key], t.Position,
+                                spawnerEntityPlayer,
+                                nil,
+                                false)
+                        end
                     end
+
                 end
                 dukeMod:RemoveCallback(ModCallbacks.MC_POST_ENTITY_REMOVE, tearCollision, EntityType.ENTITY_TEAR)
             end
@@ -261,9 +268,7 @@ local function MC_POST_RENDER()
             local startingY = y + ((isSmall and smallY or largeY) / 2)
 
             for i = amountToRender, 1, -1 do
-                local slotSpider = DukeHelpers.Find(DukeHelpers.Spiders, function(spider)
-                    return spider.pickupSubType == playerSlots[i]
-                end)
+                local slotSpider = DukeHelpers.Spiders[playerSlots[i]]
                 local sprite = Sprite()
                 local renderAboveSprite = Sprite()
 
@@ -328,6 +333,7 @@ return {
     Id = Id,
     Descriptions = Descriptions,
     WikiDescription = WikiDescription,
+    IsWikiHidden = true,
     callbacks = {
         {
             ModCallbacks.MC_USE_ITEM,
