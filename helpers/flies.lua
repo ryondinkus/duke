@@ -26,6 +26,7 @@ function DukeHelpers.SpawnHeartFly(player, fly, layer)
 end
 
 function DukeHelpers.AddHeartFly(player, fly, specificAmount, applyInfestedHeart)
+	print(fly.heartFlySubType)
 	if type(fly.heartFlySubType) == "table" then
 		local continueInfestedHeart = true
 		DukeHelpers.ForEach(fly.heartFlySubType, function(useFly)
@@ -259,9 +260,9 @@ function DukeHelpers.RemoveHeartFly(player, heartFlies, amount)
 	return removedFlies
 end
 
-function DukeHelpers.GetWeightedFly(rng, attack)
+function DukeHelpers.GetWeightedFly(rng, attack, specialOnly)
 	return DukeHelpers.GetWeightedIndex(DukeHelpers.Flies, "weight",
-		function(fly) return not attack or fly.canAttack end, rng)
+		function(fly) return (not attack or fly.canAttack) and (not specialOnly or fly.weight < 2) end, rng)
 end
 
 function DukeHelpers.IsFlyOfPlayer(fly, player)

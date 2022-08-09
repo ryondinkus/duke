@@ -95,3 +95,20 @@ end
 function DukeHelpers.IsLost(player)
     return player:GetPlayerType() == PlayerType.PLAYER_LOST or player:GetPlayerType() == PlayerType.PLAYER_LOST_B
 end
+
+function DukeHelpers.OnItemPickup(player, collectible, tag, callback)
+    local data = DukeHelpers.GetDukeData(player)
+
+    if data and data[tag] then
+        if player:IsExtraAnimationFinished() then
+            callback()
+            data[tag] = nil
+        end
+    else
+        local targetItem = player.QueuedItem.Item
+        if (not targetItem) or targetItem.ID ~= collectible then
+            return
+        end
+        data[tag] = true
+    end
+end
