@@ -187,7 +187,7 @@ function DukeHelpers.GetPlayerUnlocks(playerName)
     return dukeMod.unlocks[tostring(playerName)]
 end
 
-local function saveUnlock(unlock)
+local function unlockExists(unlock)
     local existingUnlock
 
     DukeHelpers.ForEach(DukeHelpers.GetPlayerUnlocks(unlock.playerName), function(u)
@@ -195,12 +195,16 @@ local function saveUnlock(unlock)
             u.difficulty = math.max((u.difficulty or 0), Game().Difficulty)
 
             if DukeHelpers.AreUnlocksEqual(unlock, u) then
-                existingUnlock = u
+                existingUnlock = true
             end
         end
     end)
 
-    if not existingUnlock then
+    return existingUnlock
+end
+
+local function saveUnlock(unlock)
+    if not unlockExists(unlock) then
         local savedUnlock = { key = unlock.key, difficulty = Game().Difficulty, tag = unlock.tag }
         table.insert(DukeHelpers.GetPlayerUnlocks(unlock.playerName), savedUnlock)
     end
@@ -208,9 +212,30 @@ local function saveUnlock(unlock)
     DukeHelpers.SaveGame()
 end
 
+local function removeUnlock(unlock)
+    print("its me!!")
+    print(unlockExists(unlock))
+    if unlockExists(unlock) then
+        print("hey babe")
+        for k, u in pairs(DukeHelpers.GetPlayerUnlocks(unlock.playerName)) do
+            print("checking " .. k)
+            if DukeHelpers.AreUnlocksEqual(u, unlock) then
+                print("found one bro")
+                DukeHelpers.GetPlayerUnlocks(unlock.playerName)[k] = nil
+                break
+            end
+        end
+    end
+    DukeHelpers.SaveGame()
+end
+
 local function unlockUnlock(unlock)
     DukeGiantBookAPI.ShowAchievement("achievement_" .. unlock.tag .. ".png")
     saveUnlock(unlock)
+end
+
+local function lockUnlock(unlock)
+    removeUnlock(unlock)
 end
 
 local function handleUnlock(unlock, entity, forceUnlock)
@@ -312,6 +337,16 @@ function DukeHelpers.RegisterUnlock(unlock)
                 dukeMod:AddCallback(ModCallbacks.MC_POST_ENTITY_KILL,
                     function(_, entity) handleUnlock(unlock, entity) end, unlock.entityType)
             end
+        end
+    end
+end
+
+function DukeHelpers.MCMUnlockToggle(unlock, enable)
+    if unlock then
+        if enable then
+            unlockUnlock(unlock)
+        else
+            lockUnlock(unlock)
         end
     end
 end

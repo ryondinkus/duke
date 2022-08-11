@@ -17,6 +17,8 @@ local defaultGlobal = {
     flyHearts = {}
 }
 
+defaultMcmOptions = {}
+
 dukeMod.global = table.deepCopy(defaultGlobal)
 
 DukeHelpers = {
@@ -63,6 +65,7 @@ include("helpers/flies")
 include("helpers/giantbook")
 include("helpers/hearts")
 include("helpers/husk")
+include("helpers/modConfigMenu")
 include("helpers/partitions")
 include("helpers/players")
 include("helpers/prices")
@@ -380,7 +383,7 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_NEW_ROOM, function()
             dukeMod.unlocks = {}
             dukeMod.mcmOptions = {}
         end
-        --InitializeMCM(defaultMcmOptions)
+        DukeHelpers.InitializeMCM(defaultMcmOptions)
         dukeMod.global.isInitialized = true
     end
 
