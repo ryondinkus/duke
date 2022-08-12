@@ -1,27 +1,62 @@
 local MenuName = "Duke - Beta"
 
+function isTableUnlocked(itemTable)
+	for k, item in pairs(itemTable) do
+		if not DukeHelpers.IsUnlocked(item.unlock) then
+			return false
+		end
+		return true
+	end
+end
+
 function generateUnlockSetting(item, bossName, playerName)
-	ModConfigMenu.AddSetting(
-		MenuName,
-		"Unlocks",
-		{
-			Attribute = bossName,
-			Type = ModConfigMenu.OptionType.BOOLEAN,
-			CurrentSetting = function()
-				return DukeHelpers.IsUnlocked(item.unlock)
-			end,
-			Display = function()
-				if DukeHelpers.IsUnlocked(item.unlock) then
-					return bossName .. ": Unlocked"
-				end
-				return bossName .. ": Locked"
-			end,
-			OnChange = function(currentBool)
-				DukeHelpers.MCMUnlockToggle(item.unlock, currentBool)
-			end,
-			Info = "Unlocks " .. item.Name .. ", for beating " .. bossName .. " as " .. playerName
-		}
-	)
+	if DukeHelpers.IsArray(item) then
+		ModConfigMenu.AddSetting(
+			MenuName,
+			"Unlocks",
+			{
+				Attribute = bossName,
+				Type = ModConfigMenu.OptionType.BOOLEAN,
+				CurrentSetting = function()
+					return isTableUnlocked(item)
+				end,
+				Display = function()
+					if isTableUnlocked(item) then
+						return "Lock All"
+					end
+					return "Unlock All"
+				end,
+				OnChange = function(currentBool)
+					for k, i in pairs(item) do
+						DukeHelpers.MCMUnlockToggle(i.unlock, currentBool)
+					end
+				end,
+				Info = "Unlocks all " .. playerName .. " unlocks"
+			}
+		)
+	else
+		ModConfigMenu.AddSetting(
+			MenuName,
+			"Unlocks",
+			{
+				Attribute = bossName,
+				Type = ModConfigMenu.OptionType.BOOLEAN,
+				CurrentSetting = function()
+					return DukeHelpers.IsUnlocked(item.unlock)
+				end,
+				Display = function()
+					if DukeHelpers.IsUnlocked(item.unlock) then
+						return bossName .. ": Unlocked"
+					end
+					return bossName .. ": Locked"
+				end,
+				OnChange = function(currentBool)
+					DukeHelpers.MCMUnlockToggle(item.unlock, currentBool)
+				end,
+				Info = "Unlocks " .. item.Name .. ", for beating " .. bossName .. " as " .. playerName
+			}
+		)
+	end
 end
 
 function DukeHelpers.InitializeMCM(defaultMcmOptions)
@@ -35,41 +70,38 @@ function DukeHelpers.InitializeMCM(defaultMcmOptions)
 		end
 	end
 	local mcmOptions = dukeMod.mcmOptions
+
+	local dukeUnlocks = { DukeHelpers.Items.othersGullet,
+					DukeHelpers.Trinkets.dukesTooth,
+					DukeHelpers.Trinkets.infestedHeart,
+					DukeHelpers.Trinkets.pocketOfFlies,
+					DukeHelpers.Items.thePrinces,
+					DukeHelpers.Items.ultraHeartFly,
+					DukeHelpers.Items.lilDuke,
+					DukeHelpers.Items.superInfestation,
+					DukeHelpers.Items.dukeFlute,
+					DukeHelpers.Items.fiendishSwarm,
+					DukeHelpers.Items.queenFly,
+					DukeHelpers.Cards.tapewormCard,
+					DukeHelpers.Items.shartyMcFly,
+					DukeHelpers.Items.dukeOfEyes }
+
 	if ModConfigMenu then
 		ModConfigMenu.AddText(MenuName, "Unlocks", "Duke")
-		-- ModConfigMenu.AddSetting(
-		-- 	MenuName,
-		-- 	"Unlocks",
-		-- 	{
-		-- 		Attribute = bossName,
-		-- 		Type = ModConfigMenu.OptionType.BOOLEAN,
-		-- 		CurrentSetting = function()
-		-- 			return DukeHelpers.IsUnlocked(item.unlock)
-		-- 		end,
-		-- 		Display = function()
-		-- 			if DukeHelpers.IsUnlocked(item.unlock) then
-		-- 				return "Unlock all for Duke"
-		-- 			end
-		-- 			return "Lock all for Duke"
-		-- 		end,
-		-- 		OnChange = function(currentBool)
-		-- 			DukeHelpers.MCMUnlockToggle(item.unlock, currentBool)
-		-- 		end,
-		-- 		Info = "Unlocks " .. item.Name .. ", for beating " .. bossName .. " as " .. playerName
-		-- 	}
-		-- )
-		generateUnlockSetting(DukeHelpers.Items.othersGullet, "Mom's Heart", "Duke")
-		generateUnlockSetting(DukeHelpers.Trinkets.dukesTooth, "Isaac", "Duke")
-		generateUnlockSetting(DukeHelpers.Trinkets.infestedHeart, "Satan", "Duke")
-		generateUnlockSetting(DukeHelpers.Trinkets.pocketOfFlies, "???", "Duke")
-		generateUnlockSetting(DukeHelpers.Items.thePrinces, "The Lamb", "Duke")
-		generateUnlockSetting(DukeHelpers.Items.ultraHeartFly, "Mega Satan", "Duke")
-		generateUnlockSetting(DukeHelpers.Items.lilDuke, "Boss Rush", "Duke")
-		generateUnlockSetting(DukeHelpers.Items.superInfestation, "Hush", "Duke")
-		generateUnlockSetting(DukeHelpers.Items.dukeFlute, "Delirium", "Duke")
-		generateUnlockSetting(DukeHelpers.Items.fiendishSwarm, "Mother", "Duke")
-		generateUnlockSetting(DukeHelpers.Items.queenFly, "The Beast", "Duke")
-		generateUnlockSetting(DukeHelpers.Cards.tapewormCard, "Ultra Greed", "Duke")
-		generateUnlockSetting(DukeHelpers.Items.shartyMcFly, "Ultra Greedier", "Duke")
+		generateUnlockSetting(dukeUnlocks, nil, "Duke")
+		generateUnlockSetting(dukeUnlocks[1], "Mom's Heart", "Duke")
+		generateUnlockSetting(dukeUnlocks[2], "Isaac", "Duke")
+		generateUnlockSetting(dukeUnlocks[3], "Satan", "Duke")
+		generateUnlockSetting(dukeUnlocks[4], "???", "Duke")
+		generateUnlockSetting(dukeUnlocks[5], "The Lamb", "Duke")
+		generateUnlockSetting(dukeUnlocks[6], "Mega Satan", "Duke")
+		generateUnlockSetting(dukeUnlocks[7], "Boss Rush", "Duke")
+		generateUnlockSetting(dukeUnlocks[8], "Hush", "Duke")
+		generateUnlockSetting(dukeUnlocks[9], "Delirium", "Duke")
+		generateUnlockSetting(dukeUnlocks[10], "Mother", "Duke")
+		generateUnlockSetting(dukeUnlocks[11], "The Beast", "Duke")
+		generateUnlockSetting(dukeUnlocks[12], "Ultra Greed", "Duke")
+		generateUnlockSetting(dukeUnlocks[13], "Ultra Greedier", "Duke")
+		generateUnlockSetting(dukeUnlocks[14], "all Hard Mode Marks", "Duke")
 	end
 end

@@ -97,6 +97,7 @@ function DukeHelpers.GetUnlock(unlock, tag, playerName, alsoUnlock, isHardMode)
     if DukeHelpers.IsArray(dupedUnlock) then
         for key, onceUnlocked in pairs(dupedUnlock) do
             if onceUnlocked.playerName then
+
                 onceUnlocked.tag = tag
 
                 if onceUnlocked.alsoUnlock then
@@ -224,8 +225,10 @@ local function removeUnlock(unlock)
     DukeHelpers.SaveGame()
 end
 
-local function unlockUnlock(unlock)
-    DukeGiantBookAPI.ShowAchievement("achievement_" .. unlock.tag .. ".png")
+local function unlockUnlock(unlock, hidePaper)
+    if not hidePaper then
+        DukeGiantBookAPI.ShowAchievement("achievement_" .. unlock.tag .. ".png")
+    end
     saveUnlock(unlock, unlock.difficulty)
 end
 
@@ -339,9 +342,21 @@ end
 function DukeHelpers.MCMUnlockToggle(unlock, enable)
     if unlock then
         if enable then
-            unlockUnlock(unlock)
+            if DukeHelpers.IsArray(unlock) then
+                for k, u in pairs(unlock) do
+                    unlockUnlock(u, true)
+                end
+            else
+                unlockUnlock(unlock, true)
+            end
         else
-            lockUnlock(unlock)
+            if DukeHelpers.IsArray(unlock) then
+                for k, u in pairs(unlock) do
+                    lockUnlock(u, true)
+                end
+            else
+                lockUnlock(unlock, true)
+            end
         end
     end
 end
