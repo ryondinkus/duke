@@ -203,9 +203,9 @@ local function unlockExists(unlock)
     return existingUnlock
 end
 
-local function saveUnlock(unlock)
+local function saveUnlock(unlock, overrideDifficulty)
     if not unlockExists(unlock) then
-        local savedUnlock = { key = unlock.key, difficulty = Game().Difficulty, tag = unlock.tag }
+        local savedUnlock = { key = unlock.key, difficulty = (overrideDifficulty or Game().Difficulty), tag = unlock.tag }
         table.insert(DukeHelpers.GetPlayerUnlocks(unlock.playerName), savedUnlock)
     end
 
@@ -213,15 +213,10 @@ local function saveUnlock(unlock)
 end
 
 local function removeUnlock(unlock)
-    print("its me!!")
-    print(unlockExists(unlock))
     if unlockExists(unlock) then
-        print("hey babe")
         for k, u in pairs(DukeHelpers.GetPlayerUnlocks(unlock.playerName)) do
-            print("checking " .. k)
-            if DukeHelpers.AreUnlocksEqual(u, unlock) then
-                print("found one bro")
-                DukeHelpers.GetPlayerUnlocks(unlock.playerName)[k] = nil
+            if DukeHelpers.AreUnlocksEqual(unlock, u) then
+                table.remove(DukeHelpers.GetPlayerUnlocks(unlock.playerName), k)
                 break
             end
         end
@@ -231,7 +226,7 @@ end
 
 local function unlockUnlock(unlock)
     DukeGiantBookAPI.ShowAchievement("achievement_" .. unlock.tag .. ".png")
-    saveUnlock(unlock)
+    saveUnlock(unlock, unlock.difficulty)
 end
 
 local function lockUnlock(unlock)
