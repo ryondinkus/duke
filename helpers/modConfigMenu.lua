@@ -37,27 +37,27 @@ function DukeHelpers.InitializeMCM(defaultMcmOptions)
 	local mcmOptions = dukeMod.mcmOptions
 	if ModConfigMenu then
 		ModConfigMenu.AddText(MenuName, "Unlocks", "Duke")
-		ModConfigMenu.AddSetting(
-			MenuName,
-			"Unlocks",
-			{
-				Attribute = bossName,
-				Type = ModConfigMenu.OptionType.BOOLEAN,
-				CurrentSetting = function()
-					return DukeHelpers.IsUnlocked(item.unlock)
-				end,
-				Display = function()
-					if DukeHelpers.IsUnlocked(item.unlock) then
-						return "Unlock all for Duke"
-					end
-					return "Lock all for Duke"
-				end,
-				OnChange = function(currentBool)
-					DukeHelpers.MCMUnlockToggle(item.unlock, currentBool)
-				end,
-				Info = "Unlocks " .. item.Name .. ", for beating " .. bossName .. " as " .. playerName
-			}
-		)
+		-- ModConfigMenu.AddSetting(
+		-- 	MenuName,
+		-- 	"Unlocks",
+		-- 	{
+		-- 		Attribute = bossName,
+		-- 		Type = ModConfigMenu.OptionType.BOOLEAN,
+		-- 		CurrentSetting = function()
+		-- 			return DukeHelpers.IsUnlocked(item.unlock)
+		-- 		end,
+		-- 		Display = function()
+		-- 			if DukeHelpers.IsUnlocked(item.unlock) then
+		-- 				return "Unlock all for Duke"
+		-- 			end
+		-- 			return "Lock all for Duke"
+		-- 		end,
+		-- 		OnChange = function(currentBool)
+		-- 			DukeHelpers.MCMUnlockToggle(item.unlock, currentBool)
+		-- 		end,
+		-- 		Info = "Unlocks " .. item.Name .. ", for beating " .. bossName .. " as " .. playerName
+		-- 	}
+		-- )
 		generateUnlockSetting(DukeHelpers.Items.othersGullet, "Mom's Heart", "Duke")
 		generateUnlockSetting(DukeHelpers.Trinkets.dukesTooth, "Isaac", "Duke")
 		generateUnlockSetting(DukeHelpers.Trinkets.infestedHeart, "Satan", "Duke")
