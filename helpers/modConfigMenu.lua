@@ -72,19 +72,25 @@ function DukeHelpers.InitializeMCM(defaultMcmOptions)
 	local mcmOptions = dukeMod.mcmOptions
 
 	local dukeUnlocks = { DukeHelpers.Items.othersGullet,
-					DukeHelpers.Trinkets.dukesTooth,
-					DukeHelpers.Trinkets.infestedHeart,
-					DukeHelpers.Trinkets.pocketOfFlies,
-					DukeHelpers.Items.thePrinces,
-					DukeHelpers.Items.ultraHeartFly,
-					DukeHelpers.Items.lilDuke,
-					DukeHelpers.Items.superInfestation,
-					DukeHelpers.Items.dukeFlute,
-					DukeHelpers.Items.fiendishSwarm,
-					DukeHelpers.Items.queenFly,
-					DukeHelpers.Cards.tapewormCard,
-					DukeHelpers.Items.shartyMcFly,
-					DukeHelpers.Items.dukeOfEyes }
+						DukeHelpers.Trinkets.dukesTooth,
+						DukeHelpers.Trinkets.infestedHeart,
+						DukeHelpers.Trinkets.pocketOfFlies,
+						DukeHelpers.Items.thePrinces,
+						DukeHelpers.Items.ultraHeartFly,
+						DukeHelpers.Items.lilDuke,
+						DukeHelpers.Items.superInfestation,
+						DukeHelpers.Items.dukeFlute,
+						DukeHelpers.Items.fiendishSwarm,
+						DukeHelpers.Items.queenFly,
+						DukeHelpers.Cards.tapewormCard,
+						DukeHelpers.Items.shartyMcFly,
+						DukeHelpers.Items.dukeOfEyes }
+	local huskUnlocks = { DukeHelpers.Trinkets.mosquito,
+						DukeHelpers.Cards.soulOfDuke,
+						DukeHelpers.Items.othersRottenGullet,
+						DukeHelpers.Items.lilHusk,
+						DukeHelpers.Items.theInvader,
+						DukeHelpers.Cards.redTapewormCard }
 
 	if ModConfigMenu then
 		ModConfigMenu.AddText(MenuName, "Unlocks", "Duke")
@@ -103,5 +109,13 @@ function DukeHelpers.InitializeMCM(defaultMcmOptions)
 		generateUnlockSetting(dukeUnlocks[12], "Ultra Greed", "Duke")
 		generateUnlockSetting(dukeUnlocks[13], "Ultra Greedier", "Duke")
 		generateUnlockSetting(dukeUnlocks[14], "all Hard Mode Marks", "Duke")
+		ModConfigMenu.AddText(MenuName, "Unlocks", "Tainted Duke")
+		generateUnlockSetting(huskUnlocks, nil, "Tainted Duke")
+		generateUnlockSetting(huskUnlocks[1], "Isaac, Satan, ???, and The Lamb", "Tainted Duke")
+		generateUnlockSetting(huskUnlocks[2], "Boss Rush and Hush", "Tainted Duke")
+		generateUnlockSetting(huskUnlocks[3], "Delirium", "Tainted Duke")
+		generateUnlockSetting(huskUnlocks[4], "Mother", "Tainted Duke")
+		generateUnlockSetting(huskUnlocks[5], "The Beast", "Tainted Duke")
+		generateUnlockSetting(huskUnlocks[6], "Ultra Greedier", "Tainted Duke")
 	end
 end
