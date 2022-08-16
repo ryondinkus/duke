@@ -1,3 +1,5 @@
+local Name = "Fly Hearts"
+local Tag = "flyHearts"
 local flyHeartsUnlock = DukeHelpers.GetUnlock(DukeHelpers.Unlocks.MEGA_SATAN, "flyHearts", DukeHelpers.HUSK_NAME)
 
 DukeHelpers.RegisterUnlock(flyHeartsUnlock)
@@ -113,3 +115,9 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_PICKUP_UPDATE, function(_, pickup)
         return DukeHelpers.PickupFlyHeart(pickup)
     end
 end)
+
+DukeHelpers.FlyHearts = {
+    Name = Name,
+    Tag = Tag,
+    unlock = flyHeartsUnlock
+}
