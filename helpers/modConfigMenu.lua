@@ -1,6 +1,6 @@
 local MenuName = "Duke - Beta"
 
-function isTableUnlocked(itemTable)
+local function isTableUnlocked(itemTable)
 	for k, item in pairs(itemTable) do
 		if not DukeHelpers.IsUnlocked(item.unlock) then
 			return false
@@ -9,7 +9,7 @@ function isTableUnlocked(itemTable)
 	end
 end
 
-function generateUnlockSetting(item, bossName, playerName)
+local function generateUnlockSetting(item, bossName, playerName)
 	if DukeHelpers.IsArray(item) then
 		ModConfigMenu.AddSetting(
 			MenuName,
@@ -69,6 +69,44 @@ function generateUnlockSetting(item, bossName, playerName)
 			}
 		)
 	end
+end
+
+local function getItemVariant(item)
+	if DukeHelpers.CountOccurencesInTable(DukeHelpers.Items, item) > 0 then
+		return PickupVariant.PICKUP_COLLECTIBLE
+	elseif DukeHelpers.CountOccurencesInTable(DukeHelpers.Trinkets, item) > 0 then
+		return PickupVariant.PICKUP_TRINKET
+	elseif DukeHelpers.CountOccurencesInTable(DukeHelpers.Cards, item) > 0 then
+		return PickupVariant.PICKUP_TAROTCARD
+	elseif item.Name == "Fly Hearts" then
+		return PickupVariant.PICKUP_HEART
+	else return nil end
+end
+
+local function generateSpawnItemSetting(item)
+	ModConfigMenu.AddSetting(
+		MenuName,
+		"Spawn Item",
+		{
+			Attribute = bossName,
+			Type = ModConfigMenu.OptionType.BOOLEAN,
+			CurrentSetting = function()
+				return false
+			end,
+			Display = function()
+				return item.Name
+			end,
+			OnChange = function(currentBool)
+				if currentBool then
+					local room = Game():GetRoom()
+					Isaac.Spawn(EntityType.ENTITY_PICKUP, getItemVariant(item), item.Id,
+						room:FindFreePickupSpawnPosition(room:GetCenterPos()), Vector.Zero, nil)
+					currentBool = false
+				end
+			end,
+			Info = "Spawn " .. item.Name
+		}
+	)
 end
 
 function DukeHelpers.InitializeMCM(defaultMcmOptions)
@@ -137,5 +175,20 @@ function DukeHelpers.InitializeMCM(defaultMcmOptions)
 		generateUnlockSetting(huskUnlocks[5], "Mother", "Tainted Duke")
 		generateUnlockSetting(huskUnlocks[6], "The Beast", "Tainted Duke")
 		generateUnlockSetting(huskUnlocks[7], "Ultra Greedier", "Tainted Duke")
+
+		ModConfigMenu.AddText(MenuName, "Spawn Item", "Use this menu to spawn items, trinkets,")
+		ModConfigMenu.AddText(MenuName, "Spawn Item", "and cards that are new to this mod.")
+		ModConfigMenu.AddSpace(MenuName, "Spawn Item")
+		ModConfigMenu.AddText(MenuName, "Spawn Item", "NOTE: You must have the unlocks")
+		ModConfigMenu.AddText(MenuName, "Spawn Item", "unlocked to properly spawn the item!")
+		ModConfigMenu.AddSpace(MenuName, "Spawn Item")
+
+		for k,v in pairs(dukeUnlocks) do
+			generateSpawnItemSetting(v)
+		end
+
+		for k,v in pairs(huskUnlocks) do
+			generateSpawnItemSetting(v)
+		end
 	end
 end
