@@ -4,7 +4,7 @@ local flyHeartsUnlock = DukeHelpers.GetUnlock(DukeHelpers.Unlocks.MEGA_SATAN, "f
 
 DukeHelpers.RegisterUnlock(flyHeartsUnlock)
 
-local function SetFlyHeart(pickup)
+function DukeHelpers.SetFlyHeart(pickup)
     local pickupData = pickup:GetData()
     pickupData.isFlyHeart = true
 

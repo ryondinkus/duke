@@ -78,8 +78,6 @@ local function getItemVariant(item)
 		return PickupVariant.PICKUP_TRINKET
 	elseif DukeHelpers.CountOccurencesInTable(DukeHelpers.Cards, item) > 0 then
 		return PickupVariant.PICKUP_TAROTCARD
-	elseif item.Name == "Fly Hearts" then
-		return PickupVariant.PICKUP_HEART
 	else return nil end
 end
 
@@ -99,8 +97,14 @@ local function generateSpawnItemSetting(item)
 			OnChange = function(currentBool)
 				if currentBool then
 					local room = Game():GetRoom()
-					Isaac.Spawn(EntityType.ENTITY_PICKUP, getItemVariant(item), item.Id,
-						room:FindFreePickupSpawnPosition(room:GetCenterPos()), Vector.Zero, nil)
+					if (item.Name == "Fly Hearts") then
+						heart = Isaac.Spawn(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_HEART, HeartSubType.HEART_FULL,
+							room:FindFreePickupSpawnPosition(room:GetCenterPos()), Vector.Zero, nil)
+						DukeHelpers.SetFlyHeart(heart)
+					else
+						Isaac.Spawn(EntityType.ENTITY_PICKUP, getItemVariant(item), item.Id,
+							room:FindFreePickupSpawnPosition(room:GetCenterPos()), Vector.Zero, nil)
+					end
 					currentBool = false
 				end
 			end,
@@ -183,12 +187,36 @@ function DukeHelpers.InitializeMCM(defaultMcmOptions)
 		ModConfigMenu.AddText(MenuName, "Spawn Item", "unlocked to properly spawn the item!")
 		ModConfigMenu.AddSpace(MenuName, "Spawn Item")
 
-		for k,v in pairs(dukeUnlocks) do
-			generateSpawnItemSetting(v)
-		end
+		ModConfigMenu.AddTitle(MenuName, "Spawn Item", "Items")
+		generateSpawnItemSetting(dukeUnlocks[1])
+		generateSpawnItemSetting(dukeUnlocks[5])
+		generateSpawnItemSetting(dukeUnlocks[6])
+		generateSpawnItemSetting(dukeUnlocks[7])
+		generateSpawnItemSetting(dukeUnlocks[8])
+		generateSpawnItemSetting(dukeUnlocks[9])
+		generateSpawnItemSetting(dukeUnlocks[10])
+		generateSpawnItemSetting(dukeUnlocks[11])
+		generateSpawnItemSetting(dukeUnlocks[13])
+		generateSpawnItemSetting(dukeUnlocks[14])
+		generateSpawnItemSetting(huskUnlocks[4])
+		generateSpawnItemSetting(huskUnlocks[5])
+		generateSpawnItemSetting(huskUnlocks[6])
+		ModConfigMenu.AddSpace(MenuName, "Spawn Item")
 
-		for k,v in pairs(huskUnlocks) do
-			generateSpawnItemSetting(v)
-		end
+		ModConfigMenu.AddTitle(MenuName, "Spawn Item", "Trinkets")
+		generateSpawnItemSetting(dukeUnlocks[2])
+		generateSpawnItemSetting(dukeUnlocks[3])
+		generateSpawnItemSetting(dukeUnlocks[4])
+		generateSpawnItemSetting(huskUnlocks[1])
+		ModConfigMenu.AddSpace(MenuName, "Spawn Item")
+
+		ModConfigMenu.AddTitle(MenuName, "Spawn Item", "Cards")
+		generateSpawnItemSetting(dukeUnlocks[12])
+		generateSpawnItemSetting(huskUnlocks[3])
+		generateSpawnItemSetting(huskUnlocks[7])
+		ModConfigMenu.AddSpace(MenuName, "Spawn Item")
+
+		ModConfigMenu.AddTitle(MenuName, "Spawn Item", "Pickups")
+		generateSpawnItemSetting(huskUnlocks[2])
 	end
 end
