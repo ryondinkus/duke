@@ -40,9 +40,9 @@ local function generateUnlockSetting(item, bossName, playerName)
 				end,
 				Info = function ()
 					if not playerName then
-						return "Unlocks every unlock in the mod"
+						return "Unlocks every unlock in the mod."
 					end
-					return "Unlocks all " .. playerName .. " unlocks"
+					return "Unlocks all " .. playerName .. " unlocks."
 				end
 			}
 		)
@@ -65,7 +65,7 @@ local function generateUnlockSetting(item, bossName, playerName)
 				OnChange = function(currentBool)
 					DukeHelpers.MCMUnlockToggle(item.unlock, currentBool)
 				end,
-				Info = "Unlocks " .. item.Name .. ", for beating " .. bossName .. " as " .. playerName
+				Info = "Unlocks " .. item.Name .. ", for beating " .. bossName .. " as " .. playerName .. "."
 			}
 		)
 	end
@@ -108,7 +108,33 @@ local function generateSpawnItemSetting(item)
 					currentBool = false
 				end
 			end,
-			Info = "Spawn " .. item.Name
+			Info = "Spawn " .. item.Name .. "."
+		}
+	)
+end
+
+local function generateSpawnHeartSetting(heartName, heartSubType, heartVariant)
+	ModConfigMenu.AddSetting(
+		MenuName,
+		"Spawn Heart",
+		{
+			Attribute = bossName,
+			Type = ModConfigMenu.OptionType.BOOLEAN,
+			CurrentSetting = function()
+				return false
+			end,
+			Display = function()
+				return heartName
+			end,
+			OnChange = function(currentBool)
+				if currentBool then
+					local room = Game():GetRoom()
+					Isaac.Spawn(EntityType.ENTITY_PICKUP, heartVariant or PickupVariant.PICKUP_HEART, heartSubType,
+						room:FindFreePickupSpawnPosition(room:GetCenterPos()), Vector.Zero, nil)
+					currentBool = false
+				end
+			end,
+			Info = "Spawn a " .. heartName .. " heart."
 		}
 	)
 end
@@ -218,5 +244,28 @@ function DukeHelpers.InitializeMCM(defaultMcmOptions)
 
 		ModConfigMenu.AddTitle(MenuName, "Spawn Item", "Pickups")
 		generateSpawnItemSetting(huskUnlocks[2])
+
+		ModConfigMenu.AddTitle(MenuName, "Spawn Heart", "Vanilla")
+		generateSpawnHeartSetting("Red", DukeHelpers.Hearts.RED.subType)
+		generateSpawnHeartSetting("Half Red", DukeHelpers.Hearts.HALF_RED.subType)
+		generateSpawnHeartSetting("Soul", DukeHelpers.Hearts.SOUL.subType)
+		generateSpawnHeartSetting("Eternal", DukeHelpers.Hearts.ETERNAL.subType)
+		generateSpawnHeartSetting("Double Red", DukeHelpers.Hearts.DOUBLE_RED.subType)
+		generateSpawnHeartSetting("Black", DukeHelpers.Hearts.BLACK.subType)
+		generateSpawnHeartSetting("Golden", DukeHelpers.Hearts.GOLDEN.subType)
+		generateSpawnHeartSetting("Half Soul", DukeHelpers.Hearts.HALF_SOUL.subType)
+		generateSpawnHeartSetting("Scared", DukeHelpers.Hearts.SCARED.subType)
+		generateSpawnHeartSetting("Blended", DukeHelpers.Hearts.BLENDED.subType)
+		generateSpawnHeartSetting("Bone", DukeHelpers.Hearts.BONE.subType)
+		generateSpawnHeartSetting("Rotten", DukeHelpers.Hearts.ROTTEN.subType)
+		ModConfigMenu.AddSpace(MenuName, "Spawn Heart")
+
+		ModConfigMenu.AddTitle(MenuName, "Spawn Heart", "Modded")
+		generateSpawnHeartSetting("Moonlight", 0, DukeHelpers.Hearts.MOONLIGHT.variant)
+		generateSpawnHeartSetting("Patched", DukeHelpers.Hearts.PATCHED.subType)
+		generateSpawnHeartSetting("Double Patched", DukeHelpers.Hearts.DOUBLE_PATCHED.subType)
+		generateSpawnHeartSetting("Immortal", DukeHelpers.Hearts.IMMORTAL.subType)
+		generateSpawnHeartSetting("Web", 0, DukeHelpers.Hearts.WEB.variant)
+		generateSpawnHeartSetting("Double Web", 0, DukeHelpers.Hearts.DOUBLE_WEB.variant)
 	end
 end
