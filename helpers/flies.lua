@@ -26,7 +26,6 @@ function DukeHelpers.SpawnHeartFly(player, fly, layer)
 end
 
 function DukeHelpers.AddHeartFly(player, fly, specificAmount, applyInfestedHeart)
-	print(fly.heartFlySubType)
 	if type(fly.heartFlySubType) == "table" then
 		local continueInfestedHeart = true
 		DukeHelpers.ForEach(fly.heartFlySubType, function(useFly)

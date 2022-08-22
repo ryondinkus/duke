@@ -36,5 +36,7 @@ function DukeHelpers.GetFlyCount(player, includeBroken)
 end
 
 function DukeHelpers.AddStartupFlies(p)
+    local dukeData = DukeHelpers.GetDukeData(p)
     DukeHelpers.AddHeartFly(p, DukeHelpers.Flies.RED, 3)
+    dukeData.hasStartupFlies = true
 end
