@@ -61,7 +61,7 @@ end, DukeHelpers.FLY_VARIANT)
 dukeMod:AddCallback(ModCallbacks.MC_FAMILIAR_UPDATE, function(_, f)
 	local attackFlyData = DukeHelpers.GetDukeData(f)
 	if attackFlyData.attacker then
-		if not attackFlyData.attacker:IsDead() then
+		if not attackFlyData.attacker:IsDead() and DukeHelpers.IsActualEnemy(attackFlyData.attacker, true, false) then
 			f.Target = attackFlyData.attacker
 		else
 			f.Target = nil

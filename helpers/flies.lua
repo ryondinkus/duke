@@ -303,8 +303,7 @@ function DukeHelpers.SpawnPickupHeartFly(player, pickup, overriddenKey, amount, 
 
 		if DukeHelpers.IsDuke(player) and heart.variant == PickupVariant.PICKUP_HEART and
 			(
-			heart.subType == HeartSubType.HEART_SOUL or heart.subType == HeartSubType.HEART_HALF_SOUL or
-				heart.subType == HeartSubType.HEART_BLACK) and DukeHelpers.Hearts.SOUL.GetCount(player) < DukeHelpers.MAX_HEALTH then
+			heart.subType == HeartSubType.HEART_SOUL or heart.subType == HeartSubType.HEART_HALF_SOUL) and DukeHelpers.Hearts.SOUL.GetCount(player) < DukeHelpers.MAX_HEALTH then
 			local heartSlots = 2
 
 			if heart.subType == HeartSubType.HEART_HALF_SOUL then
