@@ -22,7 +22,7 @@ local WikiDescription = DukeHelpers.GenerateEncyclopediaPage({
 		"- The inner layer can hold up to 3 flies, the middle can hold 9, and the outer can hold 12.",
 		"Heart Orbital Flies deal contact damage based on their layer. Flies on the inner layer deal 7 contact damage, middle flies deal 3, and outer flies deal 2.",
 		"Flies that Duke gains have special attributes based on the heart type that Duke picks up. For more information on specific fly effects, see Heart Flies.",
-		"Duke's pocket active, Duke's Gullet, allows Duke to convert all of his Heart Orbital Flies into Heart Attack Flies. Heart Attack Flies spawned this way have a chance of spawning a half heart of their corresponding type.",
+		"Duke's pocket active, Duke's Gullet, allows Duke to convert his outermost layer of Heart Orbital Flies into Heart Attack Flies. Heart Attack Flies spawned this way have a chance of spawning a half heart of their corresponding type.",
 		"- Soul Heart Flies have a 100% chance of spawning a Half Soul Heart."
 	},
 	{
