@@ -34,7 +34,7 @@ function DukeHelpers.SetFlyHeart(pickup)
 end
 
 local function StoreFlyHeart(pickup)
-    SetFlyHeart(pickup)
+    DukeHelpers.SetFlyHeart(pickup)
     if not dukeMod.global.flyHearts then
         dukeMod.global.flyHearts = {}
     end
@@ -48,7 +48,8 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_NEW_LEVEL, function()
 end)
 
 local function flyHeartPickupUpdate(_, pickup)
-    if pickup.FrameCount <= 1 and DukeHelpers.IsSupportedHeart(pickup) and DukeHelpers.IsUnlocked(flyHeartsUnlock) then
+    if pickup.FrameCount <= 1 and DukeHelpers.IsSupportedHeart(pickup) and DukeHelpers.IsUnlocked(flyHeartsUnlock)
+	and not DukeHelpers.GetDukeData(pickup).noFlyHearts then
         if pickup:GetSprite():GetAnimation() == "Appear" then
             if DukeHelpers.PercentageChance(5) then
                 StoreFlyHeart(pickup)
@@ -56,7 +57,7 @@ local function flyHeartPickupUpdate(_, pickup)
         else
             for _, flyHeartHash in pairs(dukeMod.global.flyHearts) do
                 if pickup.InitSeed == flyHeartHash then
-                    SetFlyHeart(pickup)
+                    DukeHelpers.SetFlyHeart(pickup)
                     break
                 end
             end

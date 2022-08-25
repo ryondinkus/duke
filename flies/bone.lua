@@ -63,5 +63,7 @@ return {
         }
     },
     heartFlyDamageMultiplier = 1.3,
-    attackFlyDamageMultiplier = 1.3
+    attackFlyDamageMultiplier = 1.3,
+	dropHeart = DukeHelpers.Hearts.BONE,
+	dropHeartChance = 20
 }

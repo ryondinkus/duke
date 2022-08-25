@@ -55,5 +55,7 @@ return {
             ModCallbacks.MC_PRE_SPAWN_CLEAN_AWARD,
             HEART_FLY_PRE_SPAWN_CLEAN_AWARD
         }
-    }
+    },
+	dropHeart = DukeHelpers.Hearts.ROTTEN,
+	dropHeartChance = 20
 }

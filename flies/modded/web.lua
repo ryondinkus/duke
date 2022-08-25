@@ -66,5 +66,7 @@ return {
 			MC_PRE_FAMILIAR_COLLISION,
 			DukeHelpers.FLY_VARIANT
 		}
-	}
+	},
+	dropHeart = DukeHelpers.Hearts.WEB,
+	dropHeartChance = 20
 }
