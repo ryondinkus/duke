@@ -8,6 +8,16 @@ dukeMod:AddCallback(ModCallbacks.MC_FAMILIAR_UPDATE, function(_, f)
 		sprite:Play("Idle", true)
 	end
 
+	if data.layer == nil then
+		local fliesData = DukeHelpers.GetDukeData(f.Player).heartFlies
+		local foundFly = DukeHelpers.FindByProperties(fliesData, {initSeed = f.InitSeed})
+		print("its me")
+		if foundFly then
+			data.layer = foundFly.layer
+			DukeHelpers.PositionHeartFly(f, foundFly.layer)
+		end
+	end
+
 	if data.layer == DukeHelpers.INNER then
 		f.OrbitDistance = Vector(20, 20)
 		f.OrbitSpeed = 0.045
@@ -32,6 +42,7 @@ dukeMod:AddCallback(ModCallbacks.MC_FAMILIAR_UPDATE, function(_, f)
 		f.OrbitSpeed = f.OrbitSpeed * 1.3
 		centerPos = centerPos - Vector(0, 75)
 	end
+
 	f.Velocity = f:GetOrbitPosition(centerPos + f.Player.Velocity) - f.Position
 end, DukeHelpers.FLY_VARIANT)
 
