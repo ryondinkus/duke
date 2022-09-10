@@ -87,7 +87,7 @@ end, FamiliarVariant.BLUE_FLY)
 dukeMod:AddCallback(ModCallbacks.MC_PRE_FAMILIAR_COLLISION, function(_, f, e)
 	local attackFlyData = DukeHelpers.GetDukeData(f)
 	if attackFlyData.dropHeart then
-		if e:ToNPC() and not e:HasEntityFlags(EntityFlag.FLAG_CHARM) then
+		if e:ToNPC() and DukeHelpers.IsActualEnemy(e, true, false) and not e:HasEntityFlags(EntityFlag.FLAG_CHARM) then
 			local heartFly = DukeHelpers.GetHeartFlyFromFlyEntity(f)
 			if heartFly.dropHeartChance and DukeHelpers.PercentageChance(heartFly.dropHeartChance) then
 				local heart = Isaac.Spawn(EntityType.ENTITY_PICKUP, heartFly.dropHeart.variant or PickupVariant.PICKUP_HEART, heartFly.dropHeart.subType or 0,
