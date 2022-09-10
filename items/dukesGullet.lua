@@ -39,11 +39,13 @@ local function MC_USE_ITEM(_, type, rng, p, flags)
                 local f = DukeHelpers.GetEntityByInitSeed(fly.initSeed)
                 if DukeHelpers.Flies[fly.key].canAttack and fly.layer == outerLayer then
                     local attackFly = DukeHelpers.SpawnAttackFlyFromHeartFlyEntity(f)
-					DukeHelpers.GetDukeData(attackFly).dropHeart = true
-                    DukeHelpers.RemoveHeartFlyEntity(f)
-                    if p:HasCollectible(CollectibleType.COLLECTIBLE_BOOK_OF_VIRTUES) then
-                        DukeHelpers.SpawnAttackFlyWisp(DukeHelpers.Wisps[fly.key], p.Position, p, 60)
-                    end
+					if attackFly then
+						DukeHelpers.GetDukeData(attackFly).dropHeart = true
+	                    DukeHelpers.RemoveHeartFlyEntity(f)
+	                    if p:HasCollectible(CollectibleType.COLLECTIBLE_BOOK_OF_VIRTUES) then
+	                        DukeHelpers.SpawnAttackFlyWisp(DukeHelpers.Wisps[fly.key], p.Position, p, 60)
+	                    end
+					end
                 end
             end
             DukeHelpers.sfx:Play(SoundEffect.SOUND_WHEEZY_COUGH, 1, 0)

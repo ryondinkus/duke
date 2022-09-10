@@ -139,6 +139,9 @@ function DukeHelpers.SpawnAttackFlyFromHeartFly(heartFly, position, spawnerEntit
 end
 
 function DukeHelpers.SpawnAttackFlyFromHeartFlyEntity(heartFlyEntity, allowAny)
+	if not heartFlyEntity then
+		return nil
+	end
 	return DukeHelpers.SpawnAttackFlyFromHeartFly(DukeHelpers.GetHeartFlyFromFlyEntity(heartFlyEntity),
 		heartFlyEntity.Position, heartFlyEntity.SpawnerEntity, allowAny)
 end

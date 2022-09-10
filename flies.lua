@@ -11,10 +11,12 @@ dukeMod:AddCallback(ModCallbacks.MC_FAMILIAR_UPDATE, function(_, f)
 	if data.layer == nil then
 		local fliesData = DukeHelpers.GetDukeData(f.Player).heartFlies
 		local foundFly = DukeHelpers.FindByProperties(fliesData, {initSeed = f.InitSeed})
-		print("its me")
 		if foundFly then
 			data.layer = foundFly.layer
 			DukeHelpers.PositionHeartFly(f, foundFly.layer)
+		else
+			DukeHelpers.AddHeartFly(f.Player, DukeHelpers.GetHeartFlyFromFlyEntity(f).heart, 1)
+			f:Remove()
 		end
 	end
 
