@@ -276,9 +276,15 @@ DukeHelpers.Hearts = {
             return hearts and hearts < (player:GetHeartLimit() - player:GetEffectiveMaxHearts())
         end,
         Add = function(player, amount)
+			if not ComplianceImmortal or amount == 0 then
+				return
+			end
             ComplianceImmortal.AddImmortalHearts(player, amount)
         end,
         Remove = function(player, amount)
+			if not ComplianceImmortal or amount == 0 then
+				return
+			end
             local initialSoulHearts = DukeHelpers.Hearts.SOUL.GetCount(player)
             ComplianceImmortal.AddImmortalHearts(player, -amount)
             local soulHeartsRemoved = initialSoulHearts - DukeHelpers.Hearts.SOUL.GetCount(player)
@@ -325,9 +331,15 @@ DukeHelpers.Hearts = {
             return false
         end,
         Add = function(player, amount)
+			if not ARACHNAMOD then
+                return
+            end
             addWebHearts(amount, player)
         end,
         Remove = function(player, amount)
+			if not ARACHNAMOD or DukeHelpers.GetPlayerControllerIndex(player) ~= 0 then
+				return
+            end
             local initialSoulHearts = DukeHelpers.Hearts.SOUL.GetCount(player)
             addWebHearts(-amount / 2, player)
             local soulHeartsRemoved = initialSoulHearts - DukeHelpers.Hearts.SOUL.GetCount(player)
