@@ -30,7 +30,11 @@ function DukeHelpers.SetFlyHeart(pickup)
     pickupData.flyHeartSpritesheet:LoadGraphics()
     pickupData.flyHeartSpritesheet.Color = Color(pickupData.flyHeartSpritesheet.Color.R,
         pickupData.flyHeartSpritesheet.Color.G, pickupData.flyHeartSpritesheet.Color.B, 0.7)
-    pickupData.flyHeartSpritesheet:Play("FlyHeartAppear")
+    if pickup:GetSprite():IsPlaying("Appear") then
+        pickupData.flyHeartSpritesheet:Play("FlyHeartAppear")
+    else
+        pickupData.flyHeartSpritesheet:Play("FlyHeart")
+    end
 end
 
 local function StoreFlyHeart(pickup)

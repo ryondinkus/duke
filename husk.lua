@@ -23,7 +23,6 @@ local WikiDescription = DukeHelpers.GenerateEncyclopediaPage({
 	{
 		"Notes",
 		"If Tainted Duke is below 2 Soul Hearts, picking up Soul Hearts will replenish his health bar instead of turning into Rotten Gullet charges.",
-		"- Black Hearts picked up this way will turn into Soul Hearts.",
 		"Tainted Duke is able to pay for Devil Deals with his Rotten Gullet charges.",
 		"- 1 Heart deals cost 4 charges, and 2 Heart deals cost 8 charges.",
 		"- The charge type is irrelevant to the price.",
@@ -73,7 +72,7 @@ if Encyclopedia then
 end
 
 
--- Add flies on player startup
+-- Add spiders on player startup
 dukeMod:AddCallback(ModCallbacks.MC_POST_PLAYER_UPDATE, function(_, player)
 	if dukeMod.global.isInitialized and DukeHelpers.IsHusk(player) and not player:IsCoopGhost() then
 		if not player:GetData().duke or not player:GetData().duke.isInitialized then

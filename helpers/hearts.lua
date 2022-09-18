@@ -69,12 +69,6 @@ function DukeHelpers.RemoveUnallowedHearts(player, leftHearts, ignoreContainers)
         DukeHelpers.Hearts.BLACK.Remove(player, DukeHelpers.Hearts.BLACK.GetCount(player))
     end
 
-    local boneHearts = getRemovableAmount(player, leftHearts, DukeHelpers.Hearts.BONE)
-    if boneHearts > 0 then
-        removedHearts[DukeHelpers.Hearts.BONE.key] = boneHearts
-        DukeHelpers.Hearts.BONE.Remove(player, boneHearts)
-    end
-
     local brokenHearts = getRemovableAmount(player, leftHearts, DukeHelpers.Hearts.BROKEN)
     if brokenHearts > 0 then
         removedHearts[DukeHelpers.Hearts.BROKEN.key] = brokenHearts * 2
@@ -123,6 +117,12 @@ function DukeHelpers.RemoveUnallowedHearts(player, leftHearts, ignoreContainers)
     if moonHearts and moonHearts > 0 then
         removedHearts[DukeHelpers.Hearts.MOONLIGHT.key] = moonHearts
         DukeHelpers.Hearts.MOONLIGHT.Remove(player, DukeHelpers.Hearts.MOONLIGHT.GetCount(player))
+    end
+
+    local boneHearts = getRemovableAmount(player, leftHearts, DukeHelpers.Hearts.BONE)
+    if boneHearts > 0 then
+        removedHearts[DukeHelpers.Hearts.BONE.key] = boneHearts
+        DukeHelpers.Hearts.BONE.Remove(player, boneHearts)
     end
 
     return removedHearts
