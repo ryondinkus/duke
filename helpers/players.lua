@@ -45,7 +45,11 @@ function DukeHelpers.AnimateHeartPickup(pickup, p)
             pickup:GetSprite():Play("Collect")
             local function removePickupCallback()
                 pickup.EntityCollisionClass = EntityCollisionClass.ENTCOLL_NONE
-                if pickup:GetSprite():IsFinished("Collect") then
+				local sprite = pickup:GetSprite()
+				if not sprite:IsPlaying("Collect") then
+					pickup.EntityCollisionClass = EntityCollisionClass.ENTCOLL_PLAYERONLY
+				end
+                if sprite:IsFinished("Collect") then
                     pickup:Remove()
                     dukeMod:RemoveCallback(ModCallbacks.MC_POST_PICKUP_UPDATE, removePickupCallback)
                 end

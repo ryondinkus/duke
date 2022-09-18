@@ -17,6 +17,8 @@ local defaultGlobal = {
     flyHearts = {}
 }
 
+defaultMcmOptions = {}
+
 dukeMod.global = table.deepCopy(defaultGlobal)
 
 DukeHelpers = {
@@ -63,6 +65,7 @@ include("helpers/flies")
 include("helpers/giantbook")
 include("helpers/hearts")
 include("helpers/husk")
+include("helpers/modConfigMenu")
 include("helpers/partitions")
 include("helpers/players")
 include("helpers/prices")
@@ -380,7 +383,7 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_NEW_ROOM, function()
             dukeMod.unlocks = {}
             dukeMod.mcmOptions = {}
         end
-        --InitializeMCM(defaultMcmOptions)
+        DukeHelpers.InitializeMCM(defaultMcmOptions)
         dukeMod.global.isInitialized = true
     end
 
@@ -468,3 +471,28 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_PICKUP_INIT, function(_, pickup)
         end
     end
 end)
+
+-- TRAILER EFFECTS --
+-- dukeMod:AddCallback(ModCallbacks.MC_POST_ENTITY_REMOVE, function(_, e)
+--     if e.Variant == 0 then
+--         Isaac.Spawn(EntityType.ENTITY_EFFECT, Isaac.GetEntityVariantByName("Duke Reform"), 0, e.Position, Vector.Zero, e)
+--     else
+--         Isaac.Spawn(EntityType.ENTITY_EFFECT, Isaac.GetEntityVariantByName("Husk Reform"), 0, e.Position, Vector.Zero, e)
+--     end
+-- end, EntityType.ENTITY_DUKE)
+
+-- dukeMod:AddCallback(ModCallbacks.MC_POST_UPDATE, function()
+--     local playingSoundEffects = {}
+--     for soundEffectName, soundEffect in pairs(SoundEffect) do
+--         if DukeHelpers.sfx:IsPlaying(soundEffect) then
+--             table.insert(playingSoundEffects, soundEffectName..": "..soundEffect)
+--         end
+--     end
+--     if #playingSoundEffects > 0 then
+--         print("=====Sounds playing on frame "..Isaac.GetFrameCount().."=====")
+--         for _, sfx in pairs(playingSoundEffects) do
+--             print(sfx)
+--         end
+--         print("=====End of sounds playing on frame "..Isaac.GetFrameCount().."=====")
+--     end
+-- end)

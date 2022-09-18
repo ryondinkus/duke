@@ -22,12 +22,12 @@ local WikiDescription = DukeHelpers.GenerateEncyclopediaPage({
 		"- The inner layer can hold up to 3 flies, the middle can hold 9, and the outer can hold 12.",
 		"Heart Orbital Flies deal contact damage based on their layer. Flies on the inner layer deal 7 contact damage, middle flies deal 3, and outer flies deal 2.",
 		"Flies that Duke gains have special attributes based on the heart type that Duke picks up. For more information on specific fly effects, see Heart Flies.",
-		"Duke's pocket active, Duke's Gullet, allows Duke to convert all of his Heart Orbital Flies into Heart Attack Flies, and vice versa."
+		"Duke's pocket active, Duke's Gullet, allows Duke to convert his outermost layer of Heart Orbital Flies into Heart Attack Flies. Heart Attack Flies spawned this way have a chance of spawning a half heart of their corresponding type.",
+		"- Soul Heart Flies have a 100% chance of spawning a Half Soul Heart."
 	},
 	{
 		"Notes",
 		"If Duke is below 2 Soul Hearts, picking up Soul Hearts will replenish his health bar instead of turning into Heart Orbital Flies.",
-		"- Black Hearts picked up this way will turn into Soul Hearts.",
 		"Duke is able to pay for Devil Deals with his Heart Orbital Flies.",
 		"- 1 Heart deals cost 4 flies, and 2 Heart deals cost 8 flies.",
 		"- The fly type is irrelevant to the price.",
@@ -82,10 +82,16 @@ end
 
 -- Add flies on player startup
 dukeMod:AddCallback(ModCallbacks.MC_POST_PLAYER_UPDATE, function(_, player)
-	if dukeMod.global.isInitialized and DukeHelpers.IsDuke(player) and
-		(not player:GetData().duke or not player:GetData().duke.isInitialized) then
-		DukeHelpers.InitializeDuke(player)
-		DukeHelpers.AddStartupFlies(player)
+	if dukeMod.global.isInitialized and DukeHelpers.IsDuke(player) and not player:IsCoopGhost() then
+		if not player:GetData().duke or not player:GetData().duke.isInitialized then
+			DukeHelpers.InitializeDuke(player)
+		end
+		if not player:GetData().duke or not player:GetData().duke.hasStartupFlies then
+			DukeHelpers.AddStartupFlies(player)
+		end
+	end
+	if player:IsCoopGhost() then
+		player:GetData().duke.isInitialized = false
 	end
 end)
 

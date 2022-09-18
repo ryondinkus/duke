@@ -48,9 +48,10 @@ local function fireRottenGulletShot(player, pickupKey, rng)
     DukeHelpers.SpawnPickupPoof(player, pickupKey)
     local effect = Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.POOF02, 4, player.Position, Vector.Zero, player)
     effect.Color = foundSpider.poofColor
+    effect.SpriteScale = effect.SpriteScale * 1.5
     Game():ShakeScreen(10)
 
-    local radius = 80
+    local radius = 120
     local enemiesInRadius = DukeHelpers.FindInRadius(player.Position, radius)
 
     local radiusDamage = 40
@@ -90,6 +91,8 @@ local function fireRottenGulletShot(player, pickupKey, rng)
                     tear.Color = foundSpider.tearColor
                 end
             end
+
+            tear:AddTearFlags(TearFlags.TEAR_PUNCH)
 
             if foundSpider.applyTearEffects then
                 foundSpider.applyTearEffects(tear)

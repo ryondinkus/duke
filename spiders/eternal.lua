@@ -3,7 +3,7 @@ local subType = DukeHelpers.OffsetIdentifier(heart)
 
 local function MC_POST_ENTITY_REMOVE(_, e)
 	if e.Variant == FamiliarVariant.BLUE_SPIDER and e.SubType == subType then
-		Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.CRACK_THE_SKY, 0, e.Position, Vector.Zero, e)
+		Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.CRACK_THE_SKY, 0, e.Position, Vector.Zero, e:ToFamiliar().Player)
 	end
 end
 
