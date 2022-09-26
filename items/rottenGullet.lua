@@ -57,7 +57,7 @@ local function fireRottenGulletShot(player, pickupKey, rng)
     local radiusDamage = 40
 
     if foundSpider and foundSpider.damageMultiplier then
-        radiusDamage = radiusDamage * foundSpider.damageMultiplier
+        radiusDamage = radiusDamage * foundSpider.damageMultiplier * player.Damage
     end
 
     for _, enemy in pairs(enemiesInRadius) do
@@ -83,7 +83,7 @@ local function fireRottenGulletShot(player, pickupKey, rng)
 
         if foundSpider then
             if foundSpider.tearDamageMultiplier then
-                tear.CollisionDamage = tear.CollisionDamage * foundSpider.tearDamageMultiplier
+                tear.CollisionDamage = tear.CollisionDamage * foundSpider.tearDamageMultiplier * (player.Damage / 3)
                 tear.Size = tear.Size * foundSpider.tearDamageMultiplier
                 tear.Scale = tear.Scale * foundSpider.tearDamageMultiplier
 
