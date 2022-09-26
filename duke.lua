@@ -237,9 +237,7 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_UPDATE, function()
 					DukeHelpers.RemoveHeartFlyEntity(f)
 				end
 			end
-			if p:HasCollectible(CollectibleType.COLLECTIBLE_DEAD_CAT) then
-				dukeData["DukeNineLivesRevive"] = true
-			end
+
 			if sprite:IsPlaying("Death") then
 				DukeHelpers.PlayCustomDeath(p)
 			end
@@ -254,17 +252,6 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_UPDATE, function()
 			DukeHelpers.PlayCustomDeath(entity)
 		end
 	end
-end)
-
-dukeMod:AddCallback(ModCallbacks.MC_POST_NEW_ROOM, function()
-	DukeHelpers.ForEachDuke(function(player)
-		local data = DukeHelpers.GetDukeData(player)
-		if data["DukeNineLivesRevive"] then
-			DukeHelpers.Hearts.RED.Remove(player, 1)
-			DukeHelpers.Hearts.SOUL.Add(player, 2)
-			data["DukeNineLivesRevive"] = nil
-		end
-	end)
 end)
 
 dukeMod:AddCallback(ModCallbacks.MC_EVALUATE_CACHE, function(_, player, flags)
@@ -319,7 +306,8 @@ end, CollectibleType.COLLECTIBLE_YUM_HEART)
 dukeMod:AddCallback(ModCallbacks.MC_POST_PEFFECT_UPDATE, function(_, player)
 	if DukeHelpers.IsDuke(player) then
 		DukeHelpers.OnItemPickup(player, CollectibleType.COLLECTIBLE_DEAD_CAT, "DukeNineLivesPickup", function()
-			DukeHelpers.RemoveHeartFly(player, DukeHelpers.Flies.RED, 4)
+			DukeHelpers.RemoveHeartFly(player, DukeHelpers.Flies.RED, 2)
+			DukeHelpers.RemoveHeartFly(player, DukeHelpers.Flies.SOUL, 2)
 			local soulHearts = DukeHelpers.Clamp(DukeHelpers.Hearts.SOUL.GetCount(player) - 2, 0)
 			if soulHearts > 0 then
 				DukeHelpers.Hearts.SOUL.Remove(player, soulHearts)
