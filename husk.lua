@@ -4,7 +4,7 @@ local WikiDescription = DukeHelpers.GenerateEncyclopediaPage({
 		"Items:",
 		"- Rotten Gullet",
 		"Stats:",
-		"- HP: 2 Soul Hearts",
+		"- HP: 3 Soul Hearts",
 		"- Speed: 1.00",
 		"- Tear Rate: 2.73",
 		"- Damage: 3.50",
@@ -22,7 +22,7 @@ local WikiDescription = DukeHelpers.GenerateEncyclopediaPage({
 	},
 	{
 		"Notes",
-		"If Tainted Duke is below 2 Soul Hearts, picking up Soul Hearts will replenish his health bar instead of turning into Rotten Gullet charges.",
+		"If Tainted Duke is below 3 Soul Hearts, picking up Soul Hearts will replenish his health bar instead of turning into Rotten Gullet charges.",
 		"Tainted Duke is able to pay for Devil Deals with his Rotten Gullet charges.",
 		"- 1 Heart deals cost 4 charges, and 2 Heart deals cost 8 charges.",
 		"- The charge type is irrelevant to the price.",

@@ -4,7 +4,7 @@ local WikiDescription = DukeHelpers.GenerateEncyclopediaPage({
 		"Items:",
 		"- Duke's Gullet",
 		"Stats:",
-		"- HP: 2 Soul Hearts",
+		"- HP: 3 Soul Hearts",
 		"- Speed: 1.00",
 		"- Tear Rate: 2.73",
 		"- Damage: 3.50",
@@ -27,7 +27,7 @@ local WikiDescription = DukeHelpers.GenerateEncyclopediaPage({
 	},
 	{
 		"Notes",
-		"If Duke is below 2 Soul Hearts, picking up Soul Hearts will replenish his health bar instead of turning into Heart Orbital Flies.",
+		"If Duke is below 3 Soul Hearts, picking up Soul Hearts will replenish his health bar instead of turning into Heart Orbital Flies.",
 		"Duke is able to pay for Devil Deals with his Heart Orbital Flies.",
 		"- 1 Heart deals cost 4 flies, and 2 Heart deals cost 8 flies.",
 		"- The fly type is irrelevant to the price.",

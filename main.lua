@@ -27,7 +27,7 @@ DukeHelpers = {
     rng = RNG(),
     sfx = SFXManager(),
     PRICE_OFFSET = -50,
-    MAX_HEALTH = 4,
+    MAX_HEALTH = 6,
     SUBTYPE_OFFSET = 903
 }
 

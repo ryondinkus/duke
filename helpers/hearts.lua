@@ -34,7 +34,7 @@ end
 
 function DukeHelpers.RemoveUnallowedHearts(player, leftHearts, ignoreContainers)
     if not leftHearts then
-        leftHearts = { SOUL = 4 }
+        leftHearts = { SOUL = 6 }
     end
 
     local playerData = DukeHelpers.GetDukeData(player)
