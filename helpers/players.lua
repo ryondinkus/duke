@@ -110,7 +110,7 @@ function DukeHelpers.OnItemPickup(player, collectible, tag, callback)
         end
     else
         local targetItem = player.QueuedItem.Item
-        if (not targetItem) or targetItem.ID ~= collectible then
+        if (not targetItem) or targetItem.ID ~= collectible or (not targetItem:IsCollectible()) then
             return
         end
         data[tag] = true

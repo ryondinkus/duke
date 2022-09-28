@@ -1,6 +1,8 @@
 function DukeHelpers.IsCustomPrice(x)
-    return x <= PickupPrice.PRICE_ONE_HEART + DukeHelpers.PRICE_OFFSET and
-        x >= PickupPrice.PRICE_ONE_HEART_AND_TWO_SOULHEARTS + DukeHelpers.PRICE_OFFSET
+    return (x <= PickupPrice.PRICE_ONE_HEART + DukeHelpers.PRICE_OFFSET and
+        x >= PickupPrice.PRICE_ONE_HEART_AND_TWO_SOULHEARTS + DukeHelpers.PRICE_OFFSET)
+        or (x <= -7 + DukeHelpers.PRICE_OFFSET and
+        x >= -8 + DukeHelpers.PRICE_OFFSET) -- Custom Blue Baby Devil Deal Prices :D :D :D: D::D
 end
 
 function DukeHelpers.GetCustomDevilDealPrice(collectible, player)
@@ -21,4 +23,9 @@ function DukeHelpers.RenderCustomDevilDealPrice(pickup, key, animationPath)
         priceSprite:Play(tostring(devilPrice))
         priceSprite:Render(Vector(pos.X, pos.Y + 10), Vector.Zero, Vector.Zero)
     end
+end
+
+function DukeHelpers.IsReplaceablePrice(x)
+    return (x <= PickupPrice.PRICE_ONE_HEART and x >= PickupPrice.PRICE_ONE_HEART_AND_TWO_SOULHEARTS)
+        or (x <= -7 and x >= -8) -- Devil Baby Prices Blue Custom Deal :D :D :D: D::D
 end

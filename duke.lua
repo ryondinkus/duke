@@ -163,9 +163,7 @@ end)
 dukeMod:AddCallback(ModCallbacks.MC_POST_PICKUP_UPDATE, function(_, pickup)
 	if not DukeHelpers.AnyPlayerHasTrinket(TrinketType.TRINKET_YOUR_SOUL) and
 		(DukeHelpers.HasDuke() or DukeHelpers.Trinkets.pocketOfFlies.helpers.AnyPlayerHasPocketOfFlies()) and
-		((pickup.Price < 0 and
-			pickup.Price > PickupPrice.PRICE_SPIKES) or
-			(pickup.Price < DukeHelpers.PRICE_OFFSET and pickup.Price > DukeHelpers.PRICE_OFFSET + PickupPrice.PRICE_SPIKES)) then
+		(DukeHelpers.IsReplaceablePrice(pickup.Price) or DukeHelpers.IsCustomPrice(pickup.Price)) then
 		local closestPlayer = DukeHelpers.GetClosestPlayer(pickup.Position)
 
 		if closestPlayer and
@@ -304,7 +302,7 @@ dukeMod:AddCallback(ModCallbacks.MC_USE_ITEM, function(_, _, _, player)
 end, CollectibleType.COLLECTIBLE_YUM_HEART)
 
 dukeMod:AddCallback(ModCallbacks.MC_POST_PEFFECT_UPDATE, function(_, player)
-	if DukeHelpers.IsDuke(player) then
+	if DukeHelpers.IsDuke(player) or DukeHelpers.IsHusk(player) then
 		DukeHelpers.OnItemPickup(player, CollectibleType.COLLECTIBLE_DEAD_CAT, "DukeNineLivesPickup", function()
 			DukeHelpers.RemoveHeartFly(player, DukeHelpers.Flies.RED, 2)
 			DukeHelpers.RemoveHeartFly(player, DukeHelpers.Flies.SOUL, 2)
@@ -330,7 +328,7 @@ end)
 
 dukeMod:AddCallback(ModCallbacks.MC_USE_ITEM, function(_, _, _, player)
 	if DukeHelpers.IsDuke(player) then
-		DukeHelpers.AddHeartFly(player, DukeHelpers.Flies.ROTTEN, 2)
+		DukeHelpers.AddHeartFly(player, DukeHelpers.Flies.ROTTEN, 1)
 	end
 end, CollectibleType.COLLECTIBLE_YUCK_HEART)
 
