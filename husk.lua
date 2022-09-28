@@ -4,7 +4,7 @@ local WikiDescription = DukeHelpers.GenerateEncyclopediaPage({
 		"Items:",
 		"- Rotten Gullet",
 		"Stats:",
-		"- HP: 2 Soul Hearts",
+		"- HP: 3 Soul Hearts",
 		"- Speed: 1.00",
 		"- Tear Rate: 2.73",
 		"- Damage: 3.50",
@@ -22,7 +22,7 @@ local WikiDescription = DukeHelpers.GenerateEncyclopediaPage({
 	},
 	{
 		"Notes",
-		"If Tainted Duke is below 2 Soul Hearts, picking up Soul Hearts will replenish his health bar instead of turning into Rotten Gullet charges.",
+		"If Tainted Duke is below 3 Soul Hearts, picking up Soul Hearts will replenish his health bar instead of turning into Rotten Gullet charges.",
 		"Tainted Duke is able to pay for Devil Deals with his Rotten Gullet charges.",
 		"- 1 Heart deals cost 4 charges, and 2 Heart deals cost 8 charges.",
 		"- The charge type is irrelevant to the price.",
@@ -190,10 +190,7 @@ end)
 
 dukeMod:AddCallback(ModCallbacks.MC_POST_PICKUP_UPDATE, function(_, pickup)
 	if not DukeHelpers.AnyPlayerHasTrinket(TrinketType.TRINKET_YOUR_SOUL) and
-		DukeHelpers.HasHusk() and
-		((pickup.Price < 0 and
-			pickup.Price > PickupPrice.PRICE_SPIKES) or
-			(pickup.Price < DukeHelpers.PRICE_OFFSET and pickup.Price > DukeHelpers.PRICE_OFFSET + PickupPrice.PRICE_SPIKES)) then
+		DukeHelpers.HasHusk() and (DukeHelpers.IsReplaceablePrice(pickup.Price) or DukeHelpers.IsCustomPrice(pickup.Price)) then
 		local closestPlayer = DukeHelpers.GetClosestPlayer(pickup.Position)
 
 		if closestPlayer and DukeHelpers.IsHusk(closestPlayer) and
@@ -255,6 +252,18 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_UPDATE, function()
 		end
 	end
 end)
+
+dukeMod:AddCallback(ModCallbacks.MC_USE_ITEM, function(_, _, _, player)
+	if DukeHelpers.IsHusk(player) then
+		DukeHelpers.FillRottenGulletSlot(player, DukeHelpers.Spiders.RED.key, 2)
+	end
+end, CollectibleType.COLLECTIBLE_YUM_HEART)
+
+dukeMod:AddCallback(ModCallbacks.MC_USE_ITEM, function(_, _, _, player)
+	if DukeHelpers.IsHusk(player) then
+		DukeHelpers.FillRottenGulletSlot(player, DukeHelpers.Spiders.ROTTEN.key, 1)
+	end
+end, CollectibleType.COLLECTIBLE_YUCK_HEART)
 
 if EID then
 	EID:addBirthright(DukeHelpers.HUSK_ID, "Tainted Duke's Rotten Gullet now fires 12 tears per charge", "Tainted Duke")

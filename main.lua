@@ -27,7 +27,7 @@ DukeHelpers = {
     rng = RNG(),
     sfx = SFXManager(),
     PRICE_OFFSET = -50,
-    MAX_HEALTH = 4,
+    MAX_HEALTH = 6,
     SUBTYPE_OFFSET = 903
 }
 
@@ -240,25 +240,25 @@ for _, card in pairs(DukeHelpers.Filter(DukeHelpers.Cards, function(pi) return n
     end
 end
 
-for _, rune in pairs(DukeHelpers.Filter(DukeHelpers.Cards, function(pi) return pi.IsRune end)) do
-    registerCallbacks(rune.callbacks)
+for _, soul in pairs(DukeHelpers.Filter(DukeHelpers.Cards, function(pi) return pi.IsSoul end)) do
+    registerCallbacks(soul.callbacks)
 
-    DukeHelpers.AddExternalItemDescriptionCard(rune)
+    DukeHelpers.AddExternalItemDescriptionCard(soul)
 
     if Encyclopedia then
-        registerEncyclopediaDescription(rune,
-            Encyclopedia.GetRune,
-            Encyclopedia.AddRune,
-            Encyclopedia.UpdateRune,
-            { Spr = Encyclopedia.RegisterSprite(dukeMod.path .. "content/gfx/ui_cardfronts.anm2", rune.Name) })
+        registerEncyclopediaDescription(soul,
+            Encyclopedia.GetSoul,
+            Encyclopedia.AddSoul,
+            Encyclopedia.UpdateSoul,
+            { Spr = Encyclopedia.RegisterSprite(dukeMod.path .. "content/gfx/ui_cardfronts.anm2", soul.Name) })
     end
 
-    addUnlock(rune)
+    addUnlock(soul)
 
-    if rune.unlock then
+    if soul.unlock then
         dukeMod:AddCallback(ModCallbacks.MC_POST_PLAYER_UPDATE, function(_, player)
             for i = 0, 3 do
-                if player:GetCard(i) == rune.Id and not rune.IsUnlocked() then
+                if player:GetCard(i) == soul.Id and not soul.IsUnlocked() then
                     player:SetCard(i, 0)
                 end
             end

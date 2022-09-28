@@ -34,7 +34,7 @@ end
 
 function DukeHelpers.RemoveUnallowedHearts(player, leftHearts, ignoreContainers)
     if not leftHearts then
-        leftHearts = { SOUL = 4 }
+        leftHearts = { SOUL = 6 }
     end
 
     local playerData = DukeHelpers.GetDukeData(player)
@@ -94,17 +94,18 @@ function DukeHelpers.RemoveUnallowedHearts(player, leftHearts, ignoreContainers)
     end
 
     local redHearts = getRemovableAmount(player, leftHearts, DukeHelpers.Hearts.RED)
-    if not ignoreContainers then
-        redHearts = redHearts + player:GetMaxHearts()
-    end
-
     if redHearts > 0 then
         removedHearts[DukeHelpers.Hearts.RED.key] = redHearts
         DukeHelpers.Hearts.RED.Remove(player, redHearts)
 
         if not ignoreContainers then
-            player:AddMaxHearts(-player:GetMaxHearts())
         end
+    end
+
+    if not ignoreContainers then
+        local maxHearts = player:GetMaxHearts()
+        player:AddMaxHearts(-maxHearts)
+        player:AddSoulHearts(maxHearts)
     end
 
     local soulHearts = getRemovableAmount(player, leftHearts, DukeHelpers.Hearts.SOUL)

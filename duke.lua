@@ -4,7 +4,7 @@ local WikiDescription = DukeHelpers.GenerateEncyclopediaPage({
 		"Items:",
 		"- Duke's Gullet",
 		"Stats:",
-		"- HP: 2 Soul Hearts",
+		"- HP: 3 Soul Hearts",
 		"- Speed: 1.00",
 		"- Tear Rate: 2.73",
 		"- Damage: 3.50",
@@ -27,7 +27,7 @@ local WikiDescription = DukeHelpers.GenerateEncyclopediaPage({
 	},
 	{
 		"Notes",
-		"If Duke is below 2 Soul Hearts, picking up Soul Hearts will replenish his health bar instead of turning into Heart Orbital Flies.",
+		"If Duke is below 3 Soul Hearts, picking up Soul Hearts will replenish his health bar instead of turning into Heart Orbital Flies.",
 		"Duke is able to pay for Devil Deals with his Heart Orbital Flies.",
 		"- 1 Heart deals cost 4 flies, and 2 Heart deals cost 8 flies.",
 		"- The fly type is irrelevant to the price.",
@@ -163,9 +163,7 @@ end)
 dukeMod:AddCallback(ModCallbacks.MC_POST_PICKUP_UPDATE, function(_, pickup)
 	if not DukeHelpers.AnyPlayerHasTrinket(TrinketType.TRINKET_YOUR_SOUL) and
 		(DukeHelpers.HasDuke() or DukeHelpers.Trinkets.pocketOfFlies.helpers.AnyPlayerHasPocketOfFlies()) and
-		((pickup.Price < 0 and
-			pickup.Price > PickupPrice.PRICE_SPIKES) or
-			(pickup.Price < DukeHelpers.PRICE_OFFSET and pickup.Price > DukeHelpers.PRICE_OFFSET + PickupPrice.PRICE_SPIKES)) then
+		(DukeHelpers.IsReplaceablePrice(pickup.Price) or DukeHelpers.IsCustomPrice(pickup.Price)) then
 		local closestPlayer = DukeHelpers.GetClosestPlayer(pickup.Position)
 
 		if closestPlayer and
@@ -237,9 +235,7 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_UPDATE, function()
 					DukeHelpers.RemoveHeartFlyEntity(f)
 				end
 			end
-			if p:HasCollectible(CollectibleType.COLLECTIBLE_DEAD_CAT) then
-				dukeData["DukeNineLivesRevive"] = true
-			end
+
 			if sprite:IsPlaying("Death") then
 				DukeHelpers.PlayCustomDeath(p)
 			end
@@ -254,17 +250,6 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_UPDATE, function()
 			DukeHelpers.PlayCustomDeath(entity)
 		end
 	end
-end)
-
-dukeMod:AddCallback(ModCallbacks.MC_POST_NEW_ROOM, function()
-	DukeHelpers.ForEachDuke(function(player)
-		local data = DukeHelpers.GetDukeData(player)
-		if data["DukeNineLivesRevive"] then
-			DukeHelpers.Hearts.RED.Remove(player, 1)
-			DukeHelpers.Hearts.SOUL.Add(player, 2)
-			data["DukeNineLivesRevive"] = nil
-		end
-	end)
 end)
 
 dukeMod:AddCallback(ModCallbacks.MC_EVALUATE_CACHE, function(_, player, flags)
@@ -317,9 +302,10 @@ dukeMod:AddCallback(ModCallbacks.MC_USE_ITEM, function(_, _, _, player)
 end, CollectibleType.COLLECTIBLE_YUM_HEART)
 
 dukeMod:AddCallback(ModCallbacks.MC_POST_PEFFECT_UPDATE, function(_, player)
-	if DukeHelpers.IsDuke(player) then
+	if DukeHelpers.IsDuke(player) or DukeHelpers.IsHusk(player) then
 		DukeHelpers.OnItemPickup(player, CollectibleType.COLLECTIBLE_DEAD_CAT, "DukeNineLivesPickup", function()
-			DukeHelpers.RemoveHeartFly(player, DukeHelpers.Flies.RED, 4)
+			DukeHelpers.RemoveHeartFly(player, DukeHelpers.Flies.RED, 2)
+			DukeHelpers.RemoveHeartFly(player, DukeHelpers.Flies.SOUL, 2)
 			local soulHearts = DukeHelpers.Clamp(DukeHelpers.Hearts.SOUL.GetCount(player) - 2, 0)
 			if soulHearts > 0 then
 				DukeHelpers.Hearts.SOUL.Remove(player, soulHearts)
@@ -342,7 +328,7 @@ end)
 
 dukeMod:AddCallback(ModCallbacks.MC_USE_ITEM, function(_, _, _, player)
 	if DukeHelpers.IsDuke(player) then
-		DukeHelpers.AddHeartFly(player, DukeHelpers.Flies.ROTTEN, 2)
+		DukeHelpers.AddHeartFly(player, DukeHelpers.Flies.ROTTEN, 1)
 	end
 end, CollectibleType.COLLECTIBLE_YUCK_HEART)
 
