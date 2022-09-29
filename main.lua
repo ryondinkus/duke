@@ -426,7 +426,7 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_PICKUP_INIT, function(_, pickup)
 
             local newItem = game:GetItemPool():GetCollectible(pool, true, pickup.InitSeed)
             game:GetItemPool():RemoveCollectible(pickup.SubType)
-            pickup:Morph(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_COLLECTIBLE, newItem, true, false, true)
+            pickup:Morph(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_COLLECTIBLE, newItem, true, false, false)
         end
     elseif pickup.Variant == PickupVariant.PICKUP_TRINKET then
         local trinketId = pickup.SubType
