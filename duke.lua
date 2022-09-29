@@ -131,6 +131,15 @@ dukeMod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, function(_, pickup, co
 			if pickup.Price == PickupPrice.PRICE_SPIKES then
 				p:TakeDamage(2, DamageFlag.DAMAGE_SPIKES | DamageFlag.DAMAGE_NO_PENALTIES, EntityRef(nil), 0)
 			end
+
+			if pickup.OptionsPickupIndex ~= 0 then
+				DukeHelpers.ForEachEntityInRoom(function(entity)
+					if entity:ToPickup().OptionsPickupIndex == pickup.OptionsPickupIndex then
+						Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.POOF01, 0, entity.Position, Vector.Zero, entity)
+						entity:Remove()
+					end
+				end, EntityType.ENTITY_PICKUP)
+			end
 		end
 
 		return true
