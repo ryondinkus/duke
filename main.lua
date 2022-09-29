@@ -362,6 +362,9 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_NEW_ROOM, function()
                         if DukeHelpers.IsDuke(p) then
                             DukeHelpers.InitializeDuke(p, true)
                         end
+                        if DukeHelpers.IsHusk(p) then
+                            DukeHelpers.InitializeHusk(p, true)
+                        end
                         pData = DukeHelpers.GetDukeData(p)
                         for key, value in pairs(DukeHelpers.RehydrateEntityData(savedPlayerData)) do
                             pData[key] = value
