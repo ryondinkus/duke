@@ -362,6 +362,9 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_NEW_ROOM, function()
                         if DukeHelpers.IsDuke(p) then
                             DukeHelpers.InitializeDuke(p, true)
                         end
+                        if DukeHelpers.IsHusk(p) then
+                            DukeHelpers.InitializeHusk(p, true)
+                        end
                         pData = DukeHelpers.GetDukeData(p)
                         for key, value in pairs(DukeHelpers.RehydrateEntityData(savedPlayerData)) do
                             pData[key] = value
@@ -402,6 +405,13 @@ if Poglite then
         Isaac.GetCostumeIdByPath("gfx/characters/costume_duke_pog.anm2"))
     Poglite:AddPogCostume("DukeBPog", DukeHelpers.HUSK_ID,
         Isaac.GetCostumeIdByPath("gfx/characters/costume_duke_b_pog.anm2"))
+end
+
+if Ughlite then
+    Ughlite:AddUghCostume("DukeUgh", DukeHelpers.DUKE_ID,
+        Isaac.GetCostumeIdByPath("gfx/characters/costume_duke_ugh.anm2"))
+    Ughlite:AddUghCostume("DukeBUgh", DukeHelpers.HUSK_ID,
+        Isaac.GetCostumeIdByPath("gfx/characters/costume_duke_b_ugh.anm2"))
 end
 
 dukeMod:AddCallback(ModCallbacks.MC_POST_PICKUP_INIT, function(_, pickup)

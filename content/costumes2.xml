@@ -5,4 +5,6 @@
 	<costume anm2path="costume_queen_fly.anm2" type="passive" id="5" />
 	<costume anm2path="costume_super_infestation.anm2" type="passive" id="6" skinColor="3" overwriteColor="true" />
 	<costume anm2path="costume_duke_of_eyes.anm2" type="passive" id="13" />
+	<costume anm2path="costume_duke_ugh.anm2" priority="900" type="none" />
+	<costume anm2path="costume_duke_b_ugh.anm2" priority="900" type="none" />
 </costumes>
