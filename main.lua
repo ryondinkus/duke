@@ -407,6 +407,13 @@ if Poglite then
         Isaac.GetCostumeIdByPath("gfx/characters/costume_duke_b_pog.anm2"))
 end
 
+if Ughlite then
+    Ughlite:AddUghCostume("DukeUgh", DukeHelpers.DUKE_ID,
+        Isaac.GetCostumeIdByPath("gfx/characters/costume_duke_ugh.anm2"))
+    Ughlite:AddUghCostume("DukeBUgh", DukeHelpers.HUSK_ID,
+        Isaac.GetCostumeIdByPath("gfx/characters/costume_duke_b_ugh.anm2"))
+end
+
 dukeMod:AddCallback(ModCallbacks.MC_POST_PICKUP_INIT, function(_, pickup)
     local game = Game()
     local room = game:GetRoom()
