@@ -254,3 +254,15 @@ function DukeHelpers.PrintIfSomething(value, target)
         end
     end
 end
+
+function DukeHelpers.CombineArrays(first, second)
+	local combined = {}
+	for i=1, #first do
+		combined[i] = first[i]
+	end
+	for i=1, #second do
+		combined[#combined + 1] = second[i]
+    end
+    print(combined[1])
+	return combined
+end

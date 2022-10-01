@@ -70,8 +70,7 @@ function DukeHelpers.FillRottenGulletSlot(player, pickupKey, amount)
 
         if DukeHelpers.Hearts.SOUL.GetCount(player) < DukeHelpers.MAX_HEALTH and
             (
-            slotPickupKey == DukeHelpers.Hearts.SOUL.key or slotPickupKey == DukeHelpers.Hearts.HALF_SOUL.key or
-                slotPickupKey == DukeHelpers.Hearts.BLACK.key) then
+            slotPickupKey == DukeHelpers.Hearts.SOUL.key or slotPickupKey == DukeHelpers.Hearts.HALF_SOUL.key) then
             DukeHelpers.Hearts.SOUL.Add(player, 1)
             return
         end

@@ -3,7 +3,7 @@ local attackFlySubType = DukeHelpers.OffsetIdentifier(heart)
 
 local function ATTACK_FLY_MC_PRE_FAMILIAR_COLLISION(_, f, e)
     if f.SubType == attackFlySubType then
-        if e:ToNPC() and DukeHelpers.IsEntityTypeInPartition(e.Type, EntityPartition.ENEMY) and
+        if e:ToNPC() and DukeHelpers.IsActualEnemy(e, true, false) and DukeHelpers.IsEntityTypeInPartition(e.Type, EntityPartition.ENEMY) and
             not e:HasEntityFlags(EntityFlag.FLAG_CHARM) then
             for i = 1, 8 do
                 local tear = f:FireProjectile(Vector.FromAngle(i * 45))
@@ -63,5 +63,7 @@ return {
         }
     },
     heartFlyDamageMultiplier = 1.3,
-    attackFlyDamageMultiplier = 1.3
+    attackFlyDamageMultiplier = 1.3,
+	dropHeart = DukeHelpers.Hearts.BONE,
+	dropHeartChance = 20
 }

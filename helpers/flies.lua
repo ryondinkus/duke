@@ -139,6 +139,9 @@ function DukeHelpers.SpawnAttackFlyFromHeartFly(heartFly, position, spawnerEntit
 end
 
 function DukeHelpers.SpawnAttackFlyFromHeartFlyEntity(heartFlyEntity, allowAny)
+	if not heartFlyEntity then
+		return nil
+	end
 	return DukeHelpers.SpawnAttackFlyFromHeartFly(DukeHelpers.GetHeartFlyFromFlyEntity(heartFlyEntity),
 		heartFlyEntity.Position, heartFlyEntity.SpawnerEntity, allowAny)
 end
@@ -259,9 +262,9 @@ function DukeHelpers.RemoveHeartFly(player, heartFlies, amount)
 	return removedFlies
 end
 
-function DukeHelpers.GetWeightedFly(rng, attack)
+function DukeHelpers.GetWeightedFly(rng, attack, specialOnly)
 	return DukeHelpers.GetWeightedIndex(DukeHelpers.Flies, "weight",
-		function(fly) return not attack or fly.canAttack end, rng)
+		function(fly) return (not attack or fly.canAttack) and (not specialOnly or fly.weight < 2) end, rng)
 end
 
 function DukeHelpers.IsFlyOfPlayer(fly, player)
@@ -303,8 +306,7 @@ function DukeHelpers.SpawnPickupHeartFly(player, pickup, overriddenKey, amount, 
 
 		if DukeHelpers.IsDuke(player) and heart.variant == PickupVariant.PICKUP_HEART and
 			(
-			heart.subType == HeartSubType.HEART_SOUL or heart.subType == HeartSubType.HEART_HALF_SOUL or
-				heart.subType == HeartSubType.HEART_BLACK) and DukeHelpers.Hearts.SOUL.GetCount(player) < DukeHelpers.MAX_HEALTH then
+			heart.subType == HeartSubType.HEART_SOUL or heart.subType == HeartSubType.HEART_HALF_SOUL) and DukeHelpers.Hearts.SOUL.GetCount(player) < DukeHelpers.MAX_HEALTH then
 			local heartSlots = 2
 
 			if heart.subType == HeartSubType.HEART_HALF_SOUL then

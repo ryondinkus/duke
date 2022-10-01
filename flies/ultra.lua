@@ -12,7 +12,7 @@ end
 
 local function ATTACK_FLY_MC_PRE_FAMILIAR_COLLISION(_, f, e)
     if f.SubType == attackFlySubType then
-        if e:ToNPC() and not e:HasEntityFlags(EntityFlag.FLAG_CHARM) then
+        if e:ToNPC() and DukeHelpers.IsActualEnemy(e, true, false) and not e:HasEntityFlags(EntityFlag.FLAG_CHARM) then
             local effect = DukeHelpers.rng:RandomInt(3)
             if effect == 0 then
                 e:AddFear(EntityRef(f), 150)
@@ -54,7 +54,7 @@ end
 
 local function HEART_FLY_MC_PRE_FAMILIAR_COLLISION(_, f, e)
     if f.SubType == subType then
-        if e:ToNPC() and not e:HasEntityFlags(EntityFlag.FLAG_CHARM) and DukeHelpers.rng:RandomInt(3) == 0 then
+        if e:ToNPC() and DukeHelpers.IsActualEnemy(e, true, false) and not e:HasEntityFlags(EntityFlag.FLAG_CHARM) and DukeHelpers.rng:RandomInt(3) == 0 then
             if DukeHelpers.rng:RandomInt(2) == 1 then
                 e:AddMidasFreeze(EntityRef(f), 30)
             else

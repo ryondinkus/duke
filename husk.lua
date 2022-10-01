@@ -4,7 +4,7 @@ local WikiDescription = DukeHelpers.GenerateEncyclopediaPage({
 		"Items:",
 		"- Rotten Gullet",
 		"Stats:",
-		"- HP: 2 Soul Hearts",
+		"- HP: 3 Soul Hearts",
 		"- Speed: 1.00",
 		"- Tear Rate: 2.73",
 		"- Damage: 3.50",
@@ -22,8 +22,7 @@ local WikiDescription = DukeHelpers.GenerateEncyclopediaPage({
 	},
 	{
 		"Notes",
-		"If Tainted Duke is below 2 Soul Hearts, picking up Soul Hearts will replenish his health bar instead of turning into Rotten Gullet charges.",
-		"- Black Hearts picked up this way will turn into Soul Hearts.",
+		"If Tainted Duke is below 3 Soul Hearts, picking up Soul Hearts will replenish his health bar instead of turning into Rotten Gullet charges.",
 		"Tainted Duke is able to pay for Devil Deals with his Rotten Gullet charges.",
 		"- 1 Heart deals cost 4 charges, and 2 Heart deals cost 8 charges.",
 		"- The charge type is irrelevant to the price.",
@@ -73,12 +72,18 @@ if Encyclopedia then
 end
 
 
--- Add flies on player startup
+-- Add spiders on player startup
 dukeMod:AddCallback(ModCallbacks.MC_POST_PLAYER_UPDATE, function(_, player)
-	if dukeMod.global.isInitialized and DukeHelpers.IsHusk(player) and
-		(not player:GetData().duke or not player:GetData().duke.isInitialized) then
-		DukeHelpers.InitializeHusk(player)
-		DukeHelpers.AddStartupSpiders(player)
+	if dukeMod.global.isInitialized and DukeHelpers.IsHusk(player) and not player:IsCoopGhost() then
+		if not player:GetData().duke or not player:GetData().duke.isInitialized then
+			DukeHelpers.InitializeHusk(player)
+		end
+		if not player:GetData().duke or not player:GetData().duke.hasStartupSpiders then
+			DukeHelpers.AddStartupSpiders(player)
+		end
+	end
+	if player:IsCoopGhost() then
+		player:GetData().duke.isInitialized = false
 	end
 end)
 
@@ -157,6 +162,15 @@ dukeMod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, function(_, pickup, co
 			if pickup.Price == PickupPrice.PRICE_SPIKES then
 				p:TakeDamage(2, DamageFlag.DAMAGE_SPIKES | DamageFlag.DAMAGE_NO_PENALTIES, EntityRef(nil), 0)
 			end
+
+			if pickup.OptionsPickupIndex ~= 0 then
+				DukeHelpers.ForEachEntityInRoom(function(entity)
+					if entity:ToPickup().OptionsPickupIndex == pickup.OptionsPickupIndex then
+						Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.POOF01, 0, entity.Position, Vector.Zero, entity)
+						entity:Remove()
+					end
+				end, EntityType.ENTITY_PICKUP)
+			end
 		end
 
 		return true
@@ -185,10 +199,7 @@ end)
 
 dukeMod:AddCallback(ModCallbacks.MC_POST_PICKUP_UPDATE, function(_, pickup)
 	if not DukeHelpers.AnyPlayerHasTrinket(TrinketType.TRINKET_YOUR_SOUL) and
-		DukeHelpers.HasHusk() and
-		((pickup.Price < 0 and
-			pickup.Price > PickupPrice.PRICE_SPIKES) or
-			(pickup.Price < DukeHelpers.PRICE_OFFSET and pickup.Price > DukeHelpers.PRICE_OFFSET + PickupPrice.PRICE_SPIKES)) then
+		DukeHelpers.HasHusk() and (DukeHelpers.IsReplaceablePrice(pickup.Price) or DukeHelpers.IsCustomPrice(pickup.Price)) then
 		local closestPlayer = DukeHelpers.GetClosestPlayer(pickup.Position)
 
 		if closestPlayer and DukeHelpers.IsHusk(closestPlayer) and
@@ -227,8 +238,10 @@ function DukeHelpers.InitializeHusk(p, continued)
 end
 
 function DukeHelpers.AddStartupSpiders(player)
+	local dukeData = DukeHelpers.GetDukeData(player)
 	DukeHelpers.FillRottenGulletSlot(player, DukeHelpers.Spiders.RED.key, 1)
 	DukeHelpers.SpawnSpidersFromKey(DukeHelpers.Hearts.RED.key, player.Position, player, 2)
+	dukeData.hasStartupSpiders = true
 end
 
 dukeMod:AddCallback(ModCallbacks.MC_POST_UPDATE, function()
@@ -248,6 +261,18 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_UPDATE, function()
 		end
 	end
 end)
+
+dukeMod:AddCallback(ModCallbacks.MC_USE_ITEM, function(_, _, _, player)
+	if DukeHelpers.IsHusk(player) then
+		DukeHelpers.FillRottenGulletSlot(player, DukeHelpers.Spiders.RED.key, 2)
+	end
+end, CollectibleType.COLLECTIBLE_YUM_HEART)
+
+dukeMod:AddCallback(ModCallbacks.MC_USE_ITEM, function(_, _, _, player)
+	if DukeHelpers.IsHusk(player) then
+		DukeHelpers.FillRottenGulletSlot(player, DukeHelpers.Spiders.ROTTEN.key, 1)
+	end
+end, CollectibleType.COLLECTIBLE_YUCK_HEART)
 
 if EID then
 	EID:addBirthright(DukeHelpers.HUSK_ID, "Tainted Duke's Rotten Gullet now fires 12 tears per charge", "Tainted Duke")

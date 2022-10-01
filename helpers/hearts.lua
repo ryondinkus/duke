@@ -34,7 +34,7 @@ end
 
 function DukeHelpers.RemoveUnallowedHearts(player, leftHearts, ignoreContainers)
     if not leftHearts then
-        leftHearts = { SOUL = 4 }
+        leftHearts = { SOUL = 6 }
     end
 
     local playerData = DukeHelpers.GetDukeData(player)
@@ -69,12 +69,6 @@ function DukeHelpers.RemoveUnallowedHearts(player, leftHearts, ignoreContainers)
         DukeHelpers.Hearts.BLACK.Remove(player, DukeHelpers.Hearts.BLACK.GetCount(player))
     end
 
-    local boneHearts = getRemovableAmount(player, leftHearts, DukeHelpers.Hearts.BONE)
-    if boneHearts > 0 then
-        removedHearts[DukeHelpers.Hearts.BONE.key] = boneHearts
-        DukeHelpers.Hearts.BONE.Remove(player, boneHearts)
-    end
-
     local brokenHearts = getRemovableAmount(player, leftHearts, DukeHelpers.Hearts.BROKEN)
     if brokenHearts > 0 then
         removedHearts[DukeHelpers.Hearts.BROKEN.key] = brokenHearts * 2
@@ -100,17 +94,18 @@ function DukeHelpers.RemoveUnallowedHearts(player, leftHearts, ignoreContainers)
     end
 
     local redHearts = getRemovableAmount(player, leftHearts, DukeHelpers.Hearts.RED)
-    if not ignoreContainers then
-        redHearts = redHearts + player:GetMaxHearts()
-    end
-
     if redHearts > 0 then
         removedHearts[DukeHelpers.Hearts.RED.key] = redHearts
         DukeHelpers.Hearts.RED.Remove(player, redHearts)
 
         if not ignoreContainers then
-            player:AddMaxHearts(-player:GetMaxHearts())
         end
+    end
+
+    if not ignoreContainers then
+        local maxHearts = player:GetMaxHearts()
+        player:AddMaxHearts(-maxHearts)
+        player:AddSoulHearts(maxHearts)
     end
 
     local soulHearts = getRemovableAmount(player, leftHearts, DukeHelpers.Hearts.SOUL)
@@ -123,6 +118,12 @@ function DukeHelpers.RemoveUnallowedHearts(player, leftHearts, ignoreContainers)
     if moonHearts and moonHearts > 0 then
         removedHearts[DukeHelpers.Hearts.MOONLIGHT.key] = moonHearts
         DukeHelpers.Hearts.MOONLIGHT.Remove(player, DukeHelpers.Hearts.MOONLIGHT.GetCount(player))
+    end
+
+    local boneHearts = getRemovableAmount(player, leftHearts, DukeHelpers.Hearts.BONE)
+    if boneHearts > 0 then
+        removedHearts[DukeHelpers.Hearts.BONE.key] = boneHearts
+        DukeHelpers.Hearts.BONE.Remove(player, boneHearts)
     end
 
     return removedHearts

@@ -5,5 +5,7 @@ return {
     count = 2,
     weight = 2,
     poofColor = Color(0.62, 0.62, 0.62, 1, 0.61, 0, 0.12),
-    sacAltarQuality = 1
+    sacAltarQuality = 1,
+	dropHeart = DukeHelpers.Hearts.HALF_RED,
+	dropHeartChance = 50
 }
