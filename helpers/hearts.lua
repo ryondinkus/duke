@@ -41,6 +41,10 @@ function DukeHelpers.RemoveUnallowedHearts(player, leftHearts, ignoreContainers)
     local removedHearts = {}
 
     local skippedBlackHearts = playerData.removedWebHearts or 0
+    if playerData.extraSoulHearts then
+        DukeHelpers.Hearts.SOUL.Remove(player, playerData.extraSoulHearts)
+        playerData.extraSoulHearts = nil
+    end
 
     local blackHearts = DukeHelpers.Clamp(getRemovableAmount(player, leftHearts, DukeHelpers.Hearts.BLACK) -
         skippedBlackHearts, 0)
@@ -50,12 +54,16 @@ function DukeHelpers.RemoveUnallowedHearts(player, leftHearts, ignoreContainers)
     if immortalHearts > 0 then
         removedHearts[DukeHelpers.Hearts.IMMORTAL.key] = immortalHearts
         DukeHelpers.Hearts.IMMORTAL.Remove(player, immortalHearts)
+        if playerData.previousSoulHearts % 2 == 1 then
+            DukeHelpers.Hearts.SOUL.Add(player, 1)
+        end
     end
 
     local webHearts = getRemovableAmount(player, leftHearts, DukeHelpers.Hearts.WEB)
     if webHearts and webHearts > 0 then
         removedHearts[DukeHelpers.Hearts.WEB.key] = webHearts / 2
         DukeHelpers.Hearts.WEB.Remove(player, webHearts)
+        playerData.extraSoulHearts = playerData.previousSoulHearts % 2
         playerData.removedWebHearts = webHearts
     elseif skippedBlackHearts > 0 and blackHearts > 0 then
         playerData.removedWebHearts = nil
