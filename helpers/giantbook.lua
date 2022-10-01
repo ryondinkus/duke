@@ -1,12 +1,6 @@
 local sfx = SFXManager()
---GIANTBOOK ANIMATION
-local bigBook = Sprite()
-local maxFrames = { ["Appear"] = 33, ["Shake"] = 36, ["ShakeFire"] = 32, ["Flip"] = 33 }
-local bookColors = { [0] = Color(1, 1, 1, 1, 0, 0, 0), [1] = Color(1, 1, 1, 1, 0, 0, 0), [2] = Color(1, 1, 1, 1, 0, 0, 0), [3] = Color(1, 1, 1, 1, 0, 0, 0), [4] = Color(1, 1, 1, 1, 0, 0, 0), [5] = Color(1, 1, 1, 1, 0, 0, 0) }
-local bookLength = 0
-local bookHideBerkano = false
 
-local function doBerkanoPause()
+local function berkanoPause()
 	Isaac.GetPlayer(0):UseCard(Card.RUNE_BERKANO, UseFlag.USE_NOANIM | UseFlag.USE_NOANNOUNCER)
 	for _, bluefly in pairs(Isaac.FindByType(EntityType.ENTITY_FAMILIAR, FamiliarVariant.BLUE_FLY, -1, false, false)) do
 		if bluefly:Exists() and bluefly.FrameCount <= 0 then
@@ -20,27 +14,16 @@ local function doBerkanoPause()
 	end
 end
 
+--GIANTBOOK ANIMATION
+local bigBook = Sprite()
+local maxFrames = { ["Appear"] = 33, ["Shake"] = 36, ["ShakeFire"] = 32, ["Flip"] = 33 }
+local bookColors = { [0] = Color(1, 1, 1, 1, 0, 0, 0), [1] = Color(1, 1, 1, 1, 0, 0, 0), [2] = Color(1, 1, 1, 1, 0, 0, 0), [3] = Color(1, 1, 1, 1, 0, 0, 0), [4] = Color(1, 1, 1, 1, 0, 0, 0), [5] = Color(1, 1, 1, 1, 0, 0, 0) }
+local bookLength = 0
+local bookHideBerkano = false
+
 DukeGiantBookAPI = {}
 
-function DukeGiantBookAPI.playGiantBook(_animName, _popup, _poofColor, _bgColor, _poof2Color, _soundName, _notHide)
-	bigBook:Load("gfx/ui/giantbook/giantbook.anm2", true)
-	bigBook:ReplaceSpritesheet(0, "gfx/ui/giantbook/" .. _popup)
-	bigBook:LoadGraphics()
-	bigBook:Play(_animName, true)
-	bookLength = maxFrames[_animName]
-	bookColors[1] = _bgColor
-	bookColors[2] = _poofColor
-	bookColors[3] = _poofColor
-	bookColors[4] = _poof2Color
-	bookHideBerkano = true
-	if not _notHide then
-		doBerkanoPause()
-		if (_soundName) then
-			sfx:Play(_soundName, 0.8, 0, false, 1)
-		end
-	end
-end
-
+-- our modified version of playGiantBook must always exist regardless of if you have GiantBook API on or not
 function DukeGiantBookAPI.playDukeGiantBook(_animName, _popup, _gfxRoot, _poofColor, _bgColor, _poof2Color, _soundName, _notHide)
 	bigBook:Load(_gfxRoot or "gfx/ui/giantbook/giantbook.anm2", true)
 	if _popup then
@@ -49,15 +32,19 @@ function DukeGiantBookAPI.playDukeGiantBook(_animName, _popup, _gfxRoot, _poofCo
 	end
 	bigBook:Play(_animName, true)
 	bookLength = maxFrames[_animName]
-	bookColors[1] = _bgColor
-	bookColors[2] = _poofColor
-	bookColors[3] = _poofColor
-	bookColors[4] = _poof2Color
-	bookHideBerkano = true
-	if not _notHide then
-		doBerkanoPause()
-		if (_soundName) then
-			sfx:Play(_soundName, 0.8, 0, false, 1)
+	if GiantBookAPI then
+		GiantBookAPI.playGiantBook(_animName, "gfx/ui/giantbook/empty.png", Color(1, 1, 1, 0), Color(1, 1, 1, 0), Color(1, 1, 1, 0), _soundName, _notHide)
+	else
+		bookColors[1] = _bgColor
+		bookColors[2] = _poofColor
+		bookColors[3] = _poofColor
+		bookColors[4] = _poof2Color
+		bookHideBerkano = true
+		if not _notHide then
+			berkanoPause()
+			if (_soundName) then
+				sfx:Play(_soundName, 0.8, 0, false, 1)
+			end
 		end
 	end
 end
@@ -78,16 +65,21 @@ function DukeGiantBookAPI.bookRender()
 	end
 end
 
-dukeMod:AddCallback(ModCallbacks.MC_POST_RENDER, DukeGiantBookAPI.bookRender)
-
 function GetScreenCenterPosition()
 	return Vector(Isaac.GetScreenWidth() / 2, Isaac.GetScreenHeight() / 2)
+end
+
+dukeMod:AddCallback(ModCallbacks.MC_POST_RENDER, DukeGiantBookAPI.bookRender)
+
+if GiantBookAPI then
+	for k,v in pairs(GiantBookAPI) do DukeGiantBookAPI[k] = v end
+	return
 end
 
 --giving berkano back it's visual effect
 function DukeGiantBookAPI:useBerkano()
 	if not bookHideBerkano then
-		DukeGiantBookAPI.playGiantBook("Appear", "Rune_07_Berkand.png", Color(0.2, 0.1, 0.3, 1, 0, 0, 0), Color(0.117, 0.0117, 0.2, 1, 0, 0, 0), Color(0, 0, 0, 0.8, 0, 0, 0), nil, true)
+		DukeGiantBookAPI.playDukeGiantBook("Appear", "Rune_07_Berkand.png", nil, Color(0.2, 0.1, 0.3, 1, 0, 0, 0), Color(0.117, 0.0117, 0.2, 1, 0, 0, 0), Color(0, 0, 0, 0.8, 0, 0, 0), nil, true)
 	end
 end
 
@@ -116,7 +108,7 @@ function DukeGiantBookAPI.paperRender()
 			paperFrames = 41
 			paperSwitch = true
 			bookHideBerkano = true
-			doBerkanoPause()
+			berkanoPause()
 		end
 	else
 		if (Isaac.GetFrameCount() % 2 == 0) then
