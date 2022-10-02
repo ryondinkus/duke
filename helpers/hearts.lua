@@ -41,6 +41,10 @@ function DukeHelpers.RemoveUnallowedHearts(player, leftHearts, ignoreContainers)
     local removedHearts = {}
 
     local skippedBlackHearts = playerData.removedWebHearts or 0
+    if playerData.extraSoulHearts then
+        DukeHelpers.Hearts.SOUL.Remove(player, playerData.extraSoulHearts)
+        playerData.extraSoulHearts = nil
+    end
 
     local blackHearts = DukeHelpers.Clamp(getRemovableAmount(player, leftHearts, DukeHelpers.Hearts.BLACK) -
         skippedBlackHearts, 0)
@@ -50,14 +54,20 @@ function DukeHelpers.RemoveUnallowedHearts(player, leftHearts, ignoreContainers)
     if immortalHearts > 0 then
         removedHearts[DukeHelpers.Hearts.IMMORTAL.key] = immortalHearts
         DukeHelpers.Hearts.IMMORTAL.Remove(player, immortalHearts)
+        if playerData.previousSoulHearts and playerData.previousSoulHearts % 2 == 1 then
+            DukeHelpers.Hearts.SOUL.Add(player, 1)
+        end
     end
 
     local webHearts = getRemovableAmount(player, leftHearts, DukeHelpers.Hearts.WEB)
     if webHearts and webHearts > 0 then
         removedHearts[DukeHelpers.Hearts.WEB.key] = webHearts / 2
         DukeHelpers.Hearts.WEB.Remove(player, webHearts)
+        if playerData.previousSoulHearts then
+            playerData.extraSoulHearts = playerData.previousSoulHearts % 2
+        end
         playerData.removedWebHearts = webHearts
-    elseif skippedBlackHearts > 0 and blackHearts > 0 then
+    elseif skippedBlackHearts > 0 then
         playerData.removedWebHearts = nil
     end
 
@@ -66,7 +76,18 @@ function DukeHelpers.RemoveUnallowedHearts(player, leftHearts, ignoreContainers)
     end
 
     if DukeHelpers.Hearts.BLACK.GetCount(player) > 0 or skippedBlackHearts > 0 then
-        DukeHelpers.Hearts.BLACK.Remove(player, DukeHelpers.Hearts.BLACK.GetCount(player))
+        if leftHearts.BLACK then
+            DukeHelpers.Hearts.BLACK.Remove(player, blackHearts)
+        else
+            DukeHelpers.Hearts.BLACK.Remove(player, DukeHelpers.Hearts.BLACK.GetCount(player))
+        end
+        if playerData.previousSoulHearts and playerData.previousSoulHearts % 2 == 1 then
+            if DukeHelpers.Hearts.SOUL.GetCount(player) > playerData.previousSoulHearts then
+                DukeHelpers.Hearts.SOUL.Remove(player, 1)
+            elseif DukeHelpers.Hearts.SOUL.GetCount(player) < playerData.previousSoulHearts then
+                DukeHelpers.Hearts.SOUL.Add(player, 1)
+            end
+        end
     end
 
     local brokenHearts = getRemovableAmount(player, leftHearts, DukeHelpers.Hearts.BROKEN)

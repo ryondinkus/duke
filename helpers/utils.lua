@@ -263,6 +263,5 @@ function DukeHelpers.CombineArrays(first, second)
 	for i=1, #second do
 		combined[#combined + 1] = second[i]
     end
-    print(combined[1])
 	return combined
 end

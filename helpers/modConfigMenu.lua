@@ -1,4 +1,4 @@
-local MenuName = "Duke - Beta"
+local MenuName = "Duke"
 
 local function isTableUnlocked(itemTable)
 	for k, item in pairs(itemTable) do

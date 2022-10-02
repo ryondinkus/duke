@@ -96,7 +96,9 @@ end, CacheFlag.CACHE_FLYING)
 
 -- Fill slots when the player's health changes
 dukeMod:AddCallback(ModCallbacks.MC_POST_PEFFECT_UPDATE, function(_, p)
+	local data = DukeHelpers.GetDukeData(p)
 	local removedHearts = DukeHelpers.RemoveUnallowedHearts(p)
+	data.previousSoulHearts = DukeHelpers.Hearts.SOUL.GetCount(p)
 
 	for heartKey, removedAmount in pairs(removedHearts) do
 		local heart = DukeHelpers.Hearts[heartKey]
