@@ -1,4 +1,6 @@
 dukeMod = RegisterMod("Duke", 1)
+local font = Font()
+font:Load("font/terminus.fnt")
 
 function table.deepCopy(original)
     local copy = {}
@@ -36,6 +38,47 @@ DukeHelpers.HUSK_ID = Isaac.GetPlayerTypeByName(DukeHelpers.HUSK_NAME, true)
 dukeMod:AddCallback(ModCallbacks.MC_POST_GAME_STARTED, function()
     local seeds = Game():GetSeeds()
     DukeHelpers.rng:SetSeed(seeds:GetStartSeed(), 35)
+end)
+
+local debugHudSprite = Sprite()
+debugHudSprite:Load("gfx/ui/debugHud.anm2", true)
+debugHudSprite.Scale = Vector(800, 800)
+local debugHud = false
+local debugHearts = nil
+
+dukeMod:AddCallback(ModCallbacks.MC_EXECUTE_CMD, function(_, cmd, args)
+    cmd = cmd:lower()
+    if cmd == "debughud" then
+        debugHud = not debugHud
+    elseif cmd == "debughearts" then
+        if #args > 0 then
+            debugHearts = args:upper()
+        else
+            debugHearts = nil
+        end
+    end
+end)
+
+dukeMod:AddCallback(ModCallbacks.MC_POST_RENDER, function()
+    if debugHud then
+        debugHudSprite:Play("Debug")
+        debugHudSprite:Render(Vector(Isaac.GetScreenWidth() / 2, Isaac.GetScreenHeight() / 2))
+    end
+
+    if debugHearts and DukeHelpers.Hearts[debugHearts] then
+        if DukeHelpers.Hearts[debugHearts].GetCount then
+            font:DrawString("# " ..
+                debugHearts .. " hearts: " .. tostring(DukeHelpers.Hearts[debugHearts].GetCount(Isaac.GetPlayer(0))),
+                Isaac.GetScreenWidth() / 4, 20
+                , KColor(1, 1, 1, 1), Isaac.GetScreenWidth() / 2, true)
+        end
+        if DukeHelpers.Hearts[debugHearts].CanPick then
+            font:DrawString("can pick " ..
+                debugHearts .. " hearts: " .. tostring(DukeHelpers.Hearts[debugHearts].CanPick(Isaac.GetPlayer(0))),
+                Isaac.GetScreenWidth() / 4, 35,
+                KColor(1, 1, 1, 1), Isaac.GetScreenWidth() / 2, true)
+        end
+    end
 end)
 
 dukeMod:AddCallback(ModCallbacks.MC_POST_PLAYER_UPDATE, function(_, player)
@@ -159,10 +202,18 @@ local function addUnlock(item)
         item.IsUnlocked = function()
             return DukeHelpers.IsUnlocked(item.unlock)
         end
+
+        item.Unlock = function()
+            if not item.IsUnlocked() then
+                DukeHelpers.Unlock(item.unlock)
+            end
+        end
     else
         item.IsUnlocked = function()
             return true
         end
+
+        item.Unlock = function() end
     end
 end
 
@@ -468,3 +519,34 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_PICKUP_INIT, function(_, pickup)
         end
     end
 end)
+
+local function getModDirectoryName(str)
+    local editedString = str:sub(1, -2)
+    local index = editedString:find("/[^/]*$")
+
+    if index then
+        return editedString:sub(index + 1)
+    else
+        return ""
+    end
+end
+
+if ComplianceImmortal then
+    Isaac.ExecuteCommand("luamod " .. getModDirectoryName(ComplianceImmortal.path))
+end
+
+if MoonlightHearts then
+    Isaac.ExecuteCommand("luamod " .. getModDirectoryName(MoonlightHearts.path))
+end
+
+if PATCH_GLOBAL then
+    Isaac.ExecuteCommand("luamod " .. getModDirectoryName(PATCH_GLOBAL.path))
+end
+
+if ARACHNAMOD then
+    Isaac.ExecuteCommand("luamod " .. getModDirectoryName(ARACHNAMOD.path))
+end
+
+if RepentancePlusMod then
+    Isaac.ExecuteCommand("luamod " .. getModDirectoryName(RepentancePlusMod.path))
+end

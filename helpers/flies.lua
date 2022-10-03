@@ -290,6 +290,10 @@ function DukeHelpers.SpawnPickupHeartFly(player, pickup, overriddenKey, amount, 
 
 	local spawnedFlies = {}
 
+	if not flyToSpawn then
+		return
+	end
+
 	if type(flyToSpawn.heartFlySubType) == "table" then
 		local continueInfestedHeart = true
 		DukeHelpers.ForEach(flyToSpawn.heartFlySubType, function(useFly)

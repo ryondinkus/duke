@@ -95,3 +95,47 @@ end
 function DukeHelpers.IsLost(player)
     return player:GetPlayerType() == PlayerType.PLAYER_LOST or player:GetPlayerType() == PlayerType.PLAYER_LOST_B
 end
+
+function DukeHelpers.IsSoulHeartBart(player)
+    local soulHeartMarties = {
+        PlayerType.PLAYER_XXX,
+        PlayerType.PLAYER_BLACKJUDAS,
+        PlayerType.PLAYER_THELOST,
+        PlayerType.PLAYER_THESOUL,
+        PlayerType.PLAYER_JUDAS_B,
+        PlayerType.PLAYER_XXX_B,
+        PlayerType.PLAYER_THELOST_B,
+        PlayerType.PLAYER_THEFORGOTTEN_B,
+        PlayerType.PLAYER_THESOUL_B,
+        PlayerType.PLAYER_BETHANY_B,
+    }
+    for _, v in ipairs(soulHeartMarties) do
+        if player:GetPlayerType() == v then
+            return true
+        end
+    end
+    return false
+end
+
+function DukeHelpers.IsRedFred(player)
+    local notRedFreds = {
+        PlayerType.PLAYER_BLUEBABY,
+        PlayerType.PLAYER_THELOST,
+        PlayerType.PLAYER_KEEPER,
+        PlayerType.PLAYER_THESOUL,
+        PlayerType.PLAYER_JUDAS_B,
+        PlayerType.PLAYER_BLUEBABY_B,
+        PlayerType.PLAYER_THELOST_B,
+        PlayerType.PLAYER_KEEPER_B,
+        PlayerType.PLAYER_THEFORGOTTEN_B,
+        PlayerType.PLAYER_THESOUL_B,
+        PlayerType.PLAYER_BETHANY_B,
+        PlayerType.PLAYER_JACOB2_B
+    }
+    for _, v in ipairs(notRedFreds) do
+        if player:GetPlayerType() == v then
+            return false
+        end
+    end
+    return true
+end

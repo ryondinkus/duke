@@ -348,7 +348,81 @@ DukeHelpers.Hearts = {
         Remove = function(player, amount)
             DukeHelpers.Hearts.WEB.Remove(player, amount)
         end
-    }
+    },
+    BROKEN_HEART = {
+        subType = 84,
+        CanPick = function(_)
+            return true
+        end
+    },
+    DAUNTLESS = {
+        subType = 85,
+        GetCount = function(_)
+            if RepentancePlusMod then
+                return RepentancePlusMod.NumTaintedHearts.HEART_DAUNTLESS
+            end
+
+            return 0
+        end,
+        CanPick = function(player)
+            return false
+        end,
+        Add = function(_, amount)
+            RepentancePlusMod.NumTaintedHearts.HEART_DAUNTLESS = RepentancePlusMod.NumTaintedHearts.HEART_DAUNTLESS +
+                amount
+        end,
+        Remove = function(_, amount)
+            RepentancePlusMod.NumTaintedHearts.HEART_DAUNTLESS = math.max(RepentancePlusMod.NumTaintedHearts.HEART_DAUNTLESS
+                - amount, 0)
+        end
+    },
+    HOARDED = {
+        subType = 86,
+        CanPick = function(player)
+            return player:HasCollectible(CollectibleType.COLLECTIBLE_DARK_BUM) or
+                player:HasTrinket(TrinketType.TRINKET_APPLE_OF_SODOM) or player:CanPickRedHearts()
+        end
+    },
+    SOILED = {
+        subType = 88,
+        GetCount = function(_)
+            if RepentancePlusMod then
+                return RepentancePlusMod.NumTaintedHearts.HEART_SOILED
+            end
+
+            return 0
+        end,
+        CanPick = function(player)
+            -- BUG: Needs to check rotten hearts
+            return player:GetMaxHearts() / 2 - player:GetBoneHearts() - DukeHelpers.Hearts.SOILED.GetCount(player) > 0
+        end,
+        Add = function(_, amount)
+            RepentancePlusMod.NumTaintedHearts.HEART_SOILED = RepentancePlusMod.NumTaintedHearts.HEART_SOILED +
+                amount
+        end,
+        Remove = function(_, amount)
+            RepentancePlusMod.NumTaintedHearts.HEART_SOILED = math.max(RepentancePlusMod.NumTaintedHearts.HEART_SOILED
+                - amount, 0)
+        end
+    },
+    CURDLED = {
+        subType = 89,
+        CanPick = function(player)
+            return player:CanPickRedHearts() or not DukeHelpers.IsRedFred(player)
+        end
+    },
+    SAVAGE = {
+        subType = 90,
+        CanPick = function(_)
+            return true
+        end
+    },
+    BENIGHTED = {
+        subType = 90,
+        CanPick = function(player)
+            return player:CanPickBlackHearts()
+        end
+    },
 }
 
 for key, heart in pairs(DukeHelpers.Hearts) do

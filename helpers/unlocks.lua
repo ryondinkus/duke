@@ -213,6 +213,8 @@ local function unlockUnlock(unlock)
     saveUnlock(unlock)
 end
 
+DukeHelpers.Unlock = unlockUnlock
+
 local function handleUnlock(unlock, entity, forceUnlock)
     local game = Game()
     local level = game:GetLevel()

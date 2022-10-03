@@ -23,7 +23,9 @@ local flies = {
     include("flies/doubleRed"),
     include("flies/halfSoul"),
     include("flies/scared"),
-    include("flies/blended")
+    include("flies/blended"),
+
+    include("flies/modded/repPlus/broken")
 }
 
 -- Registers the flies
