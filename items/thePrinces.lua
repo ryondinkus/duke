@@ -33,22 +33,11 @@ end
 
 local function MC_POST_PEFFECT_UPDATE(_, p)
     if DukeHelpers.Items.thePrinces.IsUnlocked() then
-        local data = DukeHelpers.GetDukeData(p)
-
-        if data and data[Tag] then
-            if p:IsExtraAnimationFinished() then
-                data[Tag] = nil
-                for i = 1, 3 do
-                    DukeHelpers.AddHeartFly(p, DukeHelpers.GetWeightedFly(), 1)
-                end
+		DukeHelpers.OnItemPickup(p, Id, Tag, function()
+            for i = 1, 3 do
+                DukeHelpers.AddHeartFly(p, DukeHelpers.GetWeightedFly(), 1)
             end
-        else
-            local targetItem = p.QueuedItem.Item
-            if (not targetItem) or targetItem.ID ~= Id then
-                return
-            end
-            data[Tag] = true
-        end
+		end)
     end
 end
 

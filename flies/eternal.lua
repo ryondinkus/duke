@@ -5,7 +5,7 @@ local function MC_FAMILIAR_UPDATE(_, f)
 		if f.FrameCount == 6 then
 			DukeHelpers.ForEachEntityInRoom(function(entity)
 				DukeGiantBookAPI.playDukeGiantBook("Appear", nil, "gfx/ui/giantbook/giantbook_eternalfly.anm2", Color(1, 1, 1, 1),
-					Color(1, 1, 1, 1), Color(1, 1, 1, 1))
+					Color(1, 1, 1, 0), Color(1, 1, 1, 0))
 				for i = 1, 2 do
 					DukeHelpers.AddHeartFly(f.SpawnerEntity:ToPlayer(), DukeHelpers.Flies.RED)
 					DukeHelpers.RemoveHeartFlyEntity(entity)

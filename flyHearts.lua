@@ -1,8 +1,10 @@
+local Name = "Fly Hearts"
+local Tag = "flyHearts"
 local flyHeartsUnlock = DukeHelpers.GetUnlock(DukeHelpers.Unlocks.MEGA_SATAN, "flyHearts", DukeHelpers.HUSK_NAME)
 
 DukeHelpers.RegisterUnlock(flyHeartsUnlock)
 
-local function SetFlyHeart(pickup)
+function DukeHelpers.SetFlyHeart(pickup)
     local pickupData = pickup:GetData()
     pickupData.isFlyHeart = true
 
@@ -28,11 +30,15 @@ local function SetFlyHeart(pickup)
     pickupData.flyHeartSpritesheet:LoadGraphics()
     pickupData.flyHeartSpritesheet.Color = Color(pickupData.flyHeartSpritesheet.Color.R,
         pickupData.flyHeartSpritesheet.Color.G, pickupData.flyHeartSpritesheet.Color.B, 0.7)
-    pickupData.flyHeartSpritesheet:Play("FlyHeartAppear")
+    if pickup:GetSprite():IsPlaying("Appear") then
+        pickupData.flyHeartSpritesheet:Play("FlyHeartAppear")
+    else
+        pickupData.flyHeartSpritesheet:Play("FlyHeart")
+    end
 end
 
 local function StoreFlyHeart(pickup)
-    SetFlyHeart(pickup)
+    DukeHelpers.SetFlyHeart(pickup)
     if not dukeMod.global.flyHearts then
         dukeMod.global.flyHearts = {}
     end
@@ -46,7 +52,8 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_NEW_LEVEL, function()
 end)
 
 local function flyHeartPickupUpdate(_, pickup)
-    if pickup.FrameCount <= 1 and DukeHelpers.IsSupportedHeart(pickup) and DukeHelpers.IsUnlocked(flyHeartsUnlock) then
+    if pickup.FrameCount <= 1 and DukeHelpers.IsSupportedHeart(pickup) and DukeHelpers.IsUnlocked(flyHeartsUnlock)
+	and not DukeHelpers.GetDukeData(pickup).noFlyHearts then
         if pickup:GetSprite():GetAnimation() == "Appear" then
             if DukeHelpers.PercentageChance(5) then
                 StoreFlyHeart(pickup)
@@ -54,7 +61,7 @@ local function flyHeartPickupUpdate(_, pickup)
         else
             for _, flyHeartHash in pairs(dukeMod.global.flyHearts) do
                 if pickup.InitSeed == flyHeartHash then
-                    SetFlyHeart(pickup)
+                    DukeHelpers.SetFlyHeart(pickup)
                     break
                 end
             end
@@ -113,3 +120,9 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_PICKUP_UPDATE, function(_, pickup)
         return DukeHelpers.PickupFlyHeart(pickup)
     end
 end)
+
+DukeHelpers.FlyHearts = {
+    Name = Name,
+    Tag = Tag,
+    unlock = flyHeartsUnlock
+}

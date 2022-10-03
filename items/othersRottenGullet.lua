@@ -1,8 +1,8 @@
 local Names = {
-    en_us = "ROTTEN GULLET",
+    en_us = "Rotten Gullet",
     spa = "La Garganta del Duque"
 }
-local Name = Names.en_us
+local Name = "ROTTEN GULLET"
 local Tag = "othersRottenGullet"
 local Id = Isaac.GetItemIdByName(Name)
 local Descriptions = {

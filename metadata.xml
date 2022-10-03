@@ -1,7 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <metadata>
-	<name>duke</name>
-	<directory>duke</directory>
-	<description/>
-	<version>1.0</version>
-	<visibility/>
+    <name>duke</name>
+    <directory>duke</directory>
+    <id>2864873221</id>
+    <description>Need a cool descrtiption</description>
+    <version>1.1</version>
+    <visibility>Friends Only</visibility>
+    <tag id="Lua"/>
+    <tag id="Items"/>
+    <tag id="Active Items"/>
+    <tag id="Trinkets"/>
+    <tag id="Cards"/>
+    <tag id="Pickups"/>
+    <tag id="Player Characters"/>
+    <tag id="Familiars"/>
 </metadata>

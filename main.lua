@@ -19,6 +19,8 @@ local defaultGlobal = {
     flyHearts = {}
 }
 
+defaultMcmOptions = {}
+
 dukeMod.global = table.deepCopy(defaultGlobal)
 
 DukeHelpers = {
@@ -27,7 +29,7 @@ DukeHelpers = {
     rng = RNG(),
     sfx = SFXManager(),
     PRICE_OFFSET = -50,
-    MAX_HEALTH = 4,
+    MAX_HEALTH = 6,
     SUBTYPE_OFFSET = 903
 }
 
@@ -106,6 +108,7 @@ include("helpers/flies")
 include("helpers/giantbook")
 include("helpers/hearts")
 include("helpers/husk")
+include("helpers/modConfigMenu")
 include("helpers/partitions")
 include("helpers/players")
 include("helpers/prices")
@@ -288,25 +291,25 @@ for _, card in pairs(DukeHelpers.Filter(DukeHelpers.Cards, function(pi) return n
     end
 end
 
-for _, rune in pairs(DukeHelpers.Filter(DukeHelpers.Cards, function(pi) return pi.IsRune end)) do
-    registerCallbacks(rune.callbacks)
+for _, soul in pairs(DukeHelpers.Filter(DukeHelpers.Cards, function(pi) return pi.IsSoul end)) do
+    registerCallbacks(soul.callbacks)
 
-    DukeHelpers.AddExternalItemDescriptionCard(rune)
+    DukeHelpers.AddExternalItemDescriptionCard(soul)
 
     if Encyclopedia then
-        registerEncyclopediaDescription(rune,
-            Encyclopedia.GetRune,
-            Encyclopedia.AddRune,
-            Encyclopedia.UpdateRune,
-            { Spr = Encyclopedia.RegisterSprite(dukeMod.path .. "content/gfx/ui_cardfronts.anm2", rune.Name) })
+        registerEncyclopediaDescription(soul,
+            Encyclopedia.GetSoul,
+            Encyclopedia.AddSoul,
+            Encyclopedia.UpdateSoul,
+            { Spr = Encyclopedia.RegisterSprite(dukeMod.path .. "content/gfx/ui_cardfronts.anm2", soul.Name) })
     end
 
-    addUnlock(rune)
+    addUnlock(soul)
 
-    if rune.unlock then
+    if soul.unlock then
         dukeMod:AddCallback(ModCallbacks.MC_POST_PLAYER_UPDATE, function(_, player)
             for i = 0, 3 do
-                if player:GetCard(i) == rune.Id and not rune.IsUnlocked() then
+                if player:GetCard(i) == soul.Id and not soul.IsUnlocked() then
                     player:SetCard(i, 0)
                 end
             end
@@ -410,6 +413,9 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_NEW_ROOM, function()
                         if DukeHelpers.IsDuke(p) then
                             DukeHelpers.InitializeDuke(p, true)
                         end
+                        if DukeHelpers.IsHusk(p) then
+                            DukeHelpers.InitializeHusk(p, true)
+                        end
                         pData = DukeHelpers.GetDukeData(p)
                         for key, value in pairs(DukeHelpers.RehydrateEntityData(savedPlayerData)) do
                             pData[key] = value
@@ -431,7 +437,7 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_NEW_ROOM, function()
             dukeMod.unlocks = {}
             dukeMod.mcmOptions = {}
         end
-        --InitializeMCM(defaultMcmOptions)
+        DukeHelpers.InitializeMCM(defaultMcmOptions)
         dukeMod.global.isInitialized = true
     end
 
@@ -450,6 +456,13 @@ if Poglite then
         Isaac.GetCostumeIdByPath("gfx/characters/costume_duke_pog.anm2"))
     Poglite:AddPogCostume("DukeBPog", DukeHelpers.HUSK_ID,
         Isaac.GetCostumeIdByPath("gfx/characters/costume_duke_b_pog.anm2"))
+end
+
+if Ughlite then
+    Ughlite:AddUghCostume("DukeUgh", DukeHelpers.DUKE_ID,
+        Isaac.GetCostumeIdByPath("gfx/characters/costume_duke_ugh.anm2"))
+    Ughlite:AddUghCostume("DukeBUgh", DukeHelpers.HUSK_ID,
+        Isaac.GetCostumeIdByPath("gfx/characters/costume_duke_b_ugh.anm2"))
 end
 
 dukeMod:AddCallback(ModCallbacks.MC_POST_PICKUP_INIT, function(_, pickup)
@@ -474,7 +487,7 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_PICKUP_INIT, function(_, pickup)
 
             local newItem = game:GetItemPool():GetCollectible(pool, true, pickup.InitSeed)
             game:GetItemPool():RemoveCollectible(pickup.SubType)
-            pickup:Morph(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_COLLECTIBLE, newItem, true, false, true)
+            pickup:Morph(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_COLLECTIBLE, newItem, true, false, false)
         end
     elseif pickup.Variant == PickupVariant.PICKUP_TRINKET then
         local trinketId = pickup.SubType

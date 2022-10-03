@@ -8,6 +8,18 @@ dukeMod:AddCallback(ModCallbacks.MC_FAMILIAR_UPDATE, function(_, f)
 		sprite:Play("Idle", true)
 	end
 
+	if data.layer == nil then
+		local fliesData = DukeHelpers.GetDukeData(f.Player).heartFlies
+		local foundFly = DukeHelpers.FindByProperties(fliesData, {initSeed = f.InitSeed})
+		if foundFly then
+			data.layer = foundFly.layer
+			DukeHelpers.PositionHeartFly(f, foundFly.layer)
+		else
+			DukeHelpers.AddHeartFly(f.Player, DukeHelpers.GetHeartFlyFromFlyEntity(f).heart, 1)
+			f:Remove()
+		end
+	end
+
 	if data.layer == DukeHelpers.INNER then
 		f.OrbitDistance = Vector(20, 20)
 		f.OrbitSpeed = 0.045
@@ -32,6 +44,7 @@ dukeMod:AddCallback(ModCallbacks.MC_FAMILIAR_UPDATE, function(_, f)
 		f.OrbitSpeed = f.OrbitSpeed * 1.3
 		centerPos = centerPos - Vector(0, 75)
 	end
+
 	f.Velocity = f:GetOrbitPosition(centerPos + f.Player.Velocity) - f.Position
 end, DukeHelpers.FLY_VARIANT)
 
@@ -61,7 +74,7 @@ end, DukeHelpers.FLY_VARIANT)
 dukeMod:AddCallback(ModCallbacks.MC_FAMILIAR_UPDATE, function(_, f)
 	local attackFlyData = DukeHelpers.GetDukeData(f)
 	if attackFlyData.attacker then
-		if not attackFlyData.attacker:IsDead() then
+		if not attackFlyData.attacker:IsDead() and DukeHelpers.IsActualEnemy(attackFlyData.attacker, true, false) then
 			f.Target = attackFlyData.attacker
 		else
 			f.Target = nil
@@ -70,6 +83,21 @@ dukeMod:AddCallback(ModCallbacks.MC_FAMILIAR_UPDATE, function(_, f)
 	end
 	if attackFlyData.bffs then
 		f.SpriteScale = Vector(1.2, 1.2)
+	end
+end, FamiliarVariant.BLUE_FLY)
+
+dukeMod:AddCallback(ModCallbacks.MC_PRE_FAMILIAR_COLLISION, function(_, f, e)
+	local attackFlyData = DukeHelpers.GetDukeData(f)
+	if attackFlyData.dropHeart then
+		if e:ToNPC() and DukeHelpers.IsActualEnemy(e, true, false) and not e:HasEntityFlags(EntityFlag.FLAG_CHARM) then
+			local heartFly = DukeHelpers.GetHeartFlyFromFlyEntity(f)
+			if heartFly.dropHeartChance and DukeHelpers.PercentageChance(heartFly.dropHeartChance) then
+				local heart = Isaac.Spawn(EntityType.ENTITY_PICKUP, heartFly.dropHeart.variant or PickupVariant.PICKUP_HEART, heartFly.dropHeart.subType or 0,
+				f.Position, Vector.Zero, f)
+				DukeHelpers.GetDukeData(heart).noFlyHearts = true
+				attackFlyData.dropHeart = false
+			end
+		end
 	end
 end, FamiliarVariant.BLUE_FLY)
 

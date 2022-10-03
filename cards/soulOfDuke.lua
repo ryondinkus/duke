@@ -40,7 +40,7 @@ return {
     Id = Id,
     Descriptions = Descriptions,
     WikiDescription = WikiDescription,
-    IsRune = true,
+    IsSoul = true,
     callbacks = {
         {
             ModCallbacks.MC_USE_CARD,

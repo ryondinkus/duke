@@ -31,7 +31,7 @@ local smallMaxSlotTextXOffset = 10
 local smallMaxSlotTextYOffset = 2
 local smallMaxSlotTextScale = 1
 
-local defaultAnimationPath = "gfx/ui/ui_hearts.anm2"
+local defaultAnimationPath = "gfx/ui/thank_you_friend_polio.anm2"
 local defaultAnimationName = "RedHeartHalf"
 
 local function fireRottenGulletShot(player, pickupKey, rng)
@@ -48,15 +48,16 @@ local function fireRottenGulletShot(player, pickupKey, rng)
     DukeHelpers.SpawnPickupPoof(player, pickupKey)
     local effect = Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.POOF02, 4, player.Position, Vector.Zero, player)
     effect.Color = foundSpider.poofColor
+    effect.SpriteScale = effect.SpriteScale * 1.5
     Game():ShakeScreen(10)
 
-    local radius = 80
+    local radius = 120
     local enemiesInRadius = DukeHelpers.FindInRadius(player.Position, radius)
 
     local radiusDamage = 40
 
     if foundSpider and foundSpider.damageMultiplier then
-        radiusDamage = radiusDamage * foundSpider.damageMultiplier
+        radiusDamage = radiusDamage * foundSpider.damageMultiplier * player.Damage
     end
 
     for _, enemy in pairs(enemiesInRadius) do
@@ -82,7 +83,7 @@ local function fireRottenGulletShot(player, pickupKey, rng)
 
         if foundSpider then
             if foundSpider.tearDamageMultiplier then
-                tear.CollisionDamage = tear.CollisionDamage * foundSpider.tearDamageMultiplier
+                tear.CollisionDamage = tear.CollisionDamage * foundSpider.tearDamageMultiplier * (player.Damage / 3)
                 tear.Size = tear.Size * foundSpider.tearDamageMultiplier
                 tear.Scale = tear.Scale * foundSpider.tearDamageMultiplier
 
@@ -90,6 +91,8 @@ local function fireRottenGulletShot(player, pickupKey, rng)
                     tear.Color = foundSpider.tearColor
                 end
             end
+
+            tear:AddTearFlags(TearFlags.TEAR_PUNCH)
 
             if foundSpider.applyTearEffects then
                 foundSpider.applyTearEffects(tear)
@@ -321,6 +324,7 @@ local function MC_POST_RENDER()
                         Vector.Zero)
                 end
                 sprite:Render(position + spriteOffset, Vector.Zero, Vector.Zero)
+                print(sprite:GetFilename())
             end
         end
     end)

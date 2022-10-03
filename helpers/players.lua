@@ -45,7 +45,11 @@ function DukeHelpers.AnimateHeartPickup(pickup, p)
             pickup:GetSprite():Play("Collect")
             local function removePickupCallback()
                 pickup.EntityCollisionClass = EntityCollisionClass.ENTCOLL_NONE
-                if pickup:GetSprite():IsFinished("Collect") then
+                local sprite = pickup:GetSprite()
+                if not sprite:IsPlaying("Collect") then
+                    pickup.EntityCollisionClass = EntityCollisionClass.ENTCOLL_PLAYERONLY
+                end
+                if sprite:IsFinished("Collect") then
                     pickup:Remove()
                     dukeMod:RemoveCallback(ModCallbacks.MC_POST_PICKUP_UPDATE, removePickupCallback)
                 end
@@ -138,4 +142,21 @@ function DukeHelpers.IsRedFred(player)
         end
     end
     return true
+end
+
+function DukeHelpers.OnItemPickup(player, collectible, tag, callback)
+    local data = DukeHelpers.GetDukeData(player)
+
+    if data and data[tag] then
+        if player:IsExtraAnimationFinished() then
+            callback()
+            data[tag] = nil
+        end
+    else
+        local targetItem = player.QueuedItem.Item
+        if (not targetItem) or targetItem.ID ~= collectible or (not targetItem:IsCollectible()) then
+            return
+        end
+        data[tag] = true
+    end
 end
