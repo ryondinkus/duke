@@ -1,25 +1,26 @@
-local heart = DukeHelpers.Hearts.BLACK
+local heart = DukeHelpers.Hearts.DAUNTLESS
 local attackFlySubType = DukeHelpers.OffsetIdentifier(heart)
 
 local function ATTACK_FLY_MC_PRE_FAMILIAR_COLLISION(_, f, e)
 	if f.SubType == attackFlySubType then
 		if e:ToNPC() and not e:HasEntityFlags(EntityFlag.FLAG_CHARM) then
-			e:AddFear(EntityRef(f), 150)
+			e:AddConfusion(EntityRef(f), 150, false)
 		end
 	end
 end
 
-local function MC_PRE_FAMILIAR_COLLISION(_, f, e)
+local function HEART_FLY_MC_PRE_FAMILIAR_COLLISION(_, f, e)
 	if f.SubType == heart.subType then
-		if e.Type == EntityType.ENTITY_PROJECTILE and not e:ToProjectile():HasProjectileFlags(ProjectileFlags.CANT_HIT_PLAYER) then
-			local p = f.SpawnerEntity or Isaac.GetPlayer(0)
-			p:ToPlayer():UseActiveItem(CollectibleType.COLLECTIBLE_NECRONOMICON, UseFlag.USE_NOANIM)
+		if e:ToNPC() and DukeHelpers.IsActualEnemy(e, true, false) and not e:HasEntityFlags(EntityFlag.FLAG_CHARM) and
+			DukeHelpers.rng:RandomInt(3) == 0 then
+			e:AddConfusion(EntityRef(f), 150, false)
+
 		end
 	end
 end
 
 return {
-	spritesheet = "black_heart_fly.png",
+	spritesheet = "dauntless_heart_fly.png",
 	canAttack = true,
 	heart = heart,
 	count = 2,
@@ -30,7 +31,7 @@ return {
 	callbacks = {
 		{
 			ModCallbacks.MC_PRE_FAMILIAR_COLLISION,
-			MC_PRE_FAMILIAR_COLLISION,
+			HEART_FLY_MC_PRE_FAMILIAR_COLLISION,
 			DukeHelpers.FLY_VARIANT
 		},
 		{

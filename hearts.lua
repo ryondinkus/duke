@@ -1,3 +1,11 @@
+local function canPickRedTypeHeart(player)
+    if DukeHelpers.IsDuke(player) or DukeHelpers.IsHusk(player) then
+        return true
+    end
+
+    return CustomHealthAPI.Helper.CanPickRed(player, "RED_HEART")
+end
+
 DukeHelpers.Hearts = {
     RED = {
         subType = HeartSubType.HEART_FULL,
@@ -276,15 +284,15 @@ DukeHelpers.Hearts = {
             return hearts and hearts < (player:GetHeartLimit() - player:GetEffectiveMaxHearts())
         end,
         Add = function(player, amount)
-			if not ComplianceImmortal or amount == 0 then
-				return
-			end
+            if not ComplianceImmortal or amount == 0 then
+                return
+            end
             ComplianceImmortal.AddImmortalHearts(player, amount)
         end,
         Remove = function(player, amount)
-			if not ComplianceImmortal or amount == 0 then
-				return
-			end
+            if not ComplianceImmortal or amount == 0 then
+                return
+            end
             local initialSoulHearts = DukeHelpers.Hearts.SOUL.GetCount(player)
             ComplianceImmortal.AddImmortalHearts(player, -amount)
             local soulHeartsRemoved = initialSoulHearts - DukeHelpers.Hearts.SOUL.GetCount(player)
@@ -331,14 +339,14 @@ DukeHelpers.Hearts = {
             return false
         end,
         Add = function(player, amount)
-			if not ARACHNAMOD then
+            if not ARACHNAMOD then
                 return
             end
             addWebHearts(amount, player)
         end,
         Remove = function(player, amount)
-			if not ARACHNAMOD or DukeHelpers.GetPlayerControllerIndex(player) ~= 0 then
-				return
+            if not ARACHNAMOD or DukeHelpers.GetPlayerControllerIndex(player) ~= 0 then
+                return
             end
             local initialSoulHearts = DukeHelpers.Hearts.SOUL.GetCount(player)
             addWebHearts(-amount / 2, player)
@@ -369,52 +377,50 @@ DukeHelpers.Hearts = {
     },
     DAUNTLESS = {
         subType = 85,
-        GetCount = function(_)
-            if RepentancePlusMod then
-                return RepentancePlusMod.NumTaintedHearts.HEART_DAUNTLESS
+        GetCount = function(player)
+            if RepentancePlusMod and CustomHealthAPI then
+                return CustomHealthAPI.Helper.GetHPOfKey(player, "HEART_DAUNTLESS")
             end
 
             return 0
         end,
         CanPick = function(player)
-            return false
+            if not RepentancePlusMod or not CustomHealthAPI then
+                return false
+            end
+            return CustomHealthAPI.Library.CanPickKey(player, "HEART_DAUNTLESS")
         end,
-        Add = function(_, amount)
-            RepentancePlusMod.NumTaintedHearts.HEART_DAUNTLESS = RepentancePlusMod.NumTaintedHearts.HEART_DAUNTLESS +
-                amount
+        Add = function(player, amount)
+            CustomHealthAPI.Library.AddHealth(player, "HEART_DAUNTLESS", amount)
         end,
-        Remove = function(_, amount)
-            RepentancePlusMod.NumTaintedHearts.HEART_DAUNTLESS = math.max(RepentancePlusMod.NumTaintedHearts.HEART_DAUNTLESS
-                - amount, 0)
+        Remove = function(player, amount)
+            CustomHealthAPI.Library.AddHealth(player, "HEART_DAUNTLESS", -amount)
         end
     },
     HOARDED = {
         subType = 86,
-        CanPick = function(player)
-            return player:HasCollectible(CollectibleType.COLLECTIBLE_DARK_BUM) or
-                player:HasTrinket(TrinketType.TRINKET_APPLE_OF_SODOM) or player:CanPickRedHearts()
-        end
+        CanPick = canPickRedTypeHeart
     },
     SOILED = {
         subType = 88,
-        GetCount = function(_)
-            if RepentancePlusMod then
-                return RepentancePlusMod.NumTaintedHearts.HEART_SOILED
+        GetCount = function(player)
+            if RepentancePlusMod and CustomHealthAPI then
+                return CustomHealthAPI.Helper.GetHPOfKey(player, "HEART_SOILED")
             end
 
             return 0
         end,
         CanPick = function(player)
-            -- BUG: Needs to check rotten hearts
-            return player:GetMaxHearts() / 2 - player:GetBoneHearts() - DukeHelpers.Hearts.SOILED.GetCount(player) > 0
+            if not RepentancePlusMod or not CustomHealthAPI then
+                return false
+            end
+            return CustomHealthAPI.Library.CanPickKey(player, "HEART_SOILED")
         end,
-        Add = function(_, amount)
-            RepentancePlusMod.NumTaintedHearts.HEART_SOILED = RepentancePlusMod.NumTaintedHearts.HEART_SOILED +
-                amount
+        Add = function(player, amount)
+            CustomHealthAPI.Library.AddHealth(player, "HEART_SOILED", amount)
         end,
-        Remove = function(_, amount)
-            RepentancePlusMod.NumTaintedHearts.HEART_SOILED = math.max(RepentancePlusMod.NumTaintedHearts.HEART_SOILED
-                - amount, 0)
+        Remove = function(player, amount)
+            CustomHealthAPI.Library.AddHealth(player, "HEART_SOILED", -amount)
         end
     },
     CURDLED = {
@@ -435,6 +441,95 @@ DukeHelpers.Hearts = {
             return player:CanPickBlackHearts()
         end
     },
+    BALEFUL = {
+        subType = 94,
+        GetCount = function(player)
+            if RepentancePlusMod and CustomHealthAPI then
+                return CustomHealthAPI.Helper.GetHPOfKey(player, "HEART_BALEFUL")
+            end
+
+            return 0
+        end,
+        CanPick = function(player)
+            if not RepentancePlusMod or not CustomHealthAPI then
+                return false
+            end
+            return CustomHealthAPI.Library.CanPickKey(player, "HEART_BALEFUL")
+        end,
+        Add = function(player, amount)
+            CustomHealthAPI.Library.AddHealth(player, "HEART_BALEFUL", amount)
+        end,
+        Remove = function(player, amount)
+            CustomHealthAPI.Library.AddHealth(player, "HEART_BALEFUL", -amount)
+        end
+    },
+    EMPTY = {
+        subType = 97,
+        GetCount = function(player)
+            if RepentancePlusMod and CustomHealthAPI then
+                return CustomHealthAPI.Helper.GetHPOfKey(player, "HEART_EMPTY")
+            end
+
+            return 0
+        end,
+        CanPick = function(player)
+            if not RepentancePlusMod or not CustomHealthAPI then
+                return false
+            end
+            return CustomHealthAPI.Library.CanPickKey(player, "HEART_EMPTY")
+        end,
+        Add = function(player, amount)
+            CustomHealthAPI.Library.AddHealth(player, "HEART_EMPTY", amount)
+        end,
+        Remove = function(player, amount)
+            CustomHealthAPI.Library.AddHealth(player, "HEART_EMPTY", -amount)
+        end
+    },
+    MISER = {
+        subType = 96,
+        GetCount = function(player)
+            if RepentancePlusMod and CustomHealthAPI then
+                return CustomHealthAPI.Helper.GetHPOfKey(player, "HEART_MISER")
+            end
+
+            return 0
+        end,
+        CanPick = function(player)
+            if not RepentancePlusMod or not CustomHealthAPI then
+                return false
+            end
+            return CustomHealthAPI.Library.CanPickKey(player, "HEART_MISER")
+        end,
+        Add = function(player, amount)
+            CustomHealthAPI.Library.AddHealth(player, "HEART_MISER", amount)
+        end,
+        Remove = function(player, amount)
+            CustomHealthAPI.Library.AddHealth(player, "HEART_MISER", -amount)
+        end
+    },
+    ZEALOT = {
+        subType = 99,
+        GetCount = function(player)
+            if RepentancePlusMod and CustomHealthAPI then
+                return CustomHealthAPI.Helper.GetHPOfKey(player, "HEART_ZEALOT")
+            end
+
+            return 0
+        end,
+        CanPick = function(player)
+            if not RepentancePlusMod or not CustomHealthAPI then
+                return false
+            end
+            return CustomHealthAPI.Library.CanPickKey(player, "HEART_ZEALOT")
+        end,
+        Add = function(player, amount)
+            CustomHealthAPI.Library.AddHealth(player, "HEART_ZEALOT", amount)
+        end,
+        Remove = function(player, amount)
+            CustomHealthAPI.Library.AddHealth(player, "HEART_ZEALOT", -amount)
+        end
+    },
+
 }
 
 for key, heart in pairs(DukeHelpers.Hearts) do

@@ -29,6 +29,7 @@ end
 local function RandomlySpawnHeartFlyFromPickup(player, pickup, customAmount)
     if player and DukeHelpers.IsSupportedHeart(pickup) and ShouldSpawnExtraFly(player) then
         if (DukeHelpers.CanPickUpHeart(player, pickup) or DukeHelpers.IsDuke(player) or DukeHelpers.IsHusk(player)) then
+            print("running")
             DukeHelpers.SpawnPickupHeartFly(player, pickup, nil, customAmount)
         end
 
