@@ -89,12 +89,16 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_PLAYER_UPDATE, function(_, player)
     if not data.health then
         data.previousHealth = nil
         data.health = {}
+        data.canPickHealth = {}
+        data.previousCanPickHealth = nil
     else
         data.previousHealth = table.deepCopy(data.health)
+        data.previousCanPickHealth = table.deepCopy(data.canPickHealth)
     end
 
     for _, heart in pairs(DukeHelpers.GetBaseHearts()) do
         data.health[heart.key] = heart.GetCount(player)
+        data.canPickHealth[heart.key] = heart.CanPick(player)
     end
 end)
 

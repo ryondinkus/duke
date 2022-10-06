@@ -23,11 +23,9 @@ local function HEART_FLY_PRE_SPAWN_CLEAN_AWARD()
 		if entity.Type == EntityType.ENTITY_FAMILIAR
 			and entity.Variant == DukeHelpers.FLY_VARIANT
 			and entity.SubType == heart.subType then
-			for _ = 1, 2 do
-				-- TODO Ryan ;)
-				local spawnedEntity = Isaac.Spawn(EntityType.ENTITY_FAMILIAR, FamiliarVariant.BLUE_FLY, 0,
-					entity.Position, Vector.Zero, entity.SpawnerEntity)
-				spawnedEntity:ClearEntityFlags(EntityFlag.FLAG_APPEAR)
+			local player = entity.SpawnerEntity:ToPlayer()
+			for _ = 1, DukeHelpers.rng:RandomInt(3) do
+				player:AddFriendlyDip(0, player.Position)
 			end
 		end
 	end
@@ -37,10 +35,11 @@ return {
 	spritesheet = "soiled_heart_fly.png",
 	canAttack = true,
 	heart = heart,
-	count = 2,
+	count = 1,
 	weight = 1,
-	poofColor = Color(0, 0, 0, 1, 0, 0, 0),
-	sacAltarQuality = 2,
+	poofColor = Color(2, 1, 1, 1, 0, 0, 0),
+	sacAltarQuality = 4,
+	sfx = SoundEffect.SOUND_ROTTEN_HEART,
 	callbacks = {
 		{
 			ModCallbacks.MC_PRE_FAMILIAR_COLLISION,
@@ -57,7 +56,6 @@ return {
 			HEART_FLY_PRE_SPAWN_CLEAN_AWARD
 		}
 	},
-
-	heartFlyDamageMultiplier = 1.3,
-	attackFlyDamageMultiplier = 1.3
+	dropHeart = DukeHelpers.Hearts.SOILED,
+	dropHeartChance = 20
 }

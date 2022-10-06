@@ -122,6 +122,16 @@ dukeMod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, function(_, pickup, co
 			return
 		end
 
+		local heart = DukeHelpers.Hearts[pickupKey]
+
+		if heart and heart.Ignore then
+			if heart.OnPickup then
+				heart.OnPickup(p, pickup)
+			end
+
+			return
+		end
+
 		local spider = DukeHelpers.Spiders[pickupKey]
 
 		if DukeHelpers.Trinkets.infestedHeart.helpers.RandomlySpawnHeartFlyFromPickup(p, pickup) then
@@ -164,6 +174,11 @@ dukeMod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, function(_, pickup, co
 			if pickup.Price == PickupPrice.PRICE_SPIKES then
 				p:TakeDamage(2, DamageFlag.DAMAGE_SPIKES | DamageFlag.DAMAGE_NO_PENALTIES, EntityRef(nil), 0)
 			end
+
+			if heart and heart.OnPickup then
+				heart.OnPickup(p, pickup)
+			end
+
 
 			if pickup.OptionsPickupIndex ~= 0 then
 				DukeHelpers.ForEachEntityInRoom(function(entity)

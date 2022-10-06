@@ -373,6 +373,9 @@ DukeHelpers.Hearts = {
         subType = 84,
         CanPick = function(_)
             return true
+        end,
+        OnPickup = function(player, pickup)
+            player:AddSoulHearts(2)
         end
     },
     DAUNTLESS = {
@@ -399,7 +402,9 @@ DukeHelpers.Hearts = {
     },
     HOARDED = {
         subType = 86,
-        CanPick = canPickRedTypeHeart
+        CanPick = function(player)
+            return canPickRedTypeHeart(player)
+        end
     },
     SOILED = {
         subType = 88,
@@ -426,20 +431,38 @@ DukeHelpers.Hearts = {
     CURDLED = {
         subType = 89,
         CanPick = function(player)
-            return player:CanPickRedHearts() or not DukeHelpers.IsRedFred(player)
+            return canPickRedTypeHeart(player)
+        end,
+        OnPickup = function(player)
+            Isaac.Spawn(EntityType.ENTITY_FAMILIAR, FamiliarVariant.BLOOD_BABY, 0, player.Position, Vector.Zero, player)
         end
     },
     SAVAGE = {
         subType = 90,
-        CanPick = function(_)
-            return true
+        Ignore = true,
+        OnPickup = function(player, pickup)
+            if DukeHelpers.IsDuke(player) then
+                DukeHelpers.SpawnPickupHeartFly(player,
+                    { Type = pickup.Type, Variant = pickup.Variant, SubType = pickup.SubType, Price = 0 },
+                    DukeHelpers.Hearts.RED.key, 2
+                    , false)
+            elseif DukeHelpers.IsHusk(player) then
+                DukeHelpers.FillRottenGulletSlot(player, DukeHelpers.Hearts.RED.key, 2)
+            end
         end
     },
     BENIGHTED = {
-        subType = 90,
-        CanPick = function(player)
-            return player:CanPickBlackHearts()
-        end
+        subType = 91,
+        Ignore = true
+    },
+    ENIGMA = {
+        subType = 92,
+        Ignore = true
+    },
+
+    CARICIOUS = {
+        subType = 93,
+        Ignore = true
     },
     BALEFUL = {
         subType = 94,
@@ -463,26 +486,13 @@ DukeHelpers.Hearts = {
             CustomHealthAPI.Library.AddHealth(player, "HEART_BALEFUL", -amount)
         end
     },
-    EMPTY = {
-        subType = 97,
-        GetCount = function(player)
-            if RepentancePlusMod and CustomHealthAPI then
-                return CustomHealthAPI.Helper.GetHPOfKey(player, "HEART_EMPTY")
-            end
-
-            return 0
-        end,
+    HARLOT = {
+        subType = 95,
         CanPick = function(player)
-            if not RepentancePlusMod or not CustomHealthAPI then
-                return false
-            end
-            return CustomHealthAPI.Library.CanPickKey(player, "HEART_EMPTY")
+            return canPickRedTypeHeart(player)
         end,
-        Add = function(player, amount)
-            CustomHealthAPI.Library.AddHealth(player, "HEART_EMPTY", amount)
-        end,
-        Remove = function(player, amount)
-            CustomHealthAPI.Library.AddHealth(player, "HEART_EMPTY", -amount)
+        OnPickup = function(player, pickup)
+            Isaac.Spawn(EntityType.ENTITY_FAMILIAR, FamiliarVariant.LEPROSY, 0, player.Position, Vector.Zero, player)
         end
     },
     MISER = {
@@ -507,6 +517,32 @@ DukeHelpers.Hearts = {
             CustomHealthAPI.Library.AddHealth(player, "HEART_MISER", -amount)
         end
     },
+    EMPTY = {
+        subType = 97,
+        GetCount = function(player)
+            if RepentancePlusMod and CustomHealthAPI then
+                return CustomHealthAPI.Helper.GetHPOfKey(player, "HEART_EMPTY")
+            end
+
+            return 0
+        end,
+        CanPick = function(player)
+            if not RepentancePlusMod or not CustomHealthAPI then
+                return false
+            end
+            return CustomHealthAPI.Library.CanPickKey(player, "HEART_EMPTY")
+        end,
+        Add = function(player, amount)
+            CustomHealthAPI.Library.AddHealth(player, "HEART_EMPTY", amount)
+        end,
+        Remove = function(player, amount)
+            CustomHealthAPI.Library.AddHealth(player, "HEART_EMPTY", -amount)
+        end
+    },
+    FETTERED = {
+        subType = 98,
+        Ignore = true
+    },
     ZEALOT = {
         subType = 99,
         GetCount = function(player)
@@ -529,7 +565,37 @@ DukeHelpers.Hearts = {
             CustomHealthAPI.Library.AddHealth(player, "HEART_ZEALOT", -amount)
         end
     },
+    DESERTED = {
+        subType = 100,
+        CanPick = function(player)
+            if not RepentancePlusMod or not CustomHealthAPI then
+                return false
+            end
+            return CustomHealthAPI.Library.CanPickKey(player, "HEART_ZEALOT")
+        end
+    },
+    HALF_DAUNTLESS = {
+        subType = 101,
+        GetCount = function(player)
+            if RepentancePlusMod and CustomHealthAPI then
+                return CustomHealthAPI.Helper.GetHPOfKey(player, "HEART_DAUNTLESS")
+            end
 
+            return 0
+        end,
+        CanPick = function(player)
+            if not RepentancePlusMod or not CustomHealthAPI then
+                return false
+            end
+            return CustomHealthAPI.Library.CanPickKey(player, "HEART_DAUNTLESS")
+        end,
+        Add = function(player, amount)
+            CustomHealthAPI.Library.AddHealth(player, "HEART_DAUNTLESS", amount)
+        end,
+        Remove = function(player, amount)
+            CustomHealthAPI.Library.AddHealth(player, "HEART_DAUNTLESS", -amount)
+        end
+    },
 }
 
 for key, heart in pairs(DukeHelpers.Hearts) do
@@ -549,5 +615,11 @@ for key, heart in pairs(DukeHelpers.Hearts) do
 
     if not heart.isBase then
         heart.isBase = false
+    end
+
+    if not heart.CanPick then
+        heart.CanPick = function()
+            return true
+        end
     end
 end

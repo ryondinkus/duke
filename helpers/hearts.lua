@@ -151,19 +151,16 @@ function DukeHelpers.RemoveUnallowedHearts(player, leftHearts, ignoreContainers)
 end
 
 function DukeHelpers.CanPickUpHeart(player, pickup)
+    local data = DukeHelpers.GetDukeData(player)
     local pickupKey = DukeHelpers.GetKeyFromPickup(pickup)
 
     if not pickupKey then
         return false
     end
 
-    local heart = DukeHelpers.Hearts[pickupKey]
+    local canPickHealth = data.previousCanPickHealth[pickupKey]
 
-    if not heart then
-        return false
-    end
-
-    return heart.CanPick(player)
+    return not not canPickHealth
 end
 
 function DukeHelpers.GetBaseHearts()

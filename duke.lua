@@ -106,7 +106,16 @@ end, CacheFlag.CACHE_FLYING)
 dukeMod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, function(_, pickup, collider)
 	local p = collider:ToPlayer()
 	if p and DukeHelpers.IsDuke(p) and (pickup.Price <= 0 or p:GetNumCoins() >= pickup.Price) then
+		local heart = DukeHelpers.Hearts[DukeHelpers.GetKeyFromPickup(pickup)]
 		local playerData = DukeHelpers.GetDukeData(p)
+
+		if heart and heart.Ignore then
+			if heart.OnPickup then
+				heart.OnPickup(p, pickup)
+			end
+
+			return
+		end
 		if DukeHelpers.Hearts.PATCHED.IsHeart(pickup) or DukeHelpers.Hearts.DOUBLE_PATCHED.IsHeart(pickup) then
 			local patchedFly = DukeHelpers.GetFlyByPickup(pickup)
 			for i = 1, patchedFly.count do
@@ -130,6 +139,10 @@ dukeMod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, function(_, pickup, co
 
 			if pickup.Price == PickupPrice.PRICE_SPIKES then
 				p:TakeDamage(2, DamageFlag.DAMAGE_SPIKES | DamageFlag.DAMAGE_NO_PENALTIES, EntityRef(nil), 0)
+			end
+
+			if heart and heart.OnPickup then
+				heart.OnPickup(p, pickup)
 			end
 
 			if pickup.OptionsPickupIndex ~= 0 then
@@ -328,7 +341,8 @@ end)
 dukeMod:AddCallback(ModCallbacks.MC_POST_PEFFECT_UPDATE, function(_, player)
 	if DukeHelpers.IsDuke(player) then
 		DukeHelpers.OnItemPickup(player, CollectibleType.COLLECTIBLE_ABADDON, "DukeAbaddonPickup", function()
-			local redFlies = DukeHelpers.CountByProperties(DukeHelpers.GetDukeData(player).heartFlies, { key = DukeHelpers.Flies.RED.key })
+			local redFlies = DukeHelpers.CountByProperties(DukeHelpers.GetDukeData(player).heartFlies,
+				{ key = DukeHelpers.Flies.RED.key })
 			if redFlies > 0 then
 				DukeHelpers.RemoveHeartFly(player, DukeHelpers.Flies.RED, redFlies)
 				DukeHelpers.AddHeartFly(player, DukeHelpers.Flies.BLACK, redFlies)

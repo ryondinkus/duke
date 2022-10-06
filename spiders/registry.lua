@@ -21,7 +21,21 @@ local spiders = {
     include("spiders/blended"),
     --modded
     include("spiders/modded/patched"),
-    include("spiders/modded/doublePatched")
+    include("spiders/modded/doublePatched"),
+
+    include("spiders/modded/repPlus/broken"),
+    include("spiders/modded/repPlus/dauntless"),
+    include("spiders/modded/repPlus/hoarded"),
+    include("spiders/modded/repPlus/soiled"),
+    include("spiders/modded/repPlus/curdled"),
+    include("spiders/modded/repPlus/baleful"),
+    include("spiders/modded/repPlus/harlot"),
+    include("spiders/modded/repPlus/miser"),
+    include("spiders/modded/repPlus/empty"),
+    include("spiders/modded/repPlus/zealot"),
+    include("spiders/modded/repPlus/deserted"),
+    include("spiders/modded/repPlus/halfDauntless")
+
 }
 
 -- Registers the flies
