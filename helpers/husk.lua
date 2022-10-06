@@ -30,6 +30,7 @@ function DukeHelpers.GetFilledRottenGulletSlots(player)
 end
 
 function DukeHelpers.FillRottenGulletSlot(player, pickupKey, amount)
+
     local slotSpider = DukeHelpers.Spiders[pickupKey]
 
     if not slotSpider then
@@ -37,6 +38,10 @@ function DukeHelpers.FillRottenGulletSlot(player, pickupKey, amount)
     end
 
     if slotSpider.sticksInSlot then
+        if not amount then
+            amount = 2
+        end
+
         local data = DukeHelpers.GetDukeData(player)
 
         data.stuckSlots = (data.stuckSlots or 0) + math.floor((slotSpider.count * (amount) / 2))

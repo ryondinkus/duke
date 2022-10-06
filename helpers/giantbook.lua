@@ -12,6 +12,13 @@ local function berkanoPause()
 			bluespider:Remove()
 		end
 	end
+	if FiendFolio then
+		for _, blueskuzz in pairs(Isaac.FindByType(EntityType.ENTITY_FAMILIAR, Isaac.GetEntityVariantByName("Attack Skuzz"), -1, false, false)) do
+			if blueskuzz:Exists() and blueskuzz.FrameCount <= 0 then
+				blueskuzz:Remove()
+			end
+		end
+	end
 end
 
 --GIANTBOOK ANIMATION

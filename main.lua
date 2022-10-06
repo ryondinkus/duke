@@ -548,26 +548,26 @@ local function getModDirectoryName(str)
     end
 end
 
-if ComplianceImmortal then
-    Isaac.ExecuteCommand("luamod " .. getModDirectoryName(ComplianceImmortal.path))
-end
-
-if MoonlightHearts then
-    Isaac.ExecuteCommand("luamod " .. getModDirectoryName(MoonlightHearts.path))
-end
-
-if PATCH_GLOBAL then
-    Isaac.ExecuteCommand("luamod " .. getModDirectoryName(PATCH_GLOBAL.path))
-end
-
-if ARACHNAMOD then
-    Isaac.ExecuteCommand("luamod " .. getModDirectoryName(ARACHNAMOD.path))
-end
-
-if RepentancePlusMod then
-    Isaac.ExecuteCommand("luamod " .. getModDirectoryName(RepentancePlusMod.path))
-end
-
-if FiendFolio then
-    Isaac.ExecuteCommand("luamod " .. getModDirectoryName(FiendFolio.path))
-end
+-- if ComplianceImmortal then
+--     Isaac.ExecuteCommand("luamod " .. getModDirectoryName(ComplianceImmortal.path))
+-- end
+--
+-- if MoonlightHearts then
+--     Isaac.ExecuteCommand("luamod " .. getModDirectoryName(MoonlightHearts.path))
+-- end
+--
+-- if PATCH_GLOBAL then
+--     Isaac.ExecuteCommand("luamod " .. getModDirectoryName(PATCH_GLOBAL.path))
+-- end
+--
+-- if ARACHNAMOD then
+--     Isaac.ExecuteCommand("luamod " .. getModDirectoryName(ARACHNAMOD.path))
+-- end
+--
+-- if RepentancePlusMod then
+--     Isaac.ExecuteCommand("luamod " .. getModDirectoryName(RepentancePlusMod.path))
+-- end
+--
+-- if FiendFolio then
+--     Isaac.ExecuteCommand("luamod " .. getModDirectoryName(FiendFolio.path))
+-- end
