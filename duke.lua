@@ -102,8 +102,7 @@ dukeMod:AddCallback(ModCallbacks.MC_EVALUATE_CACHE, function(_, p, f)
 	end
 end, CacheFlag.CACHE_FLYING)
 
--- Adds flies when a heart is collected
-dukeMod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, function(_, pickup, collider)
+local function OnHeartCollision(_, pickup, collider)
 	local p = collider:ToPlayer()
 	if p and DukeHelpers.IsDuke(p) and (pickup.Price <= 0 or p:GetNumCoins() >= pickup.Price) then
 		local heart = DukeHelpers.Hearts[DukeHelpers.GetKeyFromPickup(pickup)]
@@ -157,8 +156,12 @@ dukeMod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, function(_, pickup, co
 
 		return true
 	end
-end, PickupVariant.PICKUP_HEART)
+end
 
+-- Adds flies when a heart is collected
+DukeHelpers.ForEachHeartVariant(function(variant)
+	dukeMod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, OnHeartCollision, variant)
+end)
 
 -- Handles fly devil deals for Duke
 dukeMod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, function(_, pickup, collider)

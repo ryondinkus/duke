@@ -69,6 +69,25 @@ DukeHelpers.Hearts = {
         end,
         Remove = function(player, amount)
             player:AddEternalHearts(-amount)
+        end,
+        OnPickup = function(player)
+            if FiendFolio then
+                if FiendFolio.anyPlayerHas(TrinketType.TRINKET_RED_RIBBON, true) then
+                    if FiendFolio.getTrinketMultiplierAcrossAllPlayers(TrinketType.TRINKET_RED_RIBBON) > 1 then
+                        if DukeHelpers.IsDuke(player) then
+                            DukeHelpers.AddHeartFly(player, DukeHelpers.Flies.ETERNAL, 3, false)
+                        elseif DukeHelpers.IsHusk(player) then
+                            DukeHelpers.FillRottenGulletSlot(player, DukeHelpers.Hearts.ETERNAL.key, 3)
+                        end
+                    else
+                        if DukeHelpers.IsDuke(player) then
+                            DukeHelpers.AddHeartFly(player, DukeHelpers.Flies.ETERNAL, 1, false)
+                        elseif DukeHelpers.IsHusk(player) then
+                            DukeHelpers.FillRottenGulletSlot(player, DukeHelpers.Hearts.ETERNAL.key, 1)
+                        end
+                    end
+                end
+            end
         end
     },
     DOUBLE_RED = {
@@ -491,7 +510,7 @@ DukeHelpers.Hearts = {
         CanPick = function(player)
             return canPickRedTypeHeart(player)
         end,
-        OnPickup = function(player, pickup)
+        OnPickup = function(player)
             Isaac.Spawn(EntityType.ENTITY_FAMILIAR, FamiliarVariant.LEPROSY, 0, player.Position, Vector.Zero, player)
         end
     },
@@ -596,6 +615,92 @@ DukeHelpers.Hearts = {
             CustomHealthAPI.Library.AddHealth(player, "HEART_DAUNTLESS", -amount)
         end
     },
+    HALF_BLACK = {
+        variant = 1022,
+        CanPick = function(player)
+            return DukeHelpers.Hearts.BLACK.CanPick(player)
+        end
+    },
+    BLENDED_BLACK = {
+        variant = 1023,
+        CanPick = function(player)
+            return DukeHelpers.Hearts.BLACK.CanPick(player) or DukeHelpers.Hearts.RED.CanPick(player)
+        end
+    },
+    IMMORAL = {
+        variant = 1024,
+        CanPick = function(player)
+            if not CustomHealthAPI then
+                return false
+            end
+            return CustomHealthAPI.Library.CanPickKey(player, "IMMORAL_HEART")
+        end,
+        Add = function(player, amount)
+            CustomHealthAPI.Library.AddHealth(player, "IMMORAL_HEART", amount)
+
+        end,
+        Remove = function(player, amount)
+            CustomHealthAPI.Library.AddHealth(player, "IMMORAL_HEART", -amount)
+        end
+    },
+    HALF_IMMORAL = {
+        variant = 1025,
+        CanPick = function(player)
+            return DukeHelpers.Hearts.IMMORAL.CanPick(player)
+        end,
+        Add = function(player, amount)
+            DukeHelpers.Hearts.IMMORAL.Add(player, amount)
+        end,
+        Remove = function(player, amount)
+            DukeHelpers.Hearts.IMMORAL.Add(player, amount)
+        end
+    },
+    BLENDED_IMMORAL = {
+        variant = 1026,
+        CanPick = function(player)
+            return DukeHelpers.Hearts.IMMORAL.CanPick(player) or DukeHelpers.Hearts.RED.CanPick(player)
+        end
+    },
+    MORBID = {
+        variant = 1028,
+        CanPick = function(player)
+            if not CustomHealthAPI then
+                return false
+            end
+            return CustomHealthAPI.Library.CanPickKey(player, "MORBID_HEART")
+        end,
+        Add = function(player, amount)
+            CustomHealthAPI.Library.AddHealth(player, "MORBID_HEART", amount)
+        end,
+        Remove = function(player, amount)
+            CustomHealthAPI.Library.AddHealth(player, "MORBID_HEART", -amount)
+        end
+    },
+    TWO_THIRDS_MORBID = {
+        variant = 1029,
+        CanPick = function(player)
+            return DukeHelpers.Hearts.MORBID.CanPick(player)
+        end,
+        Add = function(player, amount)
+            DukeHelpers.Hearts.MORBID.Add(player, amount)
+        end,
+        Remove = function(player, amount)
+            DukeHelpers.Hearts.MORBID.Add(player, amount)
+        end
+    },
+    THIRD_MORBID = {
+        variant = 1030,
+        CanPick = function(player)
+            return DukeHelpers.Hearts.MORBID.CanPick(player)
+        end,
+        Add = function(player, amount)
+            DukeHelpers.Hearts.MORBID.Add(player, amount)
+        end,
+        Remove = function(player, amount)
+            DukeHelpers.Hearts.MORBID.Add(player, amount)
+        end
+    },
+
 }
 
 for key, heart in pairs(DukeHelpers.Hearts) do

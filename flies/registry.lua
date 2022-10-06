@@ -36,7 +36,17 @@ local flies = {
     include("flies/modded/repPlus/empty"),
     include("flies/modded/repPlus/zealot"),
     include("flies/modded/repPlus/deserted"),
-    include("flies/modded/repPlus/halfDauntless")
+    include("flies/modded/repPlus/halfDauntless"),
+
+    include("flies/modded/fiendFolio/halfBlack"),
+    include("flies/modded/fiendFolio/blendedBlack"),
+    include("flies/modded/fiendFolio/immoral"),
+    include("flies/modded/fiendFolio/halfImmoral"),
+    include("flies/modded/fiendFolio/blendedImmoral"),
+    include("flies/modded/fiendFolio/morbid"),
+    include("flies/modded/fiendFolio/thirdMorbid"),
+    include("flies/modded/fiendFolio/twoThirdsMorbid"),
+
 }
 
 -- Registers the flies

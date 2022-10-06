@@ -567,3 +567,7 @@ end
 if RepentancePlusMod then
     Isaac.ExecuteCommand("luamod " .. getModDirectoryName(RepentancePlusMod.path))
 end
+
+if FiendFolio then
+    Isaac.ExecuteCommand("luamod " .. getModDirectoryName(FiendFolio.path))
+end
