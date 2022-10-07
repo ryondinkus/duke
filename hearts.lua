@@ -11,7 +11,9 @@ DukeHelpers.Hearts = {
         subType = HeartSubType.HEART_FULL,
         isBase = true,
         GetCount = function(player)
-            return DukeHelpers.Clamp(player:GetHearts() - (DukeHelpers.Hearts.ROTTEN.GetCount(player) * 2), 0)
+            return DukeHelpers.Clamp(player:GetHearts() - (DukeHelpers.Hearts.ROTTEN.GetCount(player) * 2) -
+                DukeHelpers.Hearts.MORBID.GetCount(player) - (DukeHelpers.Hearts.SOILED.GetCount(player) * 2), 0)
+
         end,
         CanPick = function(player)
             return player:CanPickRedHearts()
@@ -43,7 +45,9 @@ DukeHelpers.Hearts = {
         isBase = true,
         GetCount = function(player)
             return DukeHelpers.Clamp(player:GetSoulHearts() - DukeHelpers.Hearts.BLACK.GetCount(player) -
-                DukeHelpers.Hearts.IMMORTAL.GetCount(player) - DukeHelpers.Hearts.WEB.GetCount(player), 0)
+                DukeHelpers.Hearts.IMMORTAL.GetCount(player) - DukeHelpers.Hearts.WEB.GetCount(player) -
+                DukeHelpers.Hearts.IMMORAL.GetCount(player) - DukeHelpers.Hearts.DAUNTLESS.GetCount(player) -
+                DukeHelpers.Hearts.MISER.GetCount(player) - DukeHelpers.Hearts.ZEALOT.GetCount(player), 0)
         end,
         CanPick = function(player)
             return player:CanPickSoulHearts()
@@ -393,15 +397,16 @@ DukeHelpers.Hearts = {
         CanPick = function(_)
             return true
         end,
-        OnPickup = function(player, pickup)
+        OnPickup = function(player)
             player:AddSoulHearts(2)
         end
     },
     DAUNTLESS = {
         subType = 85,
+        isBase = true,
         GetCount = function(player)
             if RepentancePlusMod and CustomHealthAPI then
-                return CustomHealthAPI.Helper.GetHPOfKey(player, "HEART_DAUNTLESS")
+                return CustomHealthAPI.Library.GetHPOfKey(player, "HEART_DAUNTLESS")
             end
 
             return 0
@@ -427,9 +432,10 @@ DukeHelpers.Hearts = {
     },
     SOILED = {
         subType = 88,
+        isBase = true,
         GetCount = function(player)
             if RepentancePlusMod and CustomHealthAPI then
-                return CustomHealthAPI.Helper.GetHPOfKey(player, "HEART_SOILED")
+                return CustomHealthAPI.Library.GetHPOfKey(player, "HEART_SOILED") / 2
             end
 
             return 0
@@ -485,9 +491,10 @@ DukeHelpers.Hearts = {
     },
     BALEFUL = {
         subType = 94,
+        isBase = true,
         GetCount = function(player)
             if RepentancePlusMod and CustomHealthAPI then
-                return CustomHealthAPI.Helper.GetHPOfKey(player, "HEART_BALEFUL")
+                return CustomHealthAPI.Library.GetHPOfKey(player, "HEART_BALEFUL")
             end
 
             return 0
@@ -516,9 +523,10 @@ DukeHelpers.Hearts = {
     },
     MISER = {
         subType = 96,
+        isBase = true,
         GetCount = function(player)
             if RepentancePlusMod and CustomHealthAPI then
-                return CustomHealthAPI.Helper.GetHPOfKey(player, "HEART_MISER")
+                return CustomHealthAPI.Library.GetHPOfKey(player, "HEART_MISER")
             end
 
             return 0
@@ -538,9 +546,10 @@ DukeHelpers.Hearts = {
     },
     EMPTY = {
         subType = 97,
+        isBase = true,
         GetCount = function(player)
             if RepentancePlusMod and CustomHealthAPI then
-                return CustomHealthAPI.Helper.GetHPOfKey(player, "HEART_EMPTY")
+                return CustomHealthAPI.Library.GetHPOfKey(player, "HEART_EMPTY")
             end
 
             return 0
@@ -564,9 +573,10 @@ DukeHelpers.Hearts = {
     },
     ZEALOT = {
         subType = 99,
+        isBase = true,
         GetCount = function(player)
             if RepentancePlusMod and CustomHealthAPI then
-                return CustomHealthAPI.Helper.GetHPOfKey(player, "HEART_ZEALOT")
+                return CustomHealthAPI.Library.GetHPOfKey(player, "HEART_ZEALOT")
             end
 
             return 0
@@ -596,23 +606,16 @@ DukeHelpers.Hearts = {
     HALF_DAUNTLESS = {
         subType = 101,
         GetCount = function(player)
-            if RepentancePlusMod and CustomHealthAPI then
-                return CustomHealthAPI.Helper.GetHPOfKey(player, "HEART_DAUNTLESS")
-            end
-
-            return 0
+            return DukeHelpers.Hearts.DAUNTLESS.GetCount(player)
         end,
         CanPick = function(player)
-            if not RepentancePlusMod or not CustomHealthAPI then
-                return false
-            end
-            return CustomHealthAPI.Library.CanPickKey(player, "HEART_DAUNTLESS")
+            return DukeHelpers.Hearts.DAUNTLESS.CanPick(player)
         end,
         Add = function(player, amount)
-            CustomHealthAPI.Library.AddHealth(player, "HEART_DAUNTLESS", amount)
+            DukeHelpers.Hearts.DAUNTLESS.Add(player, amount)
         end,
         Remove = function(player, amount)
-            CustomHealthAPI.Library.AddHealth(player, "HEART_DAUNTLESS", -amount)
+            DukeHelpers.Hearts.DAUNTLESS.Remove(player, amount)
         end
     },
     HALF_BLACK = {
@@ -629,6 +632,14 @@ DukeHelpers.Hearts = {
     },
     IMMORAL = {
         variant = 1024,
+        isBase = true,
+        GetCount = function(player)
+            if FiendFolio and CustomHealthAPI then
+                return CustomHealthAPI.Library.GetHPOfKey(player, "IMMORAL_HEART")
+            end
+
+            return 0
+        end,
         CanPick = function(player)
             if not CustomHealthAPI then
                 return false
@@ -645,6 +656,9 @@ DukeHelpers.Hearts = {
     },
     HALF_IMMORAL = {
         variant = 1025,
+        GetCount = function(player)
+            return DukeHelpers.Hearts.IMMORAL.GetCount(player)
+        end,
         CanPick = function(player)
             return DukeHelpers.Hearts.IMMORAL.CanPick(player)
         end,
@@ -663,6 +677,14 @@ DukeHelpers.Hearts = {
     },
     MORBID = {
         variant = 1028,
+        isBase = true,
+        GetCount = function(player)
+            if FiendFolio and CustomHealthAPI then
+                return CustomHealthAPI.Library.GetHPOfKey(player, "MORBID_HEART")
+            end
+
+            return 0
+        end,
         CanPick = function(player)
             if not CustomHealthAPI then
                 return false
@@ -678,6 +700,9 @@ DukeHelpers.Hearts = {
     },
     TWO_THIRDS_MORBID = {
         variant = 1029,
+        GetCount = function(player)
+            return DukeHelpers.Hearts.MORBID.GetCount(player)
+        end,
         CanPick = function(player)
             return DukeHelpers.Hearts.MORBID.CanPick(player)
         end,
@@ -690,6 +715,9 @@ DukeHelpers.Hearts = {
     },
     THIRD_MORBID = {
         variant = 1030,
+        GetCount = function(player)
+            return DukeHelpers.Hearts.MORBID.GetCount(player)
+        end,
         CanPick = function(player)
             return DukeHelpers.Hearts.MORBID.CanPick(player)
         end,

@@ -159,6 +159,11 @@ dukeMod:AddCallback(ModCallbacks.MC_USE_ITEM, function(_, _, _, player)
     end
 end, CollectibleType.COLLECTIBLE_MAGIC_SKIN)
 
+dukeMod:AddCallback(ModCallbacks.MC_POST_NEW_ROOM, function()
+    Isaac.ExecuteCommand("spawn fire place")
+    Isaac.ExecuteCommand("g super infestation")
+end)
+
 include("flies/registry")
 include("spiders/registry")
 
@@ -548,6 +553,10 @@ local function getModDirectoryName(str)
     end
 end
 
+if FiendFolio then
+    Isaac.ExecuteCommand("luamod " .. getModDirectoryName(FiendFolio.path))
+end
+
 if ComplianceImmortal then
     Isaac.ExecuteCommand("luamod " .. getModDirectoryName(ComplianceImmortal.path))
 end
@@ -566,8 +575,4 @@ end
 
 if RepentancePlusMod then
     Isaac.ExecuteCommand("luamod " .. getModDirectoryName(RepentancePlusMod.path))
-end
-
-if FiendFolio then
-    Isaac.ExecuteCommand("luamod " .. getModDirectoryName(FiendFolio.path))
 end
