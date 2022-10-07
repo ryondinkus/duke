@@ -13,6 +13,7 @@ local function applyTearEffects(tear)
 	local function tearCollision(_, t)
 		if tear.InitSeed == t.InitSeed then
 			tear.SpawnerEntity:ToPlayer():AddFriendlyDip(0, tear.Position)
+			dukeMod:RemoveCallback(ModCallbacks.MC_POST_ENTITY_REMOVE, tearCollision)
 		end
 	end
 

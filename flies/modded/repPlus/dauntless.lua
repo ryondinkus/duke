@@ -21,24 +21,22 @@ end
 
 local function MC_POST_PLAYER_UPDATE(_, player)
 	local effects = player:GetEffects()
-	if DukeHelpers.IsDuke(player) then
-		local playerData = DukeHelpers.GetDukeData(player)
-		local collectibleNum = effects:GetCollectibleEffectNum(CollectibleType.COLLECTIBLE_WAFER)
-		local dauntlessFlyCount = DukeHelpers.CountByProperties(playerData.heartFlies,
-			{ key = DukeHelpers.Flies.DAUNTLESS.key })
+	local playerData = DukeHelpers.GetDukeData(player)
+	local collectibleNum = effects:GetCollectibleEffectNum(CollectibleType.COLLECTIBLE_WAFER)
+	local dauntlessFlyCount = DukeHelpers.CountByProperties(playerData.heartFlies,
+		{ key = DukeHelpers.Flies.DAUNTLESS.key })
 
-		if dauntlessFlyCount > 0
-			and (not playerData.dauntlessWafer or collectibleNum <= 0) then
-			if collectibleNum <= 0 then
-				effects:AddCollectibleEffect(CollectibleType.COLLECTIBLE_WAFER, false)
-				playerData.dauntlessWafer = true
-			end
-		elseif dauntlessFlyCount <= 0 and
-			playerData.dauntlessWafer then
-			if collectibleNum > 0 then
-				effects:RemoveCollectibleEffect(CollectibleType.COLLECTIBLE_WAFER)
-				playerData.dauntlessWafer = nil
-			end
+	if dauntlessFlyCount > 0
+		and (not playerData.dauntlessWafer or collectibleNum <= 0) then
+		if collectibleNum <= 0 then
+			effects:AddCollectibleEffect(CollectibleType.COLLECTIBLE_WAFER, false)
+			playerData.dauntlessWafer = true
+		end
+	elseif dauntlessFlyCount <= 0 and
+		playerData.dauntlessWafer then
+		if collectibleNum > 0 then
+			effects:RemoveCollectibleEffect(CollectibleType.COLLECTIBLE_WAFER)
+			playerData.dauntlessWafer = nil
 		end
 	end
 end
@@ -50,7 +48,7 @@ local function MC_POST_NPC_DEATH(_, npc)
 
 	local spawnDauntlessHearts = false
 
-	DukeHelpers.ForEachDuke(function(player)
+	DukeHelpers.ForEachPlayer(function(player)
 		local playerData = DukeHelpers.GetDukeData(player)
 		if DukeHelpers.CountByProperties(playerData.heartFlies,
 			{ key = DukeHelpers.Flies.DAUNTLESS.key }) % 2 == 1 then
@@ -63,7 +61,7 @@ local function MC_POST_NPC_DEATH(_, npc)
 
 		if DukeHelpers.PercentageChance(20) then
 			local fadingHeart = Isaac.Spawn(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_HEART,
-				DukeHelpers.Hearts.HALF_DAUNTLESS.subType, npc.Position, Vector.FromAngle(angle) * 12.5, nil) -- 101 is the half dauntless heart lol!!!
+				DukeHelpers.Hearts.HALF_DAUNTLESS.subType, npc.Position, Vector.FromAngle(angle) * 12.5, nil)
 			fadingHeart:GetData().fadeTimeout = 45
 		end
 	end

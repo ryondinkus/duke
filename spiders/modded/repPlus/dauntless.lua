@@ -15,24 +15,22 @@ end
 
 local function MC_POST_PLAYER_UPDATE(_, player)
 	local effects = player:GetEffects()
-	if DukeHelpers.IsHusk(player) then
-		local playerData = DukeHelpers.GetDukeData(player)
-		local collectibleNum = effects:GetCollectibleEffectNum(CollectibleType.COLLECTIBLE_WAFER)
-		local filledSlots = DukeHelpers.GetFilledRottenGulletSlots(player)
-		local dauntlessHearts = DukeHelpers.CountOccurencesInTable(filledSlots, DukeHelpers.Spiders.DAUNTLESS.key)
+	local playerData = DukeHelpers.GetDukeData(player)
+	local collectibleNum = effects:GetCollectibleEffectNum(CollectibleType.COLLECTIBLE_WAFER)
+	local filledSlots = DukeHelpers.GetFilledRottenGulletSlots(player)
+	local dauntlessHearts = DukeHelpers.CountOccurencesInTable(filledSlots, DukeHelpers.Spiders.DAUNTLESS.key)
 
-		if dauntlessHearts > 0
-			and (not playerData.dauntlessWafer or collectibleNum <= 0) then
-			if collectibleNum <= 0 then
-				effects:AddCollectibleEffect(CollectibleType.COLLECTIBLE_WAFER, false)
-				playerData.dauntlessWafer = true
-			end
-		elseif dauntlessHearts <= 0 and
-			playerData.dauntlessWafer then
-			if collectibleNum > 0 then
-				effects:RemoveCollectibleEffect(CollectibleType.COLLECTIBLE_WAFER)
-				playerData.dauntlessWafer = nil
-			end
+	if dauntlessHearts > 0
+		and (not playerData.dauntlessWafer or collectibleNum <= 0) then
+		if collectibleNum <= 0 then
+			effects:AddCollectibleEffect(CollectibleType.COLLECTIBLE_WAFER, false)
+			playerData.dauntlessWafer = true
+		end
+	elseif dauntlessHearts <= 0 and
+		playerData.dauntlessWafer then
+		if collectibleNum > 0 then
+			effects:RemoveCollectibleEffect(CollectibleType.COLLECTIBLE_WAFER)
+			playerData.dauntlessWafer = nil
 		end
 	end
 end
@@ -44,7 +42,7 @@ local function MC_POST_NPC_DEATH(_, npc)
 
 	local spawnDauntlessHearts = false
 
-	DukeHelpers.ForEachHusk(function(player)
+	DukeHelpers.ForEachPlayer(function(player)
 		local filledSlots = DukeHelpers.GetFilledRottenGulletSlots(player)
 		local dauntlessHearts = DukeHelpers.CountOccurencesInTable(filledSlots, DukeHelpers.Spiders.DAUNTLESS.key)
 
