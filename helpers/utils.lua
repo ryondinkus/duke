@@ -87,7 +87,7 @@ function DukeHelpers.LengthOfTable(t)
 end
 
 function DukeHelpers.IsArray(t)
-    if t == nil then
+    if t == nil or type(t) ~= "table" then
         return false
     end
     local i = 0
@@ -256,12 +256,12 @@ function DukeHelpers.PrintIfSomething(value, target)
 end
 
 function DukeHelpers.CombineArrays(first, second)
-	local combined = {}
-	for i=1, #first do
-		combined[i] = first[i]
-	end
-	for i=1, #second do
-		combined[#combined + 1] = second[i]
+    local combined = {}
+    for i = 1, #first do
+        combined[i] = first[i]
     end
-	return combined
+    for i = 1, #second do
+        combined[#combined + 1] = second[i]
+    end
+    return combined
 end

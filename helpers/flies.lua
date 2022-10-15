@@ -216,13 +216,17 @@ function DukeHelpers.RemoveOutermostHeartFlies(player, amount, removeBroken)
 	return removedFlies
 end
 
-function DukeHelpers.RemoveHeartFly(player, heartFlies, amount)
+function DukeHelpers.GetOutermostFlies(player, heartFlies, amount, ignoredInitSeeds)
 	if not amount then
 		amount = 1
 	end
 
 	if not DukeHelpers.IsArray(heartFlies) then
 		heartFlies = { heartFlies }
+	end
+
+	if not DukeHelpers.IsArray(ignoredInitSeeds) then
+		ignoredInitSeeds = { ignoredInitSeeds }
 	end
 
 	local fliesData = DukeHelpers.GetDukeData(player).heartFlies
@@ -232,7 +236,7 @@ function DukeHelpers.RemoveHeartFly(player, heartFlies, amount)
 		layer = DukeHelpers.BIRTHRIGHT
 	end
 
-	local removedFlies = {}
+	local foundFlies = {}
 
 	for _ = 1, amount do
 		local foundFly
@@ -241,7 +245,9 @@ function DukeHelpers.RemoveHeartFly(player, heartFlies, amount)
 			foundFly = DukeHelpers.Find(fliesData, function(savedHeartFly)
 				return (not not DukeHelpers.Find(heartFlies, function(heartFly)
 					return savedHeartFly.key == heartFly.key
-				end)) and savedHeartFly.layer == layer
+				end)) and savedHeartFly.layer == layer and
+					(not ignoredInitSeeds or not DukeHelpers.Find(ignoredInitSeeds, function(s) return s == savedHeartFly.initSeed end)
+					)
 			end)
 
 			if not foundFly then
@@ -253,10 +259,19 @@ function DukeHelpers.RemoveHeartFly(player, heartFlies, amount)
 		end
 
 		if foundFly then
-			local flyToRemove = DukeHelpers.GetEntityByInitSeed(foundFly.initSeed)
-			DukeHelpers.RemoveHeartFlyEntity(flyToRemove)
-			table.insert(removedFlies, flyToRemove)
+			local flyEntity = DukeHelpers.GetEntityByInitSeed(foundFly.initSeed)
+			table.insert(foundFlies, flyEntity)
 		end
+	end
+
+	return foundFlies
+end
+
+function DukeHelpers.RemoveHeartFly(player, heartFlies, amount)
+	local removedFlies = DukeHelpers.GetOutermostFlies(player, heartFlies, amount)
+
+	for _, fly in pairs(removedFlies) do
+		DukeHelpers.RemoveHeartFlyEntity(fly)
 	end
 
 	return removedFlies

@@ -1,20 +1,25 @@
 local heart = DukeHelpers.Hearts.ETERNAL
 
 local function MC_FAMILIAR_UPDATE(_, f)
-	if f.SubType == heart.subType then
-		if f.FrameCount == 6 then
-			DukeHelpers.ForEachEntityInRoom(function(entity)
-				DukeGiantBookAPI.playDukeGiantBook("Appear", nil, "gfx/ui/giantbook/giantbook_eternalfly.anm2", Color(1, 1, 1, 1),
-					Color(1, 1, 1, 0), Color(1, 1, 1, 0))
-				for i = 1, 2 do
-					DukeHelpers.AddHeartFly(f.SpawnerEntity:ToPlayer(), DukeHelpers.Flies.RED)
-					DukeHelpers.RemoveHeartFlyEntity(entity)
-					DukeHelpers.RemoveHeartFlyEntity(f)
-				end
-			end, EntityType.ENTITY_FAMILIAR, DukeHelpers.FLY_VARIANT, heart.subType,
-				function(entity)
-					return entity.SpawnerEntity.InitSeed == f.SpawnerEntity.InitSeed and entity.InitSeed ~= f.InitSeed
-				end)
+	if f.SubType == heart.subType and f.FrameCount == 6 and f.SpawnerEntity and not f:GetData().eternalMerge then
+		local player = f.SpawnerEntity:ToPlayer()
+
+		local otherEternalHeartFlies = DukeHelpers.GetOutermostFlies(player, DukeHelpers.Flies.ETERNAL, 1, f.InitSeed)
+
+		if #otherEternalHeartFlies > 0 then
+			local combineWithHeartFly = otherEternalHeartFlies[1]
+
+			DukeGiantBookAPI.playDukeGiantBook("Appear", nil, "gfx/ui/giantbook/giantbook_eternalfly.anm2", Color(1, 1, 1, 1),
+				Color(1, 1, 1, 0), Color(1, 1, 1, 0))
+
+			for _ = 1, 2 do
+				DukeHelpers.AddHeartFly(f.SpawnerEntity:ToPlayer(), DukeHelpers.Flies.RED)
+			end
+
+			combineWithHeartFly:GetData().eternalMerge = true
+
+			DukeHelpers.RemoveHeartFlyEntity(combineWithHeartFly)
+			DukeHelpers.RemoveHeartFlyEntity(f)
 		end
 	end
 end
