@@ -171,18 +171,6 @@ dukeMod:AddCallback(ModCallbacks.MC_USE_ITEM, function(_, _, _, player)
     end
 end, CollectibleType.COLLECTIBLE_MAGIC_SKIN)
 
-dukeMod:AddCallback(ModCallbacks.MC_POST_NEW_ROOM, function()
-    Isaac.ExecuteCommand("g fiendish swarm")
-    -- Isaac.ExecuteCommand("rplus_unlockall")
-    -- for _ = 0, 10 do
-    --     Isaac.ExecuteCommand("g dinner")
-    -- end
-
-    -- for _ = 0, 15 do
-    --     Isaac.ExecuteCommand("spawn 5.10.94")
-    -- end
-end)
-
 
 include("flies/registry")
 include("spiders/registry")
