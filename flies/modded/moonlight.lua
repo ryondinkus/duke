@@ -9,7 +9,7 @@ local function MC_PRE_FAMILIAR_COLLISION(_, f, e)
 			if effect == 0 then
 				Game():GetLevel():ApplyBlueMapEffect()
 			elseif effect == 1 then
-				Game():GetLevel():ApplyCompassEffect()
+				Game():GetLevel():ApplyCompassEffect(false)
 			elseif effect == 2 then
 				Game():GetLevel():ApplyMapEffect()
 			elseif effect == 3 then

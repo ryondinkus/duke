@@ -227,7 +227,7 @@ end
 
 local function unlockUnlock(unlock, hidePaper)
     if not hidePaper then
-        DukeGiantBookAPI.ShowAchievement("achievement_" .. unlock.tag .. ".png")
+        DukeHelpers.ShowAchievement("achievement_" .. unlock.tag .. ".png")
     end
     saveUnlock(unlock, unlock.difficulty)
 end

@@ -421,7 +421,7 @@ DukeHelpers.Hearts = {
             return 0
         end,
         CanPick = function(player)
-            if not RepentancePlusMod then
+            if not RepentancePlusMod or not RepentancePlusMod.CanPickOverlayHeart then
                 return false
             end
             return RepentancePlusMod.CanPickOverlayHeart(player)
@@ -477,7 +477,7 @@ DukeHelpers.Hearts = {
             return 0
         end,
         CanPick = function(player)
-            if not RepentancePlusMod then
+            if not RepentancePlusMod or not RepentancePlusMod.CanPickOverlayHeart then
                 return false
             end
             return RepentancePlusMod.CanPickOverlayHeart(player)

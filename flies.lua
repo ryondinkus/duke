@@ -10,7 +10,7 @@ dukeMod:AddCallback(ModCallbacks.MC_FAMILIAR_UPDATE, function(_, f)
 
 	if data.layer == nil then
 		local fliesData = DukeHelpers.GetDukeData(f.Player).heartFlies
-		local foundFly = DukeHelpers.FindByProperties(fliesData, {initSeed = f.InitSeed})
+		local foundFly = DukeHelpers.FindByProperties(fliesData, { initSeed = f.InitSeed })
 		if foundFly then
 			data.layer = foundFly.layer
 			DukeHelpers.PositionHeartFly(f, foundFly.layer)
@@ -36,6 +36,10 @@ dukeMod:AddCallback(ModCallbacks.MC_FAMILIAR_UPDATE, function(_, f)
 		f.OrbitDistance = Vector(80, 76)
 		f.OrbitSpeed = 0.005
 		f.CollisionDamage = 1
+	end
+
+	if dukeMod.global.isPaused then
+		f.OrbitSpeed = 0
 	end
 
 	local centerPos = f.Player.Position
@@ -92,8 +96,9 @@ dukeMod:AddCallback(ModCallbacks.MC_PRE_FAMILIAR_COLLISION, function(_, f, e)
 		if e:ToNPC() and DukeHelpers.IsActualEnemy(e, true, false) and not e:HasEntityFlags(EntityFlag.FLAG_CHARM) then
 			local heartFly = DukeHelpers.GetHeartFlyFromFlyEntity(f)
 			if heartFly.dropHeartChance and DukeHelpers.PercentageChance(heartFly.dropHeartChance) then
-				local heart = Isaac.Spawn(EntityType.ENTITY_PICKUP, heartFly.dropHeart.variant or PickupVariant.PICKUP_HEART, heartFly.dropHeart.subType or 0,
-				f.Position, Vector.Zero, f)
+				local heart = Isaac.Spawn(EntityType.ENTITY_PICKUP, heartFly.dropHeart.variant or PickupVariant.PICKUP_HEART,
+					heartFly.dropHeart.subType or 0,
+					f.Position, Vector.Zero, f)
 				DukeHelpers.GetDukeData(heart).noFlyHearts = true
 				attackFlyData.dropHeart = false
 			end

@@ -9,9 +9,8 @@ local function MC_FAMILIAR_UPDATE(_, f)
 		if #otherEternalHeartFlies > 0 then
 			local combineWithHeartFly = otherEternalHeartFlies[1]
 
-			DukeGiantBookAPI.playDukeGiantBook("Appear", nil, "gfx/ui/giantbook/giantbook_eternalfly.anm2", Color(1, 1, 1, 1),
-				Color(1, 1, 1, 0), Color(1, 1, 1, 0))
-
+			DukeHelpers.PlayGiantBook("Appear", nil, Color(1, 1, 1, 1),
+				Color(1, 1, 1, 0), Color(1, 1, 1, 0), nil, nil, "gfx/ui/giantbook/giantbook_eternalfly.anm2")
 			for _ = 1, 2 do
 				DukeHelpers.AddHeartFly(f.SpawnerEntity:ToPlayer(), DukeHelpers.Flies.RED)
 			end
