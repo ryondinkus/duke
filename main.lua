@@ -153,27 +153,23 @@ end)
 
 dukeMod:AddCallback(ModCallbacks.MC_POST_UPDATE, function()
     dukeMod.global.hasPoundOfFlesh = DukeHelpers.AnyPlayerHasItem(CollectibleType.COLLECTIBLE_POUND_OF_FLESH)
+
+    DukeHelpers.ForEachPlayer(function(player)
+        local data = DukeHelpers.GetDukeData(player)
+        if data["usedMagicSkin"] then
+            DukeHelpers.Hearts.SOUL.Add(player,
+                DukeHelpers.Clamp(data["usedMagicSkin"] - data.health.SOUL, 0))
+            data["usedMagicSkin"] = nil
+        end
+    end)
 end)
 
 dukeMod:AddCallback(ModCallbacks.MC_USE_ITEM, function(_, _, _, player)
     local data = DukeHelpers.GetDukeData(player)
     if DukeHelpers.IsDuke(player) or DukeHelpers.IsHusk(player) then
-        DukeHelpers.Hearts.SOUL.Add(player,
-            DukeHelpers.Clamp(data.health.SOUL - DukeHelpers.Hearts.SOUL.GetCount(player), 0))
+        data["usedMagicSkin"] = data.health.SOUL
     end
 end, CollectibleType.COLLECTIBLE_MAGIC_SKIN)
-
-dukeMod:AddCallback(ModCallbacks.MC_POST_NEW_ROOM, function()
-    Isaac.ExecuteCommand("g fiendish swarm")
-    -- Isaac.ExecuteCommand("rplus_unlockall")
-    -- for _ = 0, 10 do
-    --     Isaac.ExecuteCommand("g dinner")
-    -- end
-
-    -- for _ = 0, 15 do
-    --     Isaac.ExecuteCommand("spawn 5.10.94")
-    -- end
-end)
 
 
 include("flies/registry")

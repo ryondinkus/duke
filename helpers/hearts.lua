@@ -157,7 +157,6 @@ function DukeHelpers.RemoveUnallowedHearts(player, leftHearts, ignoreContainers)
     end
 
     local rottenHearts = getRemovableAmount(player, leftHearts, DukeHelpers.Hearts.ROTTEN)
-    DukeHelpers.PrintIfSomething(rottenHearts)
     if rottenHearts > 0 then
         removedHearts[DukeHelpers.Hearts.ROTTEN.key] = rottenHearts
         DukeHelpers.Hearts.ROTTEN.Remove(player, rottenHearts)
@@ -191,10 +190,6 @@ function DukeHelpers.RemoveUnallowedHearts(player, leftHearts, ignoreContainers)
     if boneHearts > 0 then
         removedHearts[DukeHelpers.Hearts.BONE.key] = boneHearts
         DukeHelpers.Hearts.BONE.Remove(player, boneHearts)
-    end
-
-    if DukeHelpers.LengthOfTable(removedHearts) > 0 then
-        DukeHelpers.PrintJson(removedHearts)
     end
 
     return removedHearts
