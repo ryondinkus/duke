@@ -345,7 +345,7 @@ function DukeHelpers.MCMUnlockToggle(unlock, enable)
     if unlock then
         if enable then
             if DukeHelpers.IsArray(unlock) then
-                for k, u in pairs(unlock) do
+                for _, u in pairs(unlock) do
                     unlockUnlock(u, true)
                 end
             else
@@ -353,11 +353,11 @@ function DukeHelpers.MCMUnlockToggle(unlock, enable)
             end
         else
             if DukeHelpers.IsArray(unlock) then
-                for k, u in pairs(unlock) do
-                    lockUnlock(u, true)
+                for _, u in pairs(unlock) do
+                    lockUnlock(u)
                 end
             else
-                lockUnlock(unlock, true)
+                lockUnlock(unlock)
             end
         end
     end

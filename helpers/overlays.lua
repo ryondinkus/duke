@@ -17,11 +17,8 @@ local bookLength = 0
 
 mod.global.isPaused = false
 local pausedKey
-local stopPause = false
-local fireToStop = false
-local stopBullet
-local stopTearEffect
 local savedTimer
+local savedVelocities = {}
 
 local function FreezeGame(key)
     if not mod.global.isPaused then
@@ -30,7 +27,10 @@ local function FreezeGame(key)
         if not savedTimer then
             savedTimer = game.TimeCounter
         end
-        Isaac.GetPlayer(0):UseActiveItem(CollectibleType.COLLECTIBLE_PAUSE, UseFlag.USE_NOANIM)
+        DukeHelpers.ForEachEntityInRoom(function(entity) entity:AddEntityFlags(EntityFlag.FLAG_FREEZE) end, nil, nil, nil
+            , function(entity)
+            return entity:IsEnemy() and not entity:HasEntityFlags(EntityFlag.FLAG_FREEZE)
+        end)
         game.TimeCounter = savedTimer
         if (ModConfigMenu and ModConfigMenu.IsVisible) then
             ModConfigMenu.CloseConfigMenu()
@@ -48,6 +48,26 @@ local function FreezeGame(key)
                 player.Velocity = Vector.Zero
             end
         end)
+
+        for _, entity in pairs(Isaac.FindByType(EntityType.ENTITY_TEAR)) do
+            local tear = entity:ToTear()
+            savedVelocities[tostring(tear.InitSeed)] = { Velocity = tear.Velocity, FallingSpeed = tear.FallingSpeed,
+                FallingAcceleration = tear.FallingAcceleration }
+
+            tear.Velocity = Vector.Zero
+            tear.FallingAcceleration = -0.1
+            tear.FallingSpeed = 0
+        end
+
+        for _, entity in pairs(Isaac.FindByType(EntityType.ENTITY_PROJECTILE)) do
+            local projectile = entity:ToProjectile()
+            savedVelocities[tostring(projectile.InitSeed)] = { Velocity = projectile.Velocity,
+                FallingSpeed = projectile.FallingSpeed, FallingAcceleration = projectile.FallingAccel }
+
+            projectile.Velocity = Vector.Zero
+            projectile.FallingAccel = -0.1
+            projectile.FallingSpeed = 0
+        end
 
         for _, poof in ipairs(Isaac.FindByType(EntityType.ENTITY_EFFECT, EffectVariant.POOF01, -1)) do
             poof:Remove()
@@ -68,6 +88,29 @@ local function UnfreezeGame(key)
         mod.global.isPaused = false
         savedTimer = nil
 
+        DukeHelpers.ForEachEntityInRoom(function(entity) entity:ClearEntityFlags(EntityFlag.FLAG_FREEZE) end, nil, nil,
+            nil, function(entity)
+            return entity:IsEnemy() and entity:HasEntityFlags(EntityFlag.FLAG_FREEZE)
+        end)
+
+        DukeHelpers.ForEach(savedVelocities, function(values, initSeed)
+            local entity = DukeHelpers.GetEntityByInitSeed(initSeed)
+            if entity and entity:Exists() then
+                entity.Velocity = values.Velocity
+                if entity:ToTear() then
+                    entity = entity:ToTear()
+                    entity.FallingAcceleration = values.FallingAcceleration
+                    entity.FallingSpeed = values.FallingSpeed
+                else
+                    entity = entity:ToProjectile()
+                    entity.FallingAccel = values.FallingAcceleration
+                    entity.FallingSpeed = values.FallingSpeed
+                end
+            end
+
+            savedVelocities[tostring(initSeed)] = nil
+        end)
+
         DukeHelpers.ForEachPlayer(function(player)
             local data = DukeHelpers.GetDukeData(player)
 
@@ -83,69 +126,6 @@ end
 local function GetScreenCenter()
     return Vector(Isaac.GetScreenWidth() / 2, Isaac.GetScreenHeight() / 2)
 end
-
--- Shoots to stop the pause
-mod:AddCallback(ModCallbacks.MC_INPUT_ACTION, function(_, entity, _, action)
-    local player = entity and entity:ToPlayer()
-    if not stopPause or not player then
-        return nil
-    end
-
-    if player.InitSeed == Isaac.GetPlayer(0).InitSeed and
-        action == ButtonAction.ACTION_SHOOTDOWN then
-        stopPause = false
-        fireToStop = true
-        for _, ember in ipairs(Isaac.FindByType(EntityType.ENTITY_EFFECT, EffectVariant.FALLING_EMBER, -1)) do
-            ember:Remove()
-        end
-        if REPENTANCE then
-            for _, rain in ipairs(Isaac.FindByType(EntityType.ENTITY_EFFECT, EffectVariant.RAIN_DROP, -1)) do
-                rain:Remove()
-            end
-        end
-        return 0.45
-    end
-end, InputHook.GET_ACTION_VALUE)
-
--- Shoots to stop the pause
-mod:AddCallback(ModCallbacks.MC_INPUT_ACTION, function(_, entity, _, action)
-    local player = entity and entity:ToPlayer()
-    if not fireToStop or not player then
-        return nil
-    end
-
-    if player.InitSeed == Isaac.GetPlayer(0).InitSeed and
-        action == ButtonAction.ACTION_SHOOTDOWN then
-        fireToStop = false
-        stopBullet = Isaac.GetFrameCount()
-        return true
-    end
-end, InputHook.IS_ACTION_PRESSED)
-
-mod:AddCallback(ModCallbacks.MC_POST_TEAR_INIT, function(_, tear)
-    if not stopBullet or Isaac.GetFrameCount() ~= stopBullet then
-        stopBullet = nil
-        return
-    end
-
-    if tear.SpawnerEntity.InitSeed == Isaac.GetPlayer(0).InitSeed then
-        tear:Remove()
-        stopTearEffect = stopBullet
-        stopBullet = nil
-    end
-end)
-
-mod:AddCallback(ModCallbacks.MC_POST_EFFECT_INIT, function(_, effect)
-    if not stopTearEffect or Isaac.GetFrameCount() ~= stopTearEffect then
-        stopTearEffect = nil
-        return
-    end
-
-    effect:Remove()
-    sfx:Stop(SoundEffect.SOUND_TEARS_FIRE)
-    sfx:Stop(SoundEffect.SOUND_TEARIMPACTS)
-    stopTearEffect = nil
-end)
 
 -- Stops players' controls
 mod:AddCallback(ModCallbacks.MC_INPUT_ACTION, function(_, _, _, action)

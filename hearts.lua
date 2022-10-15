@@ -61,7 +61,7 @@ DukeHelpers.Hearts = {
         Remove = function(player, amount)
             player:AddEternalHearts(-amount)
         end,
-        OnPickup = function(player)
+        OnPickup = function(player, _)
             if FiendFolio then
                 if FiendFolio.anyPlayerHas(TrinketType.TRINKET_RED_RIBBON, true) then
                     local count = 1
@@ -329,7 +329,7 @@ DukeHelpers.Hearts = {
         CanPick = function(_)
             return true
         end,
-        OnPickup = function(player)
+        OnPickup = function(player, _)
             player:AddSoulHearts(2)
         end
     },
@@ -393,7 +393,7 @@ DukeHelpers.Hearts = {
         CanPick = function(player)
             return canPickRedTypeHeart(player)
         end,
-        OnPickup = function(player)
+        OnPickup = function(player, _)
             local hasRedHealth = DukeHelpers.Hearts.RED.GetCount(player) > 0
             Isaac.Spawn(EntityType.ENTITY_FAMILIAR, FamiliarVariant.BLOOD_BABY, 0, player.Position, Vector.Zero, player)
 
@@ -438,7 +438,7 @@ DukeHelpers.Hearts = {
         CanPick = function(player)
             return canPickRedTypeHeart(player)
         end,
-        OnPickup = function(player)
+        OnPickup = function(player, _)
             Isaac.Spawn(EntityType.ENTITY_FAMILIAR, FamiliarVariant.LEPROSY, 0, player.Position, Vector.Zero, player)
         end
     },

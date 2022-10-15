@@ -2,7 +2,7 @@ function DukeHelpers.IsCustomPrice(x)
     return (x <= PickupPrice.PRICE_ONE_HEART + DukeHelpers.PRICE_OFFSET and
         x >= PickupPrice.PRICE_ONE_HEART_AND_TWO_SOULHEARTS + DukeHelpers.PRICE_OFFSET)
         or (x <= -7 + DukeHelpers.PRICE_OFFSET and
-        x >= -8 + DukeHelpers.PRICE_OFFSET) -- Custom Blue Baby Devil Deal Prices :D :D :D: D::D
+            x >= -8 + DukeHelpers.PRICE_OFFSET) -- Custom Blue Baby Devil Deal Prices :D :D :D: D::D
 end
 
 function DukeHelpers.GetCustomDevilDealPrice(collectible, player)
@@ -19,7 +19,7 @@ function DukeHelpers.RenderCustomDevilDealPrice(pickup, key, animationPath)
         local devilPrice = DukeHelpers.GetCustomDevilDealPrice(pickup, DukeHelpers.GetClosestPlayer(pickup.Position))
 
         local priceSprite = Sprite()
-        priceSprite:Load(animationPath)
+        priceSprite:Load(animationPath, true)
         priceSprite:Play(tostring(devilPrice))
         priceSprite:Render(Vector(pos.X, pos.Y + 10), Vector.Zero, Vector.Zero)
     end
