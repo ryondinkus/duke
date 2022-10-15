@@ -16,4 +16,5 @@ return {
 		animationPath = "gfx/ui/morbid_hearts.anm2",
 		animationName = "MorbidHeartFull"
 	},
+	variant = Isaac.GetEntityVariantByName("Attack Skuzz")
 }
