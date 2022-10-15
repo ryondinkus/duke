@@ -13,7 +13,8 @@ local function berkanoPause()
 		end
 	end
 	if FiendFolio then
-		for _, blueskuzz in pairs(Isaac.FindByType(EntityType.ENTITY_FAMILIAR, Isaac.GetEntityVariantByName("Attack Skuzz"), -1, false, false)) do
+		for _, blueskuzz in pairs(Isaac.FindByType(EntityType.ENTITY_FAMILIAR, Isaac.GetEntityVariantByName("Attack Skuzz"), -
+			1, false, false)) do
 			if blueskuzz:Exists() and blueskuzz.FrameCount <= 0 then
 				blueskuzz:Remove()
 			end
@@ -24,14 +25,16 @@ end
 --GIANTBOOK ANIMATION
 local bigBook = Sprite()
 local maxFrames = { ["Appear"] = 33, ["Shake"] = 36, ["ShakeFire"] = 32, ["Flip"] = 33 }
-local bookColors = { [0] = Color(1, 1, 1, 1, 0, 0, 0), [1] = Color(1, 1, 1, 1, 0, 0, 0), [2] = Color(1, 1, 1, 1, 0, 0, 0), [3] = Color(1, 1, 1, 1, 0, 0, 0), [4] = Color(1, 1, 1, 1, 0, 0, 0), [5] = Color(1, 1, 1, 1, 0, 0, 0) }
+local bookColors = { [0] = Color(1, 1, 1, 1, 0, 0, 0), [1] = Color(1, 1, 1, 1, 0, 0, 0), [2] = Color(1, 1, 1, 1, 0, 0, 0),
+	[3] = Color(1, 1, 1, 1, 0, 0, 0), [4] = Color(1, 1, 1, 1, 0, 0, 0), [5] = Color(1, 1, 1, 1, 0, 0, 0) }
 local bookLength = 0
 local bookHideBerkano = false
 
 DukeGiantBookAPI = {}
 
 -- our modified version of playGiantBook must always exist regardless of if you have GiantBook API on or not
-function DukeGiantBookAPI.playDukeGiantBook(_animName, _popup, _gfxRoot, _poofColor, _bgColor, _poof2Color, _soundName, _notHide)
+function DukeGiantBookAPI.playDukeGiantBook(_animName, _popup, _gfxRoot, _poofColor, _bgColor, _poof2Color, _soundName,
+                                            _notHide)
 	bigBook:Load(_gfxRoot or "gfx/ui/giantbook/giantbook.anm2", true)
 	if _popup then
 		bigBook:ReplaceSpritesheet(0, "gfx/ui/giantbook/" .. _popup)
@@ -40,7 +43,8 @@ function DukeGiantBookAPI.playDukeGiantBook(_animName, _popup, _gfxRoot, _poofCo
 	bigBook:Play(_animName, true)
 	bookLength = maxFrames[_animName]
 	if GiantBookAPI then
-		GiantBookAPI.playGiantBook(_animName, "gfx/ui/giantbook/empty.png", Color(1, 1, 1, 0), Color(1, 1, 1, 0), Color(1, 1, 1, 0), _soundName, _notHide)
+		GiantBookAPI.playGiantBook(_animName, "gfx/ui/giantbook/empty.png", Color(1, 1, 1, 0), Color(1, 1, 1, 0),
+			Color(1, 1, 1, 0), _soundName, _notHide)
 	else
 		bookColors[1] = _bgColor
 		bookColors[2] = _poofColor
@@ -79,14 +83,15 @@ end
 dukeMod:AddCallback(ModCallbacks.MC_POST_RENDER, DukeGiantBookAPI.bookRender)
 
 if GiantBookAPI then
-	for k,v in pairs(GiantBookAPI) do DukeGiantBookAPI[k] = v end
+	for k, v in pairs(GiantBookAPI) do DukeGiantBookAPI[k] = v end
 	return
 end
 
 --giving berkano back it's visual effect
 function DukeGiantBookAPI:useBerkano()
 	if not bookHideBerkano then
-		DukeGiantBookAPI.playDukeGiantBook("Appear", "Rune_07_Berkand.png", nil, Color(0.2, 0.1, 0.3, 1, 0, 0, 0), Color(0.117, 0.0117, 0.2, 1, 0, 0, 0), Color(0, 0, 0, 0.8, 0, 0, 0), nil, true)
+		DukeGiantBookAPI.playDukeGiantBook("Appear", "Rune_07_Berkand.png", nil, Color(0.2, 0.1, 0.3, 1, 0, 0, 0),
+			Color(0.117, 0.0117, 0.2, 1, 0, 0, 0), Color(0, 0, 0, 0.8, 0, 0, 0), nil, true)
 	end
 end
 

@@ -97,8 +97,13 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_PLAYER_UPDATE, function(_, player)
     end
 
     for _, heart in pairs(DukeHelpers.GetBaseHearts()) do
-        data.health[heart.key] = heart.GetCount(player)
-        data.canPickHealth[heart.key] = heart.CanPick(player)
+        if heart.GetCount then
+            data.health[heart.key] = heart.GetCount(player)
+        end
+
+        if heart.CanPick then
+            data.canPickHealth[heart.key] = heart.CanPick(player)
+        end
     end
 end)
 
@@ -113,7 +118,6 @@ include("helpers/giantbook")
 include("helpers/hearts")
 include("helpers/husk")
 include("helpers/modConfigMenu")
-include("helpers/partitions")
 include("helpers/players")
 include("helpers/prices")
 include("helpers/spiders")
@@ -160,9 +164,17 @@ dukeMod:AddCallback(ModCallbacks.MC_USE_ITEM, function(_, _, _, player)
 end, CollectibleType.COLLECTIBLE_MAGIC_SKIN)
 
 dukeMod:AddCallback(ModCallbacks.MC_POST_NEW_ROOM, function()
-    Isaac.ExecuteCommand("spawn fire place")
-    Isaac.ExecuteCommand("g super infestation")
+    Isaac.ExecuteCommand("g fiendish swarm")
+    -- Isaac.ExecuteCommand("rplus_unlockall")
+    -- for _ = 0, 10 do
+    --     Isaac.ExecuteCommand("g dinner")
+    -- end
+
+    -- for _ = 0, 15 do
+    --     Isaac.ExecuteCommand("spawn 5.10.94")
+    -- end
 end)
+
 
 include("flies/registry")
 include("spiders/registry")

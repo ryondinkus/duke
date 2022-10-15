@@ -123,7 +123,7 @@ local function OnHeartCollision(_, pickup, collider)
 
 		local heart = DukeHelpers.Hearts[pickupKey]
 
-		if heart and heart.Ignore then
+		if heart and heart.ignore then
 			if heart.OnPickup then
 				heart.OnPickup(p, pickup)
 			end

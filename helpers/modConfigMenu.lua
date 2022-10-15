@@ -38,7 +38,7 @@ local function generateUnlockSetting(item, bossName, playerName)
 						DukeHelpers.MCMUnlockToggle(i.unlock, currentBool)
 					end
 				end,
-				Info = function ()
+				Info = function()
 					if not playerName then
 						return "Unlocks every unlock in the mod."
 					end
@@ -152,27 +152,27 @@ function DukeHelpers.InitializeMCM(defaultMcmOptions)
 	local mcmOptions = dukeMod.mcmOptions
 
 	dukeUnlocks = { DukeHelpers.Items.othersGullet,
-					DukeHelpers.Trinkets.dukesTooth,
-					DukeHelpers.Trinkets.infestedHeart,
-					DukeHelpers.Trinkets.pocketOfFlies,
-					DukeHelpers.Items.thePrinces,
-					DukeHelpers.Items.ultraHeartFly,
-					DukeHelpers.Items.lilDuke,
-					DukeHelpers.Items.superInfestation,
-					DukeHelpers.Items.dukeFlute,
-					DukeHelpers.Items.fiendishSwarm,
-					DukeHelpers.Items.queenFly,
-					DukeHelpers.Cards.tapewormCard,
-					DukeHelpers.Items.shartyMcFly,
-					DukeHelpers.Items.dukeOfEyes }
+		DukeHelpers.Trinkets.dukesTooth,
+		DukeHelpers.Trinkets.infestedHeart,
+		DukeHelpers.Trinkets.pocketOfFlies,
+		DukeHelpers.Items.thePrinces,
+		DukeHelpers.Items.ultraHeartFly,
+		DukeHelpers.Items.lilDuke,
+		DukeHelpers.Items.superInfestation,
+		DukeHelpers.Items.dukeFlute,
+		DukeHelpers.Items.fiendishSwarm,
+		DukeHelpers.Items.queenFly,
+		DukeHelpers.Cards.tapewormCard,
+		DukeHelpers.Items.shartyMcFly,
+		DukeHelpers.Items.dukeOfEyes }
 
 	huskUnlocks = { DukeHelpers.Trinkets.mosquito,
-					DukeHelpers.FlyHearts,
-					DukeHelpers.Cards.soulOfDuke,
-					DukeHelpers.Items.othersRottenGullet,
-					DukeHelpers.Items.lilHusk,
-					DukeHelpers.Items.theInvader,
-					DukeHelpers.Cards.redTapewormCard }
+		DukeHelpers.FlyHearts,
+		DukeHelpers.Cards.soulOfDuke,
+		DukeHelpers.Items.othersRottenGullet,
+		DukeHelpers.Items.lilHusk,
+		DukeHelpers.Items.theInvader,
+		DukeHelpers.Cards.redTapewormCard }
 
 	if ModConfigMenu then
 		generateUnlockSetting(DukeHelpers.CombineArrays(dukeUnlocks, huskUnlocks))

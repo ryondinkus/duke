@@ -43,6 +43,16 @@ function DukeHelpers.GetEntityByInitSeed(initSeed)
 end
 
 local notEnemies = {
+    EntityType.ENTITY_NULL,
+    EntityType.ENTITY_PLAYER,
+    EntityType.ENTITY_TEAR,
+    EntityType.ENTITY_FAMILIAR,
+    EntityType.ENTITY_BOMB,
+    EntityType.ENTITY_PICKUP,
+    EntityType.ENTITY_SLOT,
+    EntityType.ENTITY_LASER,
+    EntityType.ENTITY_KNIFE,
+    EntityType.ENTITY_PROJECTILE,
     EntityType.ENTITY_BOMBDROP,
     EntityType.ENTITY_SHOPKEEPER,
     EntityType.ENTITY_FIREPLACE,
@@ -56,14 +66,25 @@ local notEnemies = {
     EntityType.ENTITY_GAPING_MAW,
     EntityType.ENTITY_BROKEN_GAPING_MAW,
     EntityType.ENTITY_POOP,
+    EntityType.ENTITY_PITFALL,
     EntityType.ENTITY_MOVABLE_TNT,
+    EntityType.ENTITY_ULTRA_DOOR,
+    EntityType.ENTITY_STONEY,
     EntityType.ENTITY_QUAKE_GRIMACE,
     EntityType.ENTITY_BOMB_GRIMACE,
+    EntityType.ENTITY_DARK_ESAU,
+    EntityType.ENTITY_MOTHERS_SHADOW,
     EntityType.ENTITY_SPIKEBALL,
     EntityType.ENTITY_DUSTY_DEATHS_HEAD,
     EntityType.ENTITY_BALL_AND_CHAIN,
     EntityType.ENTITY_GENERIC_PROP,
     EntityType.ENTITY_FROZEN_ENEMY,
+    EntityType.ENTITY_MINECART,
+    EntityType.ENTITY_HORNFEL_DOOR,
+    EntityType.ENTITY_TRIGGER_OUTPUT,
+    EntityType.ENTITY_ENVIRONMENT,
+    EntityType.ENTITY_EFFECT,
+    EntityType.ENTITY_TEXT
 }
 
 function DukeHelpers.FindInRadius(position, radius, filter)
@@ -80,8 +101,7 @@ function DukeHelpers.FindInRadius(position, radius, filter)
 end
 
 function DukeHelpers.IsActualEnemy(entity, includeBosses, includeInvulnerable)
-    return DukeHelpers.IsEntityTypeInPartition(entity.Type, EntityPartition.ENEMY) and
-        not DukeHelpers.Find(notEnemies, function(t) return t == entity.Type end) and
+    return not DukeHelpers.Find(notEnemies, function(t) return t == entity.Type end) and
         (includeBosses or not entity:IsBoss()) and (includeInvulnerable or entity:IsVulnerableEnemy())
 end
 
@@ -89,9 +109,8 @@ function DukeHelpers.ListEnemiesInRoom(ignoreVulnerability, filter)
     local entities = Isaac.GetRoomEntities()
     local enemies = {}
     for _, entity in pairs(entities) do
-        if DukeHelpers.Find(PartitionedEntities[EntityPartition.ENEMY], function(t) return t == entity.Type end) and
-            not DukeHelpers.Find(notEnemies, function(t) return t == entity.Type end) and
-            (ignoreVulnerability or entity:IsVulnerableEnemy()) and (not filter or filter(entity, entity:GetData())) then
+        if DukeHelpers.IsActualEnemy(entity, true, ignoreVulnerability) and
+            (not filter or filter(entity, entity:GetData())) then
             table.insert(enemies, entity)
         end
     end

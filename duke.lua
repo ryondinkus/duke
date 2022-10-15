@@ -108,7 +108,7 @@ local function OnHeartCollision(_, pickup, collider)
 		local heart = DukeHelpers.Hearts[DukeHelpers.GetKeyFromPickup(pickup)]
 		local playerData = DukeHelpers.GetDukeData(p)
 
-		if heart and heart.Ignore then
+		if heart and heart.ignore then
 			if heart.OnPickup then
 				heart.OnPickup(p, pickup)
 			end
@@ -342,17 +342,15 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_PEFFECT_UPDATE, function(_, player)
 end)
 
 dukeMod:AddCallback(ModCallbacks.MC_POST_PEFFECT_UPDATE, function(_, player)
-	if DukeHelpers.IsDuke(player) then
-		DukeHelpers.OnItemPickup(player, CollectibleType.COLLECTIBLE_ABADDON, "DukeAbaddonPickup", function()
-			local redFlies = DukeHelpers.CountByProperties(DukeHelpers.GetDukeData(player).heartFlies,
-				{ key = DukeHelpers.Flies.RED.key })
-			if redFlies > 0 then
-				DukeHelpers.RemoveHeartFly(player, DukeHelpers.Flies.RED, redFlies)
-				DukeHelpers.AddHeartFly(player, DukeHelpers.Flies.BLACK, redFlies)
-			end
-		end)
-	end
-end)
+	DukeHelpers.OnItemPickup(player, CollectibleType.COLLECTIBLE_ABADDON, "DukeAbaddonPickup", function()
+		local redFlies = DukeHelpers.CountByProperties(DukeHelpers.GetDukeData(player).heartFlies,
+			{ key = DukeHelpers.Flies.RED.key })
+		if redFlies > 0 then
+			DukeHelpers.RemoveHeartFly(player, DukeHelpers.Flies.RED, redFlies)
+			DukeHelpers.AddHeartFly(player, DukeHelpers.Flies.BLACK, redFlies)
+		end
+	end)
+end, DukeHelpers.DUKE_ID)
 
 dukeMod:AddCallback(ModCallbacks.MC_USE_ITEM, function(_, _, _, player)
 	if DukeHelpers.IsDuke(player) then

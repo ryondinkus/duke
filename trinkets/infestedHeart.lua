@@ -36,33 +36,46 @@ local function RandomlySpawnHeartFlyFromPickup(player, pickup, customAmount)
     end
 end
 
-local function MC_POST_PLAYER_UPDATE(_, player)
-    if DukeHelpers.Trinkets.infestedHeart.IsUnlocked() then
-        local dukeData = DukeHelpers.GetDukeData(player)
+local function MC_PRE_PICKUP_COLLISION(_, pickup, collider)
+    local player = collider:ToPlayer()
+    if player and not DukeHelpers.IsDuke(player) and not DukeHelpers.IsHusk(player) and
+        DukeHelpers.Trinkets.infestedHeart.IsUnlocked() and player:HasTrinket(Id) and
+        DukeHelpers.IsSupportedHeart(pickup) then
+        local heartKey = DukeHelpers.GetKeyFromPickup(pickup)
+        local heart = DukeHelpers.Hearts[heartKey]
+        local fly = DukeHelpers.Flies[heartKey]
 
-        local updatedHearts = dukeData.health
-
-        if not dukeData.previousHealth or not player:HasTrinket(Id) or DukeHelpers.IsDuke(player) or
-            DukeHelpers.IsHusk(player) then
+        if not fly then
             return
         end
 
-        for heartKey, amount in pairs(updatedHearts) do
-            if amount > dukeData.previousHealth[heartKey] then
-                local heart = DukeHelpers.Hearts[heartKey]
-                local fakePickup = { Type = EntityType.ENTITY_PICKUP, Variant = heart.variant, SubType = heart.subType,
-                    Price = 0 }
-                local removableAmount = amount - dukeData.previousHealth[heartKey]
-                local customAmount
-
-                if DukeHelpers.Hearts.WEB.IsHeart(fakePickup) then
-                    customAmount = removableAmount / 2
-                end
-                if RandomlySpawnHeartFlyFromPickup(player, fakePickup, customAmount) then
-                    heart.Remove(player, removableAmount)
-                end
+        if DukeHelpers.CanPickUpHeart(player, pickup) and
+            RandomlySpawnHeartFlyFromPickup(player, DukeHelpers.MakeFakePickup(pickup), fly.count) then
+            if heart.OnPickup then
+                heart.OnPickup(player)
+            end
+            pickup:Remove()
+            if not heart.ignore then
+                return false
+            else
+                DukeHelpers.GetDukeData(player)[Tag] = DukeHelpers.MakeFakePickup(pickup)
             end
         end
+    end
+end
+
+local function MC_POST_PLAYER_UPDATE(_, player)
+    local data = DukeHelpers.GetDukeData(player)
+    if data[Tag] and data.health and data.previousHealth then
+        local heartKey = DukeHelpers.GetKeyFromPickup(data[Tag])
+        local heart = DukeHelpers.Hearts[heartKey]
+        local baseHeartKey = DukeHelpers.GetBaseHeartKey(heart)
+        local heartsToRemove = math.max(data.health[baseHeartKey] - data.previousHealth[baseHeartKey], 0)
+
+        if heart and heart.Remove then
+            heart.Remove(player, heartsToRemove)
+        end
+        data[Tag] = nil
     end
 end
 
@@ -77,6 +90,10 @@ return {
         {
             ModCallbacks.MC_POST_PLAYER_UPDATE,
             MC_POST_PLAYER_UPDATE
+        },
+        {
+            ModCallbacks.MC_PRE_PICKUP_COLLISION,
+            MC_PRE_PICKUP_COLLISION
         }
     },
     helpers = {

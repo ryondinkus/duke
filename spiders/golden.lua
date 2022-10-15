@@ -12,7 +12,7 @@ end
 local function MC_POST_ENTITY_REMOVE(_, e)
 	if e.Variant == FamiliarVariant.BLUE_SPIDER and e.SubType == subType then
 		Isaac.Spawn(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_COIN, 0, e.Position,
-			Vector.FromAngle(DukeHelpers.rng:RandomInt(0, 360)), e)
+			Vector.FromAngle(DukeHelpers.rng:RandomInt(360)), e)
 	end
 end
 
