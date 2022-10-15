@@ -47,7 +47,7 @@ function DukeHelpers.SpawnSpidersFromKey(pickupKey, position, spawnerEntity, spe
         else
             for i = 1, specificAmount or foundSpider.count or 1 do
                 table.insert(spawnedSpiders,
-                    Isaac.Spawn(EntityType.ENTITY_FAMILIAR, FamiliarVariant.BLUE_SPIDER, foundSpider.subType,
+                    Isaac.Spawn(EntityType.ENTITY_FAMILIAR, foundSpider.variant or FamiliarVariant.BLUE_SPIDER, foundSpider.subType,
                         Game():GetRoom():FindFreeTilePosition(position, 0),
                         Vector.Zero, spawnerEntity))
                 DukeHelpers.InitializeHeartSpider(spawnedSpiders[i])

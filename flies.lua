@@ -56,16 +56,21 @@ dukeMod:AddCallback(ModCallbacks.MC_PRE_FAMILIAR_COLLISION, function(_, f, e)
 		end
 
 		local data = DukeHelpers.GetDukeData(f)
-		if DukeHelpers.GetHeartFlyFromFlyEntity(f).canAttack then
-			if not data.hitPoints or data.hitPoints <= 1 then
-				local attackFlyEntity = DukeHelpers.SpawnAttackFlyFromHeartFlyEntity(f)
-				local attackFlyData = DukeHelpers.GetDukeData(attackFlyEntity)
-				attackFlyData.attacker = e.SpawnerEntity
-				attackFlyData.hitPoints = nil
+		if not data.hitPoints or data.hitPoints <= 1 then
+			local heartFly = DukeHelpers.GetHeartFlyFromFlyEntity(f)
+
+			if not heartFly.isInvincible then
+				if heartFly.canAttack then
+					local attackFlyEntity = DukeHelpers.SpawnAttackFlyFromHeartFlyEntity(f)
+					local attackFlyData = DukeHelpers.GetDukeData(attackFlyEntity)
+					attackFlyData.attacker = e.SpawnerEntity
+					attackFlyData.hitPoints = nil
+				end
+
 				DukeHelpers.RemoveHeartFlyEntity(f)
-			elseif data.hitPoints and data.hitPoints > 1 then
-				data.hitPoints = data.hitPoints - 1
 			end
+		elseif data.hitPoints and data.hitPoints > 1 then
+			data.hitPoints = data.hitPoints - 1
 		end
 	end
 end, DukeHelpers.FLY_VARIANT)

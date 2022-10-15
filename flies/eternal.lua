@@ -38,5 +38,6 @@ return {
 			DukeHelpers.FLY_VARIANT
 		}
 	},
-	heartFlyDamageMultiplier = 1.5
+	heartFlyDamageMultiplier = 1.5,
+    isInvincible = true
 }
