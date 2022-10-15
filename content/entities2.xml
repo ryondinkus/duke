@@ -175,10 +175,10 @@
 	<entity anm2path="familiars/heart_spider.anm2" baseHP="0" boss="0" champion="0" collisionDamage="0" collisionInterval="14" collisionMass="3" collisionRadius="13" friction="1" id="3" name="Zealot Heart Spider" numGridCollisionPoints="12" shadowSize="11" stageHP="0" tags="cansacrifice spider" variant="73" subtype="1002">
 		<gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0" />
 	</entity>
-	<entity anm2path="familiars/heart_spider.anm2" baseHP="0" boss="0" champion="0" collisionDamage="0" collisionInterval="14" collisionMass="3" collisionRadius="13" friction="1" id="3" name="Immoral Heart Spider" numGridCollisionPoints="12" shadowSize="11" stageHP="0" tags="cansacrifice spider" variant="73" subtype="1927">
+	<entity anm2path="familiars/heart_skuzz.anm2" baseHP="0" boss="0" champion="0" collisionDamage="0" collisionInterval="14" collisionMass="3" collisionRadius="13" friction="1" id="3" name="Immoral Heart Skuzz" numGridCollisionPoints="12" shadowSize="11" stageHP="0" variant="1026" subtype="1927">
 		<gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0" />
 	</entity>
-	<entity anm2path="familiars/heart_spider.anm2" baseHP="0" boss="0" champion="0" collisionDamage="0" collisionInterval="14" collisionMass="3" collisionRadius="13" friction="1" id="3" name="Morbid Heart Spider" numGridCollisionPoints="12" shadowSize="11" stageHP="0" tags="cansacrifice spider" variant="73" subtype="1931">
+	<entity anm2path="familiars/heart_skuzz.anm2" baseHP="0" boss="0" champion="0" collisionDamage="0" collisionInterval="14" collisionMass="3" collisionRadius="13" friction="1" id="3" name="Morbid Heart Skuzz" numGridCollisionPoints="12" shadowSize="11" stageHP="0" variant="1026" subtype="1931">
 		<gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0" />
 	</entity>
 

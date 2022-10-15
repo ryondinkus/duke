@@ -87,7 +87,7 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_PLAYER_UPDATE, function(_, player)
 			DukeHelpers.InitializeDuke(player)
 		end
 		if not player:GetData().duke or not player:GetData().duke.hasStartupFlies then
-			DukeHelpers.AddStartupFlies(player)
+			--DukeHelpers.AddStartupFlies(player)
 		end
 	end
 	if player:IsCoopGhost() then

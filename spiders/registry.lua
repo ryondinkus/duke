@@ -65,8 +65,9 @@ for _, spider in pairs(spiders) do
     spider.isBase = true
 
     if spider.use then
-        local existingSpider = DukeHelpers.Spiders[spider.use.ke or spider.use.heart.key]
+        local existingSpider = DukeHelpers.Spiders[spider.use.key or spider.use.heart.key]
         spider.spritesheet = existingSpider.spritesheet
+        spider.variant = existingSpider.variant
         spider.subType = existingSpider.subType
         spider.poofColor = existingSpider.poofColor
         spider.applyTearEffects = existingSpider.applyTearEffects
@@ -115,7 +116,7 @@ for _, spider in pairs(spiders) do
                     f.CollisionDamage = f.CollisionDamage * spider.damageMultiplier
                 end
             end
-        end, FamiliarVariant.BLUE_SPIDER)
+        end, spider.variant or FamiliarVariant.BLUE_SPIDER)
     end
 
     DukeHelpers.Spiders[spider.key] = spider

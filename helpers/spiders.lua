@@ -15,8 +15,12 @@ function DukeHelpers.GetSpiderSpritesheetFromSubType(subType)
 end
 
 function DukeHelpers.IsHeartSpider(spiderEntity)
-    return spiderEntity.Variant == FamiliarVariant.BLUE_SPIDER and
-        not not DukeHelpers.Find(DukeHelpers.Spiders, function(spider) return spider.subType == spiderEntity.SubType end)
+    return not
+        not
+        DukeHelpers.Find(DukeHelpers.Spiders,
+            function(spider) return (spider.variant and spider.variant == spiderEntity.Variant) or
+                    (not spider.variant and spider.subType == spiderEntity.SubType)
+            end)
 end
 
 function DukeHelpers.InitializeHeartSpider(spider)
@@ -43,7 +47,8 @@ function DukeHelpers.SpawnSpidersFromKey(pickupKey, position, spawnerEntity, spe
         else
             for i = 1, specificAmount or foundSpider.count or 1 do
                 table.insert(spawnedSpiders,
-                    Isaac.Spawn(EntityType.ENTITY_FAMILIAR, FamiliarVariant.BLUE_SPIDER, foundSpider.subType, Game():GetRoom():FindFreeTilePosition(position, 0),
+                    Isaac.Spawn(EntityType.ENTITY_FAMILIAR, foundSpider.variant or FamiliarVariant.BLUE_SPIDER, foundSpider.subType,
+                        Game():GetRoom():FindFreeTilePosition(position, 0),
                         Vector.Zero, spawnerEntity))
                 DukeHelpers.InitializeHeartSpider(spawnedSpiders[i])
                 if noPoof then
