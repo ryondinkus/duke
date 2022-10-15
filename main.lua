@@ -153,13 +153,21 @@ end)
 
 dukeMod:AddCallback(ModCallbacks.MC_POST_UPDATE, function()
     dukeMod.global.hasPoundOfFlesh = DukeHelpers.AnyPlayerHasItem(CollectibleType.COLLECTIBLE_POUND_OF_FLESH)
+
+    DukeHelpers.ForEachPlayer(function(player)
+        local data = DukeHelpers.GetDukeData(player)
+        if data["usedMagicSkin"] then
+            DukeHelpers.Hearts.SOUL.Add(player,
+                DukeHelpers.Clamp(data["usedMagicSkin"] - data.health.SOUL, 0))
+            data["usedMagicSkin"] = nil
+        end
+    end)
 end)
 
 dukeMod:AddCallback(ModCallbacks.MC_USE_ITEM, function(_, _, _, player)
     local data = DukeHelpers.GetDukeData(player)
     if DukeHelpers.IsDuke(player) or DukeHelpers.IsHusk(player) then
-        DukeHelpers.Hearts.SOUL.Add(player,
-            DukeHelpers.Clamp(data.health.SOUL - DukeHelpers.Hearts.SOUL.GetCount(player), 0))
+        data["usedMagicSkin"] = data.health.SOUL
     end
 end, CollectibleType.COLLECTIBLE_MAGIC_SKIN)
 
