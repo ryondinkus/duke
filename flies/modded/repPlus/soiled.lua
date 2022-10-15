@@ -4,16 +4,29 @@ local attackFlySubType = DukeHelpers.OffsetIdentifier(heart)
 local function ATTACK_FLY_MC_PRE_FAMILIAR_COLLISION(_, f, e)
 	if f.SubType == attackFlySubType then
 		if e:ToNPC() and DukeHelpers.IsActualEnemy(e, true, false) and not e:HasEntityFlags(EntityFlag.FLAG_CHARM) then
-			e:AddPoison(EntityRef(f), 102, 1)
+			Game():Fart(f.Position)
 		end
 	end
 end
 
 local function HEART_FLY_MC_PRE_FAMILIAR_COLLISION(_, f, e)
 	if f.SubType == heart.subType then
-		if e:ToNPC() and DukeHelpers.IsActualEnemy(e, true, false) and not e:HasEntityFlags(EntityFlag.FLAG_CHARM) and
-			DukeHelpers.rng:RandomInt(3) == 0 then
-			e:AddPoison(EntityRef(f), 32, 1)
+		if e:ToNPC() and DukeHelpers.IsActualEnemy(e, true, false) and not e:HasEntityFlags(EntityFlag.FLAG_CHARM) then
+			local data = DukeHelpers.GetDukeData(f)
+			if not data.soiledFartCountdown then
+				Game():Fart(f.Position)
+				data.soiledFartCountdown = 30
+			end
+		end
+	end
+end
+
+local function MC_FAMILIAR_UPDATE(_, f)
+	local data = DukeHelpers.GetDukeData(f)
+	if data.soiledFartCountdown then
+		data.soiledFartCountdown = data.soiledFartCountdown - 1
+		if data.soiledFartCountdown <= 0 then
+			data.soiledFartCountdown = nil
 		end
 	end
 end
@@ -49,6 +62,11 @@ return {
 		{
 			ModCallbacks.MC_PRE_FAMILIAR_COLLISION,
 			HEART_FLY_MC_PRE_FAMILIAR_COLLISION,
+			DukeHelpers.FLY_VARIANT
+		},
+		{
+			ModCallbacks.MC_FAMILIAR_UPDATE,
+			MC_FAMILIAR_UPDATE,
 			DukeHelpers.FLY_VARIANT
 		},
 		{

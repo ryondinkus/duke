@@ -3,7 +3,7 @@ local attackFlySubType = DukeHelpers.OffsetIdentifier(heart)
 
 local function ATTACK_FLY_MC_PRE_FAMILIAR_COLLISION(_, f, e)
 	if f.SubType == attackFlySubType then
-		if e:ToNPC() and not e:HasEntityFlags(EntityFlag.FLAG_CHARM) then
+		if e:ToNPC() and DukeHelpers.IsActualEnemy(e, true, false) and not e:HasEntityFlags(EntityFlag.FLAG_CHARM) then
 			e:AddConfusion(EntityRef(f), 150, false)
 		end
 	end
@@ -100,5 +100,4 @@ return {
 	attackFlyDamageMultiplier = 1.3,
 	dropHeart = DukeHelpers.Hearts.DAUNTLESS,
 	dropHeartChance = 10
-
 }
