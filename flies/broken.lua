@@ -19,5 +19,6 @@ return {
             HEART_FLY_MC_FAMILIAR_UPDATE_ATTACK,
             DukeHelpers.FLY_VARIANT
         },
-    }
+    },
+    isInvincible = true
 }

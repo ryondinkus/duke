@@ -21,7 +21,29 @@ local spiders = {
     include("spiders/blended"),
     --modded
     include("spiders/modded/patched"),
-    include("spiders/modded/doublePatched")
+    include("spiders/modded/doublePatched"),
+
+    include("spiders/modded/repPlus/broken"),
+    include("spiders/modded/repPlus/dauntless"),
+    include("spiders/modded/repPlus/hoarded"),
+    include("spiders/modded/repPlus/soiled"),
+    include("spiders/modded/repPlus/curdled"),
+    include("spiders/modded/repPlus/baleful"),
+    include("spiders/modded/repPlus/harlot"),
+    include("spiders/modded/repPlus/miser"),
+    include("spiders/modded/repPlus/empty"),
+    include("spiders/modded/repPlus/zealot"),
+    include("spiders/modded/repPlus/deserted"),
+    include("spiders/modded/repPlus/halfDauntless"),
+
+    include("spiders/modded/fiendFolio/halfBlack"),
+    include("spiders/modded/fiendFolio/blendedBlack"),
+    include("spiders/modded/fiendFolio/immoral"),
+    include("spiders/modded/fiendFolio/halfImmoral"),
+    include("spiders/modded/fiendFolio/blendedImmoral"),
+    include("spiders/modded/fiendFolio/morbid"),
+    include("spiders/modded/fiendFolio/thirdMorbid"),
+    include("spiders/modded/fiendFolio/twoThirdsMorbid"),
 }
 
 -- Registers the flies
@@ -43,8 +65,9 @@ for _, spider in pairs(spiders) do
     spider.isBase = true
 
     if spider.use then
-        local existingSpider = DukeHelpers.Spiders[spider.use.ke or spider.use.heart.key]
+        local existingSpider = DukeHelpers.Spiders[spider.use.key or spider.use.heart.key]
         spider.spritesheet = existingSpider.spritesheet
+        spider.variant = existingSpider.variant
         spider.subType = existingSpider.subType
         spider.poofColor = existingSpider.poofColor
         spider.applyTearEffects = existingSpider.applyTearEffects
@@ -93,7 +116,7 @@ for _, spider in pairs(spiders) do
                     f.CollisionDamage = f.CollisionDamage * spider.damageMultiplier
                 end
             end
-        end, FamiliarVariant.BLUE_SPIDER)
+        end, spider.variant or FamiliarVariant.BLUE_SPIDER)
     end
 
     DukeHelpers.Spiders[spider.key] = spider

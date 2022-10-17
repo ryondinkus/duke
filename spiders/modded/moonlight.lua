@@ -4,7 +4,7 @@ local function onRelease(player)
 	if effect == 0 then
 		Game():GetLevel():ApplyBlueMapEffect()
 	elseif effect == 1 then
-		Game():GetLevel():ApplyCompassEffect()
+		Game():GetLevel():ApplyCompassEffect(false)
 	elseif effect == 2 then
 		Game():GetLevel():ApplyMapEffect()
 	elseif effect == 3 then

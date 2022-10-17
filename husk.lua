@@ -110,8 +110,7 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_PEFFECT_UPDATE, function(_, p)
 	end
 end, DukeHelpers.HUSK_ID)
 
--- Fill slots when a heart is collected
-dukeMod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, function(_, pickup, collider)
+local function OnHeartCollision(_, pickup, collider)
 	local p = collider:ToPlayer()
 	if p and DukeHelpers.IsHusk(p) and (pickup.Price <= 0 or p:GetNumCoins() >= pickup.Price) then
 		local playerData = DukeHelpers.GetDukeData(p)
@@ -119,6 +118,16 @@ dukeMod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, function(_, pickup, co
 		local pickupKey = DukeHelpers.GetKeyFromPickup(pickup)
 
 		if not pickupKey then
+			return
+		end
+
+		local heart = DukeHelpers.Hearts[pickupKey]
+
+		if heart and heart.ignore then
+			if heart.OnPickup then
+				heart.OnPickup(p, pickup)
+			end
+
 			return
 		end
 
@@ -165,6 +174,11 @@ dukeMod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, function(_, pickup, co
 				p:TakeDamage(2, DamageFlag.DAMAGE_SPIKES | DamageFlag.DAMAGE_NO_PENALTIES, EntityRef(nil), 0)
 			end
 
+			if heart and heart.OnPickup then
+				heart.OnPickup(p, pickup)
+			end
+
+
 			if pickup.OptionsPickupIndex ~= 0 then
 				DukeHelpers.ForEachEntityInRoom(function(entity)
 					if entity:ToPickup().OptionsPickupIndex == pickup.OptionsPickupIndex then
@@ -177,7 +191,13 @@ dukeMod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, function(_, pickup, co
 
 		return true
 	end
-end, PickupVariant.PICKUP_HEART)
+end
+
+-- Fill slots when a heart is collected
+DukeHelpers.ForEachHeartVariant(function(variant)
+	dukeMod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, OnHeartCollision, variant)
+end)
+
 
 -- Handles slot devil deals for Husk
 dukeMod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, function(_, pickup, collider)

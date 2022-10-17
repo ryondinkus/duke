@@ -10,7 +10,7 @@ dukeMod:AddCallback(ModCallbacks.MC_FAMILIAR_UPDATE, function(_, f)
 
 	if data.layer == nil then
 		local fliesData = DukeHelpers.GetDukeData(f.Player).heartFlies
-		local foundFly = DukeHelpers.FindByProperties(fliesData, {initSeed = f.InitSeed})
+		local foundFly = DukeHelpers.FindByProperties(fliesData, { initSeed = f.InitSeed })
 		if foundFly then
 			data.layer = foundFly.layer
 			DukeHelpers.PositionHeartFly(f, foundFly.layer)
@@ -38,6 +38,10 @@ dukeMod:AddCallback(ModCallbacks.MC_FAMILIAR_UPDATE, function(_, f)
 		f.CollisionDamage = 1
 	end
 
+	if dukeMod.global.isPaused then
+		f.OrbitSpeed = 0
+	end
+
 	local centerPos = f.Player.Position
 	if DukeHelpers.IsDuke(f.Player) and f.Player:GetEffects():HasCollectibleEffect(CollectibleType.COLLECTIBLE_MEGA_MUSH) then
 		f.OrbitDistance = f.OrbitDistance * 3
@@ -56,16 +60,21 @@ dukeMod:AddCallback(ModCallbacks.MC_PRE_FAMILIAR_COLLISION, function(_, f, e)
 		end
 
 		local data = DukeHelpers.GetDukeData(f)
-		if DukeHelpers.GetHeartFlyFromFlyEntity(f).canAttack then
-			if not data.hitPoints or data.hitPoints <= 1 then
-				local attackFlyEntity = DukeHelpers.SpawnAttackFlyFromHeartFlyEntity(f)
-				local attackFlyData = DukeHelpers.GetDukeData(attackFlyEntity)
-				attackFlyData.attacker = e.SpawnerEntity
-				attackFlyData.hitPoints = nil
+		if not data.hitPoints or data.hitPoints <= 1 then
+			local heartFly = DukeHelpers.GetHeartFlyFromFlyEntity(f)
+
+			if not heartFly.isInvincible then
+				if heartFly.canAttack then
+					local attackFlyEntity = DukeHelpers.SpawnAttackFlyFromHeartFlyEntity(f)
+					local attackFlyData = DukeHelpers.GetDukeData(attackFlyEntity)
+					attackFlyData.attacker = e.SpawnerEntity
+					attackFlyData.hitPoints = nil
+				end
+
 				DukeHelpers.RemoveHeartFlyEntity(f)
-			elseif data.hitPoints and data.hitPoints > 1 then
-				data.hitPoints = data.hitPoints - 1
 			end
+		elseif data.hitPoints and data.hitPoints > 1 then
+			data.hitPoints = data.hitPoints - 1
 		end
 	end
 end, DukeHelpers.FLY_VARIANT)
@@ -92,8 +101,9 @@ dukeMod:AddCallback(ModCallbacks.MC_PRE_FAMILIAR_COLLISION, function(_, f, e)
 		if e:ToNPC() and DukeHelpers.IsActualEnemy(e, true, false) and not e:HasEntityFlags(EntityFlag.FLAG_CHARM) then
 			local heartFly = DukeHelpers.GetHeartFlyFromFlyEntity(f)
 			if heartFly.dropHeartChance and DukeHelpers.PercentageChance(heartFly.dropHeartChance) then
-				local heart = Isaac.Spawn(EntityType.ENTITY_PICKUP, heartFly.dropHeart.variant or PickupVariant.PICKUP_HEART, heartFly.dropHeart.subType or 0,
-				f.Position, Vector.Zero, f)
+				local heart = Isaac.Spawn(EntityType.ENTITY_PICKUP, heartFly.dropHeart.variant or PickupVariant.PICKUP_HEART,
+					heartFly.dropHeart.subType or 0,
+					f.Position, Vector.Zero, f)
 				DukeHelpers.GetDukeData(heart).noFlyHearts = true
 				attackFlyData.dropHeart = false
 			end

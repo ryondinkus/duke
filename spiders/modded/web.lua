@@ -3,7 +3,7 @@ local subType = DukeHelpers.OffsetIdentifier(heart)
 
 local function MC_PRE_FAMILIAR_COLLISION(_, f, e)
 	if f.SubType == subType then
-		if e:ToNPC() and not e:HasEntityFlags(EntityFlag.FLAG_CHARM) then
+		if e:ToNPC() and DukeHelpers.IsActualEnemy(e, true, false) and not e:HasEntityFlags(EntityFlag.FLAG_CHARM) then
 			e:AddSlowing(EntityRef(f), 150, 0.5, Color(1, 1, 1, 1, 0.5, 0.5, 0.5))
 		end
 	end

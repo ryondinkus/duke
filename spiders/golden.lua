@@ -5,14 +5,8 @@ local function MC_PRE_FAMILIAR_COLLISION(_, f, e)
 	if f.SubType == subType then
 		if e:ToNPC() and DukeHelpers.IsActualEnemy(e, true, false) and not e:HasEntityFlags(EntityFlag.FLAG_CHARM) then
 			e:AddMidasFreeze(EntityRef(f), 150)
+			Isaac.Spawn(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_COIN, 0, f.Position, Vector.FromAngle(DukeHelpers.rng:RandomInt(360)), f)
 		end
-	end
-end
-
-local function MC_POST_ENTITY_REMOVE(_, e)
-	if e.Variant == FamiliarVariant.BLUE_SPIDER and e.SubType == subType then
-		Isaac.Spawn(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_COIN, 0, e.Position,
-			Vector.FromAngle(DukeHelpers.rng:RandomInt(0, 360)), e)
 	end
 end
 
@@ -32,11 +26,6 @@ return {
 			ModCallbacks.MC_PRE_FAMILIAR_COLLISION,
 			MC_PRE_FAMILIAR_COLLISION,
 			FamiliarVariant.BLUE_SPIDER
-		},
-		{
-			ModCallbacks.MC_POST_ENTITY_REMOVE,
-			MC_POST_ENTITY_REMOVE,
-			EntityType.ENTITY_FAMILIAR
 		}
 	},
 	applyTearEffects = applyTearEffects,

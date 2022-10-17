@@ -45,10 +45,10 @@ function DukeHelpers.AnimateHeartPickup(pickup, p)
             pickup:GetSprite():Play("Collect")
             local function removePickupCallback()
                 pickup.EntityCollisionClass = EntityCollisionClass.ENTCOLL_NONE
-				local sprite = pickup:GetSprite()
-				if not sprite:IsPlaying("Collect") then
-					pickup.EntityCollisionClass = EntityCollisionClass.ENTCOLL_PLAYERONLY
-				end
+                local sprite = pickup:GetSprite()
+                if not sprite:IsPlaying("Collect") then
+                    pickup.EntityCollisionClass = EntityCollisionClass.ENTCOLL_PLAYERONLY
+                end
                 if sprite:IsFinished("Collect") then
                     pickup:Remove()
                     dukeMod:RemoveCallback(ModCallbacks.MC_POST_PICKUP_UPDATE, removePickupCallback)
@@ -98,6 +98,50 @@ end
 
 function DukeHelpers.IsLost(player)
     return player:GetPlayerType() == PlayerType.PLAYER_LOST or player:GetPlayerType() == PlayerType.PLAYER_LOST_B
+end
+
+function DukeHelpers.IsSoulHeartBart(player)
+    local soulHeartMarties = {
+        PlayerType.PLAYER_XXX,
+        PlayerType.PLAYER_BLACKJUDAS,
+        PlayerType.PLAYER_THELOST,
+        PlayerType.PLAYER_THESOUL,
+        PlayerType.PLAYER_JUDAS_B,
+        PlayerType.PLAYER_XXX_B,
+        PlayerType.PLAYER_THELOST_B,
+        PlayerType.PLAYER_THEFORGOTTEN_B,
+        PlayerType.PLAYER_THESOUL_B,
+        PlayerType.PLAYER_BETHANY_B,
+    }
+    for _, v in ipairs(soulHeartMarties) do
+        if player:GetPlayerType() == v then
+            return true
+        end
+    end
+    return false
+end
+
+function DukeHelpers.IsRedFred(player)
+    local notRedFreds = {
+        PlayerType.PLAYER_BLUEBABY,
+        PlayerType.PLAYER_THELOST,
+        PlayerType.PLAYER_KEEPER,
+        PlayerType.PLAYER_THESOUL,
+        PlayerType.PLAYER_JUDAS_B,
+        PlayerType.PLAYER_BLUEBABY_B,
+        PlayerType.PLAYER_THELOST_B,
+        PlayerType.PLAYER_KEEPER_B,
+        PlayerType.PLAYER_THEFORGOTTEN_B,
+        PlayerType.PLAYER_THESOUL_B,
+        PlayerType.PLAYER_BETHANY_B,
+        PlayerType.PLAYER_JACOB2_B
+    }
+    for _, v in ipairs(notRedFreds) do
+        if player:GetPlayerType() == v then
+            return false
+        end
+    end
+    return true
 end
 
 function DukeHelpers.OnItemPickup(player, collectible, tag, callback)

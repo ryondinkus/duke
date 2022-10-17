@@ -1,9 +1,11 @@
 local heart = DukeHelpers.Hearts.ETERNAL
 local subType = DukeHelpers.OffsetIdentifier(heart)
 
-local function MC_POST_ENTITY_REMOVE(_, e)
-	if e.Variant == FamiliarVariant.BLUE_SPIDER and e.SubType == subType then
-		Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.CRACK_THE_SKY, 0, e.Position, Vector.Zero, e:ToFamiliar().Player)
+local function MC_PRE_FAMILIAR_COLLISION(_, f, e)
+	if f.SubType == subType then
+		if e:ToNPC() and DukeHelpers.IsActualEnemy(e, true, false) and not e:HasEntityFlags(EntityFlag.FLAG_CHARM) then
+			Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.CRACK_THE_SKY, 0, f.Position, Vector.Zero, f.Player)
+		end
 	end
 end
 
@@ -19,9 +21,9 @@ return {
 	sfx = SoundEffect.SOUND_SUPERHOLY,
 	callbacks = {
 		{
-			ModCallbacks.MC_POST_ENTITY_REMOVE,
-			MC_POST_ENTITY_REMOVE,
-			EntityType.ENTITY_FAMILIAR
+			ModCallbacks.MC_PRE_FAMILIAR_COLLISION,
+			MC_PRE_FAMILIAR_COLLISION,
+			FamiliarVariant.BLUE_SPIDER
 		}
 	},
 	damageMultiplier = 1.5,

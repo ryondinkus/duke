@@ -1,4 +1,6 @@
 dukeMod = RegisterMod("Duke", 1)
+local font = Font()
+font:Load("font/terminus.fnt")
 
 function table.deepCopy(original)
     local copy = {}
@@ -40,18 +42,68 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_GAME_STARTED, function()
     DukeHelpers.rng:SetSeed(seeds:GetStartSeed(), 35)
 end)
 
+local debugHudSprite = Sprite()
+debugHudSprite:Load("gfx/ui/debugHud.anm2", true)
+debugHudSprite.Scale = Vector(800, 800)
+local debugHud = false
+local debugHearts = nil
+
+dukeMod:AddCallback(ModCallbacks.MC_EXECUTE_CMD, function(_, cmd, args)
+    cmd = cmd:lower()
+    if cmd == "debughud" then
+        debugHud = not debugHud
+    elseif cmd == "debughearts" then
+        if #args > 0 then
+            debugHearts = args:upper()
+        else
+            debugHearts = nil
+        end
+    end
+end)
+
+dukeMod:AddCallback(ModCallbacks.MC_POST_RENDER, function()
+    if debugHud then
+        debugHudSprite:Play("Debug")
+        debugHudSprite:Render(Vector(Isaac.GetScreenWidth() / 2, Isaac.GetScreenHeight() / 2))
+    end
+
+    if debugHearts and DukeHelpers.Hearts[debugHearts] then
+        if DukeHelpers.Hearts[debugHearts].GetCount then
+            font:DrawString("# " ..
+                debugHearts .. " hearts: " .. tostring(DukeHelpers.Hearts[debugHearts].GetCount(Isaac.GetPlayer(0))),
+                Isaac.GetScreenWidth() / 4, 20
+                , KColor(1, 1, 1, 1), Isaac.GetScreenWidth() / 2, true)
+        end
+        if DukeHelpers.Hearts[debugHearts].CanPick then
+            font:DrawString("can pick " ..
+                debugHearts .. " hearts: " .. tostring(DukeHelpers.Hearts[debugHearts].CanPick(Isaac.GetPlayer(0))),
+                Isaac.GetScreenWidth() / 4, 35,
+                KColor(1, 1, 1, 1), Isaac.GetScreenWidth() / 2, true)
+        end
+    end
+end)
+
 dukeMod:AddCallback(ModCallbacks.MC_POST_PLAYER_UPDATE, function(_, player)
     local data = DukeHelpers.GetDukeData(player)
 
     if not data.health then
         data.previousHealth = nil
         data.health = {}
+        data.canPickHealth = {}
+        data.previousCanPickHealth = nil
     else
         data.previousHealth = table.deepCopy(data.health)
+        data.previousCanPickHealth = table.deepCopy(data.canPickHealth)
     end
 
     for _, heart in pairs(DukeHelpers.GetBaseHearts()) do
-        data.health[heart.key] = heart.GetCount(player)
+        if heart.GetCount then
+            data.health[heart.key] = heart.GetCount(player)
+        end
+
+        if heart.CanPick then
+            data.canPickHealth[heart.key] = heart.CanPick(player)
+        end
     end
 end)
 
@@ -62,11 +114,10 @@ include("helpers/docs")
 include("helpers/duke")
 include("helpers/entities")
 include("helpers/flies")
-include("helpers/giantbook")
+include("helpers/overlays")
 include("helpers/hearts")
 include("helpers/husk")
 include("helpers/modConfigMenu")
-include("helpers/partitions")
 include("helpers/players")
 include("helpers/prices")
 include("helpers/spiders")
@@ -102,15 +153,24 @@ end)
 
 dukeMod:AddCallback(ModCallbacks.MC_POST_UPDATE, function()
     dukeMod.global.hasPoundOfFlesh = DukeHelpers.AnyPlayerHasItem(CollectibleType.COLLECTIBLE_POUND_OF_FLESH)
+
+    DukeHelpers.ForEachPlayer(function(player)
+        local data = DukeHelpers.GetDukeData(player)
+        if data["usedMagicSkin"] then
+            DukeHelpers.Hearts.SOUL.Add(player,
+                DukeHelpers.Clamp(data["usedMagicSkin"] - data.health.SOUL, 0))
+            data["usedMagicSkin"] = nil
+        end
+    end)
 end)
 
 dukeMod:AddCallback(ModCallbacks.MC_USE_ITEM, function(_, _, _, player)
     local data = DukeHelpers.GetDukeData(player)
     if DukeHelpers.IsDuke(player) or DukeHelpers.IsHusk(player) then
-        DukeHelpers.Hearts.SOUL.Add(player,
-            DukeHelpers.Clamp(data.health.SOUL - DukeHelpers.Hearts.SOUL.GetCount(player), 0))
+        data["usedMagicSkin"] = data.health.SOUL
     end
 end, CollectibleType.COLLECTIBLE_MAGIC_SKIN)
+
 
 include("flies/registry")
 include("spiders/registry")
@@ -162,10 +222,18 @@ local function addUnlock(item)
         item.IsUnlocked = function()
             return DukeHelpers.IsUnlocked(item.unlock)
         end
+
+        item.Unlock = function()
+            if not item.IsUnlocked() then
+                DukeHelpers.Unlock(item.unlock)
+            end
+        end
     else
         item.IsUnlocked = function()
             return true
         end
+
+        item.Unlock = function() end
     end
 end
 
@@ -482,27 +550,37 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_PICKUP_INIT, function(_, pickup)
     end
 end)
 
--- TRAILER EFFECTS --
--- dukeMod:AddCallback(ModCallbacks.MC_POST_ENTITY_REMOVE, function(_, e)
---     if e.Variant == 0 then
---         Isaac.Spawn(EntityType.ENTITY_EFFECT, Isaac.GetEntityVariantByName("Duke Reform"), 0, e.Position, Vector.Zero, e)
---     else
---         Isaac.Spawn(EntityType.ENTITY_EFFECT, Isaac.GetEntityVariantByName("Husk Reform"), 0, e.Position, Vector.Zero, e)
---     end
--- end, EntityType.ENTITY_DUKE)
+local function getModDirectoryName(str)
+    local editedString = str:sub(1, -2)
+    local index = editedString:find("/[^/]*$")
 
--- dukeMod:AddCallback(ModCallbacks.MC_POST_UPDATE, function()
---     local playingSoundEffects = {}
---     for soundEffectName, soundEffect in pairs(SoundEffect) do
---         if DukeHelpers.sfx:IsPlaying(soundEffect) then
---             table.insert(playingSoundEffects, soundEffectName..": "..soundEffect)
---         end
---     end
---     if #playingSoundEffects > 0 then
---         print("=====Sounds playing on frame "..Isaac.GetFrameCount().."=====")
---         for _, sfx in pairs(playingSoundEffects) do
---             print(sfx)
---         end
---         print("=====End of sounds playing on frame "..Isaac.GetFrameCount().."=====")
---     end
--- end)
+    if index then
+        return editedString:sub(index + 1)
+    else
+        return ""
+    end
+end
+
+if FiendFolio then
+    Isaac.ExecuteCommand("luamod " .. getModDirectoryName(FiendFolio.path))
+end
+
+if ComplianceImmortal then
+    Isaac.ExecuteCommand("luamod " .. getModDirectoryName(ComplianceImmortal.path))
+end
+
+if MoonlightHearts then
+    Isaac.ExecuteCommand("luamod " .. getModDirectoryName(MoonlightHearts.path))
+end
+
+if PATCH_GLOBAL then
+    Isaac.ExecuteCommand("luamod " .. getModDirectoryName(PATCH_GLOBAL.path))
+end
+
+if ARACHNAMOD then
+    Isaac.ExecuteCommand("luamod " .. getModDirectoryName(ARACHNAMOD.path))
+end
+
+if RepentancePlusMod then
+    Isaac.ExecuteCommand("luamod " .. getModDirectoryName(RepentancePlusMod.path))
+end

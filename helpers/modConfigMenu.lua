@@ -38,7 +38,7 @@ local function generateUnlockSetting(item, bossName, playerName)
 						DukeHelpers.MCMUnlockToggle(i.unlock, currentBool)
 					end
 				end,
-				Info = function ()
+				Info = function()
 					if not playerName then
 						return "Unlocks every unlock in the mod."
 					end
@@ -81,63 +81,63 @@ local function getItemVariant(item)
 	else return nil end
 end
 
-local function generateSpawnItemSetting(item)
-	ModConfigMenu.AddSetting(
-		MenuName,
-		"Spawn Item",
-		{
-			Attribute = bossName,
-			Type = ModConfigMenu.OptionType.BOOLEAN,
-			CurrentSetting = function()
-				return false
-			end,
-			Display = function()
-				return item.Name
-			end,
-			OnChange = function(currentBool)
-				if currentBool then
-					local room = Game():GetRoom()
-					if (item.Name == "Fly Hearts") then
-						heart = Isaac.Spawn(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_HEART, HeartSubType.HEART_FULL,
-							room:FindFreePickupSpawnPosition(room:GetCenterPos()), Vector.Zero, nil)
-						DukeHelpers.SetFlyHeart(heart)
-					else
-						Isaac.Spawn(EntityType.ENTITY_PICKUP, getItemVariant(item), item.Id,
-							room:FindFreePickupSpawnPosition(room:GetCenterPos()), Vector.Zero, nil)
-					end
-					currentBool = false
-				end
-			end,
-			Info = "Spawn " .. item.Name .. "."
-		}
-	)
-end
+-- local function generateSpawnItemSetting(item)
+-- 	ModConfigMenu.AddSetting(
+-- 		MenuName,
+-- 		"Spawn Item",
+-- 		{
+-- 			Attribute = bossName,
+-- 			Type = ModConfigMenu.OptionType.BOOLEAN,
+-- 			CurrentSetting = function()
+-- 				return false
+-- 			end,
+-- 			Display = function()
+-- 				return item.Name
+-- 			end,
+-- 			OnChange = function(currentBool)
+-- 				if currentBool then
+-- 					local room = Game():GetRoom()
+-- 					if (item.Name == "Fly Hearts") then
+-- 						heart = Isaac.Spawn(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_HEART, HeartSubType.HEART_FULL,
+-- 							room:FindFreePickupSpawnPosition(room:GetCenterPos()), Vector.Zero, nil)
+-- 						DukeHelpers.SetFlyHeart(heart)
+-- 					else
+-- 						Isaac.Spawn(EntityType.ENTITY_PICKUP, getItemVariant(item), item.Id,
+-- 							room:FindFreePickupSpawnPosition(room:GetCenterPos()), Vector.Zero, nil)
+-- 					end
+-- 					currentBool = false
+-- 				end
+-- 			end,
+-- 			Info = "Spawn " .. item.Name .. "."
+-- 		}
+-- 	)
+-- end
 
-local function generateSpawnHeartSetting(heartName, heartSubType, heartVariant)
-	ModConfigMenu.AddSetting(
-		MenuName,
-		"Spawn Heart",
-		{
-			Attribute = bossName,
-			Type = ModConfigMenu.OptionType.BOOLEAN,
-			CurrentSetting = function()
-				return false
-			end,
-			Display = function()
-				return heartName
-			end,
-			OnChange = function(currentBool)
-				if currentBool then
-					local room = Game():GetRoom()
-					Isaac.Spawn(EntityType.ENTITY_PICKUP, heartVariant or PickupVariant.PICKUP_HEART, heartSubType,
-						room:FindFreePickupSpawnPosition(room:GetCenterPos()), Vector.Zero, nil)
-					currentBool = false
-				end
-			end,
-			Info = "Spawn a " .. heartName .. " heart."
-		}
-	)
-end
+-- local function generateSpawnHeartSetting(heartName, heartSubType, heartVariant)
+-- 	ModConfigMenu.AddSetting(
+-- 		MenuName,
+-- 		"Spawn Heart",
+-- 		{
+-- 			Attribute = bossName,
+-- 			Type = ModConfigMenu.OptionType.BOOLEAN,
+-- 			CurrentSetting = function()
+-- 				return false
+-- 			end,
+-- 			Display = function()
+-- 				return heartName
+-- 			end,
+-- 			OnChange = function(currentBool)
+-- 				if currentBool then
+-- 					local room = Game():GetRoom()
+-- 					Isaac.Spawn(EntityType.ENTITY_PICKUP, heartVariant or PickupVariant.PICKUP_HEART, heartSubType,
+-- 						room:FindFreePickupSpawnPosition(room:GetCenterPos()), Vector.Zero, nil)
+-- 					currentBool = false
+-- 				end
+-- 			end,
+-- 			Info = "Spawn a " .. heartName .. " heart."
+-- 		}
+-- 	)
+-- end
 
 function DukeHelpers.InitializeMCM(defaultMcmOptions)
 	if not dukeMod.mcmOptions then
@@ -151,28 +151,28 @@ function DukeHelpers.InitializeMCM(defaultMcmOptions)
 	end
 	local mcmOptions = dukeMod.mcmOptions
 
-	dukeUnlocks = { DukeHelpers.Items.othersGullet,
-					DukeHelpers.Trinkets.dukesTooth,
-					DukeHelpers.Trinkets.infestedHeart,
-					DukeHelpers.Trinkets.pocketOfFlies,
-					DukeHelpers.Items.thePrinces,
-					DukeHelpers.Items.ultraHeartFly,
-					DukeHelpers.Items.lilDuke,
-					DukeHelpers.Items.superInfestation,
-					DukeHelpers.Items.dukeFlute,
-					DukeHelpers.Items.fiendishSwarm,
-					DukeHelpers.Items.queenFly,
-					DukeHelpers.Cards.tapewormCard,
-					DukeHelpers.Items.shartyMcFly,
-					DukeHelpers.Items.dukeOfEyes }
+	local dukeUnlocks = { DukeHelpers.Items.othersGullet,
+		DukeHelpers.Trinkets.dukesTooth,
+		DukeHelpers.Trinkets.infestedHeart,
+		DukeHelpers.Trinkets.pocketOfFlies,
+		DukeHelpers.Items.thePrinces,
+		DukeHelpers.Items.ultraHeartFly,
+		DukeHelpers.Items.lilDuke,
+		DukeHelpers.Items.superInfestation,
+		DukeHelpers.Items.dukeFlute,
+		DukeHelpers.Items.fiendishSwarm,
+		DukeHelpers.Items.queenFly,
+		DukeHelpers.Cards.tapewormCard,
+		DukeHelpers.Items.shartyMcFly,
+		DukeHelpers.Items.dukeOfEyes }
 
-	huskUnlocks = { DukeHelpers.Trinkets.mosquito,
-					DukeHelpers.FlyHearts,
-					DukeHelpers.Cards.soulOfDuke,
-					DukeHelpers.Items.othersRottenGullet,
-					DukeHelpers.Items.lilHusk,
-					DukeHelpers.Items.theInvader,
-					DukeHelpers.Cards.redTapewormCard }
+	local huskUnlocks = { DukeHelpers.Trinkets.mosquito,
+		DukeHelpers.FlyHearts,
+		DukeHelpers.Cards.soulOfDuke,
+		DukeHelpers.Items.othersRottenGullet,
+		DukeHelpers.Items.lilHusk,
+		DukeHelpers.Items.theInvader,
+		DukeHelpers.Cards.redTapewormCard }
 
 	if ModConfigMenu then
 		generateUnlockSetting(DukeHelpers.CombineArrays(dukeUnlocks, huskUnlocks))

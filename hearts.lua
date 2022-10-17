@@ -1,9 +1,53 @@
+local function canPickRedTypeHeart(player)
+    if DukeHelpers.IsDuke(player) or DukeHelpers.IsHusk(player) then
+        return true
+    end
+
+    return CustomHealthAPI.Helper.CanPickRed(player, "RED_HEART")
+end
+
+local function chapiRemove(player, key, amount)
+    local health = CustomHealthAPI.Library.GetHealthInOrder(player)
+
+    local remaining = amount
+    for i = #health, 1, -1 do
+        if remaining <= 0 then
+            break
+        end
+
+        local heart = health[i]
+        local heartDetails
+        local removeFunction
+        if heart.Other and heart.Other.Key == key then
+            heartDetails = heart.Other
+            removeFunction = CustomHealthAPI.Library.RemoveOtherKey
+        elseif heart.Red and heart.Red.Key == key then
+            heartDetails = heart.Red
+            removeFunction = CustomHealthAPI.Library.RemoveRedKey
+        else
+            goto continue
+        end
+
+        remaining = remaining - heartDetails.HP
+        removeFunction(player, i)
+
+        if remaining < 0 then
+            CustomHealthAPI.Library.AddHealth(player, key, math.abs(remaining))
+            remaining = 0
+        end
+
+        ::continue::
+    end
+end
+
 DukeHelpers.Hearts = {
     RED = {
         subType = HeartSubType.HEART_FULL,
         isBase = true,
         GetCount = function(player)
-            return DukeHelpers.Clamp(player:GetHearts() - (DukeHelpers.Hearts.ROTTEN.GetCount(player) * 2), 0)
+            return DukeHelpers.Clamp(player:GetHearts() - (DukeHelpers.Hearts.ROTTEN.GetCount(player) * 2) -
+                DukeHelpers.Hearts.MORBID.GetCount(player) - (DukeHelpers.Hearts.SOILED.GetCount(player) * 2), 0)
+
         end,
         CanPick = function(player)
             return player:CanPickRedHearts()
@@ -13,29 +57,17 @@ DukeHelpers.Hearts = {
         end,
         Remove = function(player, amount)
             player:AddHearts(-amount)
-        end
-    },
-    HALF_RED = {
-        subType = HeartSubType.HEART_HALF,
-        GetCount = function(player)
-            return DukeHelpers.Hearts.RED.GetCount(player)
         end,
-        CanPick = function(player)
-            return DukeHelpers.Hearts.RED.CanPick(player)
-        end,
-        Add = function(player, amount)
-            DukeHelpers.Hearts.RED.Add(player, amount)
-        end,
-        Remove = function(player, amount)
-            DukeHelpers.Hearts.RED.Remove(player, amount)
-        end
+        removeOrder = 0
     },
     SOUL = {
         subType = HeartSubType.HEART_SOUL,
         isBase = true,
         GetCount = function(player)
             return DukeHelpers.Clamp(player:GetSoulHearts() - DukeHelpers.Hearts.BLACK.GetCount(player) -
-                DukeHelpers.Hearts.IMMORTAL.GetCount(player) - DukeHelpers.Hearts.WEB.GetCount(player), 0)
+                DukeHelpers.Hearts.IMMORTAL.GetCount(player) - DukeHelpers.Hearts.WEB.GetCount(player) -
+                DukeHelpers.Hearts.IMMORAL.GetCount(player) - DukeHelpers.Hearts.DAUNTLESS.GetCount(player) -
+                DukeHelpers.Hearts.MISER.GetCount(player) - DukeHelpers.Hearts.ZEALOT.GetCount(player), 0)
         end,
         CanPick = function(player)
             return player:CanPickSoulHearts()
@@ -45,7 +77,8 @@ DukeHelpers.Hearts = {
         end,
         Remove = function(player, amount)
             player:AddSoulHearts(-math.min(DukeHelpers.Hearts.SOUL.GetCount(player), amount))
-        end
+        end,
+        removeOrder = 4
     },
     ETERNAL = {
         subType = HeartSubType.HEART_ETERNAL,
@@ -61,21 +94,24 @@ DukeHelpers.Hearts = {
         end,
         Remove = function(player, amount)
             player:AddEternalHearts(-amount)
-        end
-    },
-    DOUBLE_RED = {
-        subType = HeartSubType.HEART_DOUBLEPACK,
-        GetCount = function(player)
-            return DukeHelpers.Hearts.RED.GetCount(player)
         end,
-        CanPick = function(player)
-            return DukeHelpers.Hearts.RED.CanPick(player)
-        end,
-        Add = function(player, amount)
-            DukeHelpers.Hearts.RED.Add(player, amount)
-        end,
-        Remove = function(player, amount)
-            DukeHelpers.Hearts.RED.Remove(player, amount)
+        OnPickup = function(player, _)
+            if FiendFolio then
+                if FiendFolio.anyPlayerHas(TrinketType.TRINKET_RED_RIBBON, true) then
+                    local count = 1
+                    if FiendFolio.getTrinketMultiplierAcrossAllPlayers(TrinketType.TRINKET_RED_RIBBON) > 1 then
+                        count = 3
+                    end
+
+                    if DukeHelpers.IsDuke(player) or
+                        DukeHelpers.AnyPlayerHasTrinket(DukeHelpers.Trinkets.infestedHeart.Id) then
+                        DukeHelpers.AddHeartFly(player, DukeHelpers.Flies.ETERNAL, count, false)
+                    elseif DukeHelpers.IsHusk(player) then
+                        DukeHelpers.FillRottenGulletSlot(player, DukeHelpers.Hearts.ETERNAL.key, count)
+                    end
+
+                end
+            end
         end
     },
     BLACK = {
@@ -114,7 +150,8 @@ DukeHelpers.Hearts = {
             DukeHelpers.Hearts.SOUL.Add(player, soulHearts)
             DukeHelpers.Hearts.IMMORTAL.Add(player, immortalHearts)
             DukeHelpers.Hearts.WEB.Add(player, webHearts)
-        end
+        end,
+        removeOrder = 5
     },
     GOLDEN = {
         subType = HeartSubType.HEART_GOLDEN,
@@ -130,36 +167,6 @@ DukeHelpers.Hearts = {
         end,
         Remove = function(player, amount)
             player:AddGoldenHearts(-amount)
-        end
-    },
-    HALF_SOUL = {
-        subType = HeartSubType.HEART_HALF_SOUL,
-        GetCount = function(player)
-            return DukeHelpers.Hearts.SOUL.GetCount(player)
-        end,
-        CanPick = function(player)
-            return DukeHelpers.Hearts.SOUL.CanPick(player)
-        end,
-        Add = function(player, amount)
-            DukeHelpers.Hearts.SOUL.Add(player, amount)
-        end,
-        Remove = function(player, amount)
-            DukeHelpers.Hearts.SOUL.Remove(player, amount)
-        end
-    },
-    SCARED = {
-        subType = HeartSubType.HEART_SCARED,
-        GetCount = function(player)
-            return DukeHelpers.Hearts.RED.GetCount(player)
-        end,
-        CanPick = function(player)
-            return DukeHelpers.Hearts.RED.CanPick(player)
-        end,
-        Add = function(player, amount)
-            DukeHelpers.Hearts.RED.Add(player, amount)
-        end,
-        Remove = function(player, amount)
-            DukeHelpers.Hearts.RED.Remove(player, amount)
         end
     },
     BLENDED = {
@@ -188,7 +195,8 @@ DukeHelpers.Hearts = {
         end,
         Remove = function(player, amount)
             player:AddBoneHearts(-amount)
-        end
+        end,
+        removeOrder = 12
     },
     ROTTEN = {
         subType = HeartSubType.HEART_ROTTEN,
@@ -203,8 +211,9 @@ DukeHelpers.Hearts = {
             player:AddRottenHearts(amount)
         end,
         Remove = function(player, amount)
-            player:AddRottenHearts(-math.max(amount * 2, DukeHelpers.Hearts.ROTTEN.GetCount(player) * 2))
-        end
+            player:AddRottenHearts(-math.min(amount * 2, DukeHelpers.Hearts.ROTTEN.GetCount(player) * 2))
+        end,
+        removeOrder = 1
     },
     BROKEN = {
         subType = 13,
@@ -250,14 +259,14 @@ DukeHelpers.Hearts = {
     },
     PATCHED = {
         subType = 3320,
+        GetCount = function(player)
+            return DukeHelpers.Hearts.RED.GetCount(player)
+        end,
         CanPick = function(player)
             return PATCH_GLOBAL and (DukeHelpers.Hearts.RED.CanPick(player) or player:GetBrokenHearts() > 0)
-        end
-    },
-    DOUBLE_PATCHED = {
-        subType = 3321,
-        CanPick = function(player)
-            return DukeHelpers.Hearts.PATCHED.CanPick(player)
+        end,
+        Remove = function(player, amount)
+            DukeHelpers.Hearts.RED.Remove(player, amount)
         end
     },
     IMMORTAL = {
@@ -276,20 +285,21 @@ DukeHelpers.Hearts = {
             return hearts and hearts < (player:GetHeartLimit() - player:GetEffectiveMaxHearts())
         end,
         Add = function(player, amount)
-			if not ComplianceImmortal or amount == 0 then
-				return
-			end
+            if not ComplianceImmortal or amount == 0 then
+                return
+            end
             ComplianceImmortal.AddImmortalHearts(player, amount)
         end,
         Remove = function(player, amount)
-			if not ComplianceImmortal or amount == 0 then
-				return
-			end
+            if not ComplianceImmortal or amount == 0 then
+                return
+            end
             local initialSoulHearts = DukeHelpers.Hearts.SOUL.GetCount(player)
             ComplianceImmortal.AddImmortalHearts(player, -amount)
             local soulHeartsRemoved = initialSoulHearts - DukeHelpers.Hearts.SOUL.GetCount(player)
             DukeHelpers.Hearts.SOUL.Add(player, soulHeartsRemoved)
-        end
+        end,
+        removeOrder = 11
     },
     WEB = {
         variant = 2000,
@@ -331,39 +341,373 @@ DukeHelpers.Hearts = {
             return false
         end,
         Add = function(player, amount)
-			if not ARACHNAMOD then
+            if not ARACHNAMOD then
                 return
             end
             addWebHearts(amount, player)
         end,
         Remove = function(player, amount)
-			if not ARACHNAMOD or DukeHelpers.GetPlayerControllerIndex(player) ~= 0 then
-				return
+            if not ARACHNAMOD or DukeHelpers.GetPlayerControllerIndex(player) ~= 0 then
+                return
             end
             local initialSoulHearts = DukeHelpers.Hearts.SOUL.GetCount(player)
             addWebHearts(-amount / 2, player)
             local soulHeartsRemoved = initialSoulHearts - DukeHelpers.Hearts.SOUL.GetCount(player)
             DukeHelpers.Hearts.SOUL.Add(player, soulHeartsRemoved)
+        end,
+        removeOrder = 6,
+        removeMultiplier = 2
+    },
+    BROKEN_HEART = {
+        subType = 84,
+        CanPick = function(_)
+            return true
+        end,
+        OnPickup = function(player, _)
+            player:AddSoulHearts(2)
         end
+    },
+    DAUNTLESS = {
+        subType = 85,
+        isBase = true,
+        GetCount = function(player)
+            if RepentancePlusMod and CustomHealthAPI then
+                return CustomHealthAPI.Library.GetHPOfKey(player, "HEART_DAUNTLESS")
+            end
+
+            return 0
+        end,
+        CanPick = function(player)
+            if not RepentancePlusMod or not CustomHealthAPI then
+                return false
+            end
+            return CustomHealthAPI.Library.CanPickKey(player, "HEART_DAUNTLESS")
+        end,
+        Add = function(player, amount)
+            CustomHealthAPI.Library.AddHealth(player, "HEART_DAUNTLESS", amount)
+        end,
+        Remove = function(player, amount)
+            chapiRemove(player, "HEART_DAUNTLESS", amount)
+        end,
+        removeOrder = 7
+    },
+    HOARDED = {
+        subType = 86,
+        CanPick = function(player)
+            return canPickRedTypeHeart(player)
+        end
+    },
+    SOILED = {
+        subType = 88,
+        isBase = true,
+        GetCount = function(player)
+            if RepentancePlusMod and CustomHealthAPI then
+                return CustomHealthAPI.Library.GetHPOfKey(player, "HEART_SOILED") / 2
+            end
+
+            return 0
+        end,
+        CanPick = function(player)
+            if not RepentancePlusMod or not CustomHealthAPI then
+                return false
+            end
+            return CustomHealthAPI.Library.CanPickKey(player, "HEART_SOILED")
+        end,
+        Add = function(player, amount)
+            CustomHealthAPI.Library.AddHealth(player, "HEART_SOILED", amount * 2)
+        end,
+        Remove = function(player, amount)
+            chapiRemove(player, "HEART_SOILED", math.min(amount * 2, DukeHelpers.Hearts.SOILED.GetCount(player) * 2))
+        end,
+        removeOrder = 2
+    },
+    CURDLED = {
+        subType = 89,
+        CanPick = function(player)
+            return canPickRedTypeHeart(player)
+        end,
+        OnPickup = function(player, _)
+            local hasRedHealth = DukeHelpers.Hearts.RED.GetCount(player) > 0
+            Isaac.Spawn(EntityType.ENTITY_FAMILIAR, FamiliarVariant.BLOOD_BABY, 0, player.Position, Vector.Zero, player)
+
+            if hasRedHealth then
+                DukeHelpers.Hearts.RED.Add(player, 1)
+            end
+        end
+    },
+    ENIGMA = {
+        subType = 92,
+        ignore = true
+    },
+    CAPRICIOUS = {
+        subType = 93,
+        ignore = true
+    },
+    BALEFUL = {
+        subType = 94,
+        isBase = true,
+        GetCount = function(player)
+            if RepentancePlusMod and CustomHealthAPI then
+                return CustomHealthAPI.Library.GetHPOfKey(player, "HEART_BALEFUL")
+            end
+
+            return 0
+        end,
+        CanPick = function(player)
+            if not RepentancePlusMod or not RepentancePlusMod.CanPickOverlayHeart then
+                return false
+            end
+            return RepentancePlusMod.CanPickOverlayHeart(player)
+        end,
+        Add = function(player, amount)
+            if not RepentancePlusMod or not RepentancePlusMod.AddBalefulHearts then
+                return false
+            end
+            RepentancePlusMod.AddBalefulHearts(player, amount)
+        end,
+        Remove = function(player, amount)
+            if not RepentancePlusMod or not RepentancePlusMod.AddBalefulHearts then
+                return false
+            end
+            RepentancePlusMod.AddBalefulHearts(player, -amount)
+        end
+    },
+    HARLOT = {
+        subType = 95,
+        CanPick = function(player)
+            return canPickRedTypeHeart(player)
+        end,
+        OnPickup = function(player, _)
+            Isaac.Spawn(EntityType.ENTITY_FAMILIAR, FamiliarVariant.LEPROSY, 0, player.Position, Vector.Zero, player)
+        end
+    },
+    MISER = {
+        subType = 96,
+        isBase = true,
+        GetCount = function(player)
+            if RepentancePlusMod and CustomHealthAPI then
+                return CustomHealthAPI.Library.GetHPOfKey(player, "HEART_MISER")
+            end
+
+            return 0
+        end,
+        CanPick = function(player)
+            if not RepentancePlusMod or not CustomHealthAPI then
+                return false
+            end
+            return CustomHealthAPI.Library.CanPickKey(player, "HEART_MISER")
+        end,
+        Add = function(player, amount)
+            CustomHealthAPI.Library.AddHealth(player, "HEART_MISER", amount)
+        end,
+        Remove = function(player, amount)
+            chapiRemove(player, "HEART_MISER", amount)
+        end,
+        removeOrder = 8
+    },
+    EMPTY = {
+        subType = 97,
+        isBase = true,
+        GetCount = function(player)
+            if RepentancePlusMod and CustomHealthAPI then
+                return CustomHealthAPI.Library.GetHPOfKey(player, "HEART_EMPTY")
+            end
+
+            return 0
+        end,
+        CanPick = function(player)
+            if not RepentancePlusMod or not RepentancePlusMod.CanPickOverlayHeart then
+                return false
+            end
+            return RepentancePlusMod.CanPickOverlayHeart(player)
+        end,
+        Add = function(player, amount)
+            if not RepentancePlusMod or not RepentancePlusMod.AddEmptyHearts then
+                return false
+            end
+            RepentancePlusMod.AddEmptyHearts(player, amount)
+        end,
+        Remove = function(player, amount)
+            if not RepentancePlusMod or not RepentancePlusMod.AddEmptyHearts then
+                return false
+            end
+            RepentancePlusMod.AddEmptyHearts(player, -amount)
+        end
+    },
+    ZEALOT = {
+        subType = 99,
+        isBase = true,
+        GetCount = function(player)
+            if RepentancePlusMod and CustomHealthAPI then
+                return CustomHealthAPI.Library.GetHPOfKey(player, "HEART_ZEALOT")
+            end
+
+            return 0
+        end,
+        CanPick = function(player)
+            if not RepentancePlusMod or not CustomHealthAPI then
+                return false
+            end
+            return CustomHealthAPI.Library.CanPickKey(player, "HEART_ZEALOT")
+        end,
+        Add = function(player, amount)
+            CustomHealthAPI.Library.AddHealth(player, "HEART_ZEALOT", amount)
+        end,
+        Remove = function(player, amount)
+            chapiRemove(player, "HEART_ZEALOT", amount)
+        end,
+        removeOrder = 9
+    },
+    DESERTED = {
+        subType = 100,
+        CanPick = function(player)
+            if not RepentancePlusMod or not CustomHealthAPI then
+                return false
+            end
+            return CustomHealthAPI.Library.CanPickKey(player, "HEART_ZEALOT")
+        end
+    },
+    BLENDED_BLACK = {
+        variant = 1023,
+        CanPick = function(player)
+            return DukeHelpers.Hearts.BLACK.CanPick(player) or DukeHelpers.Hearts.RED.CanPick(player)
+        end
+    },
+    IMMORAL = {
+        variant = 1024,
+        isBase = true,
+        GetCount = function(player)
+            if FiendFolio and CustomHealthAPI then
+                return CustomHealthAPI.Library.GetHPOfKey(player, "IMMORAL_HEART")
+            end
+
+            return 0
+        end,
+        CanPick = function(player)
+            if not CustomHealthAPI then
+                return false
+            end
+            return CustomHealthAPI.Library.CanPickKey(player, "IMMORAL_HEART")
+        end,
+        Add = function(player, amount)
+            CustomHealthAPI.Library.AddHealth(player, "IMMORAL_HEART", amount)
+        end,
+        Remove = function(player, amount)
+            chapiRemove(player, "IMMORAL_HEART", amount)
+        end,
+        removeOrder = 10
+    },
+    BLENDED_IMMORAL = {
+        variant = 1026,
+        CanPick = function(player)
+            return DukeHelpers.Hearts.IMMORAL.CanPick(player) or DukeHelpers.Hearts.RED.CanPick(player)
+        end
+    },
+    MORBID = {
+        variant = 1028,
+        isBase = true,
+        GetCount = function(player)
+            if FiendFolio and CustomHealthAPI then
+                return CustomHealthAPI.Library.GetHPOfKey(player, "MORBID_HEART")
+            end
+
+            return 0
+        end,
+        CanPick = function(player)
+            if not CustomHealthAPI then
+                return false
+            end
+            return CustomHealthAPI.Library.CanPickKey(player, "MORBID_HEART")
+        end,
+        Add = function(player, amount)
+            CustomHealthAPI.Library.AddHealth(player, "MORBID_HEART", amount)
+        end,
+        Remove = function(player, amount)
+            chapiRemove(player, "MORBID_HEART", amount)
+        end,
+        removeOrder = 3
+    },
+}
+
+local useHearts = {
+    HALF_RED = {
+        subType = HeartSubType.HEART_HALF,
+        uses = DukeHelpers.Hearts.RED
+    },
+    DOUBLE_RED = {
+        subType = HeartSubType.HEART_DOUBLEPACK,
+        uses = DukeHelpers.Hearts.RED
+    },
+    HALF_SOUL = {
+        subType = HeartSubType.HEART_HALF_SOUL,
+        uses = DukeHelpers.Hearts.SOUL
+    },
+    SCARED = {
+        subType = HeartSubType.HEART_SCARED,
+        uses = DukeHelpers.Hearts.RED
+    },
+    DOUBLE_PATCHED = {
+        subType = 3321,
+        uses = DukeHelpers.Hearts.PATCHED
     },
     DOUBLE_WEB = {
         variant = 2002,
-        GetCount = function(player)
-            return DukeHelpers.Hearts.WEB.GetCount(player)
-        end,
+        uses = DukeHelpers.Hearts.WEB,
         CanPick = function(player)
             return DukeHelpers.Hearts.WEB.CanPick(player, true)
-        end,
-        Add = function(player, amount)
-            DukeHelpers.Hearts.WEB.Add(player, amount)
-        end,
-        Remove = function(player, amount)
-            DukeHelpers.Hearts.WEB.Remove(player, amount)
         end
-    }
+    },
+    SAVAGE = {
+        subType = 90,
+        uses = DukeHelpers.Hearts.RED,
+        ignore = true,
+        OnPickup = function(player, pickup)
+            if DukeHelpers.IsDuke(player) then
+                DukeHelpers.SpawnPickupHeartFly(player,
+                    { Type = pickup.Type, Variant = pickup.Variant, SubType = pickup.SubType, Price = 0 },
+                    DukeHelpers.Hearts.RED.key, 2
+                    , false)
+            elseif DukeHelpers.IsHusk(player) then
+                DukeHelpers.FillRottenGulletSlot(player, DukeHelpers.Hearts.RED.key, 2)
+            end
+        end
+    },
+    BENIGHTED = {
+        subType = 91,
+        uses = DukeHelpers.Hearts.BLACK,
+        ignore = true
+    },
+    FETTERED = {
+        subType = 98,
+        uses = DukeHelpers.Hearts.SOUL,
+        ignore = true,
+        CanPick = function(player)
+            return (player:GetNumKeys() > 0 or player:HasGoldenKey()) and DukeHelpers.Hearts.SOUL.CanPick(player)
+        end
+    },
+    HALF_DAUNTLESS = {
+        subType = 101,
+        uses = DukeHelpers.Hearts.DAUNTLESS
+    },
+    HALF_BLACK = {
+        variant = 1022,
+        uses = DukeHelpers.Hearts.BLACK
+    },
+    HALF_IMMORAL = {
+        variant = 1025,
+        uses = DukeHelpers.Hearts.IMMORAL
+    },
+    TWO_THIRDS_MORBID = {
+        variant = 1029,
+        uses = DukeHelpers.Hearts.MORBID
+    },
+    THIRD_MORBID = {
+        variant = 1030,
+        uses = DukeHelpers.Hearts.MORBID
+    },
 }
 
-for key, heart in pairs(DukeHelpers.Hearts) do
+local function registerHeart(key, heart)
     if not heart.variant then
         heart.variant = PickupVariant.PICKUP_HEART
     elseif not heart.subType then
@@ -381,4 +725,39 @@ for key, heart in pairs(DukeHelpers.Hearts) do
     if not heart.isBase then
         heart.isBase = false
     end
+
+    if not heart.CanPick then
+        heart.CanPick = function()
+            return true
+        end
+    end
+end
+
+for key, heart in pairs(DukeHelpers.Hearts) do
+    registerHeart(key, heart)
+end
+
+local doNotCopyProperties = {
+    "subType",
+    "variant",
+    "isBase",
+    "key",
+    "removeOrder",
+    "removeMultiplier"
+}
+
+for key, heart in pairs(useHearts) do
+    if DukeHelpers.IsArray(heart) then
+
+    else
+        for propertyKey, propertyValue in pairs(heart.uses) do
+            if heart[propertyKey] == nil and
+                not DukeHelpers.Find(doNotCopyProperties, function(v) return v ~= propertyKey end) then
+                heart[propertyKey] = propertyValue
+            end
+        end
+    end
+
+    DukeHelpers.Hearts[key] = heart
+    registerHeart(key, heart)
 end

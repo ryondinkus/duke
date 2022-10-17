@@ -324,7 +324,6 @@ local function MC_POST_RENDER()
                         Vector.Zero)
                 end
                 sprite:Render(position + spriteOffset, Vector.Zero, Vector.Zero)
-                print(sprite:GetFilename())
             end
         end
     end)

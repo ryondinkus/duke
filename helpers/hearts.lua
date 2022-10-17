@@ -40,6 +40,54 @@ function DukeHelpers.RemoveUnallowedHearts(player, leftHearts, ignoreContainers)
     local playerData = DukeHelpers.GetDukeData(player)
     local removedHearts = {}
 
+    local dauntlessHearts = getRemovableAmount(player, leftHearts, DukeHelpers.Hearts.DAUNTLESS)
+    if dauntlessHearts > 0 then
+        removedHearts[DukeHelpers.Hearts.DAUNTLESS.key] = dauntlessHearts
+        DukeHelpers.Hearts.DAUNTLESS.Remove(player, dauntlessHearts)
+    end
+
+    local soiledHearts = getRemovableAmount(player, leftHearts, DukeHelpers.Hearts.SOILED)
+    if soiledHearts > 0 then
+        removedHearts[DukeHelpers.Hearts.SOILED.key] = soiledHearts
+        DukeHelpers.Hearts.SOILED.Remove(player, soiledHearts)
+    end
+
+    local balefulHearts = getRemovableAmount(player, leftHearts, DukeHelpers.Hearts.BALEFUL)
+    if balefulHearts > 0 then
+        removedHearts[DukeHelpers.Hearts.BALEFUL.key] = balefulHearts
+        DukeHelpers.Hearts.BALEFUL.Remove(player, balefulHearts)
+    end
+
+    local miserHearts = getRemovableAmount(player, leftHearts, DukeHelpers.Hearts.MISER)
+    if miserHearts > 0 then
+        removedHearts[DukeHelpers.Hearts.MISER.key] = miserHearts
+        DukeHelpers.Hearts.MISER.Remove(player, miserHearts)
+    end
+
+    local emptyHearts = getRemovableAmount(player, leftHearts, DukeHelpers.Hearts.EMPTY)
+    if emptyHearts > 0 then
+        removedHearts[DukeHelpers.Hearts.EMPTY.key] = emptyHearts
+        DukeHelpers.Hearts.EMPTY.Remove(player, emptyHearts)
+    end
+
+    local zealotHearts = getRemovableAmount(player, leftHearts, DukeHelpers.Hearts.ZEALOT)
+    if zealotHearts > 0 then
+        removedHearts[DukeHelpers.Hearts.ZEALOT.key] = zealotHearts
+        DukeHelpers.Hearts.ZEALOT.Remove(player, zealotHearts)
+    end
+
+    local immoralHearts = getRemovableAmount(player, leftHearts, DukeHelpers.Hearts.IMMORAL)
+    if immoralHearts > 0 then
+        removedHearts[DukeHelpers.Hearts.IMMORAL.key] = immoralHearts
+        DukeHelpers.Hearts.IMMORAL.Remove(player, immoralHearts)
+    end
+
+    local morbidHearts = getRemovableAmount(player, leftHearts, DukeHelpers.Hearts.MORBID)
+    if morbidHearts > 0 then
+        removedHearts[DukeHelpers.Hearts.MORBID.key] = morbidHearts
+        DukeHelpers.Hearts.MORBID.Remove(player, morbidHearts)
+    end
+
     local skippedBlackHearts = playerData.removedWebHearts or 0
     if playerData.extraSoulHearts then
         DukeHelpers.Hearts.SOUL.Remove(player, playerData.extraSoulHearts)
@@ -118,9 +166,6 @@ function DukeHelpers.RemoveUnallowedHearts(player, leftHearts, ignoreContainers)
     if redHearts > 0 then
         removedHearts[DukeHelpers.Hearts.RED.key] = redHearts
         DukeHelpers.Hearts.RED.Remove(player, redHearts)
-
-        if not ignoreContainers then
-        end
     end
 
     if not ignoreContainers then
@@ -153,19 +198,29 @@ end
 function DukeHelpers.CanPickUpHeart(player, pickup)
     local pickupKey = DukeHelpers.GetKeyFromPickup(pickup)
 
-    if not pickupKey then
+    if not pickupKey or not DukeHelpers.IsSupportedHeart(pickup) or not DukeHelpers.Hearts[pickupKey].CanPick then
         return false
     end
 
-    local heart = DukeHelpers.Hearts[pickupKey]
+    local canPickHealth = DukeHelpers.Hearts[pickupKey].CanPick(player)
 
-    if not heart then
-        return false
-    end
-
-    return heart.CanPick(player)
+    return not not canPickHealth
 end
 
 function DukeHelpers.GetBaseHearts()
     return DukeHelpers.Filter(DukeHelpers.Hearts, function(heart) return heart.isBase end)
+end
+
+function DukeHelpers.MakeFakePickup(pickup)
+    return { Price = 0, Variant = pickup.Variant, SubType = pickup.SubType, Type = pickup.Type }
+end
+
+function DukeHelpers.GetBaseHeartKey(heart)
+    local h = heart
+
+    while h.uses do
+        h = heart.uses
+    end
+
+    return h.key
 end

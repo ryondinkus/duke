@@ -1,11 +1,12 @@
 local function MC_PRE_SPAWN_CLEAN_AWARD()
 	if ComplianceImmortal then
 		DukeHelpers.ForEachPlayer(function(player)
-			if DukeHelpers.IsDuke(player, true) then
+			if DukeHelpers.IsHusk(player) then
 				local filledSlots = DukeHelpers.GetFilledRottenGulletSlots(player)
-				local immortalHearts = DukeHelpers.CountOccurencesInTable(filledSlots, DukeHelpers.Spiders.IMMORTAL.pickupSubType)
+				local immortalHearts = DukeHelpers.CountOccurencesInTable(filledSlots, DukeHelpers.Hearts.IMMORTAL.key)
 				if immortalHearts % 2 == 1 then
 					DukeHelpers.FillRottenGulletSlot(player, DukeHelpers.Spiders.IMMORTAL.key, 1)
+					DukeHelpers.sfx:Play(Isaac.GetSoundIdByName("immortal"), 1, 0)
 				end
 			end
 		end)

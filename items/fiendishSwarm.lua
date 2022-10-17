@@ -39,6 +39,8 @@ local WikiDescription = DukeHelpers.GenerateEncyclopediaPage({
 local function MC_USE_ITEM(_, type, rng, player, f)
     if DukeHelpers.Items.fiendishSwarm.IsUnlocked() then
         local dukeData = DukeHelpers.GetDukeData(player)
+        local heartTypeIndex = 0
+        local heartToRemove
 
         local fliesToSpawn = {}
 
@@ -51,18 +53,24 @@ local function MC_USE_ITEM(_, type, rng, player, f)
             goto keeper
         end
 
-        if player:GetMaxHearts() >= 1 and (player:GetHearts() >= 1) then
-            fliesToSpawn = DukeHelpers.RemoveUnallowedHearts(player, { RED = 1 }, true)
-        elseif DukeHelpers.Hearts.SOUL.GetCount(player) >= 1 then
-            fliesToSpawn = DukeHelpers.RemoveUnallowedHearts(player, { SOUL = 1 }, true)
-        elseif DukeHelpers.Hearts.BLACK.GetCount(player) >= 1 then
-            fliesToSpawn = DukeHelpers.RemoveUnallowedHearts(player, { BLACK = 1 }, true)
-        elseif DukeHelpers.Hearts.BONE.GetCount(player) >= 1 then
-            fliesToSpawn = DukeHelpers.RemoveUnallowedHearts(player, { BONE = 1 }, true)
-        elseif DukeHelpers.Hearts.IMMORTAL.GetCount(player) >= 1 then
-            fliesToSpawn = DukeHelpers.RemoveUnallowedHearts(player, { IMMORTAL = 1 }, true)
-        elseif DukeHelpers.Hearts.WEB.GetCount(player) >= 1 then
-            fliesToSpawn = DukeHelpers.RemoveUnallowedHearts(player, { WEB = 1 }, true)
+        while true do
+            heartToRemove = DukeHelpers.FindByProperties(DukeHelpers.Hearts, { removeOrder = heartTypeIndex })
+
+            if not heartToRemove then
+                return
+            end
+
+            if heartToRemove.GetCount(player) >= 1 then
+                local count = 1
+                if heartToRemove.removeMultiplier then
+                    count = heartToRemove.removeMultiplier
+                end
+                fliesToSpawn = DukeHelpers.RemoveUnallowedHearts(player,
+                    { [heartToRemove.key] = count }, true)
+                break
+            end
+
+            heartTypeIndex = heartTypeIndex + 1
         end
 
         ::keeper::
@@ -107,7 +115,6 @@ local function MC_POST_NEW_ROOM()
         local data = DukeHelpers.GetDukeData(player)
 
         if data[Tag] then
-
             local heartsToAdd = {}
 
             DukeHelpers.ForEach(data[Tag], function(flyInitSeed)
