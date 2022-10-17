@@ -6,6 +6,40 @@ local function canPickRedTypeHeart(player)
     return CustomHealthAPI.Helper.CanPickRed(player, "RED_HEART")
 end
 
+local function chapiRemove(player, key, amount)
+    local health = CustomHealthAPI.Library.GetHealthInOrder(player)
+
+    local remaining = amount
+    for i = #health, 1, -1 do
+        if remaining <= 0 then
+            break
+        end
+
+        local heart = health[i]
+        local heartDetails
+        local removeFunction
+        if heart.Other and heart.Other.Key == key then
+            heartDetails = heart.Other
+            removeFunction = CustomHealthAPI.Library.RemoveOtherKey
+        elseif heart.Red and heart.Red.Key == key then
+            heartDetails = heart.Red
+            removeFunction = CustomHealthAPI.Library.RemoveRedKey
+        else
+            goto continue
+        end
+
+        remaining = remaining - heartDetails.HP
+        removeFunction(player, i)
+
+        if remaining < 0 then
+            CustomHealthAPI.Library.AddHealth(player, key, math.abs(remaining))
+            remaining = 0
+        end
+
+        ::continue::
+    end
+end
+
 DukeHelpers.Hearts = {
     RED = {
         subType = HeartSubType.HEART_FULL,
@@ -353,7 +387,7 @@ DukeHelpers.Hearts = {
             CustomHealthAPI.Library.AddHealth(player, "HEART_DAUNTLESS", amount)
         end,
         Remove = function(player, amount)
-            CustomHealthAPI.Library.AddHealth(player, "HEART_DAUNTLESS", -amount)
+            chapiRemove(player, "HEART_DAUNTLESS", amount)
         end,
         removeOrder = 7
     },
@@ -383,8 +417,7 @@ DukeHelpers.Hearts = {
             CustomHealthAPI.Library.AddHealth(player, "HEART_SOILED", amount * 2)
         end,
         Remove = function(player, amount)
-            CustomHealthAPI.Library.AddHealth(player, "HEART_SOILED",
-                -math.min(amount * 2, DukeHelpers.Hearts.SOILED.GetCount(player) * 2))
+            chapiRemove(player, "HEART_SOILED", math.min(amount * 2, DukeHelpers.Hearts.SOILED.GetCount(player) * 2))
         end,
         removeOrder = 2
     },
@@ -427,10 +460,16 @@ DukeHelpers.Hearts = {
             return RepentancePlusMod.CanPickOverlayHeart(player)
         end,
         Add = function(player, amount)
-            CustomHealthAPI.Library.AddHealth(player, "HEART_BALEFUL", amount)
+            if not RepentancePlusMod or not RepentancePlusMod.AddBalefulHearts then
+                return false
+            end
+            RepentancePlusMod.AddBalefulHearts(player, amount)
         end,
         Remove = function(player, amount)
-            CustomHealthAPI.Library.AddHealth(player, "HEART_BALEFUL", -amount)
+            if not RepentancePlusMod or not RepentancePlusMod.AddBalefulHearts then
+                return false
+            end
+            RepentancePlusMod.AddBalefulHearts(player, -amount)
         end
     },
     HARLOT = {
@@ -462,7 +501,7 @@ DukeHelpers.Hearts = {
             CustomHealthAPI.Library.AddHealth(player, "HEART_MISER", amount)
         end,
         Remove = function(player, amount)
-            CustomHealthAPI.Library.AddHealth(player, "HEART_MISER", -amount)
+            chapiRemove(player, "HEART_MISER", amount)
         end,
         removeOrder = 8
     },
@@ -483,10 +522,16 @@ DukeHelpers.Hearts = {
             return RepentancePlusMod.CanPickOverlayHeart(player)
         end,
         Add = function(player, amount)
-            CustomHealthAPI.Library.AddHealth(player, "HEART_EMPTY", amount)
+            if not RepentancePlusMod or not RepentancePlusMod.AddEmptyHearts then
+                return false
+            end
+            RepentancePlusMod.AddEmptyHearts(player, amount)
         end,
         Remove = function(player, amount)
-            CustomHealthAPI.Library.AddHealth(player, "HEART_EMPTY", -amount)
+            if not RepentancePlusMod or not RepentancePlusMod.AddEmptyHearts then
+                return false
+            end
+            RepentancePlusMod.AddEmptyHearts(player, -amount)
         end
     },
     ZEALOT = {
@@ -509,7 +554,7 @@ DukeHelpers.Hearts = {
             CustomHealthAPI.Library.AddHealth(player, "HEART_ZEALOT", amount)
         end,
         Remove = function(player, amount)
-            CustomHealthAPI.Library.AddHealth(player, "HEART_ZEALOT", -amount)
+            chapiRemove(player, "HEART_ZEALOT", amount)
         end,
         removeOrder = 9
     },
@@ -546,10 +591,9 @@ DukeHelpers.Hearts = {
         end,
         Add = function(player, amount)
             CustomHealthAPI.Library.AddHealth(player, "IMMORAL_HEART", amount)
-
         end,
         Remove = function(player, amount)
-            CustomHealthAPI.Library.AddHealth(player, "IMMORAL_HEART", -amount)
+            chapiRemove(player, "IMMORAL_HEART", amount)
         end,
         removeOrder = 10
     },
@@ -579,7 +623,7 @@ DukeHelpers.Hearts = {
             CustomHealthAPI.Library.AddHealth(player, "MORBID_HEART", amount)
         end,
         Remove = function(player, amount)
-            CustomHealthAPI.Library.AddHealth(player, "MORBID_HEART", -amount)
+            chapiRemove(player, "MORBID_HEART", amount)
         end,
         removeOrder = 3
     },

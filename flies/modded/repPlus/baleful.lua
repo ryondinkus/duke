@@ -24,7 +24,7 @@ end
 local function HEART_FLY_MC_PRE_FAMILIAR_COLLISION(_, f, e)
 	if f.SubType == heart.subType then
 		if e:ToNPC() and DukeHelpers.IsActualEnemy(e, true, false) and not e:HasEntityFlags(EntityFlag.FLAG_CHARM) then
-			data = DukeHelpers.GetDukeData(f)
+			local data = DukeHelpers.GetDukeData(f)
 			if not data.purgatoryGhost then
 				local player = f.Player
 				data.purgatoryGhost = Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.PURGATORY, 1, f.Position, Vector.Zero, f)
@@ -36,8 +36,8 @@ end
 
 local function MC_POST_ENTITY_REMOVE(_, entity)
 	if entity.Variant == EffectVariant.PURGATORY and entity.SubType == 1
-	and entity.SpawnerEntity and entity.SpawnerType == EntityType.ENTITY_FAMILIAR
-	and entity.SpawnerVariant == DukeHelpers.FLY_VARIANT and entity.SpawnerEntity.SubType == attackFlySubType then
+		and entity.SpawnerEntity and entity.SpawnerType == EntityType.ENTITY_FAMILIAR
+		and entity.SpawnerVariant == DukeHelpers.FLY_VARIANT and entity.SpawnerEntity.SubType == attackFlySubType then
 		local fly = entity.SpawnerEntity
 		local data = DukeHelpers.GetDukeData(fly)
 		data.purgatoryGhost = nil
@@ -48,7 +48,7 @@ return {
 	spritesheet = "baleful_heart_fly.png",
 	canAttack = true,
 	heart = heart,
-	count = 2,
+	count = 1,
 	weight = 1,
 	poofColor = Color(1, 1, 1, 1, 1, 1, 1),
 	sacAltarQuality = 6,
