@@ -115,6 +115,9 @@ local function OnHeartCollision(_, pickup, collider)
 
 			return
 		end
+
+		local playSfx = nil
+
 		if DukeHelpers.Hearts.PATCHED.IsHeart(pickup) or DukeHelpers.Hearts.DOUBLE_PATCHED.IsHeart(pickup) then
 			local patchedFly = DukeHelpers.GetFlyByPickup(pickup)
 			for i = 1, patchedFly.count do
@@ -122,8 +125,13 @@ local function OnHeartCollision(_, pickup, collider)
 					local removedFlies = DukeHelpers.RemoveHeartFly(p, DukeHelpers.Flies.BROKEN, 1)
 
 					DukeHelpers.SpawnHeartFlyPoof(DukeHelpers.Flies.BROKEN, removedFlies[1].Position, p)
+					DukeHelpers.sfx:Play(Isaac.GetSoundIdByName("PATCHED_HEART_HEAL"))
+					playSfx = false
 				else
 					DukeHelpers.AddHeartFly(p, patchedFly, patchedFly.count - i + 1)
+					if playSfx == nil then
+						playSfx = true
+					end
 					break
 				end
 			end
@@ -135,6 +143,10 @@ local function OnHeartCollision(_, pickup, collider)
 		if pickup then
 			DukeHelpers.PickupFlyHeart(pickup)
 			pickup:Remove()
+
+			if playSfx then
+				DukeHelpers.PlayHeartPickupSfx(heart)
+			end
 
 			if pickup.Price == PickupPrice.PRICE_SPIKES then
 				p:TakeDamage(2, DamageFlag.DAMAGE_SPIKES | DamageFlag.DAMAGE_NO_PENALTIES, EntityRef(nil), 0)

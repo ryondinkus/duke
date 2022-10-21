@@ -19,7 +19,6 @@ return {
     weight = 0,
     poofColor = Color(0.62, 0.62, 0.62, 1, 0.78, 0.78, 1),
     sacAltarQuality = 3,
-    sfx = Isaac.GetSoundIdByName("immortal"),
     callbacks = {
         {
             ModCallbacks.MC_PRE_SPAWN_CLEAN_AWARD,
@@ -28,6 +27,6 @@ return {
     },
     heartFlyDamageMultiplier = 1.3,
     attackFlyDamageMultiplier = 1.3,
-	dropHeart = DukeHelpers.Hearts.IMMORTAL,
-	dropHeartChance = 5
+    dropHeart = DukeHelpers.Hearts.IMMORTAL,
+    dropHeartChance = 5
 }

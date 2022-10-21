@@ -52,7 +52,6 @@ return {
 	weight = 1,
 	poofColor = Color(1, 1, 1, 1, 1, 1, 1),
 	sacAltarQuality = 6,
-	sfx = SoundEffect.SOUND_SUPERHOLY,
 	callbacks = {
 		{
 			ModCallbacks.MC_PRE_FAMILIAR_COLLISION,

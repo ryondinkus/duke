@@ -11,7 +11,8 @@ end
 
 local function HEART_FLY_MC_PRE_FAMILIAR_COLLISION(_, f, e)
 	if f.SubType == heart.subType then
-		if e:ToNPC() and DukeHelpers.IsActualEnemy(e, true, false) and not e:HasEntityFlags(EntityFlag.FLAG_CHARM) and DukeHelpers.rng:RandomInt(3) == 0 then
+		if e:ToNPC() and DukeHelpers.IsActualEnemy(e, true, false) and not e:HasEntityFlags(EntityFlag.FLAG_CHARM) and
+			DukeHelpers.rng:RandomInt(3) == 0 then
 			e:AddMidasFreeze(EntityRef(f), 30)
 		end
 	end
@@ -41,7 +42,6 @@ return {
 	weight = 1,
 	poofColor = Color(0.62, 0.62, 0.62, 1, 0.78, 0.55, 0),
 	sacAltarQuality = 4,
-	sfx = SoundEffect.SOUND_GOLD_HEART,
 	callbacks = {
 		{
 			ModCallbacks.MC_PRE_FAMILIAR_COLLISION,

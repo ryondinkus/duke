@@ -224,3 +224,29 @@ function DukeHelpers.GetBaseHeartKey(heart)
 
     return h.key
 end
+
+function DukeHelpers.PlayHeartPickupSfx(heart)
+    local h = heart
+
+    while not h.sfx and h.uses do
+        h = heart.uses
+    end
+
+    local sfx = h.sfx
+
+    if sfx and type(sfx) == "function" then
+        sfx = sfx()
+    end
+
+    if not sfx then
+        sfx = SoundEffect.SOUND_BOSS2_BUBBLES
+    end
+
+    if type(sfx) ~= "table" then
+        sfx = { sfx }
+    end
+
+    for _, s in pairs(sfx) do
+        DukeHelpers.sfx:Play(s)
+    end
+end

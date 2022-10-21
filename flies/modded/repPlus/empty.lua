@@ -22,7 +22,7 @@ local function MC_POST_NEW_LEVEL()
 	DukeHelpers.ForEachPlayer(function(player)
 		playerData = DukeHelpers.GetDukeData(player)
 		local emptyFlyCount = DukeHelpers.CountByProperties(playerData.heartFlies, { key = DukeHelpers.Flies.EMPTY.key })
-		for i=1, emptyFlyCount do
+		for i = 1, emptyFlyCount do
 			Isaac.Spawn(EntityType.ENTITY_FAMILIAR, FamiliarVariant.ABYSS_LOCUST, 7, player.Position, Vector.Zero, player) -- subtype 7 makes the locust persist between rooms for some fucked up evil reason
 		end
 	end)
@@ -35,7 +35,6 @@ return {
 	count = 1,
 	weight = 1,
 	poofColor = Color(0, 0.2, 0, 1, 0, 0, 0),
-	sfx = SoundEffect.SOUND_ROTTEN_HEART,
 	sacAltarQuality = 4,
 	callbacks = {
 		{

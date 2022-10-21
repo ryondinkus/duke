@@ -19,7 +19,6 @@ return {
     count = 1,
     weight = 1,
     poofColor = Color(0.62, 0.62, 0.62, 1, 0.59, 0.59, 0.59),
-    sfx = SoundEffect.SOUND_BONE_HEART,
     callbacks = {
         {
             ModCallbacks.MC_POST_ENTITY_REMOVE,

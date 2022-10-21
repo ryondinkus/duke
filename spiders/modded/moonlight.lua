@@ -25,7 +25,6 @@ return {
 	count = 1,
 	weight = 0,
 	poofColor = Color(0.62, 0.62, 0.62, 1, 0.90, 0.78, 1),
-	sfx = SoundEffect.SOUND_SOUL_PICKUP,
 	damageMultiplier = 1.3,
 	tearDamageMultiplier = 2,
 	tearColor = Color(0.9, 0.8, 1, 1, 0.7, 0.5, 0.9),

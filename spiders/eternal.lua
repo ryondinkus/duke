@@ -18,7 +18,6 @@ return {
 	heart = heart,
 	count = 1,
 	poofColor = Color(0.62, 0.62, 0.62, 1, 0.78, 0.78, 0.78),
-	sfx = SoundEffect.SOUND_SUPERHOLY,
 	callbacks = {
 		{
 			ModCallbacks.MC_PRE_FAMILIAR_COLLISION,
