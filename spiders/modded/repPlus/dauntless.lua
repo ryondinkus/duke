@@ -21,16 +21,16 @@ local function MC_POST_PLAYER_UPDATE(_, player)
 	local dauntlessHearts = DukeHelpers.CountOccurencesInTable(filledSlots, DukeHelpers.Spiders.DAUNTLESS.key)
 
 	if dauntlessHearts > 0
-		and (not playerData.dauntlessWafer or collectibleNum <= 0) then
+		and (not playerData.spiderDauntlessWafer or collectibleNum <= 0) then
 		if collectibleNum <= 0 then
 			effects:AddCollectibleEffect(CollectibleType.COLLECTIBLE_WAFER, false)
-			playerData.dauntlessWafer = true
+			playerData.spiderDauntlessWafer = true
 		end
 	elseif dauntlessHearts <= 0 and
-		playerData.dauntlessWafer then
+		playerData.spiderDauntlessWafer then
 		if collectibleNum > 0 then
 			effects:RemoveCollectibleEffect(CollectibleType.COLLECTIBLE_WAFER)
-			playerData.dauntlessWafer = nil
+			playerData.spiderDauntlessWafer = nil
 		end
 	end
 end

@@ -27,16 +27,16 @@ local function MC_POST_PLAYER_UPDATE(_, player)
 		{ key = DukeHelpers.Flies.DAUNTLESS.key })
 
 	if dauntlessFlyCount > 0
-		and (not playerData.dauntlessWafer or collectibleNum <= 0) then
+		and (not playerData.flyDauntlessWafer or collectibleNum <= 0) then
 		if collectibleNum <= 0 then
 			effects:AddCollectibleEffect(CollectibleType.COLLECTIBLE_WAFER, false)
-			playerData.dauntlessWafer = true
+			playerData.flyDauntlessWafer = true
 		end
 	elseif dauntlessFlyCount <= 0 and
-		playerData.dauntlessWafer then
+		playerData.flyDauntlessWafer then
 		if collectibleNum > 0 then
 			effects:RemoveCollectibleEffect(CollectibleType.COLLECTIBLE_WAFER)
-			playerData.dauntlessWafer = nil
+			playerData.flyDauntlessWafer = nil
 		end
 	end
 end

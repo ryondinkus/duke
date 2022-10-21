@@ -551,6 +551,9 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_PICKUP_INIT, function(_, pickup)
 end)
 
 local function getModDirectoryName(str)
+    if not str then
+        return ""
+    end
     local editedString = str:sub(1, -2)
     local index = editedString:find("/[^/]*$")
 
