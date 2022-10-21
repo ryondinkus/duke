@@ -22,8 +22,9 @@ local function MC_POST_NEW_LEVEL()
 	DukeHelpers.ForEachPlayer(function(player)
 		playerData = DukeHelpers.GetDukeData(player)
 		local zealotFlyCount = DukeHelpers.CountByProperties(playerData.heartFlies, { key = DukeHelpers.Flies.ZEALOT.key })
-		for i=1, zealotFlyCount do
-			player:AddItemWisp(Game():GetItemPool():GetCollectible(DukeHelpers.rng:RandomInt(ItemPoolType.NUM_ITEMPOOLS)), player.Position, true)
+		for i = 1, zealotFlyCount do
+			player:AddItemWisp(Game():GetItemPool():GetCollectible(DukeHelpers.rng:RandomInt(ItemPoolType.NUM_ITEMPOOLS)),
+				player.Position, true)
 		end
 	end)
 end
@@ -36,7 +37,6 @@ return {
 	weight = 1,
 	poofColor = Color(0.62, 0.62, 0.62, 1, 0.58, 0.12, 0.80),
 	sacAltarQuality = 2,
-	sfx = SoundEffect.SOUND_HOLY,
 	callbacks = {
 		{
 			ModCallbacks.MC_PRE_FAMILIAR_COLLISION,

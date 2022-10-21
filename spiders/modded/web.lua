@@ -26,7 +26,6 @@ return {
 	count = 1,
 	weight = 0,
 	poofColor = Color(1, 1, 1, 1, 1, 1, 1),
-	sfx = SoundEffect.SOUND_SPIDER_SPIT_ROAR,
 	callbacks = {
 		{
 			ModCallbacks.MC_PRE_FAMILIAR_COLLISION,

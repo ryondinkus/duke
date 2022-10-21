@@ -132,6 +132,7 @@ local function OnHeartCollision(_, pickup, collider)
 		end
 
 		local spider = DukeHelpers.Spiders[pickupKey]
+		local playSfx = true
 
 		if DukeHelpers.Trinkets.infestedHeart.helpers.RandomlySpawnHeartFlyFromPickup(p, pickup) then
 			goto final
@@ -146,6 +147,10 @@ local function OnHeartCollision(_, pickup, collider)
 				else
 					playerData.stuckSlots = 0
 				end
+				DukeHelpers.sfx:Play(Isaac.GetSoundIdByName("PATCHED_HEART_HEAL"))
+				playSfx = false
+			else
+				DukeHelpers.PlayHeartPickupSfx(heart)
 			end
 
 			DukeHelpers.FillRottenGulletSlot(p, pickupKey, leftoverSlots)
@@ -157,17 +162,13 @@ local function OnHeartCollision(_, pickup, collider)
 		end
 
 		::final::
-		local sfx = SoundEffect.SOUND_BOSS2_BUBBLES
-
 		if pickup then
 			DukeHelpers.PickupFlyHeart(pickup)
 			pickup:Remove()
 
-			if spider.sfx then
-				sfx = spider.sfx
+			if playSfx then
+				DukeHelpers.PlayHeartPickupSfx(heart)
 			end
-
-			DukeHelpers.sfx:Play(sfx)
 			DukeHelpers.AnimateHeartPickup(pickup, p)
 
 			if pickup.Price == PickupPrice.PRICE_SPIKES then

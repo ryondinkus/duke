@@ -47,7 +47,6 @@ DukeHelpers.Hearts = {
         GetCount = function(player)
             return DukeHelpers.Clamp(player:GetHearts() - (DukeHelpers.Hearts.ROTTEN.GetCount(player) * 2) -
                 DukeHelpers.Hearts.MORBID.GetCount(player) - (DukeHelpers.Hearts.SOILED.GetCount(player) * 2), 0)
-
         end,
         CanPick = function(player)
             return player:CanPickRedHearts()
@@ -58,7 +57,8 @@ DukeHelpers.Hearts = {
         Remove = function(player, amount)
             player:AddHearts(-amount)
         end,
-        removeOrder = 0
+        removeOrder = 0,
+        sfx = SoundEffect.SOUND_BOSS2_BUBBLES
     },
     SOUL = {
         subType = HeartSubType.HEART_SOUL,
@@ -78,7 +78,8 @@ DukeHelpers.Hearts = {
         Remove = function(player, amount)
             player:AddSoulHearts(-math.min(DukeHelpers.Hearts.SOUL.GetCount(player), amount))
         end,
-        removeOrder = 4
+        removeOrder = 4,
+        sfx = SoundEffect.SOUND_HOLY
     },
     ETERNAL = {
         subType = HeartSubType.HEART_ETERNAL,
@@ -112,7 +113,8 @@ DukeHelpers.Hearts = {
 
                 end
             end
-        end
+        end,
+        sfx = SoundEffect.SOUND_SUPERHOLY
     },
     BLACK = {
         subType = HeartSubType.HEART_BLACK,
@@ -151,7 +153,8 @@ DukeHelpers.Hearts = {
             DukeHelpers.Hearts.IMMORTAL.Add(player, immortalHearts)
             DukeHelpers.Hearts.WEB.Add(player, webHearts)
         end,
-        removeOrder = 5
+        removeOrder = 5,
+        sfx = SoundEffect.SOUND_UNHOLY
     },
     GOLDEN = {
         subType = HeartSubType.HEART_GOLDEN,
@@ -167,7 +170,8 @@ DukeHelpers.Hearts = {
         end,
         Remove = function(player, amount)
             player:AddGoldenHearts(-amount)
-        end
+        end,
+        sfx = SoundEffect.SOUND_GOLD_HEART
     },
     BLENDED = {
         subType = HeartSubType.HEART_BLENDED,
@@ -179,7 +183,8 @@ DukeHelpers.Hearts = {
         end,
         Remove = function(player, amount)
             player:AddHearts(-amount)
-        end
+        end,
+        sfx = { SoundEffect.SOUND_BOSS2_BUBBLES, SoundEffect.SOUND_HOLY }
     },
     BONE = {
         subType = HeartSubType.HEART_BONE,
@@ -196,7 +201,8 @@ DukeHelpers.Hearts = {
         Remove = function(player, amount)
             player:AddBoneHearts(-amount)
         end,
-        removeOrder = 12
+        removeOrder = 12,
+        sfx = SoundEffect.SOUND_BONE_HEART
     },
     ROTTEN = {
         subType = HeartSubType.HEART_ROTTEN,
@@ -213,7 +219,8 @@ DukeHelpers.Hearts = {
         Remove = function(player, amount)
             player:AddRottenHearts(-math.min(amount * 2, DukeHelpers.Hearts.ROTTEN.GetCount(player) * 2))
         end,
-        removeOrder = 1
+        removeOrder = 1,
+        sfx = SoundEffect.SOUND_ROTTEN_HEART
     },
     BROKEN = {
         subType = 13,
@@ -255,7 +262,8 @@ DukeHelpers.Hearts = {
             end
 
             data.moons = math.max(data.moons - amount, 0)
-        end
+        end,
+        sfx = SoundEffect.SOUND_SOUL_PICKUP
     },
     PATCHED = {
         subType = 3320,
@@ -299,7 +307,10 @@ DukeHelpers.Hearts = {
             local soulHeartsRemoved = initialSoulHearts - DukeHelpers.Hearts.SOUL.GetCount(player)
             DukeHelpers.Hearts.SOUL.Add(player, soulHeartsRemoved)
         end,
-        removeOrder = 11
+        removeOrder = 11,
+        sfx = function()
+            return Isaac.GetSoundIdByName("immortal")
+        end
     },
     WEB = {
         variant = 2000,
@@ -356,7 +367,8 @@ DukeHelpers.Hearts = {
             DukeHelpers.Hearts.SOUL.Add(player, soulHeartsRemoved)
         end,
         removeOrder = 6,
-        removeMultiplier = 2
+        removeMultiplier = 2,
+        sfx = SoundEffect.SOUND_SPIDER_SPIT_ROAR
     },
     BROKEN_HEART = {
         subType = 84,
@@ -365,7 +377,8 @@ DukeHelpers.Hearts = {
         end,
         OnPickup = function(player, _)
             player:AddSoulHearts(2)
-        end
+        end,
+        sfx = SoundEffect.SOUND_BONE_SNAP
     },
     DAUNTLESS = {
         subType = 85,
@@ -389,7 +402,8 @@ DukeHelpers.Hearts = {
         Remove = function(player, amount)
             chapiRemove(player, "HEART_DAUNTLESS", amount)
         end,
-        removeOrder = 7
+        removeOrder = 7,
+        sfx = SoundEffect.SOUND_DIVINE_INTERVENTION
     },
     HOARDED = {
         subType = 86,
@@ -419,7 +433,8 @@ DukeHelpers.Hearts = {
         Remove = function(player, amount)
             chapiRemove(player, "HEART_SOILED", math.min(amount * 2, DukeHelpers.Hearts.SOILED.GetCount(player) * 2))
         end,
-        removeOrder = 2
+        removeOrder = 2,
+        sfx = SoundEffect.SOUND_ROTTEN_HEART
     },
     CURDLED = {
         subType = 89,
@@ -470,7 +485,8 @@ DukeHelpers.Hearts = {
                 return false
             end
             RepentancePlusMod.AddBalefulHearts(player, -amount)
-        end
+        end,
+        sfx = SoundEffect.SOUND_SUPERHOLY
     },
     HARLOT = {
         subType = 95,
@@ -503,7 +519,8 @@ DukeHelpers.Hearts = {
         Remove = function(player, amount)
             chapiRemove(player, "HEART_MISER", amount)
         end,
-        removeOrder = 8
+        removeOrder = 8,
+        sfx = SoundEffect.SOUND_GOLD_HEART
     },
     EMPTY = {
         subType = 97,
@@ -532,7 +549,8 @@ DukeHelpers.Hearts = {
                 return false
             end
             RepentancePlusMod.AddEmptyHearts(player, -amount)
-        end
+        end,
+        sfx = SoundEffect.SOUND_ROTTEN_HEART
     },
     ZEALOT = {
         subType = 99,
@@ -556,7 +574,8 @@ DukeHelpers.Hearts = {
         Remove = function(player, amount)
             chapiRemove(player, "HEART_ZEALOT", amount)
         end,
-        removeOrder = 9
+        removeOrder = 9,
+        sfx = SoundEffect.SOUND_HOLY
     },
     DESERTED = {
         subType = 100,
@@ -565,13 +584,15 @@ DukeHelpers.Hearts = {
                 return false
             end
             return CustomHealthAPI.Library.CanPickKey(player, "HEART_ZEALOT")
-        end
+        end,
+        sfx = { SoundEffect.SOUND_BOSS2_BUBBLES, SoundEffect.SOUND_UNHOLY }
     },
     BLENDED_BLACK = {
         variant = 1023,
         CanPick = function(player)
             return DukeHelpers.Hearts.BLACK.CanPick(player) or DukeHelpers.Hearts.RED.CanPick(player)
-        end
+        end,
+        sfx = { SoundEffect.SOUND_BOSS2_BUBBLES, SoundEffect.SOUND_UNHOLY }
     },
     IMMORAL = {
         variant = 1024,
@@ -595,12 +616,18 @@ DukeHelpers.Hearts = {
         Remove = function(player, amount)
             chapiRemove(player, "IMMORAL_HEART", amount)
         end,
-        removeOrder = 10
+        removeOrder = 10,
+        sfx = function()
+            return Isaac.GetSoundIdByName("Fiend Heart Pickup")
+        end
     },
     BLENDED_IMMORAL = {
         variant = 1026,
         CanPick = function(player)
             return DukeHelpers.Hearts.IMMORAL.CanPick(player) or DukeHelpers.Hearts.RED.CanPick(player)
+        end,
+        sfx = function()
+            return { SoundEffect.SOUND_BOSS2_BUBBLES, Isaac.GetSoundIdByName("Fiend Heart Pickup") }
         end
     },
     MORBID = {
@@ -625,7 +652,8 @@ DukeHelpers.Hearts = {
         Remove = function(player, amount)
             chapiRemove(player, "MORBID_HEART", amount)
         end,
-        removeOrder = 3
+        removeOrder = 3,
+        sfx = SoundEffect.SOUND_ROTTEN_HEART
     },
 }
 
@@ -747,14 +775,10 @@ local doNotCopyProperties = {
 }
 
 for key, heart in pairs(useHearts) do
-    if DukeHelpers.IsArray(heart) then
-
-    else
-        for propertyKey, propertyValue in pairs(heart.uses) do
-            if heart[propertyKey] == nil and
-                not DukeHelpers.Find(doNotCopyProperties, function(v) return v ~= propertyKey end) then
-                heart[propertyKey] = propertyValue
-            end
+    for propertyKey, propertyValue in pairs(heart.uses) do
+        if heart[propertyKey] == nil and
+            not DukeHelpers.Find(doNotCopyProperties, function(v) return v ~= propertyKey end) then
+            heart[propertyKey] = propertyValue
         end
     end
 

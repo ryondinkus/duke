@@ -68,7 +68,6 @@ return {
 	count = 2,
 	weight = 1,
 	poofColor = Color(0.6, 0.6, 0.6, 1, 0.3, 0.3, 0.3),
-	sfx = SoundEffect.SOUND_DIVINE_INTERVENTION,
 	callbacks = {
 		{
 			ModCallbacks.MC_PRE_FAMILIAR_COLLISION,

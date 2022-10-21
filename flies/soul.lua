@@ -6,7 +6,6 @@ return {
     weight = 2,
     poofColor = Color(0.62, 0.62, 0.62, 1, 0, 0.25, 0.43),
     sacAltarQuality = 2,
-    sfx = SoundEffect.SOUND_HOLY,
-	dropHeart = DukeHelpers.Hearts.HALF_SOUL,
-	dropHeartChance = 100
+    dropHeart = DukeHelpers.Hearts.HALF_SOUL,
+    dropHeartChance = 100
 }

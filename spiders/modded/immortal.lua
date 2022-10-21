@@ -19,7 +19,6 @@ return {
 	count = 2,
 	weight = 0,
 	poofColor = Color(0.62, 0.62, 0.62, 1, 0.78, 0.78, 1),
-	sfx = Isaac.GetSoundIdByName("immortal"),
 	callbacks = {
 		{
 			ModCallbacks.MC_PRE_SPAWN_CLEAN_AWARD,

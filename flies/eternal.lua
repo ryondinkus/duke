@@ -29,7 +29,6 @@ return {
 	count = 1,
 	poofColor = Color(0.62, 0.62, 0.62, 1, 0.78, 0.78, 0.78),
 	sacAltarQuality = 6,
-	sfx = SoundEffect.SOUND_SUPERHOLY,
 	callbacks = {
 		{
 			ModCallbacks.MC_FAMILIAR_UPDATE,
@@ -38,5 +37,5 @@ return {
 		}
 	},
 	heartFlyDamageMultiplier = 1.5,
-    isInvincible = true
+	isInvincible = true
 }

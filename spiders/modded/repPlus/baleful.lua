@@ -25,14 +25,15 @@ local function applyTearEffects(tear)
 	tear:AddTearFlags(TearFlags.TEAR_PIERCING | TearFlags.TEAR_SPECTRAL)
 
 	local function tearCollision(_, t, e)
-        if tear.InitSeed == t.InitSeed and e:ToNPC() and DukeHelpers.IsActualEnemy(e, true, false) and not e:HasEntityFlags(EntityFlag.FLAG_CHARM) then
+		if tear.InitSeed == t.InitSeed and e:ToNPC() and DukeHelpers.IsActualEnemy(e, true, false) and
+			not e:HasEntityFlags(EntityFlag.FLAG_CHARM) then
 			local purgatoryGhost = Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.PURGATORY, 1, t.Position, Vector.Zero, t)
 			purgatoryGhost.CollisionDamage = t.BaseDamage / 1.25
 			dukeMod:RemoveCallback(ModCallbacks.MC_PRE_TEAR_COLLISION, tearCollision)
-        end
-    end
+		end
+	end
 
-    dukeMod:AddCallback(ModCallbacks.MC_PRE_TEAR_COLLISION, tearCollision)
+	dukeMod:AddCallback(ModCallbacks.MC_PRE_TEAR_COLLISION, tearCollision)
 end
 
 return {
@@ -41,7 +42,6 @@ return {
 	count = 1,
 	weight = 1,
 	poofColor = Color(0.62, 0.62, 0.62, 1, 0.78, 0.78, 0.78),
-	sfx = SoundEffect.SOUND_SUPERHOLY,
 	callbacks = {
 		{
 			ModCallbacks.MC_PRE_FAMILIAR_COLLISION,

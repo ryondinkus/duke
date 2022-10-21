@@ -52,7 +52,6 @@ return {
 	weight = 1,
 	poofColor = Color(2, 1, 1, 1, 0, 0, 0),
 	sacAltarQuality = 4,
-	sfx = SoundEffect.SOUND_ROTTEN_HEART,
 	callbacks = {
 		{
 			ModCallbacks.MC_PRE_FAMILIAR_COLLISION,

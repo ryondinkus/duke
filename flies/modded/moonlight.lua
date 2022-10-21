@@ -34,7 +34,6 @@ return {
 	weight = 0,
 	poofColor = Color(0.62, 0.62, 0.62, 1, 0.90, 0.78, 1),
 	sacAltarQuality = 3,
-	sfx = SoundEffect.SOUND_SOUL_PICKUP,
 	callbacks = {
 		{
 			ModCallbacks.MC_PRE_FAMILIAR_COLLISION,

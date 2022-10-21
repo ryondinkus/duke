@@ -294,9 +294,7 @@ function DukeHelpers.IsFlyOfPlayer(fly, player)
 	return false
 end
 
-function DukeHelpers.SpawnPickupHeartFly(player, pickup, overriddenKey, amount, applyInfestedHeart)
-	local sfx = SoundEffect.SOUND_BOSS2_BUBBLES
-
+function DukeHelpers.SpawnPickupHeartFly(player, pickup, overriddenKey, amount, applyInfestedHeart, playSfx)
 	local pickupKey = overriddenKey or DukeHelpers.GetKeyFromPickup(pickup)
 
 	if not pickupKey then
@@ -341,11 +339,9 @@ function DukeHelpers.SpawnPickupHeartFly(player, pickup, overriddenKey, amount, 
 	end
 
 	if pickup then
-		if flyToSpawn.sfx then
-			sfx = flyToSpawn.sfx
+		if playSfx ~= false then
+			DukeHelpers.PlayHeartPickupSfx(heart)
 		end
-
-		DukeHelpers.sfx:Play(sfx)
 		DukeHelpers.AnimateHeartPickup(pickup, player)
 	end
 

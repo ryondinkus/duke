@@ -19,7 +19,6 @@ return {
 	count = 2,
 	weight = 1,
 	poofColor = Color(0, 0, 0, 1, 0, 0, 0),
-	sfx = SoundEffect.SOUND_UNHOLY,
 	callbacks = {
 		{
 			ModCallbacks.MC_PRE_FAMILIAR_COLLISION,
