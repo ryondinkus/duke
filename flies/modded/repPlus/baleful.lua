@@ -37,7 +37,7 @@ end
 local function MC_POST_ENTITY_REMOVE(_, entity)
 	if entity.Variant == EffectVariant.PURGATORY and entity.SubType == 1
 		and entity.SpawnerEntity and entity.SpawnerType == EntityType.ENTITY_FAMILIAR
-		and entity.SpawnerVariant == DukeHelpers.FLY_VARIANT and entity.SpawnerEntity.SubType == attackFlySubType then
+		and entity.SpawnerVariant == DukeHelpers.FLY_VARIANT and entity.SpawnerEntity.SubType == heart.subType then
 		local fly = entity.SpawnerEntity
 		local data = DukeHelpers.GetDukeData(fly)
 		data.purgatoryGhost = nil

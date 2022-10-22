@@ -6,7 +6,6 @@ DukeHelpers.RegisterUnlock(flyHeartsUnlock)
 
 function DukeHelpers.SetFlyHeart(pickup)
     local pickupData = pickup:GetData()
-    pickupData.isFlyHeart = true
 
     local pickupKey = DukeHelpers.GetKeyFromPickup(pickup)
 
@@ -15,6 +14,21 @@ function DukeHelpers.SetFlyHeart(pickup)
     end
 
     local flyToSpawn = DukeHelpers.Flies[pickupKey]
+
+    if not flyToSpawn then
+        return
+    end
+
+    if flyToSpawn.heart.uses then
+        local uses = flyToSpawn.heart.uses
+        if DukeHelpers.IsArray(uses) then
+            local usesTable = uses
+            uses = usesTable[DukeHelpers.rng:RandomInt(#usesTable) + 1]
+        end
+        flyToSpawn = DukeHelpers.Flies[uses.key]
+    end
+
+    pickupData.isFlyHeart = true
 
     local spritesheet
 
@@ -102,12 +116,22 @@ function DukeHelpers.PickupFlyHeart(pickup)
 
         if player and pickup:GetData().isFlyHeart then
             local pickupKey = DukeHelpers.GetKeyFromPickup(pickup)
+            local originalPickupKey = pickupKey
+
+            if DukeHelpers.Hearts[pickupKey].uses then
+                local uses = DukeHelpers.Hearts[pickupKey].uses
+                if DukeHelpers.IsArray(uses) then
+                    local usesTable = uses
+                    uses = usesTable[DukeHelpers.rng:RandomInt(#usesTable) + 1]
+                end
+                pickupKey = uses.key
+            end
 
             if not pickupKey then
                 return
             end
 
-            DukeHelpers.AddHeartFly(player, DukeHelpers.Flies[pickupKey])
+            DukeHelpers.AddHeartFly(player, DukeHelpers.Flies[pickupKey], DukeHelpers.Flies[originalPickupKey].count)
             pickup:GetData().isCollected = true
         end
     end

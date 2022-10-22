@@ -72,8 +72,20 @@ local function MC_POST_PLAYER_UPDATE(_, player)
         local baseHeartKey = DukeHelpers.GetBaseHeartKey(heart)
         local heartsToRemove = math.max(data.health[baseHeartKey] - data.previousHealth[baseHeartKey], 0)
 
-        if heart and heart.Remove then
-            heart.Remove(player, heartsToRemove)
+        if heart then
+            if heart.Remove then
+                heart.Remove(player, heartsToRemove)
+            elseif heart.ignore then
+                for key, value in pairs(data.health) do
+                    if value > data.previousHealth[key] then
+                        local heartToRemove = DukeHelpers.Hearts[key]
+
+                        if heartToRemove.Remove then
+                            heartToRemove.Remove(player, value - data.previousHealth[key])
+                        end
+                    end
+                end
+            end
         end
         data[Tag] = nil
     end

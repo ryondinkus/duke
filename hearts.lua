@@ -370,16 +370,6 @@ DukeHelpers.Hearts = {
         removeMultiplier = 2,
         sfx = SoundEffect.SOUND_SPIDER_SPIT_ROAR
     },
-    BROKEN_HEART = {
-        subType = 84,
-        CanPick = function(_)
-            return true
-        end,
-        OnPickup = function(player, _)
-            player:AddSoulHearts(2)
-        end,
-        sfx = SoundEffect.SOUND_BONE_SNAP
-    },
     DAUNTLESS = {
         subType = 85,
         isBase = true,
@@ -685,15 +675,25 @@ local useHearts = {
             return DukeHelpers.Hearts.WEB.CanPick(player, true)
         end
     },
+    BROKEN_HEART = {
+        subType = 84,
+        uses = DukeHelpers.Hearts.BROKEN,
+        ignore = true,
+        sfx = SoundEffect.SOUND_BONE_SNAP
+    },
     SAVAGE = {
         subType = 90,
         uses = DukeHelpers.Hearts.RED,
         ignore = true,
         OnPickup = function(player, pickup)
             if DukeHelpers.IsDuke(player) then
+                local spawnAmount = 2
+                if DukeHelpers.Trinkets.infestedHeart.helpers.ShouldSpawnExtraFly(player) then
+                    spawnAmount = spawnAmount + 1
+                end
                 DukeHelpers.SpawnPickupHeartFly(player,
                     { Type = pickup.Type, Variant = pickup.Variant, SubType = pickup.SubType, Price = 0 },
-                    DukeHelpers.Hearts.RED.key, 2
+                    DukeHelpers.Hearts.RED.key, spawnAmount
                     , false)
             elseif DukeHelpers.IsHusk(player) then
                 DukeHelpers.FillRottenGulletSlot(player, DukeHelpers.Hearts.RED.key, 2)
