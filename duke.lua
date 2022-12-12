@@ -353,6 +353,37 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_PEFFECT_UPDATE, function(_, player)
 	end
 end)
 
+dukeMod:AddPriorityCallback(ModCallbacks.MC_USE_CARD, CallbackPriority.EARLY, function(_, card, player)
+	if FiendFolio and card == Card.JACK_OF_HEARTS and DukeHelpers.IsDuke(player) then
+		local data = DukeHelpers.GetDukeData(player)
+		data.jackOfHearts = DukeHelpers.Hearts.SOUL.GetCount(player)
+	end
+end)
+
+dukeMod:AddPriorityCallback(ModCallbacks.MC_USE_CARD, CallbackPriority.LATE, function(_, card, player)
+	if FiendFolio and card == Card.JACK_OF_HEARTS and DukeHelpers.IsDuke(player) then
+		local data = DukeHelpers.GetDukeData(player)
+
+		local immoralHeartsToAdd = data.jackOfHearts - 1
+
+		DukeHelpers.Hearts.IMMORAL.Remove(player, DukeHelpers.Hearts.IMMORAL.GetCount(player))
+
+		DukeHelpers.Hearts.SOUL.Add(player, 1)
+
+		local heartFlies = data.heartFlies
+
+		for i, fly in pairs(heartFlies) do
+			if fly.key == DukeHelpers.Hearts.SOUL.key or fly.key == DukeHelpers.Hearts.BLACK.key then
+				DukeHelpers.ReplaceHeartFly(player, i, DukeHelpers.Flies.IMMORAL)
+			end
+		end
+
+		DukeHelpers.AddHeartFly(player, DukeHelpers.Flies.IMMORAL, immoralHeartsToAdd, false)
+
+		data.jackOfHearts = nil
+	end
+end)
+
 dukeMod:AddCallback(ModCallbacks.MC_POST_PEFFECT_UPDATE, function(_, player)
 	DukeHelpers.OnItemPickup(player, CollectibleType.COLLECTIBLE_ABADDON, "DukeAbaddonPickup", function()
 		local redFlies = DukeHelpers.CountByProperties(DukeHelpers.GetDukeData(player).heartFlies,

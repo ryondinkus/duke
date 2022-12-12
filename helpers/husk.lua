@@ -18,6 +18,18 @@ function DukeHelpers.HasHusk()
     return found
 end
 
+function DukeHelpers.CountRottenGulletSlotsByKey(player, key)
+    local slots = DukeHelpers.GetFilledRottenGulletSlots(player)
+    local count = 0
+    for _, slot in pairs(slots) do
+        if slot == key then
+            count = count + 1
+        end
+    end
+
+    return count
+end
+
 function DukeHelpers.GetFilledRottenGulletSlots(player)
     local data = DukeHelpers.GetDukeData(player)
     if data then

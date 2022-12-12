@@ -285,6 +285,49 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_UPDATE, function()
 	end
 end)
 
+dukeMod:AddPriorityCallback(ModCallbacks.MC_USE_CARD, CallbackPriority.EARLY, function(_, card, player)
+	if FiendFolio and card == Card.JACK_OF_HEARTS and DukeHelpers.IsHusk(player) then
+		local data = DukeHelpers.GetDukeData(player)
+		data.jackOfHearts = DukeHelpers.Hearts.SOUL.GetCount(player)
+	end
+end)
+
+dukeMod:AddPriorityCallback(ModCallbacks.MC_USE_CARD, CallbackPriority.LATE, function(_, card, player)
+	if FiendFolio and card == Card.JACK_OF_HEARTS and DukeHelpers.IsHusk(player) then
+		local data = DukeHelpers.GetDukeData(player)
+
+		local immoralHeartsToAdd = data.jackOfHearts - 1
+
+		DukeHelpers.Hearts.IMMORAL.Remove(player, DukeHelpers.Hearts.IMMORAL.GetCount(player))
+
+		DukeHelpers.Hearts.SOUL.Add(player, 1)
+
+		local gulletSlots = DukeHelpers.GetFilledRottenGulletSlots(player)
+
+		for i = 1, #gulletSlots do
+			local gulletSlot = gulletSlots[i]
+			if gulletSlot == DukeHelpers.Hearts.SOUL.key or gulletSlot == DukeHelpers.Hearts.BLACK.key then
+				gulletSlots[i] = DukeHelpers.Hearts.IMMORAL.key
+			end
+		end
+
+		DukeHelpers.FillRottenGulletSlot(player, DukeHelpers.Hearts.IMMORAL.key, immoralHeartsToAdd)
+		data.jackOfHearts = nil
+	end
+end)
+
+dukeMod:AddCallback(ModCallbacks.MC_POST_PEFFECT_UPDATE, function(_, player)
+	DukeHelpers.OnItemPickup(player, CollectibleType.COLLECTIBLE_ABADDON, "DukeAbaddonPickup", function()
+		local gulletSlots = DukeHelpers.GetFilledRottenGulletSlots(player)
+
+		for i, slot in pairs(gulletSlots) do
+			if slot == DukeHelpers.Hearts.RED.key then
+				gulletSlots[i] = DukeHelpers.Hearts.BLACK.key
+			end
+		end
+	end)
+end, DukeHelpers.HUSK_ID)
+
 dukeMod:AddCallback(ModCallbacks.MC_USE_ITEM, function(_, _, _, player)
 	if DukeHelpers.IsHusk(player) then
 		DukeHelpers.FillRottenGulletSlot(player, DukeHelpers.Spiders.RED.key, 2)
