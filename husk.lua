@@ -244,10 +244,6 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_PICKUP_UPDATE, function(_, pickup)
 	end
 end)
 
-function DukeHelpers.IsHusk(player)
-	return DukeHelpers.IsDuke(player, true)
-end
-
 function DukeHelpers.InitializeHusk(p, continued)
 	local dukeData = DukeHelpers.GetDukeData(p)
 	local sprite = p:GetSprite()
