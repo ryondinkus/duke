@@ -29,3 +29,16 @@ function DukeHelpers.IsReplaceablePrice(x)
     return (x <= PickupPrice.PRICE_ONE_HEART and x >= PickupPrice.PRICE_ONE_HEART_AND_TWO_SOULHEARTS)
         or (x <= -7 and x >= -8) -- Devil Baby Prices Blue Custom Deal :D :D :D: D::D
 end
+
+function DukeHelpers.CanBuyDevilDeal(player, pickup)
+    if pickup.Price > -6 and pickup.Price ~= 0 and not player:IsHoldingItem() then
+        if (pickup.Price == -1 and player:GetMaxHearts() >= 2)
+            or (pickup.Price == -2 and player:GetMaxHearts() >= 4)
+            or (pickup.Price == -3 and DukeHelpers.Hearts.SOUL.GetCount(player) >= 6)
+            or (pickup.Price == -4 and player:GetMaxHearts() >= 2 and DukeHelpers.Hearts.SOUL.GetCount(player) >= 4) -- this devil deal is affordable--and player:GetDamageCooldown() <= 0)
+        then
+            return true
+        end
+    end
+    return false
+end

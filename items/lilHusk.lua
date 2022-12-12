@@ -6,7 +6,7 @@ local Name = Names.en_us
 local Tag = "lilHusk"
 local Id = Isaac.GetItemIdByName(Name)
 local Descriptions = {
-    en_us = "Follows the player from behind#When the player fires tears, spawns a random Heart Spider, similar to {{Collectible[268]}}Rotten Baby",
+    en_us = "Follows the player from behind#When the player fires tears, spawns a random Heart Spider, similar to {{Collectible268}}Rotten Baby",
     spa = "Caca y mierda por todos lados"
 }
 local WikiDescription = DukeHelpers.GenerateEncyclopediaPage({

@@ -14,15 +14,32 @@ local BIRTHRIGHT = DukeHelpers.BIRTHRIGHT
 
 -- FUNCTIONS
 
-function DukeHelpers.SpawnHeartFly(player, fly, layer)
+function DukeHelpers.SpawnHeartFly(player, fly, layer, position)
+	if not position then
+		position = player.Position
+	end
 	local heartFlyEntity = Isaac.Spawn(EntityType.ENTITY_FAMILIAR, DukeHelpers.FLY_VARIANT, fly.heartFlySubType or 1,
-		player.Position, Vector.Zero
+		position, Vector.Zero
 		, player)
 	heartFlyEntity:ClearEntityFlags(EntityFlag.FLAG_APPEAR)
-	DukeHelpers.SpawnHeartFlyPoof(fly, player.Position, player)
+	DukeHelpers.SpawnHeartFlyPoof(fly, position, player)
 	DukeHelpers.GetDukeData(heartFlyEntity).layer = layer
 	DukeHelpers.PositionHeartFly(heartFlyEntity, layer)
 	return heartFlyEntity
+end
+
+function DukeHelpers.ReplaceHeartFly(player, flyIndex, newFly) 
+	local data = DukeHelpers.GetDukeData(player)
+	local heartFlies = data.heartFlies
+	local oldHeartFly = heartFlies[flyIndex]
+	local oldFlyEntity = DukeHelpers.GetEntityByInitSeed(oldHeartFly.initSeed)
+
+	oldFlyEntity:Remove()
+
+	local newFlyEntity = DukeHelpers.SpawnHeartFly(player, newFly, oldHeartFly.layer, oldFlyEntity.Position)
+
+	oldHeartFly.initSeed = newFlyEntity.InitSeed
+	oldHeartFly.key = newFly.key
 end
 
 function DukeHelpers.AddHeartFly(player, fly, specificAmount, applyInfestedHeart)
@@ -243,11 +260,16 @@ function DukeHelpers.GetOutermostFlies(player, heartFlies, amount, ignoredInitSe
 
 		while not foundFly do
 			foundFly = DukeHelpers.Find(fliesData, function(savedHeartFly)
-				return (not not DukeHelpers.Find(heartFlies, function(heartFly)
+				return (not not 
+				DukeHelpers.Find(heartFlies, function(heartFly) -- The key is in heartFlies
 					return savedHeartFly.key == heartFly.key
-				end)) and savedHeartFly.layer == layer and
-					(not ignoredInitSeeds or not DukeHelpers.Find(ignoredInitSeeds, function(s) return s == savedHeartFly.initSeed end)
-					)
+				end))
+				and savedHeartFly.layer == layer -- The fly is on the layer
+				and (not ignoredInitSeeds -- Either there are no init seeds to ignore
+					or not DukeHelpers.Find(ignoredInitSeeds, function(s) return s == savedHeartFly.initSeed end)) -- Or the fly's init seed is not to be ignored
+				and (not DukeHelpers.Find(foundFlies, function(heartFly) -- Make sure the same fly is not selected twice
+					return savedHeartFly.initSeed == heartFly.InitSeed
+				end))
 			end)
 
 			if not foundFly then

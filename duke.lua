@@ -178,17 +178,25 @@ end)
 -- Handles fly devil deals for Duke
 dukeMod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, function(_, pickup, collider)
 	local p = collider:ToPlayer()
-	if p and (DukeHelpers.IsDuke(p) or DukeHelpers.Trinkets.pocketOfFlies.helpers.HasPocketOfFlies(p)) and
-		DukeHelpers.IsCustomPrice(pickup.Price) then
-		local heartPrice = DukeHelpers.GetCustomDevilDealPrice(pickup, p)
+	if p and (DukeHelpers.IsDuke(p) or DukeHelpers.Trinkets.pocketOfFlies.helpers.HasPocketOfFlies(p)) then
+		if DukeHelpers.IsCustomPrice(pickup.Price) then
+			local heartPrice = DukeHelpers.GetCustomDevilDealPrice(pickup, p)
 
-		local playerFlyCount = DukeHelpers.GetFlyCount(p)
+			local playerFlyCount = DukeHelpers.GetFlyCount(p)
 
-		if not playerFlyCount or playerFlyCount < heartPrice then
-			return true
+			if not playerFlyCount or playerFlyCount < heartPrice then
+				return true
+			end
+
+			DukeHelpers.RemoveOutermostHeartFlies(p, heartPrice)
+			if DukeHelpers.Trinkets.pocketOfFlies.helpers.HasPocketOfFlies(p) then
+				DukeHelpers.AddHeartFly(p, DukeHelpers.Flies.RED, 2, false)
+			end
+		else
+			if DukeHelpers.CanBuyDevilDeal(p, pickup) then
+				DukeHelpers.AddHeartFly(p, DukeHelpers.Flies.RED, 2, false)
+			end
 		end
-
-		DukeHelpers.RemoveOutermostHeartFlies(p, heartPrice)
 	end
 end)
 
@@ -197,28 +205,44 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_PICKUP_RENDER, function(_, pickup)
 	DukeHelpers.RenderCustomDevilDealPrice(pickup, "showFliesPrice", "gfx/ui/fly_devil_deal_price.anm2")
 end)
 
-dukeMod:AddCallback(ModCallbacks.MC_POST_PICKUP_UPDATE, function(_, pickup)
-	if not DukeHelpers.AnyPlayerHasTrinket(TrinketType.TRINKET_YOUR_SOUL) and
-		(DukeHelpers.HasDuke() or DukeHelpers.Trinkets.pocketOfFlies.helpers.AnyPlayerHasPocketOfFlies()) and
-		(DukeHelpers.IsReplaceablePrice(pickup.Price) or DukeHelpers.IsCustomPrice(pickup.Price)) then
-		local closestPlayer = DukeHelpers.GetClosestPlayer(pickup.Position)
-
-		if closestPlayer and
-			(DukeHelpers.IsDuke(closestPlayer) or DukeHelpers.Trinkets.pocketOfFlies.helpers.HasPocketOfFlies(closestPlayer)) then
-			pickup:GetData().showFliesPrice = true
-			pickup.AutoUpdatePrice = false
-			pickup.Price = (pickup.Price % DukeHelpers.PRICE_OFFSET) + DukeHelpers.PRICE_OFFSET
-		else
-			pickup:GetData().showFliesPrice = nil
-			if not pickup.AutoUpdatePrice then
-				pickup.AutoUpdatePrice = true
-			end
-		end
-	elseif pickup:GetData().showFliesPrice then
-		pickup:GetData().showFliesPrice = nil
+local function resetItemPrice(pickup, pickupData)
+	if pickupData.showFliesPrice then
+		pickupData.showFliesPrice = nil
 		if not pickup.AutoUpdatePrice then
 			pickup.AutoUpdatePrice = true
 		end
+	end
+end
+
+local function customizeItemPrice(pickup, pickupData)
+	pickupData.showFliesPrice = true
+	pickup.AutoUpdatePrice = false
+	pickup.Price = (pickup.Price % DukeHelpers.PRICE_OFFSET) + DukeHelpers.PRICE_OFFSET
+end
+
+dukeMod:AddCallback(ModCallbacks.MC_POST_PICKUP_UPDATE, function(_, pickup)
+	local closestPlayer = DukeHelpers.GetClosestPlayer(pickup.Position)
+	local pickupData = pickup:GetData()
+	
+	if closestPlayer and not DukeHelpers.AnyPlayerHasTrinket(TrinketType.TRINKET_YOUR_SOUL) and
+		(DukeHelpers.IsReplaceablePrice(pickup.Price) or DukeHelpers.IsCustomPrice(pickup.Price)) then
+		if DukeHelpers.IsDuke(closestPlayer) then
+			customizeItemPrice(pickup, pickupData)
+		elseif DukeHelpers.Trinkets.pocketOfFlies.helpers.HasPocketOfFlies(closestPlayer) then
+			local heartPrice = DukeHelpers.GetCustomDevilDealPrice(pickup, closestPlayer)
+
+			local playerFlyCount = DukeHelpers.GetFlyCount(closestPlayer)
+
+			if playerFlyCount and playerFlyCount >= heartPrice then
+				customizeItemPrice(pickup, pickupData)
+			else
+				resetItemPrice(pickup, pickupData)
+			end
+		else
+			resetItemPrice(pickup, pickupData)
+		end
+	else
+		resetItemPrice(pickup, pickupData)
 	end
 end)
 
@@ -350,6 +374,37 @@ dukeMod:AddCallback(ModCallbacks.MC_POST_PEFFECT_UPDATE, function(_, player)
 				DukeHelpers.Hearts.SOUL.Remove(player, soulHearts)
 			end
 		end)
+	end
+end)
+
+dukeMod:AddPriorityCallback(ModCallbacks.MC_USE_CARD, CallbackPriority.EARLY, function(_, card, player)
+	if FiendFolio and card == Card.JACK_OF_HEARTS and DukeHelpers.IsDuke(player) then
+		local data = DukeHelpers.GetDukeData(player)
+		data.jackOfHearts = DukeHelpers.Hearts.SOUL.GetCount(player)
+	end
+end)
+
+dukeMod:AddPriorityCallback(ModCallbacks.MC_USE_CARD, CallbackPriority.LATE, function(_, card, player)
+	if FiendFolio and card == Card.JACK_OF_HEARTS and DukeHelpers.IsDuke(player) then
+		local data = DukeHelpers.GetDukeData(player)
+
+		local immoralHeartsToAdd = data.jackOfHearts - 1
+
+		DukeHelpers.Hearts.IMMORAL.Remove(player, DukeHelpers.Hearts.IMMORAL.GetCount(player))
+
+		DukeHelpers.Hearts.SOUL.Add(player, 1)
+
+		local heartFlies = data.heartFlies
+
+		for i, fly in pairs(heartFlies) do
+			if fly.key == DukeHelpers.Hearts.SOUL.key or fly.key == DukeHelpers.Hearts.BLACK.key then
+				DukeHelpers.ReplaceHeartFly(player, i, DukeHelpers.Flies.IMMORAL)
+			end
+		end
+
+		DukeHelpers.AddHeartFly(player, DukeHelpers.Flies.IMMORAL, immoralHeartsToAdd, false)
+
+		data.jackOfHearts = nil
 	end
 end)
 
